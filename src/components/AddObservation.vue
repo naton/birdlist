@@ -9,3 +9,12 @@ const emit = defineEmits(['change'])
         <input type="text" list="birds" @change="emit('add', $event)" autocomplete="off"/>
     </div>
 </template>
+
+<style>
+#addbird input {
+  width: calc(100% - 2rem);
+  margin: 0 1rem;
+  padding: 0.3em;
+  box-sizing: border-box;
+}
+</style>
