@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from "vue"
 import AddObservation from "@/components/AddObservation.vue"
+import TabsList from "@/components/TabsList.vue"
 import ObservationItem from "./ObservationItem.vue"
 import BirdsList from "@/components/BirdsList.vue"
 
@@ -13,6 +14,11 @@ const localDate = (date, config) => {
     let options = config ? config : { dateStyle: 'full', timeStyle: 'short' };
     return new Intl.DateTimeFormat(lang, options).format(date);
 }
+const tabList = ref([
+    `Samtliga observationer`,
+    `Allt i ${localDate(new Date(), { year: "numeric", month: "long" })}`,
+    `Unika i ${localDate(new Date(), { month: "long" })}`
+])
 
 let db = ref(null)
 
@@ -88,35 +94,43 @@ openRequest.onsuccess = () => {
 </script>
 
 <template>
-    <AddObservation @add="addObservation" />
+    <div class="body">
+        <tabs-list :tabList="tabList">
+            <template v-slot:tabPanel-1>
+            <ol>
+                <ObservationItem 
+                    v-for="item in allObservations"
+                    :item="item"
+                    :key="item.id"
+                    @delete="deleteObservation"
+                ></ObservationItem>
+            </ol>
+            </template>
 
-    <h2>Samtliga observationer</h2>
-    <ol>
-        <ObservationItem 
-            v-for="item in allObservations"
-            :item="item"
-            :key="item.id"
-            @delete="deleteObservation"
-        ></ObservationItem>
-    </ol>
+            <template v-slot:tabPanel-2>
+            <ol>
+                <ObservationItem 
+                    v-for="item in allThisMonth"
+                    :item="item"
+                    :key="item.id"
+                ></ObservationItem>
+            </ol>
+            </template>
 
-    <h2>Allt i {{ localDate(new Date(), { year: 'numeric', month: 'long' }) }}</h2>
-    <ol>
-        <ObservationItem 
-            v-for="item in allThisMonth"
-            :item="item"
-            :key="item.id"
-        ></ObservationItem>
-    </ol>
-
-    <h2>{{ uniqueThisMonth.length }} unika i {{ localDate(new Date(), { month: 'long' }) }}</h2>
-    <ol>
-        <ObservationItem 
-            v-for="(item, index) in uniqueThisMonth"
-            :item="item"
-            :key="index"
-        ></ObservationItem>
-    </ol>
-
-    <BirdsList />
+            <template v-slot:tabPanel-3>
+                {{ uniqueThisMonth.length }} st
+                <ol>
+                    <ObservationItem 
+                        v-for="(item, index) in uniqueThisMonth"
+                        :item="item"
+                        :key="index"
+                    ></ObservationItem>
+            </ol>
+            </template>
+        </tabs-list>
+    </div>
+    <div class="footer">
+        <AddObservation @add="addObservation" />
+        <BirdsList />
+    </div>
 </template>
