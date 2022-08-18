@@ -21,5 +21,6 @@ const emit = defineEmits(["change"]);
   margin: 0 1rem;
   padding: 0.3em;
   box-sizing: border-box;
+  font-size: 1.2rem;
 }
 </style>

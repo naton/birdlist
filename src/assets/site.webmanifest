@@ -1,19 +1,57 @@
 {
-    "name": "",
-    "short_name": "",
-    "icons": [
-        {
-            "src": "/android-chrome-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/android-chrome-384x384.png",
-            "sizes": "384x384",
-            "type": "image/png"
-        }
-    ],
+    "name": "Birdlist",
+    "short_name": "Birdlist",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "description": "Log your bird observations. Nothing more.",
+    "lang": "sv",
+    "dir": "ltr",
     "theme_color": "#ffffff",
     "background_color": "#ffffff",
-    "display": "standalone"
+    "orientation": "any",
+    "icons": [
+        {
+            "src": "src/assets/512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "src/assets/384x384.png",
+            "sizes": "384x384",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "src/assets/192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "src/assets/180x180.png",
+            "type": "image/png",
+            "sizes": "180x180"
+        },
+        {
+            "src": "src/assets/favicon.ico",
+            "type": "image/x-icon"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "src/assets/splashscreen.png",
+            "sizes": "750x1334",
+            "type": "image/png",
+            "description": "A screenshot of the start screen"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "About Birdlist",
+            "url": "/about",
+            "description": "About Birdlist"
+        }
+    ]
 }
