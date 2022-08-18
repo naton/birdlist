@@ -36,7 +36,8 @@
         },
         {
             "src": "src/assets/favicon.ico",
-            "type": "image/x-icon"
+            "type": "image/x-icon",
+            "sizes": "48x48"
         }
     ],
     "screenshots": [
