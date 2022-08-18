@@ -12,9 +12,9 @@ const emit = defineEmits(['change'])
 
 <style>
 #addbird input {
-  width: calc(100% - 2rem);
-  margin: 0 1rem;
-  padding: 0.3em;
-  box-sizing: border-box;
+    width: calc(100% - 2rem);
+    margin: 0 1rem;
+    padding: 0.3em;
+    box-sizing: border-box;
 }
 </style>
