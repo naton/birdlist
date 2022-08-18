@@ -4,7 +4,7 @@ defineProps(["item"]);
 </script>
 
 <template>
-  <li>
+  <li tabindex="0">
     {{ item.name || item }}
     <button
       type="button"
@@ -15,3 +15,13 @@ defineProps(["item"]);
     </button>
   </li>
 </template>
+
+<style>
+li button {
+  display: none;
+}
+
+li:focus button {
+  display: inline-block;
+}
+</style>
