@@ -23,9 +23,8 @@ const localDate = (date, config) => {
   return new Intl.DateTimeFormat(lang, options).format(date);
 };
 const tabList = ref([
-  `Samtliga observationer`,
-  `Allt i ${localDate(new Date(), { year: "numeric", month: "long" })}`,
-  `Unika i ${localDate(new Date(), { month: "long" })}`,
+  `Alla`,
+  `${localDate(new Date(), { year: "numeric", month: "long" })}`,
 ]);
 
 let db = ref(null).value;
@@ -124,10 +123,8 @@ openRequest.onsuccess = () => {
             :key="item.id"
           ></ObservationItem>
         </ol>
-      </template>
 
-      <template v-slot:tabPanel-3>
-        {{ uniqueThisMonth.length }} st
+        <h3>{{ uniqueThisMonth.length }} st unika:</h3>
         <ol>
           <ObservationItem
             v-for="(item, index) in uniqueThisMonth"
