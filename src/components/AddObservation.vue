@@ -42,7 +42,9 @@ input {
   padding: 0.3em;
   border: 1px solid var(--color-border);
   box-sizing: border-box;
+  background: none;
   font-size: 1.2rem;
+  appearance: none;
 }
 
 input::placeholder {

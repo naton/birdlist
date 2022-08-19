@@ -3,7 +3,7 @@
     --co-white: #ffffff;
     --co-black: #000000;
     --co-grey-light: #e3e3e3;
-    --co-grey-dark: #505050;
+    --co-grey-dark: #606060;
     --co-grey-darkest: #2e2e2e;
 
     --co-bg-dark-1: rgba(84, 84, 84, 0.84);
@@ -14,6 +14,7 @@
 :root {
     --color-border: var(--co-grey-darkest);
     --color-text: var(--co-grey-darkest);
+    --color-text-dim: var(--co-grey-dark);
     --color-background: var(--co-white);
     --color-background-dim: var(--co-grey-light);
 }
@@ -21,7 +22,8 @@
 @media (prefers-color-scheme: dark) {
     :root {
         --color-border: var(--co-grey-light);
-        --color-text: var(--co-grey-light);
+        --color-text: var(--co-white);
+        --color-text-dim: var(--co-grey-light);
         --color-background: var(--co-grey-dark);
         --color-background-dim: var(--co-grey-darkest);
     }

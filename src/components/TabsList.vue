@@ -40,6 +40,7 @@ const activeTab = ref(1);
   width: 100vw;
   padding: 0;
   overscroll-behavior: none;
+  background: var(--color-background-dim);
 }
 
 .c-tabs__tab label {
@@ -48,6 +49,7 @@ const activeTab = ref(1);
 }
 
 .c-tabs__tab--active {
-  border-bottom: 2px solid;
+  border-top: 2px solid;
+  background: var(--color-background);
 }
 </style>

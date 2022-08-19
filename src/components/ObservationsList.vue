@@ -15,9 +15,18 @@ const allThisMonth = computed(() =>
       obs.date.getMonth() == currentMonth.value
   )
 );
+
 const uniqueThisMonth = computed(() =>
   [...new Set(allThisMonth.value.map((item) => item.name))].sort()
 );
+
+const currentDate = computed(() => {
+  const date = new Date().setMonth(currentMonth.value);
+  return new Intl.DateTimeFormat("sv", {
+    year: "numeric",
+    month: "long",
+  }).format(date);
+});
 
 const scrollToBottom = (el) => {
   document
@@ -25,7 +34,7 @@ const scrollToBottom = (el) => {
     .scrollTo(0, document.querySelector(el).scrollHeight + 20);
 };
 
-const tabList = ref(["Denna månad", "Alla observationer"]);
+const tabList = ref(["Månadskryss", "Alla observationer"]);
 
 let db = ref(null).value;
 
@@ -108,6 +117,13 @@ openRequest.onsuccess = () => {
   <div class="body">
     <tabs-list :tabList="tabList">
       <template v-slot:tabPanel-1>
+        <div class="month-nav">
+          <button @click="currentMonth--">«</button>
+          <h2>
+            {{ currentDate }}
+          </h2>
+          <button @click="currentMonth++">»</button>
+        </div>
         <ul>
           <ObservationItem
             v-for="item in allThisMonth"
@@ -118,14 +134,16 @@ openRequest.onsuccess = () => {
           ></ObservationItem>
         </ul>
 
-        <h3>Totalt {{ uniqueThisMonth.length }} st unika:</h3>
-        <ol>
-          <ObservationItem
-            v-for="(item, index) in uniqueThisMonth"
-            :item="item"
-            :key="index"
-          ></ObservationItem>
-        </ol>
+        <details>
+          <summary>Totalt {{ uniqueThisMonth.length }} st unika:</summary>
+          <ol>
+            <ObservationItem
+              v-for="(item, index) in uniqueThisMonth"
+              :item="item"
+              :key="index"
+            ></ObservationItem>
+          </ol>
+        </details>
       </template>
 
       <template v-slot:tabPanel-2>
@@ -154,5 +172,17 @@ ul {
 
 h3 {
   text-align: center;
+}
+
+details {
+  margin-top: 2rem;
+}
+.month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.3ex;
 }
 </style>

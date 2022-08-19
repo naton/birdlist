@@ -60,3 +60,12 @@
 .nav a:first-of-type {
     border: 0;
 }
+
+/* Buttons */
+button {
+    width: 3rem;
+    height: 3rem;
+    border: none;
+    color: var(--color-background-dim);
+    background: var(--color-border);
+}

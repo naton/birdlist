@@ -19,8 +19,10 @@ const formatDate = (date) =>
     @click="showDeleteButton = !showDeleteButton"
     :class="showDeleteButton && 'is-active'"
   >
-    {{ item.name || item }}
-    <span v-if="show_date">{{ formatDate(item.date) }}</span>
+    <span class="obs">
+      <span class="date" v-if="show_date">{{ formatDate(item.date) }}</span>
+      <span class="name">✔️ {{ item.name || item }}</span>
+    </span>
     <button
       type="button"
       @click.prevent="emit('delete', item.id)"
@@ -33,32 +35,46 @@ const formatDate = (date) =>
 
 <style scoped>
 li {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.6rem 1em;
   overflow: hidden;
 }
 
-li button {
+.obs {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 1em;
+  background: var(--color-background);
+  transition: 0.1s transform ease-out;
+  text-align: left;
+}
+
+.date {
+  margin-right: 1em;
+}
+.name {
+  margin-right: auto;
+}
+
+button {
   position: absolute;
   right: 0;
-  transform: translateX(3rem);
-  width: 3rem;
+  top: 0;
   height: 100%;
-  margin-top: -0.6rem;
-  border: none;
-  color: var(--color-background-dim);
-  background: var(--color-border);
+  z-index: -1;
+  transform: translateX(3rem);
   transition: 0.1s transform ease-out;
 }
 
-li.is-active {
+.is-active {
   position: relative;
-  background: var(--color-background-dim);
 }
 
-li.is-active button {
-  transform: translateX(0rem);
-  z-index: 1;
+.is-active .obs {
+  background: var(--color-background-dim);
+  transform: translateX(-3rem);
+}
+
+.is-active button {
+  transform: translateX(0);
+  z-index: 0;
 }
 </style>
