@@ -6,22 +6,18 @@ import ObservationItem from "./ObservationItem.vue";
 import BirdsList from "@/components/BirdsList.vue";
 
 let allObservations = ref([]);
+let currentMonth = ref(new Date().getMonth());
+
 const allThisMonth = computed(() =>
   allObservations.value.filter(
     (obs) =>
       obs.date.getFullYear() == new Date().getFullYear() &&
-      obs.date.getMonth() == new Date().getMonth()
+      obs.date.getMonth() == currentMonth.value
   )
 );
 const uniqueThisMonth = computed(() =>
   [...new Set(allThisMonth.value.map((item) => item.name))].sort()
 );
-
-const localDate = (date, config) => {
-  let lang = document.documentElement.lang || "sv";
-  let options = config ? config : { dateStyle: "full", timeStyle: "short" };
-  return new Intl.DateTimeFormat(lang, options).format(date);
-};
 
 const scrollToBottom = (el) => {
   document
@@ -29,10 +25,7 @@ const scrollToBottom = (el) => {
     .scrollTo(0, document.querySelector(el).scrollHeight + 20);
 };
 
-const tabList = ref([
-  `Alla`,
-  `${localDate(new Date(), { year: "numeric", month: "long" })}`,
-]);
+const tabList = ref(["Denna månad", "Alla observationer"]);
 
 let db = ref(null).value;
 
@@ -115,12 +108,22 @@ openRequest.onsuccess = () => {
   <div class="body">
     <tabs-list :tabList="tabList">
       <template v-slot:tabPanel-1>
-        <ol>
+        <ul>
           <ObservationItem
-            v-for="item in allObservations"
+            v-for="item in allThisMonth"
             :item="item"
             :key="item.id"
+            :show_date="true"
             @delete="deleteObservation"
+          ></ObservationItem>
+        </ul>
+
+        <h3>Totalt {{ uniqueThisMonth.length }} st unika:</h3>
+        <ol>
+          <ObservationItem
+            v-for="(item, index) in uniqueThisMonth"
+            :item="item"
+            :key="index"
           ></ObservationItem>
         </ol>
       </template>
@@ -128,19 +131,10 @@ openRequest.onsuccess = () => {
       <template v-slot:tabPanel-2>
         <ol>
           <ObservationItem
-            v-for="item in allThisMonth"
+            v-for="item in allObservations"
             :item="item"
             :key="item.id"
-            show_date
-          ></ObservationItem>
-        </ol>
-
-        <h3>{{ uniqueThisMonth.length }} st unika:</h3>
-        <ol>
-          <ObservationItem
-            v-for="(item, index) in uniqueThisMonth"
-            :item="item"
-            :key="index"
+            @delete="deleteObservation"
           ></ObservationItem>
         </ol>
       </template>
@@ -151,3 +145,14 @@ openRequest.onsuccess = () => {
     <BirdsList />
   </div>
 </template>
+
+<style scoped>
+ol,
+ul {
+  padding: 0;
+}
+
+h3 {
+  text-align: center;
+}
+</style>

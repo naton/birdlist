@@ -42,7 +42,8 @@ const activeTab = ref(1);
   overscroll-behavior: none;
 }
 
-.c-tabs__tab {
+.c-tabs__tab label {
+  display: block;
   padding: 1rem;
 }
 
