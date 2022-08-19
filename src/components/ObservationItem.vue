@@ -1,11 +1,19 @@
 <script setup>
+import { ref } from "vue";
+
 const emit = defineEmits(["click"]);
-defineProps(["item"]);
+defineProps(["item", "show_date"]);
+
+const showDeleteButton = ref(false);
 </script>
 
 <template>
-  <li tabindex="0">
+  <li
+    @click="showDeleteButton = !showDeleteButton"
+    :class="showDeleteButton && 'is-active'"
+  >
     {{ item.name || item }}
+    <span v-if="show_date">{{ item.date }}</span>
     <button
       type="button"
       @click.prevent="emit('delete', item.id)"
@@ -21,7 +29,7 @@ li button {
   display: none;
 }
 
-li:focus button {
+li.is-active button {
   display: inline-block;
 }
 </style>

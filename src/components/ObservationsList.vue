@@ -22,6 +22,13 @@ const localDate = (date, config) => {
   let options = config ? config : { dateStyle: "full", timeStyle: "short" };
   return new Intl.DateTimeFormat(lang, options).format(date);
 };
+
+const scrollToBottom = (el) => {
+  document
+    .querySelector(el)
+    .scrollTo(0, document.querySelector(el).scrollHeight + 20);
+};
+
 const tabList = ref([
   `Alla`,
   `${localDate(new Date(), { year: "numeric", month: "long" })}`,
@@ -52,6 +59,9 @@ const addObservation = (ev) => {
   addRequest.onsuccess = () => {
     allObservations.value.push(observation);
     ev.target.value = ""; // reset form field value
+    setTimeout(() => {
+      scrollToBottom(".body");
+    }, 100);
   };
 
   addRequest.onerror = () => {
@@ -121,6 +131,7 @@ openRequest.onsuccess = () => {
             v-for="item in allThisMonth"
             :item="item"
             :key="item.id"
+            show_date
           ></ObservationItem>
         </ol>
 

@@ -26,10 +26,16 @@
         "footer";
     grid-area: main;
     background: var(--color-background);
+    overflow: auto;
 }
 
 .body {
     grid-area: body;
+    overflow: auto;
+}
+
+.body.keyboard-visible {
+    max-height: 35svh;
 }
 
 .footer {
@@ -39,7 +45,7 @@
 .nav {
     grid-area: nav;
     text-align: center;
-    padding: 1rem;
+    padding: 0 1rem 1rem;
     background: var(--color-background);
 }
 
