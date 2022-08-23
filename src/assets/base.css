@@ -2,8 +2,8 @@
 :root {
     --co-white: #ffffff;
     --co-black: #000000;
-    --co-grey-light: #e3e3e3;
-    --co-grey-dark: #606060;
+    --co-grey-light: #dddddd;
+    --co-grey-dark: #707070;
     --co-grey-darkest: #2e2e2e;
 
     --co-bg-dark-1: rgba(84, 84, 84, 0.84);
@@ -12,7 +12,7 @@
 
 /* semantic color variables for this project */
 :root {
-    --color-border: var(--co-grey-darkest);
+    --color-border: var(--co-grey-dark);
     --color-text: var(--co-grey-darkest);
     --color-text-dim: var(--co-grey-dark);
     --color-background: var(--co-white);
@@ -24,8 +24,8 @@
         --color-border: var(--co-grey-light);
         --color-text: var(--co-white);
         --color-text-dim: var(--co-grey-light);
-        --color-background: var(--co-grey-dark);
-        --color-background-dim: var(--co-grey-darkest);
+        --color-background: var(--co-grey-darkest);
+        --color-background-dim: var(--co-grey-dark);
     }
 }
 

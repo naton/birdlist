@@ -67,5 +67,5 @@ button {
     height: 3rem;
     border: none;
     color: var(--color-background-dim);
-    background: var(--color-border);
+    background: var(--color-text);
 }
