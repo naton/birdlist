@@ -24,8 +24,8 @@
         --color-border: var(--co-grey-light);
         --color-text: var(--co-white);
         --color-text-dim: var(--co-grey-light);
-        --color-background: var(--co-grey-dark);
-        --color-background-dim: var(--co-grey-darkest);
+        --color-background: var(--co-grey-darkest);
+        --color-background-dim: var(--co-grey-dark);
     }
 }
 
