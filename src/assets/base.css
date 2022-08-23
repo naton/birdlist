@@ -2,17 +2,15 @@
 :root {
     --co-white: #ffffff;
     --co-black: #000000;
-    --co-grey-light: #dddddd;
-    --co-grey-dark: #707070;
-    --co-grey-darkest: #2e2e2e;
-
-    --co-bg-dark-1: rgba(84, 84, 84, 0.84);
-    --co-bg-dark-2: rgba(84, 84, 84, 0.48);
+    --co-grey-light: #f0dab1;
+    --co-grey-dark: #6f6553;
+    --co-grey-darkest: #3d382d;
 }
 
 /* semantic color variables for this project */
 :root {
     --color-border: var(--co-grey-dark);
+    --color-link: var(--co-grey-dark);
     --color-text: var(--co-grey-darkest);
     --color-text-dim: var(--co-grey-dark);
     --color-background: var(--co-white);
@@ -22,6 +20,7 @@
 @media (prefers-color-scheme: dark) {
     :root {
         --color-border: var(--co-grey-light);
+        --color-link: var(--co-grey-light);
         --color-text: var(--co-white);
         --color-text-dim: var(--co-grey-light);
         --color-background: var(--co-grey-darkest);

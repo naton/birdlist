@@ -32,10 +32,15 @@ li {
   overflow: hidden;
 }
 
+li:first-child {
+  border-top: 1px solid var(--color-background-dim);
+}
+
 .obs {
   display: flex;
   justify-content: space-between;
   padding: 0.6rem 1em;
+  border-bottom: 1px solid var(--color-background-dim);
   background: var(--color-background);
   transition: 0.1s transform ease-out;
   text-align: left;
@@ -66,6 +71,10 @@ button {
 .is-active .obs {
   background: var(--color-background-dim);
   transform: translateX(-3rem);
+}
+
+.is-active .date {
+  color: var(--color-text);
 }
 
 .is-active button {
