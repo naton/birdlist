@@ -5,6 +5,7 @@ const emit = defineEmits(["add"]);
 <template>
   <div class="add">
     <input
+      name="bird"
       type="text"
       list="birds"
       @change="emit('add', $event)"
