@@ -49,6 +49,7 @@ li {
 
 .date {
   margin-right: 1em;
+  color: var(--color-text-dim);
 }
 .name {
   margin-right: auto;
