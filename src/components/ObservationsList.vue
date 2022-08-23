@@ -49,7 +49,7 @@ const activeMonth = computed(() => {
 const scrollToBottom = (el) => {
   document
     .querySelector(el)
-    .scrollTo(0, document.querySelector(el).scrollHeight + 20);
+    .scrollTo(0, document.querySelector(el).scrollHeight + 40);
 };
 
 const tabList = ["Månadskryss", "Alla observationer"];
@@ -113,7 +113,7 @@ const deleteObservation = async (id) => {
           v-show="current.sort == 'bydate'"
           v-if="allThisMonth.length"
         >
-          <h3 class="center">Senast överst</h3>
+          <h3 class="center">{{ allThisMonth.length }} observationer</h3>
           <ul>
             <ObservationItem
               v-for="item in allThisMonth"
@@ -130,7 +130,7 @@ const deleteObservation = async (id) => {
           v-show="current.sort == 'byname'"
           v-if="allThisMonth.length"
         >
-          <h3 class="center">Totalt {{ uniqueThisMonth.length }} arter</h3>
+          <h3 class="center">{{ uniqueThisMonth.length }} olika arter</h3>
           <ol>
             <ObservationItem
               v-for="(item, index) in uniqueThisMonth"
