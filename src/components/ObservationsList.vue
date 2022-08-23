@@ -83,23 +83,54 @@ const deleteObservation = async (id) => {
       <template v-slot:tabPanel-1>
         <div class="month-nav">
           <button @click="current.month--">«</button>
-          <h2>
+          <h2 class="subtitle center">
             {{ activeMonth }}
           </h2>
           <button @click="current.month++">»</button>
         </div>
-        <ul>
-          <ObservationItem
-            v-for="item in allThisMonth"
-            :item="item"
-            :key="item.id"
-            :show_date="true"
-            @delete="deleteObservation"
-          ></ObservationItem>
-        </ul>
 
-        <details>
-          <summary>Totalt {{ uniqueThisMonth.length }} st unika:</summary>
+        <nav class="nav" v-if="allThisMonth.length">
+          <a
+            href="#bydate"
+            @click.prevent="current.sort = 'bydate'"
+            :style="{
+              fontWeight: current.sort == 'bydate' ? 'bold' : 'normal',
+            }"
+            >Datum</a
+          >
+          <a
+            href="#byname"
+            @click.prevent="current.sort = 'byname'"
+            :style="{
+              fontWeight: current.sort == 'byname' ? 'bold' : 'normal',
+            }"
+            >Namn</a
+          >
+        </nav>
+
+        <section
+          id="bydate"
+          v-show="current.sort == 'bydate'"
+          v-if="allThisMonth.length"
+        >
+          <h3 class="center">Senast överst</h3>
+          <ul>
+            <ObservationItem
+              v-for="item in allThisMonth"
+              :item="item"
+              :key="item.id"
+              :show_date="true"
+              @delete="deleteObservation"
+            ></ObservationItem>
+          </ul>
+        </section>
+
+        <section
+          id="byname"
+          v-show="current.sort == 'byname'"
+          v-if="allThisMonth.length"
+        >
+          <h3 class="center">Totalt {{ uniqueThisMonth.length }} arter</h3>
           <ol>
             <ObservationItem
               v-for="(item, index) in uniqueThisMonth"
@@ -107,10 +138,15 @@ const deleteObservation = async (id) => {
               :key="index"
             ></ObservationItem>
           </ol>
-        </details>
+        </section>
+
+        <section v-else>
+          <h3 class="center">Inga observationer denna månad</h3>
+        </section>
       </template>
 
       <template v-slot:tabPanel-2>
+        <h2 class="subtitle center">I alfabetisk ordning</h2>
         <ol>
           <ObservationItem
             v-for="item in data.observations"
@@ -131,22 +167,24 @@ const deleteObservation = async (id) => {
 <style scoped>
 ol,
 ul {
+  margin-top: 0.5rem;
   padding: 0;
 }
 
-h3 {
+.center {
   text-align: center;
 }
 
-details {
-  margin-top: 2rem;
+.subtitle {
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.3ex;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
 }
 .month-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: var(--color-text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.3ex;
 }
 </style>
