@@ -2,9 +2,9 @@
 import { toRefs, reactive, computed, onUnmounted } from "vue";
 import { liveQuery } from "dexie";
 import { db } from "../db";
-import AddObservation from "@/components/AddObservation.vue";
 import TabsList from "@/components/TabsList.vue";
 import ObservationItem from "./ObservationItem.vue";
+import ObservationInput from "@/components/ObservationInput.vue";
 import BirdsList from "@/components/BirdsList.vue";
 
 const current = reactive({ month: new Date().getMonth(), sort: "bydate" });
@@ -115,13 +115,13 @@ const deleteObservation = async (id) => {
         >
           <h3 class="center">{{ allThisMonth.length }} observationer</h3>
           <ul>
-            <ObservationItem
+            <observation-item
               v-for="item in allThisMonth"
               :item="item"
               :key="item.id"
               :show_date="true"
               @delete="deleteObservation"
-            ></ObservationItem>
+            ></observation-item>
           </ul>
         </section>
 
@@ -132,11 +132,11 @@ const deleteObservation = async (id) => {
         >
           <h3 class="center">{{ uniqueThisMonth.length }} olika arter</h3>
           <ol>
-            <ObservationItem
+            <observation-item
               v-for="(item, index) in uniqueThisMonth"
               :item="item"
               :key="index"
-            ></ObservationItem>
+            ></observation-item>
           </ol>
         </section>
 
@@ -148,19 +148,19 @@ const deleteObservation = async (id) => {
       <template v-slot:tabPanel-2>
         <h2 class="subtitle center">I alfabetisk ordning</h2>
         <ol>
-          <ObservationItem
+          <observation-item
             v-for="item in data.observations"
             :item="item"
             :key="item.id"
             @delete="deleteObservation"
-          ></ObservationItem>
+          ></observation-item>
         </ol>
       </template>
     </tabs-list>
   </div>
   <div class="footer">
-    <AddObservation @add="addObservation" />
-    <BirdsList />
+    <observation-input @add="addObservation" />
+    <birds-list />
   </div>
 </template>
 
