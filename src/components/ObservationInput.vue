@@ -17,13 +17,14 @@ const emit = defineEmits(["add"]);
 
 <style scoped>
 .add {
-  padding: 1rem;
+  padding: 1rem 1rem 0.5rem;
 }
 
 input {
   width: 100%;
-  padding: 0.3em;
+  padding: 0.5rem;
   border: 1px solid var(--color-border);
+  border-radius: 2px;
   box-sizing: border-box;
   background: none;
   font-size: 1.2rem;
@@ -31,6 +32,6 @@ input {
 }
 
 input::placeholder {
-  color: var(--color-text);
+  color: var(--color-text-dim);
 }
 </style>
