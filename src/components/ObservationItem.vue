@@ -7,10 +7,10 @@ defineProps(["item", "show_date"]);
 const showDeleteButton = ref(false);
 
 const formatDate = (date) =>
-  new Intl.DateTimeFormat({
+  new Intl.DateTimeFormat(false, {
     weekday: "long",
     day: "numeric",
-    month: "long",
+    month: "short",
   }).format(date);
 </script>
 
@@ -20,8 +20,8 @@ const formatDate = (date) =>
     :class="showDeleteButton && 'is-active'"
   >
     <span class="obs">
-      <span class="date" v-if="show_date">{{ formatDate(item.date) }}</span>
       <span class="name">✔️ {{ item.name || item }}</span>
+      <span class="date" v-if="show_date">{{ formatDate(item.date) }}</span>
     </span>
     <button
       type="button"
