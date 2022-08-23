@@ -34,10 +34,6 @@
     overflow: auto;
 }
 
-.body.keyboard-visible {
-    max-height: 35svh;
-}
-
 .footer {
     grid-area: footer;
 }

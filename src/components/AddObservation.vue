@@ -1,21 +1,5 @@
 <script setup>
-const emit = defineEmits(["change"]);
-
-function shrinkViewport() {
-  document.querySelector("#app").style.height = "auto";
-  document.querySelector(".body").classList.add("keyboard-visible");
-  setTimeout(function () {
-    window.scrollTo(0, 0);
-    document
-      .querySelector(".body")
-      .scrollTo(0, document.querySelector(".body").scrollHeight);
-  }, 600);
-}
-
-function resetViewport() {
-  document.querySelector("#app").style.height = "";
-  document.querySelector(".body").classList.remove("keyboard-visible");
-}
+const emit = defineEmits(["add"]);
 </script>
 
 <template>
@@ -23,8 +7,6 @@ function resetViewport() {
     <input
       type="text"
       list="birds"
-      @focus="shrinkViewport"
-      @blur="resetViewport"
       @change="emit('add', $event)"
       autocomplete="off"
       placeholder="Enter bird name…"

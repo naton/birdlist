@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 
-const emit = defineEmits(["click"]);
+const emit = defineEmits(["delete"]);
 defineProps(["item", "show_date"]);
 
 const showDeleteButton = ref(false);
@@ -23,13 +23,7 @@ const formatDate = (date) =>
       <span class="name">✔️ {{ item.name || item }}</span>
       <span class="date" v-if="show_date">{{ formatDate(item.date) }}</span>
     </span>
-    <button
-      type="button"
-      @click.prevent="emit('delete', item.id)"
-      v-if="$attrs.onDelete"
-    >
-      x
-    </button>
+    <button type="button" @click.prevent="emit('delete', item.id)">x</button>
   </li>
 </template>
 
