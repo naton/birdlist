@@ -1,10 +1,6 @@
 <script setup>
-import { ref } from "vue";
-
-const emit = defineEmits(["delete"]);
-defineProps(["item", "show_date"]);
-
-const showDeleteButton = ref(false);
+const emit = defineEmits(["delete", "select"]);
+defineProps(["item", "show_date", "selected_id"]);
 
 const formatDate = (date) =>
   new Intl.DateTimeFormat(false, {
@@ -16,8 +12,8 @@ const formatDate = (date) =>
 
 <template>
   <li
-    @click="showDeleteButton = !showDeleteButton"
-    :class="showDeleteButton && 'is-active'"
+    @click.prevent="emit('select', item.id)"
+    :class="selected_id == (typeof item === 'object' && item.id) && 'is-active'"
   >
     <span class="obs">
       <span class="name">✔️ {{ item.name || item }}</span>
