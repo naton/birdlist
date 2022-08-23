@@ -37,7 +37,6 @@ const activeTab = ref(1);
   list-style: none;
   overflow: auto;
   white-space: nowrap;
-  width: 100vw;
   padding: 0;
   overscroll-behavior: none;
   background: var(--color-background-dim);
