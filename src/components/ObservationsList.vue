@@ -7,7 +7,11 @@ import ObservationItem from "./ObservationItem.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
 import BirdsList from "@/components/BirdsList.vue";
 
-const current = reactive({ month: new Date().getMonth(), sort: "bydate" });
+const current = reactive({
+  month: new Date().getMonth(),
+  sort: "bydate",
+  observation: null,
+});
 const data = reactive({ observations: [], observationsError: null });
 const queryRefs = toRefs(data);
 const subscription = liveQuery(() => db.observations.toArray()).subscribe(
@@ -72,6 +76,10 @@ const addObservation = async (ev) => {
   }
 };
 
+const selectObservation = (id) => {
+  current.observation = current.observation == id ? null : id;
+};
+
 const deleteObservation = async (id) => {
   db.observations.delete(id);
 };
@@ -82,29 +90,29 @@ const deleteObservation = async (id) => {
     <tabs-list :tabList="tabList">
       <template v-slot:tabPanel-1>
         <div class="month-nav">
-          <button @click="current.month--">«</button>
+          <button @click.prevent="current.month--">«</button>
           <h2 class="subtitle center">
             {{ activeMonth }}
           </h2>
-          <button @click="current.month++">»</button>
+          <button @click.prevent="current.month++">»</button>
         </div>
 
         <nav class="nav" v-if="allThisMonth.length">
           <a
             href="#bydate"
             @click.prevent="current.sort = 'bydate'"
-            :style="{
-              fontWeight: current.sort == 'bydate' ? 'bold' : 'normal',
+            :class="{
+              current: current.sort == 'bydate',
             }"
-            >Datum</a
+            >Observationer</a
           >
           <a
             href="#byname"
             @click.prevent="current.sort = 'byname'"
-            :style="{
-              fontWeight: current.sort == 'byname' ? 'bold' : 'normal',
+            :class="{
+              current: current.sort == 'byname',
             }"
-            >Namn</a
+            >Arter</a
           >
         </nav>
 
@@ -120,6 +128,8 @@ const deleteObservation = async (id) => {
               :item="item"
               :key="item.id"
               :show_date="true"
+              :selected_id="current.observation"
+              @select="selectObservation"
               @delete="deleteObservation"
             ></observation-item>
           </ul>
@@ -133,9 +143,9 @@ const deleteObservation = async (id) => {
           <h3 class="center">{{ uniqueThisMonth.length }} olika arter</h3>
           <ol>
             <observation-item
-              v-for="(item, index) in uniqueThisMonth"
+              v-for="item in uniqueThisMonth"
               :item="item"
-              :key="index"
+              :key="item"
             ></observation-item>
           </ol>
         </section>
@@ -147,11 +157,15 @@ const deleteObservation = async (id) => {
 
       <template v-slot:tabPanel-2>
         <h2 class="subtitle center">I alfabetisk ordning</h2>
+        <h3 class="center">{{ data.observations.length }} observationer</h3>
         <ol>
           <observation-item
             v-for="item in data.observations"
             :item="item"
             :key="item.id"
+            :show_date="true"
+            :selected_id="current.observation"
+            @select="selectObservation"
             @delete="deleteObservation"
           ></observation-item>
         </ol>
