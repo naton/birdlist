@@ -7,9 +7,9 @@ import TabsList from "@/components/TabsList.vue";
 import ObservationItem from "./ObservationItem.vue";
 import BirdsList from "@/components/BirdsList.vue";
 
-const currentDate = reactive({ month: new Date().getMonth() });
-const allObservations = reactive({ observations: [], observationsError: null });
-const queryRefs = toRefs(allObservations);
+const current = reactive({ month: new Date().getMonth(), sort: "bydate" });
+const data = reactive({ observations: [], observationsError: null });
+const queryRefs = toRefs(data);
 const subscription = liveQuery(() => db.observations.toArray()).subscribe(
   (observations) => {
     // Success result:
@@ -27,10 +27,10 @@ onUnmounted(() => {
 });
 
 const allThisMonth = computed(() => {
-  return allObservations.observations.filter(
+  return data.observations.filter(
     (obs) =>
       obs.date.getFullYear() == new Date().getFullYear() &&
-      obs.date.getMonth() == currentDate.month
+      obs.date.getMonth() == current.month
   );
 });
 
@@ -39,7 +39,7 @@ const uniqueThisMonth = computed(() =>
 );
 
 const activeMonth = computed(() => {
-  const date = new Date().setMonth(currentDate.month);
+  const date = new Date().setMonth(current.month);
   return new Intl.DateTimeFormat("sv", {
     year: "numeric",
     month: "long",
@@ -61,7 +61,9 @@ const addObservation = async (ev) => {
       date: new Date(),
     });
 
-    ev.target.value = ""; // reset form field value
+    // Reset form field value
+    ev.target.value = "";
+    // Make sure new value is instantly visible in viewport
     setTimeout(() => {
       scrollToBottom(".body");
     }, 100);
@@ -80,11 +82,11 @@ const deleteObservation = async (id) => {
     <tabs-list :tabList="tabList">
       <template v-slot:tabPanel-1>
         <div class="month-nav">
-          <button @click="currentDate.month--">«</button>
+          <button @click="current.month--">«</button>
           <h2>
             {{ activeMonth }}
           </h2>
-          <button @click="currentDate.month++">»</button>
+          <button @click="current.month++">»</button>
         </div>
         <ul>
           <ObservationItem
@@ -111,7 +113,7 @@ const deleteObservation = async (id) => {
       <template v-slot:tabPanel-2>
         <ol>
           <ObservationItem
-            v-for="item in allObservations.observations"
+            v-for="item in data.observations"
             :item="item"
             :key="item.id"
             @delete="deleteObservation"
