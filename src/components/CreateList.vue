@@ -5,7 +5,7 @@ import { db } from "../db";
 const emit = defineEmits(["activate"]);
 
 const showCreateListDialog = ref(false);
-const listName = ref("");
+const title = ref("");
 
 function openModal() {
   showCreateListDialog.value = true;
@@ -18,9 +18,9 @@ function closeModal() {
   showCreateListDialog.value = false;
 }
 
-async function createList(listName) {
-  let id = await db.lists.add({ title: listName });
-  emit("activate", id);
+async function createList(title) {
+  let id = await db.lists.add({ title: title });
+  emit("activate", id, title);
   closeModal();
 }
 </script>
@@ -31,12 +31,12 @@ async function createList(listName) {
     <dialog :open="showCreateListDialog">
       <input
         type="text"
-        v-model="listName"
-        @keyup.enter="createList(listName)"
+        v-model="title"
+        @keyup.enter="createList(title)"
         placeholder="Enter list name…"
       />
       <div>
-        <button class="create" @click.prevent="createList(listName)">
+        <button class="create" @click.prevent="createList(title)">
           Skapa lista
         </button>
         <button class="cancel" @click.prevent="closeModal">Avbryt</button>
