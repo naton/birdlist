@@ -57,7 +57,7 @@ function emitActiveTab(id) {
         />
         <label :for="`tab-${id}`" v-text="title" />
       </li>
-      <create-list />
+      <create-list @activate="emitActiveTab" />
     </ul>
   </nav>
 
