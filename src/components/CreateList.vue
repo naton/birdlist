@@ -19,9 +19,9 @@ function closeModal() {
 }
 
 async function createList(listName) {
-  const id = await db.lists.add({ title: listName });
-  showCreateListDialog.value = !showCreateListDialog.value;
+  let id = await db.lists.add({ title: listName });
   emit("activate", id);
+  closeModal();
 }
 </script>
 
@@ -29,7 +29,12 @@ async function createList(listName) {
   <li class="c-tabs__tab">
     <button class="add" @click.prevent="openModal">Skapa ny lista…</button>
     <dialog :open="showCreateListDialog">
-      <input type="text" v-model="listName" placeholder="Enter list name…" />
+      <input
+        type="text"
+        v-model="listName"
+        @keyup.enter="createList(listName)"
+        placeholder="Enter list name…"
+      />
       <div>
         <button class="create" @click.prevent="createList(listName)">
           Skapa lista
