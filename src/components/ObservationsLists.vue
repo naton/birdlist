@@ -235,6 +235,7 @@ onUnmounted(() => {
                   <button
                     class="share"
                     @click.stop="shareBirdList(currentListId, currentListName)"
+                    v-if="listObservations.length"
                   >
                     Dela
                   </button>
