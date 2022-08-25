@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import CreateList from "@/components/CreateList.vue";
 
 defineProps(["tabList"]);
 const activeTab = ref(1);
@@ -25,6 +26,7 @@ const activeTab = ref(1);
         <label :for="`tab-${index}`" v-text="tab" />
       </li>
     </ul>
+    <create-list />
   </nav>
   <template v-for="(tab, index) in tabList">
     <div class="body-content" :key="index" v-if="index + 1 === activeTab">
