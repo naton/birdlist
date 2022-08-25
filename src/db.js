@@ -10,7 +10,7 @@ db.version(3).stores({
   // (Note: these tables need to be named exactly like in this sample,
   // and will correspond to server-side access control of Dexie Cloud)
   realms: "@realmId",
-  members: "@id,[realmId+email]",
+  members: "@id, [realmId+email]",
   roles: "[realmId+name]",
 });
 

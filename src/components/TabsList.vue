@@ -25,8 +25,8 @@ const activeTab = ref(1);
         />
         <label :for="`tab-${id}`" v-text="title" />
       </li>
+      <create-list />
     </ul>
-    <create-list />
   </nav>
   <template v-for="{ id } in tabList">
     <div class="body-content" :key="id" v-if="id === activeTab">
@@ -50,12 +50,12 @@ const activeTab = ref(1);
 
 .c-tabs {
   display: flex;
+  align-items: center;
   list-style: none;
   overflow: auto;
   white-space: nowrap;
   padding: 0;
   overscroll-behavior: none;
-  flex: 3;
 }
 
 .c-tabs__tab label {
