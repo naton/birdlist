@@ -2,35 +2,39 @@
 import { ref } from "vue";
 import { db } from "../db";
 
+const emit = defineEmits(["activate"]);
+
 const showCreateListDialog = ref(false);
 const listName = ref("");
 
-const createList = async (listName) => {
+function openModal() {
+  showCreateListDialog.value = true;
+  setTimeout(() => {
+    document.querySelector("dialog input").focus();
+  }, 100);
+}
+
+function closeModal() {
+  showCreateListDialog.value = false;
+}
+
+async function createList(listName) {
   const id = await db.lists.add({ title: listName });
-  return id;
-};
+  showCreateListDialog.value = !showCreateListDialog.value;
+  emit("activate", id);
+}
 </script>
 
 <template>
   <li class="c-tabs__tab">
-    <button
-      class="add"
-      @click.prevent="showCreateListDialog = !showCreateListDialog"
-    >
-      Skapa ny lista…
-    </button>
+    <button class="add" @click.prevent="openModal">Skapa ny lista…</button>
     <dialog :open="showCreateListDialog">
-      <input type="text" v-model="listName" />
+      <input type="text" v-model="listName" placeholder="Enter list name…" />
       <div>
         <button class="create" @click.prevent="createList(listName)">
           Skapa lista
         </button>
-        <button
-          class="cancel"
-          @click.prevent="showCreateListDialog = !showCreateListDialog"
-        >
-          Avbryt
-        </button>
+        <button class="cancel" @click.prevent="closeModal">Avbryt</button>
       </div>
     </dialog>
   </li>

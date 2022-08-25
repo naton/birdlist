@@ -85,3 +85,17 @@ button {
     background: var(--color-text);
     font-size: 1rem;
 }
+
+/* Headings */
+.center {
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+  
+.subtitle {
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.3ex;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}

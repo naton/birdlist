@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { liveQuery } from "dexie";
 import { db } from "../db";
 import TabsList from "@/components/TabsList.vue";
@@ -9,10 +9,14 @@ import BirdsList from "@/components/BirdsList.vue";
 
 let currentMonth = ref(new Date().getMonth());
 let currentSort = ref("bydate");
+let currentTab = ref("monthly");
 let currentObservation = ref(0);
 let allObservations = ref([]);
+let tabList = ref([]);
 
-const subscription = liveQuery(() => db.observations.toArray()).subscribe(
+const observationsSubscription = liveQuery(() =>
+  db.observations.toArray()
+).subscribe(
   (observations) => {
     // Success result:
     allObservations.value = observations;
@@ -23,7 +27,18 @@ const subscription = liveQuery(() => db.observations.toArray()).subscribe(
   }
 );
 
-const activeMonth = computed(() => {
+const listsSubscription = liveQuery(() => db.lists.toArray()).subscribe(
+  (lists) => {
+    // Success result:
+    tabList.value = lists;
+  },
+  (error) => {
+    // Error result:
+    console.log(error);
+  }
+);
+
+const currentMonthFormatted = computed(() => {
   const date = new Date().setMonth(currentMonth.value);
   return new Intl.DateTimeFormat("sv", {
     year: "numeric",
@@ -39,15 +54,28 @@ const allThisMonth = computed(() => {
   );
 });
 
+const listObservations = computed(() => {
+  return allObservations.value.filter((obs) => obs.listId == currentTab.value);
+});
+
 function scrollToBottom(el) {
   document
     .querySelector(el)
     .scrollTo(0, document.querySelector(el).scrollHeight + 40);
 }
 
-async function addObservation(ev) {
+function sortBy(val) {
+  return (currentSort.value = val);
+}
+
+async function addObservation(ev, activeTab) {
   try {
     await db.observations.add({
+      listId:
+        activeTab == "monthly" || activeTab == "everything"
+          ? undefined
+          : activeTab, // Any ID other than defaults are valid here
+      realmId: "anton@andreasson.org", // TODO: Make this dynamic
       name: ev.target.value,
       date: new Date(),
     });
@@ -64,85 +92,108 @@ async function addObservation(ev) {
 }
 
 function selectObservation(id) {
-  return (currentObservation.value =
-    currentObservation.value == id ? null : id);
+  currentObservation.value = currentObservation.value == id ? 0 : id;
 }
 
 async function deleteObservation(id) {
   db.observations.delete(id);
 }
 
-function sortBy(val) {
-  console.log("sort", val);
-  return (currentSort.value = val);
+function setTab(id) {
+  currentTab.value = id;
 }
 
-const tabList = ["Månadskryss", "Alla kryss"];
+function getSlotName(tab) {
+  return `tabPanel-${tab}`;
+}
+
+onMounted(() => {
+  setTab("monthly");
+});
 
 onUnmounted(() => {
-  subscription.unsubscribe();
+  observationsSubscription.unsubscribe();
+  listsSubscription.unsubscribe();
 });
 </script>
 
 <template>
   <div class="body">
-    <tabs-list :tabList="tabList">
-      <template v-slot:tabPanel-1>
-        <this-list
-          :observations="allThisMonth"
-          :month="currentMonth.value"
-          :sort="currentSort"
-          :selected="currentObservation"
-          @sort="sortBy"
-          @select="selectObservation"
-          @delete="deleteObservation"
-        >
-          <template v-slot:header>
-            <div class="month-nav">
-              <button @click.prevent="currentMonth--">«</button>
-              <h2 class="subtitle center">
-                {{ activeMonth }}
-              </h2>
-              <button @click.prevent="currentMonth++">»</button>
-            </div>
-          </template>
-        </this-list>
-      </template>
+    <tabs-list :tabList="tabList" :tab="currentTab" @activate="setTab">
+      <template v-slot:[getSlotName(currentTab)]>
+        <div class="body-content">
+          <this-list
+            v-if="currentTab === 'monthly'"
+            :observations="allThisMonth"
+            :sort="currentSort"
+            :selected="currentObservation"
+            @sort="sortBy"
+            @select="selectObservation"
+            @delete="deleteObservation"
+          >
+            <template v-slot:header>
+              <div class="month-nav">
+                <button @click.prevent="currentMonth--">«</button>
+                <h2 class="subtitle center">
+                  {{ currentMonthFormatted }}
+                </h2>
+                <button @click.prevent="currentMonth++">»</button>
+              </div>
+            </template>
+          </this-list>
 
-      <template v-slot:tabPanel-2>
-        <this-list
-          :observations="allObservations"
-          :selected="currentObservation"
-          :sort="currentSort"
-          @sort="sortBy"
-          @select="selectObservation"
-          @delete="deleteObservation"
-        >
-          <template v-slot:header>
-            <div>
-              <h2 class="subtitle center">Alla kryss</h2>
-            </div>
-          </template>
-        </this-list>
+          <this-list
+            v-else-if="currentTab === 'everything'"
+            :observations="allObservations"
+            :selected="currentObservation"
+            :sort="currentSort"
+            @sort="sortBy"
+            @select="selectObservation"
+            @delete="deleteObservation"
+          >
+            <template v-slot:header>
+              <div>
+                <h2 class="subtitle center">Alla kryss</h2>
+              </div>
+            </template>
+          </this-list>
+
+          <this-list
+            v-else
+            :observations="listObservations"
+            :selected="currentObservation"
+            :sort="currentSort"
+            @sort="sortBy"
+            @select="selectObservation"
+            @delete="deleteObservation"
+          >
+            <template v-slot:header>
+              <div>
+                <h2 class="subtitle center">Egen lista</h2>
+              </div>
+            </template>
+          </this-list>
+        </div>
       </template>
     </tabs-list>
   </div>
   <div class="footer">
-    <observation-input @add="addObservation" />
+    <observation-input @add="addObservation" :tab="currentTab" />
     <birds-list />
   </div>
 </template>
 
 <style>
-.center {
-  text-align: center;
+.body-nav {
+  grid-area: body-nav;
+  display: flex;
+  max-width: 100vw;
+  overflow: hidden;
+  background: var(--color-background-dim);
 }
 
-.subtitle {
-  color: var(--color-text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.3ex;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
+.body-content {
+  grid-area: body-content;
+  overflow: auto;
 }
 </style>

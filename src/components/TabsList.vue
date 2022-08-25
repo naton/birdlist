@@ -1,26 +1,58 @@
 <script setup>
-import { ref } from "vue";
 import CreateList from "@/components/CreateList.vue";
+const props = defineProps(["tab", "tabList"]);
 
-defineProps(["tabList"]);
-const activeTab = ref(1);
+const emit = defineEmits(["activate"]);
+
+function emitActiveTab(id) {
+  emit("activate", id);
+}
 </script>
 
 <template>
   <nav class="body-nav">
     <ul class="c-tabs">
       <li
+        class="c-tabs__tab"
+        :class="{ 'c-tabs__tab--active': 'monthly' === props.tab }"
+      >
+        <input
+          type="radio"
+          name="tabs"
+          id="tab-monthly"
+          value="monthly"
+          @change="emitActiveTab('monthly')"
+          hidden
+        />
+        <label for="tab-monthly">Månadskryss</label>
+      </li>
+      <li
+        class="c-tabs__tab"
+        :class="{ 'c-tabs__tab--active': 'everything' === props.tab }"
+      >
+        <input
+          type="radio"
+          name="tabs"
+          id="tab-everything"
+          value="everything"
+          @change="emitActiveTab('everything')"
+          hidden
+        />
+        <label for="tab-everything">Alla kryss</label>
+      </li>
+      <li
         v-for="{ id, title } in tabList"
         :key="id"
         class="c-tabs__tab"
-        :class="{ 'c-tabs__tab--active': id === activeTab }"
+        :class="{ 'c-tabs__tab--active': id === props.tab }"
       >
         <input
           type="radio"
           name="tabs"
           :id="`tab-${id}`"
           :value="id"
-          v-model="activeTab"
+          :checked="id === props.tab"
+          @change="emitActiveTab(id)"
           hidden
         />
         <label :for="`tab-${id}`" v-text="title" />
@@ -28,26 +60,21 @@ const activeTab = ref(1);
       <create-list />
     </ul>
   </nav>
-  <template v-for="{ id } in tabList">
-    <div class="body-content" :key="id" v-if="id === activeTab">
-      <slot :name="`tabPanel-${id}`" />
-    </div>
+
+  <template v-if="'monthly' === props.tab">
+    <slot name="tabPanel-monthly" />
+  </template>
+
+  <template v-else-if="'everything' === props.tab">
+    <slot name="tabPanel-everything" />
+  </template>
+
+  <template v-else v-for="{ id } in tabList" :key="id">
+    <slot :name="`tabPanel-${id}`" />
   </template>
 </template>
 
 <style>
-.body-nav {
-  grid-area: body-nav;
-  display: flex;
-  max-width: 100vw;
-  overflow: hidden;
-  background: var(--color-background-dim);
-}
-
-.body-content {
-  grid-area: body-content;
-}
-
 .c-tabs {
   display: flex;
   align-items: center;
