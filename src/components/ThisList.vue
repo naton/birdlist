@@ -75,7 +75,7 @@ function emitDelete(id) {
       </ol>
     </section>
 
-    <section class="empty-list" v-else>
+    <section class="empty-list" v-if="!observations.length">
       <h3 class="center">Inga observationer</h3>
     </section>
   </slot>

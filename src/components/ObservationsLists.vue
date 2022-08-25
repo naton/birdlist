@@ -7,12 +7,16 @@ import ThisList from "@/components/ThisList.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
 import BirdsData from "@/components/BirdsData.vue";
 
+defineProps(["title"]);
+
 let currentMonth = ref(new Date().getMonth());
 let currentSort = ref("bydate");
 let currentTab = ref("monthly");
+let currentListName = ref("");
 let currentObservation = ref(0);
 let allObservations = ref([]);
 let tabList = ref([]);
+let isListSelected = ref(false);
 
 const observationsSubscription = liveQuery(() =>
   db.observations.toArray()
@@ -117,8 +121,9 @@ async function deleteList(id) {
   }
 }
 
-function setTab(id) {
+function setTab(id, title) {
   currentTab.value = id;
+  currentListName.value = title;
 }
 
 function getSlotName(tab) {
@@ -170,7 +175,7 @@ onUnmounted(() => {
             @delete="deleteObservation"
           >
             <template v-slot:header>
-              <div>
+              <div class="list-header">
                 <h2 class="subtitle center">Alla kryss</h2>
               </div>
             </template>
@@ -186,8 +191,12 @@ onUnmounted(() => {
             @delete="deleteObservation"
           >
             <template v-slot:header>
-              <div>
-                <h2 class="subtitle center">Egen lista</h2>
+              <div
+                class="list-header"
+                :class="isListSelected && 'is-active'"
+                @click="isListSelected = !isListSelected"
+              >
+                <h2 class="subtitle">{{ currentListName || "Egen lista" }}</h2>
                 <button @click.prevent="deleteList(currentTab)">x</button>
               </div>
             </template>
@@ -214,5 +223,43 @@ onUnmounted(() => {
 .body-content {
   grid-area: body-content;
   overflow: auto;
+}
+
+.list-header {
+  overflow: hidden;
+}
+
+.is-active.list-header {
+  position: relative;
+}
+
+.list-header .subtitle {
+  display: flex;
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 1rem;
+  background: var(--color-background);
+  transition: 0.1s transform ease-out;
+}
+
+.is-active.list-header .subtitle {
+  background: var(--color-background-dim);
+  transform: translateX(-3rem);
+}
+
+.list-header button {
+  position: absolute;
+  right: 0;
+  top: 0.5rem;
+  z-index: -1;
+  transform: translateX(3rem);
+  transition: 0.1s transform ease-out;
+  z-index: 0;
+}
+
+.is-active.list-header button {
+  transform: translateX(0);
 }
 </style>

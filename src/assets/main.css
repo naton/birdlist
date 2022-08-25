@@ -90,12 +90,13 @@ button {
 .center {
     margin-bottom: 0.5rem;
     text-align: center;
+    justify-content: center;
 }
   
 .subtitle {
     color: var(--color-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.3ex;
-    margin-top: 1rem;
+    margin-top: 0.75rem;
     margin-bottom: 0.5rem;
 }
