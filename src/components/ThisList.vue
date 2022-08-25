@@ -9,8 +9,16 @@ const species = computed(() =>
   [...new Set(props.observations.map((item) => item.name))].sort()
 );
 
-function sortList(value) {
+function emitSort(value) {
   emit("sort", value);
+}
+
+function emitSelect(id) {
+  emit("select", id);
+}
+
+function emitDelete(id) {
+  emit("delete", id);
 }
 </script>
 
@@ -21,7 +29,7 @@ function sortList(value) {
     <nav class="nav" v-if="observations.length">
       <a
         href="#bydate"
-        @click.prevent="sortList('bydate')"
+        @click.prevent="emitSort('bydate')"
         :class="{
           current: sort == 'bydate',
         }"
@@ -29,7 +37,7 @@ function sortList(value) {
       >
       <a
         href="#byname"
-        @click.prevent="sortList('byname')"
+        @click.prevent="emitSort('byname')"
         :class="{
           current: sort == 'byname',
         }"
@@ -50,8 +58,8 @@ function sortList(value) {
           :key="item.id"
           :show_date="true"
           :selected_id="props.selected"
-          @select="emit('select')"
-          @delete="emit('delete')"
+          @select="emitSelect(item.id)"
+          @delete="emitDelete(item.id)"
         ></observation-item>
       </ul>
     </section>
@@ -78,7 +86,6 @@ function sortList(value) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 0.75rem;
 }
 
 .empty-list {

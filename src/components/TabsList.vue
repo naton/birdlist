@@ -10,27 +10,27 @@ const activeTab = ref(1);
   <nav class="body-nav">
     <ul class="c-tabs">
       <li
-        v-for="(tab, index) in tabList"
-        :key="index"
+        v-for="{ id, title } in tabList"
+        :key="id"
         class="c-tabs__tab"
-        :class="{ 'c-tabs__tab--active': index + 1 === activeTab }"
+        :class="{ 'c-tabs__tab--active': id === activeTab }"
       >
         <input
           type="radio"
           name="tabs"
-          :id="`tab-${index}`"
-          :value="index + 1"
+          :id="`tab-${id}`"
+          :value="id"
           v-model="activeTab"
           hidden
         />
-        <label :for="`tab-${index}`" v-text="tab" />
+        <label :for="`tab-${id}`" v-text="title" />
       </li>
     </ul>
     <create-list />
   </nav>
-  <template v-for="(tab, index) in tabList">
-    <div class="body-content" :key="index" v-if="index + 1 === activeTab">
-      <slot :name="`tabPanel-${index + 1}`" />
+  <template v-for="{ id } in tabList">
+    <div class="body-content" :key="id" v-if="id === activeTab">
+      <slot :name="`tabPanel-${id}`" />
     </div>
   </template>
 </template>
