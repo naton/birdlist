@@ -1,7 +1,7 @@
 <script setup>
-import ObservationsList from "@/components/ObservationsList.vue";
+import ObservationsLists from "@/components/ObservationsLists.vue";
 </script>
 
 <template>
-  <ObservationsList />
+  <ObservationsLists />
 </template>

@@ -5,7 +5,7 @@ import { db } from "../db";
 import TabsList from "@/components/TabsList.vue";
 import ThisList from "@/components/ThisList.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
-import BirdsList from "@/components/BirdsList.vue";
+import BirdsData from "@/components/BirdsData.vue";
 
 let currentMonth = ref(new Date().getMonth());
 let currentSort = ref("bydate");
@@ -179,7 +179,7 @@ onUnmounted(() => {
   </div>
   <div class="footer">
     <observation-input @add="addObservation" :tab="currentTab" />
-    <birds-list />
+    <birds-data />
   </div>
 </template>
 
