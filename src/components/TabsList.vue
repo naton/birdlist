@@ -4,8 +4,8 @@ const props = defineProps(["tab", "tabList"]);
 
 const emit = defineEmits(["activate"]);
 
-function emitActiveTab(id) {
-  emit("activate", id);
+function emitActiveTab(id, title) {
+  emit("activate", id, title);
 }
 </script>
 
@@ -52,7 +52,7 @@ function emitActiveTab(id) {
           :id="`tab-${id}`"
           :value="id"
           :checked="id === props.tab"
-          @change="emitActiveTab(id)"
+          @change="emitActiveTab(id, title)"
           hidden
         />
         <label :for="`tab-${id}`" v-text="title" />
@@ -69,8 +69,8 @@ function emitActiveTab(id) {
     <slot name="tabPanel-everything" />
   </template>
 
-  <template v-else v-for="{ id } in tabList" :key="id">
-    <slot :name="`tabPanel-${id}`" />
+  <template v-else v-for="{ id, title } in tabList" :key="id">
+    <slot :name="`tabPanel-${id}`" :title="title" />
   </template>
 </template>
 
