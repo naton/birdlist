@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { liveQuery } from "dexie";
+import { getTiedRealmId } from "dexie-cloud-addon";
 import { db } from "../db";
 import TabsList from "@/components/TabsList.vue";
 import ThisList from "@/components/ThisList.vue";
@@ -11,37 +12,35 @@ defineProps(["title"]);
 
 let currentMonth = ref(new Date().getMonth());
 let currentSort = ref("bydate");
-let currentTab = ref("monthly");
+let currentListId = ref("monthly");
 let currentListName = ref("");
 let currentObservation = ref(0);
 let allObservations = ref([]);
 let tabList = ref([]);
 let isListSelected = ref(false);
 
+/* DB subscriptions */
 const observationsSubscription = liveQuery(() =>
   db.observations.toArray()
 ).subscribe(
   (observations) => {
-    // Success result:
     allObservations.value = observations;
   },
   (error) => {
-    // Error result:
     console.log(error);
   }
 );
 
 const listsSubscription = liveQuery(() => db.lists.toArray()).subscribe(
   (lists) => {
-    // Success result:
     tabList.value = lists;
   },
   (error) => {
-    // Error result:
     console.log(error);
   }
 );
 
+/* Lists */
 const currentMonthFormatted = computed(() => {
   const date = new Date().setMonth(currentMonth.value);
   return new Intl.DateTimeFormat("sv", {
@@ -59,9 +58,12 @@ const allThisMonth = computed(() => {
 });
 
 const listObservations = computed(() => {
-  return allObservations.value.filter((obs) => obs.listId == currentTab.value);
+  return allObservations.value.filter(
+    (obs) => obs.listId == currentListId.value
+  );
 });
 
+/* Methods */
 function scrollToBottom(el) {
   document
     .querySelector(el)
@@ -72,6 +74,7 @@ function sortBy(val) {
   return (currentSort.value = val);
 }
 
+/* Observations */
 async function addObservation(ev, activeTab) {
   try {
     await db.observations.add({
@@ -103,6 +106,7 @@ async function deleteObservation(id) {
   db.observations.delete(id);
 }
 
+/* Custom lists */
 async function deleteList(id) {
   if (
     confirm(
@@ -121,8 +125,39 @@ async function deleteList(id) {
   }
 }
 
+function shareBirdList(list) {
+  let email = prompt(
+    "Ange e-postadressen till personen du vill dela denna lista med:"
+  );
+
+  if (email) {
+    return db.transaction("rw", [db.lists, db.realms, db.members], () => {
+      // Add or update a realm, tied to the todo-list using getTiedRealmId():
+      const realmId = getTiedRealmId(list.id);
+      db.realms.put({
+        realmId,
+        name: list.title,
+        represents: "a bird list",
+      });
+
+      // Move todo-list into the realm (if not already there):
+      db.lists.update(list.id, { realmId });
+
+      // Add the members to share it to:
+      db.members.add({
+        realmId,
+        email: email,
+        invite: true, // Generates invite email on server on sync
+        permissions: {
+          manage: "*", // Give your friend full permissions within this new realm.
+        },
+      });
+    });
+  }
+}
+
 function setTab(id, title) {
-  currentTab.value = id;
+  currentListId.value = id;
   currentListName.value = title;
 }
 
@@ -142,11 +177,11 @@ onUnmounted(() => {
 
 <template>
   <div class="body">
-    <tabs-list :tabList="tabList" :tab="currentTab" @activate="setTab">
-      <template v-slot:[getSlotName(currentTab)]>
+    <tabs-list :tabList="tabList" :tab="currentListId" @activate="setTab">
+      <template v-slot:[getSlotName(currentListId)]>
         <div class="body-content">
           <this-list
-            v-if="currentTab === 'monthly'"
+            v-if="currentListId === 'monthly'"
             :observations="allThisMonth"
             :sort="currentSort"
             :selected="currentObservation"
@@ -166,7 +201,7 @@ onUnmounted(() => {
           </this-list>
 
           <this-list
-            v-else-if="currentTab === 'everything'"
+            v-else-if="currentListId === 'everything'"
             :observations="allObservations"
             :selected="currentObservation"
             :sort="currentSort"
@@ -196,8 +231,21 @@ onUnmounted(() => {
                 :class="isListSelected && 'is-active'"
                 @click="isListSelected = !isListSelected"
               >
-                <h2 class="subtitle">{{ currentListName || "Egen lista" }}</h2>
-                <button @click.prevent="deleteList(currentTab)">x</button>
+                <div class="subtitle">
+                  <h2>{{ currentListName }}</h2>
+                  <button
+                    class="share"
+                    @click.stop="shareBirdList(currentListId)"
+                  >
+                    Dela
+                  </button>
+                </div>
+                <button
+                  class="delete"
+                  @click.prevent="deleteList(currentListId)"
+                >
+                  x
+                </button>
               </div>
             </template>
           </this-list>
@@ -206,7 +254,7 @@ onUnmounted(() => {
     </tabs-list>
   </div>
   <div class="footer">
-    <observation-input @add="addObservation" :tab="currentTab" />
+    <observation-input @add="addObservation" :tab="currentListId" />
     <birds-data />
   </div>
 </template>
@@ -235,6 +283,7 @@ onUnmounted(() => {
 
 .list-header .subtitle {
   display: flex;
+  align-items: center;
   margin-top: 0.5rem;
   margin-bottom: 0.25rem;
   padding-top: 0.25rem;
@@ -244,22 +293,31 @@ onUnmounted(() => {
   transition: 0.1s transform ease-out;
 }
 
+.list-header .subtitle .share {
+  position: absolute;
+  right: 0;
+  margin-right: 0.5rem;
+  margin-left: 1rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
 .is-active.list-header .subtitle {
   background: var(--color-background-dim);
   transform: translateX(-3rem);
 }
 
-.list-header button {
+.list-header .delete {
   position: absolute;
+  top: 0.45rem;
   right: 0;
-  top: 0.5rem;
   z-index: -1;
   transform: translateX(3rem);
   transition: 0.1s transform ease-out;
   z-index: 0;
 }
 
-.is-active.list-header button {
+.is-active.list-header .delete {
   transform: translateX(0);
 }
 </style>
