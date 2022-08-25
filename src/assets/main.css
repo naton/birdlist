@@ -30,6 +30,14 @@
 }
 
 .body {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "body-nav"
+        "body-content";
     grid-area: body;
     overflow: auto;
 }
@@ -69,10 +77,11 @@
 
 /* Buttons */
 button {
-    width: 3rem;
+    min-width: 3rem;
     height: 3rem;
     border: none;
     border-radius: 2px;
     color: var(--color-background-dim);
     background: var(--color-text);
+    font-size: 1rem;
 }

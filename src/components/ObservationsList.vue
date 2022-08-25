@@ -1,64 +1,51 @@
 <script setup>
-import { toRefs, reactive, computed, onUnmounted } from "vue";
+import { ref, computed, onUnmounted } from "vue";
 import { liveQuery } from "dexie";
 import { db } from "../db";
 import TabsList from "@/components/TabsList.vue";
-import ObservationItem from "./ObservationItem.vue";
+import ThisList from "@/components/ThisList.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
 import BirdsList from "@/components/BirdsList.vue";
 
-const current = reactive({
-  month: new Date().getMonth(),
-  sort: "bydate",
-  observation: null,
-});
-const data = reactive({ observations: [], observationsError: null });
-const queryRefs = toRefs(data);
+let currentMonth = ref(new Date().getMonth());
+let currentSort = ref("bydate");
+let currentObservation = ref(0);
+let allObservations = ref([]);
+
 const subscription = liveQuery(() => db.observations.toArray()).subscribe(
   (observations) => {
     // Success result:
-    queryRefs.observations.value = observations;
-    queryRefs.observationsError.value = null;
+    allObservations.value = observations;
   },
   (error) => {
     // Error result:
-    queryRefs.observationsError.value = error;
+    console.log(error);
   }
 );
 
-onUnmounted(() => {
-  subscription.unsubscribe();
-});
-
-const allThisMonth = computed(() => {
-  return data.observations.filter(
-    (obs) =>
-      obs.date.getFullYear() == new Date().getFullYear() &&
-      obs.date.getMonth() == current.month
-  );
-});
-
-const uniqueThisMonth = computed(() =>
-  [...new Set(allThisMonth.value.map((item) => item.name))].sort()
-);
-
 const activeMonth = computed(() => {
-  const date = new Date().setMonth(current.month);
+  const date = new Date().setMonth(currentMonth.value);
   return new Intl.DateTimeFormat("sv", {
     year: "numeric",
     month: "long",
   }).format(date);
 });
 
-const scrollToBottom = (el) => {
+const allThisMonth = computed(() => {
+  return allObservations.value.filter(
+    (obs) =>
+      obs.date.getFullYear() == new Date().getFullYear() &&
+      obs.date.getMonth() == currentMonth.value
+  );
+});
+
+function scrollToBottom(el) {
   document
     .querySelector(el)
     .scrollTo(0, document.querySelector(el).scrollHeight + 40);
-};
+}
 
-const tabList = ["Månadskryss", "Alla observationer"];
-
-const addObservation = async (ev) => {
+async function addObservation(ev) {
   try {
     await db.observations.add({
       name: ev.target.value,
@@ -74,101 +61,69 @@ const addObservation = async (ev) => {
   } catch (error) {
     console.log("Error", error);
   }
-};
+}
 
-const selectObservation = (id) => {
-  current.observation = current.observation == id ? null : id;
-};
+function selectObservation(id) {
+  return (currentObservation.value =
+    currentObservation.value == id ? null : id);
+}
 
-const deleteObservation = async (id) => {
+async function deleteObservation(id) {
   db.observations.delete(id);
-};
+}
+
+function sortBy(val) {
+  console.log("sort", val);
+  return (currentSort.value = val);
+}
+
+const tabList = ["Månadskryss", "Alla kryss"];
+
+onUnmounted(() => {
+  subscription.unsubscribe();
+});
 </script>
 
 <template>
   <div class="body">
     <tabs-list :tabList="tabList">
       <template v-slot:tabPanel-1>
-        <div class="month-nav">
-          <button @click.prevent="current.month--">«</button>
-          <h2 class="subtitle center">
-            {{ activeMonth }}
-          </h2>
-          <button @click.prevent="current.month++">»</button>
-        </div>
-
-        <nav class="nav" v-if="allThisMonth.length">
-          <a
-            href="#bydate"
-            @click.prevent="current.sort = 'bydate'"
-            :class="{
-              current: current.sort == 'bydate',
-            }"
-            >Observationer</a
-          >
-          <a
-            href="#byname"
-            @click.prevent="current.sort = 'byname'"
-            :class="{
-              current: current.sort == 'byname',
-            }"
-            >Arter</a
-          >
-        </nav>
-
-        <section
-          id="bydate"
-          v-show="current.sort == 'bydate'"
-          v-if="allThisMonth.length"
+        <this-list
+          :observations="allThisMonth"
+          :month="currentMonth.value"
+          :sort="currentSort"
+          :selected="currentObservation"
+          @sort="sortBy"
+          @select="selectObservation"
+          @delete="deleteObservation"
         >
-          <h3 class="center">{{ allThisMonth.length }} observationer</h3>
-          <ul>
-            <observation-item
-              v-for="item in allThisMonth"
-              :item="item"
-              :key="item.id"
-              :show_date="true"
-              :selected_id="current.observation"
-              @select="selectObservation"
-              @delete="deleteObservation"
-            ></observation-item>
-          </ul>
-        </section>
-
-        <section
-          id="byname"
-          v-show="current.sort == 'byname'"
-          v-if="allThisMonth.length"
-        >
-          <h3 class="center">{{ uniqueThisMonth.length }} olika arter</h3>
-          <ol>
-            <observation-item
-              v-for="item in uniqueThisMonth"
-              :item="item"
-              :key="item"
-            ></observation-item>
-          </ol>
-        </section>
-
-        <section v-else>
-          <h3 class="center">Inga observationer denna månad</h3>
-        </section>
+          <template v-slot:header>
+            <div class="month-nav">
+              <button @click.prevent="currentMonth--">«</button>
+              <h2 class="subtitle center">
+                {{ activeMonth }}
+              </h2>
+              <button @click.prevent="currentMonth++">»</button>
+            </div>
+          </template>
+        </this-list>
       </template>
 
       <template v-slot:tabPanel-2>
-        <h2 class="subtitle center">I alfabetisk ordning</h2>
-        <h3 class="center">{{ data.observations.length }} observationer</h3>
-        <ol>
-          <observation-item
-            v-for="item in data.observations"
-            :item="item"
-            :key="item.id"
-            :show_date="true"
-            :selected_id="current.observation"
-            @select="selectObservation"
-            @delete="deleteObservation"
-          ></observation-item>
-        </ol>
+        <this-list
+          :observations="allObservations"
+          :selected="currentObservation"
+          :sort="currentSort"
+          @sort="sortBy"
+          @select="selectObservation"
+          @delete="deleteObservation"
+        >
+          <template v-slot:header>
+            <div>
+              <h2 class="subtitle center">Alla kryss</h2>
+            </div>
+          </template>
+        </this-list>
       </template>
     </tabs-list>
   </div>
@@ -178,13 +133,7 @@ const deleteObservation = async (id) => {
   </div>
 </template>
 
-<style scoped>
-ol,
-ul {
-  margin-top: 0.5rem;
-  padding: 0;
-}
-
+<style>
 .center {
   text-align: center;
 }
@@ -195,10 +144,5 @@ ul {
   letter-spacing: 0.3ex;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
-}
-.month-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 </style>
