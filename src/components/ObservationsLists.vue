@@ -75,14 +75,12 @@ function sortBy(val) {
 }
 
 /* Observations */
-async function addObservation(ev, activeTab) {
+async function addObservation(ev, listId) {
   try {
     await db.observations.add({
       listId:
-        activeTab == "monthly" || activeTab == "everything"
-          ? undefined
-          : activeTab, // Any ID other than defaults are valid here
-      realmId: "anton@andreasson.org", // TODO: Make this dynamic
+        listId == "monthly" || listId == "everything" ? undefined : listId, // Any ID other than defaults are valid here
+      realmId: getTiedRealmId(listId),
       name: ev.target.value,
       date: new Date(),
     });
@@ -125,35 +123,36 @@ async function deleteList(id) {
   }
 }
 
-function shareBirdList(list) {
+function shareBirdList(listId, listName) {
   let email = prompt(
     "Ange e-postadressen till personen du vill dela denna lista med:"
   );
 
-  if (email) {
-    return db.transaction("rw", [db.lists, db.realms, db.members], () => {
-      // Add or update a realm, tied to the todo-list using getTiedRealmId():
-      const realmId = getTiedRealmId(list.id);
-      db.realms.put({
-        realmId,
-        name: list.title,
-        represents: "a bird list",
-      });
+  if (!email) return;
 
-      // Move todo-list into the realm (if not already there):
-      db.lists.update(list.id, { realmId });
+  return db.transaction("rw", [db.lists, db.realms, db.members], () => {
+    // Add or update a realm, tied to the todo-list using getTiedRealmId():
+    const realmId = getTiedRealmId(listId);
 
-      // Add the members to share it to:
-      db.members.add({
-        realmId,
-        email: email,
-        invite: true, // Generates invite email on server on sync
-        permissions: {
-          manage: "*", // Give your friend full permissions within this new realm.
-        },
-      });
+    db.realms.put({
+      realmId,
+      name: listName,
+      represents: "a bird list",
     });
-  }
+
+    // Move todo-list into the realm (if not already there):
+    db.lists.update(listId, { realmId });
+
+    // Add the members to share it to:
+    db.members.add({
+      realmId,
+      email: email,
+      invite: true, // Generates invite email on server on sync
+      permissions: {
+        manage: "*", // Give your friend full permissions within this new realm.
+      },
+    });
+  });
 }
 
 function setTab(id, title) {
@@ -235,7 +234,7 @@ onUnmounted(() => {
                   <h2>{{ currentListName }}</h2>
                   <button
                     class="share"
-                    @click.stop="shareBirdList(currentListId)"
+                    @click.stop="shareBirdList(currentListId, currentListName)"
                   >
                     Dela
                   </button>
