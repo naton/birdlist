@@ -99,6 +99,24 @@ async function deleteObservation(id) {
   db.observations.delete(id);
 }
 
+async function deleteList(id) {
+  if (
+    confirm(
+      "Är du säker på att du vill ta bort denna lista och alla dess observationer?"
+    )
+  ) {
+    db.lists.delete(id);
+    db.observations
+      .where("listId")
+      .equalsIgnoreCase(id)
+      .delete()
+      .then(function (deleteCount) {
+        console.log("Deleted " + deleteCount + " objects");
+        setTab("monthly");
+      });
+  }
+}
+
 function setTab(id) {
   currentTab.value = id;
 }
@@ -170,6 +188,7 @@ onUnmounted(() => {
             <template v-slot:header>
               <div>
                 <h2 class="subtitle center">Egen lista</h2>
+                <button @click.prevent="deleteList(currentTab)">x</button>
               </div>
             </template>
           </this-list>
