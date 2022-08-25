@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import ObservationItem from "./ObservationItem.vue";
 
-const props = defineProps(["observations", "month", "sort", "selected"]);
+const props = defineProps(["observations", "sort", "selected"]);
 const emit = defineEmits(["sort", "select", "delete"]);
 
 const species = computed(() =>
