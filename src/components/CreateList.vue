@@ -12,26 +12,28 @@ const createList = async (listName) => {
 </script>
 
 <template>
-  <button
-    class="add"
-    @click.prevent="showCreateListDialog = !showCreateListDialog"
-  >
-    Skapa ny lista
-  </button>
-  <dialog :open="showCreateListDialog">
-    <input type="text" v-model="listName" />
-    <div>
-      <button class="create" @click.prevent="createList(listName)">
-        Skapa lista
-      </button>
-      <button
-        class="cancel"
-        @click.prevent="showCreateListDialog = !showCreateListDialog"
-      >
-        Avbryt
-      </button>
-    </div>
-  </dialog>
+  <li class="c-tabs__tab">
+    <button
+      class="add"
+      @click.prevent="showCreateListDialog = !showCreateListDialog"
+    >
+      Skapa ny lista…
+    </button>
+    <dialog :open="showCreateListDialog">
+      <input type="text" v-model="listName" />
+      <div>
+        <button class="create" @click.prevent="createList(listName)">
+          Skapa lista
+        </button>
+        <button
+          class="cancel"
+          @click.prevent="showCreateListDialog = !showCreateListDialog"
+        >
+          Avbryt
+        </button>
+      </div>
+    </dialog>
+  </li>
 </template>
 
 <style scoped>
@@ -39,9 +41,11 @@ input {
   font-size: 2rem;
 }
 .add {
-  flex: 1;
   align-self: center;
-  margin-right: 0.25rem;
+  margin-right: 0.5rem;
+  margin-left: 1rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
 }
 
 .cancel {
