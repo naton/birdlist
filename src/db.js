@@ -2,7 +2,7 @@ import Dexie from "dexie";
 import dexieCloud from "dexie-cloud-addon";
 
 export const db = new Dexie("birdlist", { addons: [dexieCloud] });
-db.version(3).stores({
+db.version(4).stores({
   // Application tables
   lists: "@id, title",
   observations: "@id, name, date, listId", // Primary key and indexed props

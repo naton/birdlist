@@ -75,25 +75,24 @@ function sortBy(val) {
 }
 
 /* Observations */
-async function addObservation(ev, listId) {
-  try {
-    await db.observations.add({
+function addObservation(ev, listId) {
+  const tiedRealmId = getTiedRealmId(listId);
+
+  return db.observations
+    .add({
       listId:
         listId == "monthly" || listId == "everything" ? undefined : listId, // Any ID other than defaults are valid here
-      realmId: getTiedRealmId(listId),
+      realmId: tiedRealmId,
       name: ev.target.value,
       date: new Date(),
+    })
+    .then(() => {
+      ev.target.value = ""; // Reset form field value
+      // Make sure new value is instantly visible in viewport
+      setTimeout(() => {
+        scrollToBottom(".body");
+      }, 100);
     });
-
-    // Reset form field value
-    ev.target.value = "";
-    // Make sure new value is instantly visible in viewport
-    setTimeout(() => {
-      scrollToBottom(".body");
-    }, 100);
-  } catch (error) {
-    console.log("Error", error);
-  }
 }
 
 function selectObservation(id) {
@@ -105,19 +104,28 @@ async function deleteObservation(id) {
 }
 
 /* Custom lists */
-async function deleteList(id) {
+function deleteList(listId) {
   if (
     confirm(
       "Är du säker på att du vill ta bort denna lista och alla dess observationer?"
     )
   ) {
-    db.lists.delete(id);
-    db.observations
-      .where("listId")
-      .equalsIgnoreCase(id)
-      .delete()
-      .then(function (deleteCount) {
-        console.log("Deleted " + deleteCount + " objects");
+    return db
+      .transaction(
+        "rw",
+        [db.lists, db.observations, db.realms, db.members],
+        () => {
+          // Delete possible todo-items:
+          db.observations.where({ listId: listId }).delete();
+          // Delete the list:
+          db.lists.delete(listId);
+          // Delete possible realm and its members in case list was shared:
+          const tiedRealmId = getTiedRealmId(listId);
+          db.members.where({ realmId: tiedRealmId }).delete();
+          db.realms.delete(tiedRealmId);
+        }
+      )
+      .then(() => {
         setTab("monthly");
       });
   }
