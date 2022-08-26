@@ -76,13 +76,9 @@ function sortBy(val) {
 
 /* Observations */
 async function addObservation(ev, listId) {
-  const tiedRealmId = getTiedRealmId(listId);
-
   await db.observations.add({
     name: ev.target.value,
     date: new Date(),
-    realmId:
-      listId == "monthly" || listId == "everything" ? undefined : tiedRealmId,
     listId: listId == "monthly" || listId == "everything" ? undefined : listId, // Any ID other than defaults are valid here
   });
 
