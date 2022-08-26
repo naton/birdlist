@@ -14,6 +14,7 @@ let currentMonth = ref(new Date().getMonth());
 let currentSort = ref("bydate");
 let currentListId = ref("monthly");
 let currentListName = ref("");
+let currentListRealmId = ref("");
 let currentObservation = ref(0);
 let allObservations = ref([]);
 let tabList = ref([]);
@@ -79,6 +80,10 @@ async function addObservation(ev, listId) {
   await db.observations.add({
     name: ev.target.value,
     date: new Date(),
+    realmId:
+      listId == "monthly" || listId == "everything"
+        ? undefined
+        : currentListRealmId.value,
     listId: listId == "monthly" || listId == "everything" ? undefined : listId, // Any ID other than defaults are valid here
   });
 
@@ -121,7 +126,7 @@ function deleteList(listId) {
         }
       )
       .then(() => {
-        setTab("monthly");
+        selectList("monthly");
       });
   }
 }
@@ -158,9 +163,10 @@ function shareBirdList(listId, listName) {
   });
 }
 
-function setTab(id, title) {
+function selectList(id, title, realmId) {
   currentListId.value = id;
   currentListName.value = title;
+  currentListRealmId.value = realmId;
 }
 
 function getSlotName(tab) {
@@ -168,7 +174,7 @@ function getSlotName(tab) {
 }
 
 onMounted(() => {
-  setTab("monthly");
+  selectList("monthly");
 });
 
 onUnmounted(() => {
@@ -179,7 +185,7 @@ onUnmounted(() => {
 
 <template>
   <div class="body">
-    <tabs-list :tabList="tabList" :tab="currentListId" @activate="setTab">
+    <tabs-list :tabList="tabList" :tab="currentListId" @activate="selectList">
       <template v-slot:[getSlotName(currentListId)]>
         <div class="body-content">
           <this-list

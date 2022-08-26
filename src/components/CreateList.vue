@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { db } from "../db";
+import { getTiedRealmId } from "dexie-cloud-addon";
 
 const emit = defineEmits(["activate"]);
 
@@ -20,7 +21,8 @@ function closeModal() {
 
 async function createList(title) {
   let id = await db.lists.add({ title: title });
-  emit("activate", id, title);
+  let realmId = getTiedRealmId(id);
+  emit("activate", id, title, realmId);
   closeModal();
 }
 </script>
@@ -33,6 +35,7 @@ async function createList(title) {
         type="text"
         v-model="title"
         @keyup.enter="createList(title)"
+        @keyup.esc="closeModal"
         placeholder="Enter list name…"
       />
       <div>
@@ -47,6 +50,7 @@ async function createList(title) {
 
 <style scoped>
 input {
+  max-width: 80vw;
   font-size: 2rem;
 }
 .add {

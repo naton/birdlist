@@ -1,11 +1,12 @@
 <script setup>
 import CreateList from "@/components/CreateList.vue";
+
 const props = defineProps(["tab", "tabList"]);
 
 const emit = defineEmits(["activate"]);
 
-function emitActiveTab(id, title) {
-  emit("activate", id, title);
+function emitActiveTab(id, title, realmId) {
+  emit("activate", id, title, realmId);
 }
 </script>
 
@@ -41,7 +42,7 @@ function emitActiveTab(id, title) {
         <label for="tab-everything">Alla kryss</label>
       </li>
       <li
-        v-for="{ id, title } in tabList"
+        v-for="{ id, title, realmId } in tabList"
         :key="id"
         class="c-tabs__tab"
         :class="{ 'c-tabs__tab--active': id === props.tab }"
@@ -52,7 +53,7 @@ function emitActiveTab(id, title) {
           :id="`tab-${id}`"
           :value="id"
           :checked="id === props.tab"
-          @change="emitActiveTab(id, title)"
+          @change="emitActiveTab(id, title, realmId)"
           hidden
         />
         <label :for="`tab-${id}`" v-text="title" />
