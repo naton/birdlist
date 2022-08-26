@@ -1,9 +1,9 @@
 <script setup>
 const emit = defineEmits(["delete", "select"]);
-const props = defineProps(["item", "show_date", "selected_id"]);
+defineProps(["item", "show_date", "selected_id"]);
 
 function formatDate(date) {
-  new Intl.DateTimeFormat(false, {
+  return new Intl.DateTimeFormat(false, {
     weekday: "long",
     day: "numeric",
     month: "short",
@@ -18,9 +18,7 @@ function emitSelect(id) {
 <template>
   <li
     @click.prevent="emitSelect(item.id)"
-    :class="
-      props.selected_id == (typeof item === 'object' && item.id) && 'is-active'
-    "
+    :class="selected_id == (typeof item === 'object' && item.id) && 'is-active'"
   >
     <span class="obs">
       <span class="name">✔️ {{ item.name || item }}</span>
@@ -50,7 +48,6 @@ li:first-child {
 }
 
 .date {
-  margin-right: 1em;
   color: var(--color-text-dim);
 }
 .name {
