@@ -3,5 +3,5 @@ import ObservationsLists from "@/components/ObservationsLists.vue";
 </script>
 
 <template>
-  <ObservationsLists />
+  <observations-lists />
 </template>

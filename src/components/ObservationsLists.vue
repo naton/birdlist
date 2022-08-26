@@ -16,7 +16,7 @@ let currentSort = ref("bydate");
 let currentListId = ref("monthly");
 let currentListName = ref("");
 let currentListRealmId = ref("");
-let currentObservation = ref(0);
+let currentObservation = ref("");
 let allObservations = ref([]);
 let tabList = ref([]);
 let isListSelected = ref(false);
@@ -93,7 +93,7 @@ async function addObservation(ev, listId) {
   ev.target.value = "";
   // Make sure new value is instantly visible in viewport
   setTimeout(() => {
-    scrollToBottom(".body");
+    scrollToBottom(".body-content");
   }, 100);
 }
 
@@ -103,6 +103,14 @@ function selectObservation(id) {
 
 async function deleteObservation(id) {
   db.observations.delete(id);
+}
+
+function showEditObservationDialog() {
+  isDialogOpen.value = true;
+}
+
+function closeObservationDialog() {
+  isDialogOpen.value = false;
 }
 
 /* Custom lists */
@@ -197,7 +205,7 @@ onUnmounted(() => {
             :selected="currentObservation"
             @sort="sortBy"
             @select="selectObservation"
-            @delete="deleteObservation"
+            @edit="showEditObservationDialog"
           >
             <template v-slot:header>
               <div class="month-nav">
@@ -217,7 +225,7 @@ onUnmounted(() => {
             :sort="currentSort"
             @sort="sortBy"
             @select="selectObservation"
-            @delete="deleteObservation"
+            @edit="showEditObservationDialog"
           >
             <template v-slot:header>
               <div class="list-header">
@@ -233,7 +241,7 @@ onUnmounted(() => {
             :sort="currentSort"
             @sort="sortBy"
             @select="selectObservation"
-            @delete="deleteObservation"
+            @edit="showEditObservationDialog"
           >
             <template v-slot:header>
               <div
@@ -263,7 +271,12 @@ onUnmounted(() => {
         </div>
       </template>
     </tabs-list>
-    <edit-dialog :open="isDialogOpen" :observation="currentObservation" />
+    <edit-dialog
+      :isOpen="isDialogOpen"
+      :observation="currentObservation"
+      @delete="deleteObservation"
+      @close="closeObservationDialog"
+    />
   </div>
   <div class="footer">
     <observation-input @add="addObservation" :tab="currentListId" />

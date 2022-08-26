@@ -1,5 +1,5 @@
 <script setup>
-const emit = defineEmits(["delete", "select"]);
+const emit = defineEmits(["select", "edit"]);
 defineProps(["item", "show_date", "selected_id"]);
 
 function formatDate(date) {
@@ -9,22 +9,18 @@ function formatDate(date) {
     month: "short",
   }).format(date);
 }
-
-function emitSelect(id) {
-  emit("select", id);
-}
 </script>
 
 <template>
   <li
-    @click.prevent="emitSelect(item.id)"
+    @click.prevent="emit('select', item.id)"
     :class="selected_id == (typeof item === 'object' && item.id) && 'is-active'"
   >
     <span class="obs">
       <span class="name">✔️ {{ item.name || item }}</span>
       <span class="date" v-if="show_date">{{ formatDate(item.date) }}</span>
     </span>
-    <button type="button" @click.prevent="emit('delete', item.id)">x</button>
+    <button type="button" @click.stop="emit('edit')">✎</button>
   </li>
 </template>
 
