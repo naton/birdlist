@@ -27,6 +27,7 @@ input {
   border: 1px solid var(--color-border);
   border-radius: 2px;
   box-sizing: border-box;
+  color: var(--color-text);
   background: none;
   font-size: 1.2rem;
   appearance: none;
