@@ -75,24 +75,23 @@ function sortBy(val) {
 }
 
 /* Observations */
-function addObservation(ev, listId) {
+async function addObservation(ev, listId) {
   const tiedRealmId = getTiedRealmId(listId);
 
-  return db.observations
-    .add({
-      listId:
-        listId == "monthly" || listId == "everything" ? undefined : listId, // Any ID other than defaults are valid here
-      realmId: tiedRealmId,
-      name: ev.target.value,
-      date: new Date(),
-    })
-    .then(() => {
-      ev.target.value = ""; // Reset form field value
-      // Make sure new value is instantly visible in viewport
-      setTimeout(() => {
-        scrollToBottom(".body");
-      }, 100);
-    });
+  await db.observations.add({
+    name: ev.target.value,
+    date: new Date(),
+    realmId:
+      listId == "monthly" || listId == "everything" ? undefined : tiedRealmId,
+    listId: listId == "monthly" || listId == "everything" ? undefined : listId, // Any ID other than defaults are valid here
+  });
+
+  // Reset form field value
+  ev.target.value = "";
+  // Make sure new value is instantly visible in viewport
+  setTimeout(() => {
+    scrollToBottom(".body");
+  }, 100);
 }
 
 function selectObservation(id) {
