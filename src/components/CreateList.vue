@@ -50,7 +50,7 @@ async function createList(title) {
 
 <style scoped>
 input {
-  max-width: 80vw;
+  max-width: 90vw;
   font-size: 2rem;
 }
 
@@ -60,10 +60,6 @@ input {
   margin-left: 1rem;
   padding-right: 1rem;
   padding-left: 1rem;
-}
-
-.cancel {
-  margin-left: 1rem;
 }
 
 .create {
