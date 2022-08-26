@@ -36,7 +36,7 @@ async function createList(title) {
         v-model="title"
         @keyup.enter="createList(title)"
         @keyup.esc="closeModal"
-        placeholder="Enter list name…"
+        placeholder="Skriv in ett namn på listan…"
       />
       <div>
         <button class="create" @click.prevent="createList(title)">

@@ -11,7 +11,7 @@ const emit = defineEmits(["add"]);
       list="birds"
       @change="emit('add', $event, props.tab)"
       autocomplete="off"
-      placeholder="Enter bird name…"
+      placeholder="Skriv namnet på fågeln du sett…"
     />
   </div>
 </template>
