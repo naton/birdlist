@@ -5,6 +5,7 @@ import { getTiedRealmId } from "dexie-cloud-addon";
 import { db } from "../db";
 import TabsList from "@/components/TabsList.vue";
 import ThisList from "@/components/ThisList.vue";
+import EditDialog from "@/components/EditDialog.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
 import BirdsData from "@/components/BirdsData.vue";
 
@@ -19,6 +20,7 @@ let currentObservation = ref(0);
 let allObservations = ref([]);
 let tabList = ref([]);
 let isListSelected = ref(false);
+let isDialogOpen = ref(false);
 
 /* DB subscriptions */
 const observationsSubscription = liveQuery(() =>
@@ -261,6 +263,7 @@ onUnmounted(() => {
         </div>
       </template>
     </tabs-list>
+    <edit-dialog :open="isDialogOpen" :observation="currentObservation" />
   </div>
   <div class="footer">
     <observation-input @add="addObservation" :tab="currentListId" />

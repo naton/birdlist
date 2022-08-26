@@ -53,6 +53,7 @@ input {
   max-width: 80vw;
   font-size: 2rem;
 }
+
 .add {
   align-self: center;
   margin-right: 0.5rem;
@@ -67,24 +68,5 @@ input {
 
 .create {
   margin-top: 1rem;
-}
-
-dialog {
-  position: fixed;
-  top: 1%;
-  left: 1%;
-  width: 98%;
-  height: 98%;
-  padding-bottom: 30%;
-  place-content: center;
-  z-index: 1;
-}
-
-dialog[open] {
-  display: grid;
-}
-
-dialog::backdrop {
-  background: #000000cc;
 }
 </style>
