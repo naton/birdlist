@@ -36,13 +36,13 @@ async function createList(title) {
         v-model="title"
         @keyup.enter="createList(title)"
         @keyup.esc="closeModal"
-        placeholder="Skriv in ett namn på listan…"
+        placeholder="Skriv namn på listan…"
       />
       <div>
         <button class="create" @click.prevent="createList(title)">
           Skapa lista
         </button>
-        <button class="cancel" @click.prevent="closeModal">Avbryt</button>
+        <button @click.prevent="closeModal">Avbryt</button>
       </div>
     </dialog>
   </li>
@@ -50,9 +50,10 @@ async function createList(title) {
 
 <style scoped>
 input {
-  max-width: 80vw;
+  max-width: 90vw;
   font-size: 2rem;
 }
+
 .add {
   align-self: center;
   margin-right: 0.5rem;
@@ -61,30 +62,7 @@ input {
   padding-left: 1rem;
 }
 
-.cancel {
-  margin-left: 1rem;
-}
-
 .create {
   margin-top: 1rem;
-}
-
-dialog {
-  position: fixed;
-  top: 1%;
-  left: 1%;
-  width: 98%;
-  height: 98%;
-  padding-bottom: 30%;
-  place-content: center;
-  z-index: 1;
-}
-
-dialog[open] {
-  display: grid;
-}
-
-dialog::backdrop {
-  background: #000000cc;
 }
 </style>

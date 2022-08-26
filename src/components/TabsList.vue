@@ -3,7 +3,7 @@ import CreateList from "@/components/CreateList.vue";
 
 const props = defineProps(["tab", "tabList"]);
 
-const emit = defineEmits(["activate"]);
+const emit = defineEmits(["activate", "edit"]);
 
 function emitActiveTab(id, title, realmId) {
   emit("activate", id, title, realmId);

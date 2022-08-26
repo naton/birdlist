@@ -78,12 +78,22 @@
 /* Buttons */
 button {
     min-width: 3rem;
-    height: 3rem;
+    min-height: 3rem;
+    padding: 0.75rem 1rem;
     border: none;
     border-radius: 2px;
     color: var(--color-background-dim);
     background: var(--color-text);
     font-size: 1rem;
+}
+
+button + button {
+    margin-left: 0.5rem;
+}
+
+button.secondary {
+    color: var(--color-background);
+    background: var(--color-text-dim);
 }
 
 /* Headings */
@@ -99,4 +109,24 @@ button {
     letter-spacing: 0.3ex;
     margin-top: 0.75rem;
     margin-bottom: 0.5rem;
+}
+
+/* Dialogs */
+dialog {
+    position: fixed;
+    top: 1%;
+    left: 1%;
+    width: 98%;
+    height: 98%;
+    padding-bottom: 30%;
+    place-content: center;
+    z-index: 1;
+}
+
+dialog[open] {
+    display: grid;
+}
+  
+dialog::backdrop {
+    background: #000000cc;
 }

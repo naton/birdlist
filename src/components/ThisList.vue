@@ -3,7 +3,7 @@ import { computed } from "vue";
 import ObservationItem from "./ObservationItem.vue";
 
 const props = defineProps(["observations", "sort", "selected"]);
-const emit = defineEmits(["sort", "select", "delete"]);
+const emit = defineEmits(["sort", "select", "delete", "edit"]);
 
 const species = computed(() =>
   [...new Set(props.observations.map((item) => item.name))].sort()
@@ -19,6 +19,10 @@ function emitSelect(id) {
 
 function emitDelete(id) {
   emit("delete", id);
+}
+
+function emitEdit() {
+  emit("edit");
 }
 </script>
 
@@ -60,6 +64,7 @@ function emitDelete(id) {
           :selected_id="props.selected"
           @select="emitSelect(item.id)"
           @delete="emitDelete(item.id)"
+          @edit="emitEdit"
         ></observation-item>
       </ul>
     </section>
