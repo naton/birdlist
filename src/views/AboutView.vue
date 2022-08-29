@@ -24,7 +24,7 @@
 
 @media (prefers-color-scheme: dark) {
   .about .logo {
-    filter: invert(0.84);
+    filter: invert(1);
   }
 }
 </style>
