@@ -253,7 +253,7 @@ onUnmounted(() => {
               <div class="list-header">
                 <h2 class="subtitle center">Årskryss</h2>
               </div>
-              <div class="center">
+              <div class="center sidescroll">
                 <table>
                   <tbody>
                     <tr>
@@ -263,14 +263,16 @@ onUnmounted(() => {
                     </tr>
                     <tr>
                       <td v-for="n in 12" :key="n">
-                        <button @click="goToMonth(n - 1)">
+                        <button
+                          @click="goToMonth(n - 1)"
+                          :class="totalPerMonth(n - 1) == '0' && 'secondary'"
+                        >
                           {{ totalPerMonth(n - 1) }}
                         </button>
                       </td>
                     </tr>
                   </tbody>
                 </table>
-                <br />
               </div>
             </template>
           </this-list>
@@ -343,8 +345,13 @@ onUnmounted(() => {
   overflow: hidden;
 }
 
+.sidescroll {
+  overflow-x: auto;
+}
+
 .center table {
   margin: auto;
+  font-size: 0.9rem;
 }
 
 table button {
