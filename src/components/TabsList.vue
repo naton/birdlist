@@ -21,7 +21,8 @@ function emitActiveTab(id, title, realmId) {
           type="radio"
           name="tabs"
           id="tab-monthly"
-          value="monthly"
+          :value="props.tab"
+          :checked="'monthly' === props.tab"
           @change="emitActiveTab('monthly')"
           hidden
         />
@@ -35,11 +36,12 @@ function emitActiveTab(id, title, realmId) {
           type="radio"
           name="tabs"
           id="tab-everything"
-          value="everything"
+          :value="props.tab"
+          :checked="'everything' === props.tab"
           @change="emitActiveTab('everything')"
           hidden
         />
-        <label for="tab-everything">Alla kryss</label>
+        <label for="tab-everything">Årskryss</label>
       </li>
       <li
         v-for="{ id, title, realmId } in tabList"
@@ -70,8 +72,8 @@ function emitActiveTab(id, title, realmId) {
     <slot name="tabPanel-everything" />
   </template>
 
-  <template v-else v-for="{ id, title } in tabList" :key="id">
-    <slot :name="`tabPanel-${id}`" :title="title" />
+  <template v-else v-for="{ id } in tabList" :key="id">
+    <slot :name="`tabPanel-${id}`" />
   </template>
 </template>
 

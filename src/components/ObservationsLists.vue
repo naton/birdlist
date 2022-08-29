@@ -9,8 +9,6 @@ import EditDialog from "@/components/EditDialog.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
 import BirdsData from "@/components/BirdsData.vue";
 
-defineProps(["title"]);
-
 let currentMonth = ref(new Date().getMonth());
 let currentSort = ref("bydate");
 let currentListId = ref("monthly");
@@ -53,11 +51,13 @@ const currentMonthFormatted = computed(() => {
 });
 
 const allThisMonth = computed(() => {
-  return allObservations.value.filter(
-    (obs) =>
-      obs.date.getFullYear() == new Date().getFullYear() &&
-      obs.date.getMonth() == currentMonth.value
-  );
+  return allObservations.value
+    .filter(
+      (obs) =>
+        obs.date.getFullYear() == new Date().getFullYear() &&
+        obs.date.getMonth() == currentMonth.value
+    )
+    .sort((a, b) => a.date - b.date);
 });
 
 const listObservations = computed(() => {
@@ -67,6 +67,28 @@ const listObservations = computed(() => {
 });
 
 /* Methods */
+function getMonthNameFormatted(month) {
+  const date = new Date();
+  date.setDate(1);
+  date.setMonth(month);
+  return new Intl.DateTimeFormat("sv", {
+    month: "short",
+  }).format(date);
+}
+
+function totalPerMonth(month) {
+  return allObservations.value.filter(
+    (obs) =>
+      obs.date.getFullYear() == new Date().getFullYear() &&
+      obs.date.getMonth() == month
+  ).length;
+}
+
+function goToMonth(month) {
+  currentMonth.value = month;
+  selectList("monthly");
+}
+
 function scrollToBottom(el) {
   document
     .querySelector(el)
@@ -229,7 +251,26 @@ onUnmounted(() => {
           >
             <template v-slot:header>
               <div class="list-header">
-                <h2 class="subtitle center">Alla kryss</h2>
+                <h2 class="subtitle center">Årskryss</h2>
+              </div>
+              <div class="center">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td v-for="n in 12" :key="n">
+                        {{ getMonthNameFormatted(n - 1) }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td v-for="n in 12" :key="n">
+                        <button @click="goToMonth(n - 1)">
+                          {{ totalPerMonth(n - 1) }}
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <br />
               </div>
             </template>
           </this-list>
@@ -302,6 +343,15 @@ onUnmounted(() => {
   overflow: hidden;
 }
 
+.center table {
+  margin: auto;
+}
+
+table button {
+  min-width: 2rem;
+  padding: 0.5rem;
+}
+
 .is-active.list-header {
   position: relative;
 }
@@ -336,10 +386,8 @@ onUnmounted(() => {
   position: absolute;
   top: 0.45rem;
   right: 0;
-  z-index: -1;
   transform: translateX(3rem);
   transition: 0.1s transform ease-out;
-  z-index: 0;
 }
 
 .is-active.list-header .delete {
