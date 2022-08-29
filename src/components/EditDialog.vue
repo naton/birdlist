@@ -55,17 +55,12 @@ onUpdated(async () => {
       :value="inputDate(currentDate)"
     />
     <div>
-      <button
-        type="button"
-        @click.prevent="deleteAndClose(currentObservation.id)"
-      >
-        Radera observation
+      <button type="button" @click="deleteAndClose(currentObservation.id)">
+        Radera
       </button>
-      <button type="button" class="secondary" @click.prevent="updateDate">
-        Spara
-      </button>
-      <button type="button" class="secondary" @click.prevent="emit('close')">
-        Stäng
+      <button type="button" class="secondary" @click="updateDate">Spara</button>
+      <button type="button" class="secondary" @click="emit('close')">
+        Avbryt
       </button>
     </div>
   </dialog>

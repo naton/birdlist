@@ -13,7 +13,7 @@ function formatDate(date) {
 
 <template>
   <li
-    @click.prevent="emit('select', item.id)"
+    @click="emit('select', item.id)"
     :class="selected_id == (typeof item === 'object' && item.id) && 'is-active'"
   >
     <span class="obs">

@@ -29,7 +29,7 @@ async function createList(title) {
 
 <template>
   <li class="c-tabs__tab">
-    <button class="add" @click.prevent="openModal">Skapa ny lista…</button>
+    <button class="add" @click.stop="openModal">Skapa ny lista…</button>
     <dialog :open="showCreateListDialog">
       <input
         type="text"
@@ -39,10 +39,8 @@ async function createList(title) {
         placeholder="Skriv namn på listan…"
       />
       <div>
-        <button class="create" @click.prevent="createList(title)">
-          Skapa lista
-        </button>
-        <button @click.prevent="closeModal">Avbryt</button>
+        <button class="create" @click="createList(title)">Skapa lista</button>
+        <button @click="closeModal">Avbryt</button>
       </div>
     </dialog>
   </li>
