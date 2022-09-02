@@ -317,6 +317,7 @@ onUnmounted(() => {
     <edit-dialog
       :isOpen="isDialogOpen"
       :observation="currentObservation"
+      :tabList="tabList"
       @delete="deleteObservation"
       @close="closeObservationDialog"
     />

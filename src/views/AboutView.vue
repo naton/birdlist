@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1><img src="../assets/logo.webp" alt="Birdlist" class="logo"/></h1>
+    <h1><img src="../assets/logo.webp" alt="Birdlist" class="logo" /></h1>
     <h2>
       Log your bird observations.<br />
       Nothing more.
