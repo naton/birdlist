@@ -1,13 +1,11 @@
 <script setup>
-import { ref, onUpdated } from "vue";
+import { ref } from "vue";
 import { db } from "../db";
 
-const props = defineProps(["isOpen", "observation", "tabList"]);
-
+const props = defineProps(["isOpen", "observation", "lists"]);
 const emit = defineEmits(["delete", "close"]);
 
-const currentObservation = ref("");
-const currentList = ref(null);
+const selectedList = ref("");
 const currentDate = ref(new Date());
 
 function formatDate(date) {
@@ -36,32 +34,28 @@ function deleteAndClose(id) {
 
 async function save() {
   const date = new Date(currentDate.value);
-  const listId = currentList.value;
+  const listId = selectedList.value;
   await db.observations.update(props.observation, {
     date,
     listId,
   });
 }
-
-onUpdated(async () => {
-  currentObservation.value = await db.observations.get(props.observation);
-});
 </script>
 
 <template>
-  <dialog :open="props.isOpen" v-if="currentObservation">
-    <h2>{{ currentObservation.name }}</h2>
-    <h3>{{ formatDate(currentObservation.date) }}</h3>
+  <dialog :open="props.isOpen">
+    <h2>{{ observation.name }}</h2>
+    <h3>{{ formatDate(observation.date) }}</h3>
 
     <div>
       <label for="obs-list">Ändra lista</label>
-      <select id="obs-list" @change="currentList = $event.target.value">
+      <select id="obs-list" v-model="selectedList">
         <option value>Ingen speciell lista</option>
         <option
-          v-for="{ id, title } in tabList"
+          v-for="{ id, title } in lists"
           :value="id"
           :key="id"
-          :selected="id == currentObservation.listId"
+          :selected="id == observation.listId"
         >
           {{ title }}
         </option>
@@ -79,12 +73,12 @@ onUpdated(async () => {
     </div>
 
     <div>
-      <button type="button" @click="deleteAndClose(currentObservation.id)">
+      <button type="button" @click="deleteAndClose(observation.id)">
         Radera
       </button>
       <button type="button" class="secondary" @click="save">Spara</button>
       <button type="button" class="secondary" @click="emit('close')">
-        Avbryt
+        Stäng
       </button>
     </div>
   </dialog>

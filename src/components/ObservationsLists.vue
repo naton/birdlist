@@ -6,19 +6,17 @@ import { db } from "../db";
 import TabsList from "@/components/TabsList.vue";
 import ThisList from "@/components/ThisList.vue";
 import EditDialog from "@/components/EditDialog.vue";
-import ObservationInput from "@/components/ObservationInput.vue";
-import BirdsData from "@/components/BirdsData.vue";
 
-let currentMonth = ref(new Date().getMonth());
-let currentSort = ref("bydate");
-let currentListId = ref("monthly");
-let currentListName = ref("");
-let currentListRealmId = ref("");
-let currentObservation = ref("");
-let allObservations = ref([]);
-let tabList = ref([]);
-let isListSelected = ref(false);
-let isDialogOpen = ref(false);
+const props = defineProps(["list"]);
+const emit = defineEmits(["selectList"]);
+
+const currentMonth = ref(new Date().getMonth());
+const currentSort = ref("bydate");
+const currentObservation = ref(false);
+const allObservations = ref([]);
+const tabList = ref([]);
+const isListSelected = ref(false);
+const isDialogOpen = ref(false);
 
 /* DB subscriptions */
 const observationsSubscription = liveQuery(() =>
@@ -61,9 +59,8 @@ const allThisMonth = computed(() => {
 });
 
 const listObservations = computed(() => {
-  return allObservations.value.filter(
-    (obs) => obs.listId == currentListId.value
-  );
+  const listId = props.list.id;
+  return allObservations.value.filter((obs) => obs.listId == listId);
 });
 
 /* Methods */
@@ -86,13 +83,7 @@ function totalPerMonth(month) {
 
 function goToMonth(month) {
   currentMonth.value = month;
-  selectList("monthly");
-}
-
-function scrollToBottom(el) {
-  document
-    .querySelector(el)
-    .scrollTo(0, document.querySelector(el).scrollHeight + 40);
+  emit("selectList", "monthly");
 }
 
 function sortBy(val) {
@@ -100,34 +91,19 @@ function sortBy(val) {
 }
 
 /* Observations */
-async function addObservation(ev, listId) {
-  await db.observations.add({
-    name: ev.target.value,
-    date: new Date(),
-    realmId:
-      listId == "monthly" || listId == "everything"
-        ? undefined
-        : currentListRealmId.value,
-    listId: listId == "monthly" || listId == "everything" ? undefined : listId, // Any ID other than defaults are valid here
-  });
-
-  // Reset form field value
-  ev.target.value = "";
-  // Make sure new value is instantly visible in viewport
-  setTimeout(() => {
-    scrollToBottom(".body-content");
-  }, 100);
-}
-
-function selectObservation(id) {
-  currentObservation.value = currentObservation.value == id ? 0 : id;
+function selectObservation(obs) {
+  currentObservation.value =
+    obs && currentObservation.value && currentObservation.value.id == obs.id
+      ? false
+      : obs;
 }
 
 async function deleteObservation(id) {
   db.observations.delete(id);
 }
 
-function showEditObservationDialog() {
+function editObservation(obs) {
+  currentObservation.value = obs;
   isDialogOpen.value = true;
 }
 
@@ -158,7 +134,7 @@ function deleteList(listId) {
         }
       )
       .then(() => {
-        selectList("monthly");
+        emit("selectList", "monthly");
       });
   }
 }
@@ -195,18 +171,16 @@ function shareBirdList(listId, listName) {
   });
 }
 
-function selectList(id, title, realmId) {
-  currentListId.value = id;
-  currentListName.value = title;
-  currentListRealmId.value = realmId;
-}
-
 function getSlotName(tab) {
   return `tabPanel-${tab}`;
 }
 
+function selectList(list) {
+  emit("selectList", list);
+}
+
 onMounted(() => {
-  selectList("monthly");
+  emit("selectList", "monthly");
 });
 
 onUnmounted(() => {
@@ -216,116 +190,111 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="body">
-    <tabs-list :tabList="tabList" :tab="currentListId" @activate="selectList">
-      <template v-slot:[getSlotName(currentListId)]>
-        <div class="body-content">
-          <this-list
-            v-if="currentListId === 'monthly'"
-            :observations="allThisMonth"
-            :sort="currentSort"
-            :selected="currentObservation"
-            @sort="sortBy"
-            @select="selectObservation"
-            @edit="showEditObservationDialog"
-          >
-            <template v-slot:header>
-              <div class="month-nav">
-                <button @click.prevent="currentMonth--">«</button>
-                <h2 class="subtitle center">
-                  {{ currentMonthFormatted }}
-                </h2>
-                <button @click.prevent="currentMonth++">»</button>
-              </div>
-            </template>
-          </this-list>
+  <tabs-list
+    :tabList="tabList"
+    :currentList="props.list"
+    @activate="selectList"
+  >
+    <template v-slot:[getSlotName(props.list.id)]>
+      <div class="body-content">
+        <this-list
+          v-if="props.list.id === 'monthly'"
+          :observations="allThisMonth"
+          :sort="currentSort"
+          :selected="currentObservation"
+          @sort="sortBy"
+          @select="selectObservation"
+          @edit="editObservation"
+        >
+          <template v-slot:header>
+            <div class="month-nav">
+              <button @click.prevent="currentMonth--">«</button>
+              <h2 class="subtitle center">
+                {{ currentMonthFormatted }}
+              </h2>
+              <button @click.prevent="currentMonth++">»</button>
+            </div>
+          </template>
+        </this-list>
 
-          <this-list
-            v-else-if="currentListId === 'everything'"
-            :observations="allObservations"
-            :selected="currentObservation"
-            :sort="currentSort"
-            @sort="sortBy"
-            @select="selectObservation"
-            @edit="showEditObservationDialog"
-          >
-            <template v-slot:header>
-              <div class="list-header">
-                <h2 class="subtitle center">Årskryss</h2>
-              </div>
-              <div class="center sidescroll">
-                <table>
-                  <tbody>
-                    <tr>
-                      <td v-for="n in 12" :key="n">
-                        {{ getMonthNameFormatted(n - 1) }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td v-for="n in 12" :key="n">
-                        <button
-                          @click="goToMonth(n - 1)"
-                          :class="totalPerMonth(n - 1) == '0' && 'secondary'"
-                        >
-                          {{ totalPerMonth(n - 1) }}
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </template>
-          </this-list>
+        <this-list
+          v-else-if="props.list.id === 'everything'"
+          :observations="allObservations"
+          :selected="currentObservation"
+          :sort="currentSort"
+          @sort="sortBy"
+          @select="selectObservation"
+          @edit="editObservation"
+        >
+          <template v-slot:header>
+            <div class="list-header">
+              <h2 class="subtitle center">Årskryss</h2>
+            </div>
+            <div class="center sidescroll">
+              <table>
+                <tbody>
+                  <tr>
+                    <td v-for="n in 12" :key="n">
+                      {{ getMonthNameFormatted(n - 1) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td v-for="n in 12" :key="n">
+                      <button
+                        @click="goToMonth(n - 1)"
+                        :class="totalPerMonth(n - 1) == '0' && 'secondary'"
+                      >
+                        {{ totalPerMonth(n - 1) }}
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </template>
+        </this-list>
 
-          <this-list
-            v-else
-            :observations="listObservations"
-            :selected="currentObservation"
-            :sort="currentSort"
-            @sort="sortBy"
-            @select="selectObservation"
-            @edit="showEditObservationDialog"
-          >
-            <template v-slot:header>
-              <div
-                class="list-header"
-                :class="isListSelected && 'is-active'"
-                @click="isListSelected = !isListSelected"
-              >
-                <div class="subtitle">
-                  <h2>{{ currentListName }}</h2>
-                  <button
-                    class="share"
-                    @click.stop="shareBirdList(currentListId, currentListName)"
-                    v-if="listObservations.length"
-                  >
-                    Dela
-                  </button>
-                </div>
+        <this-list
+          v-else
+          :observations="listObservations"
+          :selected="currentObservation"
+          :sort="currentSort"
+          @sort="sortBy"
+          @select="selectObservation"
+          @edit="editObservation"
+        >
+          <template v-slot:header>
+            <div
+              class="list-header"
+              :class="isListSelected && 'is-active'"
+              @click="isListSelected = !isListSelected"
+            >
+              <div class="subtitle">
+                <h2>{{ props.list.title }}</h2>
                 <button
-                  class="delete"
-                  @click.prevent="deleteList(currentListId)"
+                  class="share"
+                  @click.stop="shareBirdList(props.list.id, props.list.title)"
+                  v-if="listObservations.length"
                 >
-                  x
+                  Dela
                 </button>
               </div>
-            </template>
-          </this-list>
-        </div>
-      </template>
-    </tabs-list>
-    <edit-dialog
-      :isOpen="isDialogOpen"
-      :observation="currentObservation"
-      :tabList="tabList"
-      @delete="deleteObservation"
-      @close="closeObservationDialog"
-    />
-  </div>
-  <div class="footer">
-    <observation-input @add="addObservation" :tab="currentListId" />
-    <birds-data />
-  </div>
+              <button class="delete" @click.prevent="deleteList(props.list.id)">
+                x
+              </button>
+            </div>
+          </template>
+        </this-list>
+      </div>
+    </template>
+  </tabs-list>
+  <edit-dialog
+    :isOpen="isDialogOpen"
+    :observation="currentObservation"
+    :lists="tabList"
+    @delete="deleteObservation"
+    @close="closeObservationDialog"
+  />
 </template>
 
 <style>

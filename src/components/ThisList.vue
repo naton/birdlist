@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from "vue";
 import ObservationItem from "./ObservationItem.vue";
+import SpeciesItem from "./SpeciesItem.vue";
 
 const props = defineProps(["observations", "sort", "selected"]);
 const emit = defineEmits(["sort", "select", "delete", "edit"]);
@@ -13,16 +14,16 @@ function emitSort(value) {
   emit("sort", value);
 }
 
-function emitSelect(id) {
-  emit("select", id);
+function emitSelect(obs) {
+  emit("select", obs);
 }
 
 function emitDelete(id) {
   emit("delete", id);
 }
 
-function emitEdit() {
-  emit("edit");
+function emitEdit(obs) {
+  emit("edit", obs);
 }
 </script>
 
@@ -55,28 +56,28 @@ function emitEdit() {
       v-if="observations.length"
     >
       <h3 class="center">{{ observations.length }} observationer</h3>
-      <ul>
+      <ul class="list">
         <observation-item
-          v-for="item in observations"
-          :item="item"
-          :key="item.id"
+          v-for="obs in observations"
+          :obs="obs"
+          :key="obs.id"
           :show_date="true"
-          :selected_id="props.selected"
-          @select="emitSelect(item.id)"
-          @delete="emitDelete(item.id)"
-          @edit="emitEdit"
+          :selected="props.selected"
+          @select="emitSelect(obs)"
+          @delete="emitDelete(id)"
+          @edit="emitEdit(obs)"
         ></observation-item>
       </ul>
     </section>
 
     <section id="byname" v-show="props.sort == 'byname'" v-if="species.length">
       <h3 class="center">{{ species.length }} olika arter</h3>
-      <ol>
-        <observation-item
-          v-for="item in species"
-          :item="item"
-          :key="item"
-        ></observation-item>
+      <ol class="list">
+        <species-item
+          v-for="bird in species"
+          :bird="bird"
+          :key="bird"
+        ></species-item>
       </ol>
     </section>
 
@@ -98,5 +99,23 @@ function emitEdit() {
   height: 70%;
   align-items: center;
   justify-content: center;
+}
+
+.list li {
+  overflow: hidden;
+}
+
+.list li:first-child {
+  border-top: 1px solid var(--color-background-dim);
+}
+
+.list .obs {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 1em;
+  border-bottom: 1px solid var(--color-background-dim);
+  background: var(--color-background);
+  transition: 0.1s transform ease-out;
+  text-align: left;
 }
 </style>

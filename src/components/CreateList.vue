@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from "vue";
 import { db } from "../db";
-import { getTiedRealmId } from "dexie-cloud-addon";
 
 const emit = defineEmits(["activate"]);
 
@@ -20,9 +19,9 @@ function closeModal() {
 }
 
 async function createList(title) {
-  let id = await db.lists.add({ title: title });
-  let realmId = getTiedRealmId(id);
-  emit("activate", id, title, realmId);
+  const newId = await db.lists.add({ title: title });
+  const list = await db.lists.get({ id: newId });
+  emit("activate", list);
   closeModal();
 }
 </script>

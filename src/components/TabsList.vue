@@ -1,12 +1,12 @@
 <script setup>
 import CreateList from "@/components/CreateList.vue";
 
-const props = defineProps(["tab", "tabList"]);
+const props = defineProps(["currentList", "tabList"]);
 
 const emit = defineEmits(["activate", "edit"]);
 
-function emitActiveTab(id, title, realmId) {
-  emit("activate", id, title, realmId);
+function emitActiveTab(list) {
+  emit("activate", list);
 }
 </script>
 
@@ -15,14 +15,14 @@ function emitActiveTab(id, title, realmId) {
     <ul class="c-tabs">
       <li
         class="c-tabs__tab"
-        :class="{ 'c-tabs__tab--active': 'monthly' === props.tab }"
+        :class="{ 'c-tabs__tab--active': 'monthly' === props.currentList.id }"
       >
         <input
           type="radio"
           name="tabs"
           id="tab-monthly"
-          :value="props.tab"
-          :checked="'monthly' === props.tab"
+          :value="props.currentList.id"
+          :checked="'monthly' === props.currentList.id"
           @change="emitActiveTab('monthly')"
           hidden
         />
@@ -30,50 +30,52 @@ function emitActiveTab(id, title, realmId) {
       </li>
       <li
         class="c-tabs__tab"
-        :class="{ 'c-tabs__tab--active': 'everything' === props.tab }"
+        :class="{
+          'c-tabs__tab--active': 'everything' === props.currentList.id,
+        }"
       >
         <input
           type="radio"
           name="tabs"
           id="tab-everything"
-          :value="props.tab"
-          :checked="'everything' === props.tab"
+          :value="props.currentList.id"
+          :checked="'everything' === props.currentList.id"
           @change="emitActiveTab('everything')"
           hidden
         />
         <label for="tab-everything">Årskryss</label>
       </li>
       <li
-        v-for="{ id, title, realmId } in tabList"
-        :key="id"
+        v-for="list in tabList"
+        :key="list.id"
         class="c-tabs__tab"
-        :class="{ 'c-tabs__tab--active': id === props.tab }"
+        :class="{ 'c-tabs__tab--active': list.id === props.currentList.id }"
       >
         <input
           type="radio"
           name="tabs"
-          :id="`tab-${id}`"
-          :value="id"
-          :checked="id === props.tab"
-          @change="emitActiveTab(id, title, realmId)"
+          :id="`tab-${list.id}`"
+          :value="list.id"
+          :checked="list.id === props.currentList.id"
+          @change="emitActiveTab(list)"
           hidden
         />
-        <label :for="`tab-${id}`" v-text="title" />
+        <label :for="`tab-${list.id}`" v-text="list.title" />
       </li>
       <create-list @activate="emitActiveTab" />
     </ul>
   </nav>
 
-  <template v-if="'monthly' === props.tab">
+  <template v-if="'monthly' === props.currentList.id">
     <slot name="tabPanel-monthly" />
   </template>
 
-  <template v-else-if="'everything' === props.tab">
+  <template v-else-if="'everything' === props.currentList.id">
     <slot name="tabPanel-everything" />
   </template>
 
-  <template v-else v-for="{ id } in tabList" :key="id">
-    <slot :name="`tabPanel-${id}`" />
+  <template v-else v-for="list in tabList" :key="list.id">
+    <slot :name="`tabPanel-${list.id}`" />
   </template>
 </template>
 

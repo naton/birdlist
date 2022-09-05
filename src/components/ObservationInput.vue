@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps(["tab"]);
+const props = defineProps(["list"]);
 const emit = defineEmits(["add"]);
 </script>
 
@@ -9,7 +9,7 @@ const emit = defineEmits(["add"]);
       name="bird"
       type="text"
       list="birds"
-      @change="emit('add', $event, props.tab)"
+      @change="emit('add', $event, props.list)"
       autocomplete="off"
       placeholder="Skriv namnet på fågeln du sett…"
     />
