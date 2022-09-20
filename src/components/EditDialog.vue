@@ -60,7 +60,7 @@ function saveAndClose() {
           v-for="{ id, title } in lists"
           :value="id"
           :key="id"
-          :selected="id == observation.listId"
+          :selected="id === observation.listId && 'selected'"
         >
           {{ title }}
         </option>
