@@ -54,8 +54,8 @@ function saveAndClose() {
 
     <div>
       <label for="obs-list">Ändra lista</label>
-      <select id="obs-list" v-model="selectedList">
-        <option value>Ingen speciell lista</option>
+      <select id="obs-list" @change="selectedList = $event.target.value">
+        <option value="">Ingen speciell lista</option>
         <option
           v-for="{ id, title } in lists"
           :value="id"
