@@ -6,7 +6,6 @@ import { db } from "../db";
 import TabsList from "@/components/TabsList.vue";
 import ThisList from "@/components/ThisList.vue";
 import EditDialog from "@/components/EditDialog.vue";
-import dialogPolyfill from "dialog-polyfill";
 
 const componentKey = ref(0);
 const props = defineProps(["list"]);
@@ -183,8 +182,6 @@ function selectList(list) {
 }
 
 onMounted(() => {
-  var dialog = document.querySelector("dialog");
-  dialogPolyfill.registerDialog(dialog);
   emit("selectList", "monthly");
 });
 
