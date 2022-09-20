@@ -8,6 +8,7 @@ import ThisList from "@/components/ThisList.vue";
 import EditDialog from "@/components/EditDialog.vue";
 import dialogPolyfill from "dialog-polyfill";
 
+const componentKey = ref(0);
 const props = defineProps(["list"]);
 const emit = defineEmits(["selectList"]);
 
@@ -104,6 +105,7 @@ async function deleteObservation(id) {
 }
 
 function editObservation(obs) {
+  componentKey.value += 1; // refresh modal component
   currentObservation.value = obs;
   isDialogOpen.value = true;
 }
@@ -292,6 +294,7 @@ onUnmounted(() => {
     </template>
   </tabs-list>
   <edit-dialog
+    :key="componentKey"
     :isOpen="isDialogOpen"
     :observation="currentObservation"
     :lists="tabList"
