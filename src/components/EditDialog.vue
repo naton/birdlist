@@ -73,7 +73,7 @@ function saveAndClose() {
         id="obs-date"
         type="datetime-local"
         @input="currentDate = $event.target.value"
-        :value="inputDate(observation.date)"
+        :value="inputDate(observation.date || currentDate)"
       />
     </div>
 
