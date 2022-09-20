@@ -112,7 +112,7 @@
     <option>Gulärla</option>
     <option>Gyllensparv</option>
     <option>Gåsgam</option>
-    <option>Gärdesmyg</option>
+    <option>Gärdsmyg</option>
     <option>Gök</option>
     <option>Göktyta</option>
     <option>Halsbandsflugsnappare</option>
@@ -370,6 +370,7 @@
     <option>Tallbit</option>
     <option>Talltita</option>
     <option>Taltrast</option>
+    <option>Tamduva</option>
     <option>Tatarfalk</option>
     <option>Tereksnäppa</option>
     <option>Tjockfot</option>
