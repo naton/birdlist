@@ -68,7 +68,7 @@ async function save() {
         id="obs-date"
         type="datetime-local"
         @input="currentDate = $event.target.value"
-        :value="inputDate(currentDate)"
+        :value="inputDate(observation.date)"
       />
     </div>
 
