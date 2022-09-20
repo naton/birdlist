@@ -40,6 +40,11 @@ async function save() {
     listId,
   });
 }
+
+function saveAndClose() {
+  save();
+  emit("close");
+}
 </script>
 
 <template>
@@ -73,12 +78,17 @@ async function save() {
     </div>
 
     <div>
+      <button type="button" class="secondary" @click="saveAndClose">
+        Spara och stäng
+      </button>
+      <button type="button" class="secondary" @click="emit('close')">
+        Avbryt
+      </button>
+    </div>
+
+    <div>
       <button type="button" @click="deleteAndClose(observation.id)">
         Radera
-      </button>
-      <button type="button" class="secondary" @click="save">Spara</button>
-      <button type="button" class="secondary" @click="emit('close')">
-        Stäng
       </button>
     </div>
   </dialog>
