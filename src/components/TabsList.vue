@@ -2,7 +2,6 @@
 import CreateList from "@/components/CreateList.vue";
 
 const props = defineProps(["currentList", "tabList"]);
-
 const emit = defineEmits(["activate", "edit"]);
 
 function emitActiveTab(list) {

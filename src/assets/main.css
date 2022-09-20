@@ -126,7 +126,11 @@ dialog {
 dialog[open] {
     display: grid;
 }
-  
+
 dialog::backdrop {
     background: #000000cc;
+}
+
+.no-dialog dialog {
+    display: none;
 }

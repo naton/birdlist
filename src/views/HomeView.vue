@@ -40,6 +40,10 @@ async function addObservation(ev) {
     scrollToBottom(".body-content");
   }, 100);
 }
+
+if (typeof HTMLDialogElement !== "function") {
+  document.documentElement.classList.add("no-dialog");
+}
 </script>
 
 <template>
