@@ -2,6 +2,7 @@ import Dexie from "dexie";
 import dexieCloud from "dexie-cloud-addon";
 
 export const db = new Dexie("birdlist", { addons: [dexieCloud] });
+
 db.version(5).stores({
   // Application tables
   lists: "@id, title",

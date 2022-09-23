@@ -222,7 +222,7 @@ onUnmounted(() => {
           <template v-slot:header>
             <div class="month-nav">
               <button class="prev-month" @click.prevent="currentMonth--">«</button>
-              <h2 class="subtitle center">
+              <h2 class="heading center">
                 {{ currentMonthFormatted }}
               </h2>
               <button class="next-month" @click.prevent="currentMonth++">»</button>
@@ -241,7 +241,7 @@ onUnmounted(() => {
         >
           <template v-slot:header>
             <div class="list-header">
-              <h2 class="subtitle center">Årskryss</h2>
+              <h2 class="heading center">Årskryss</h2>
             </div>
             <div class="center sidescroll">
               <table class="year-summary">
@@ -285,7 +285,7 @@ onUnmounted(() => {
               @click="isListSelected = !isListSelected"
             >
               <div class="subtitle">
-                <h2>{{ props.list.title }}</h2>
+                <h2 class="heading">{{ props.list.title }}</h2>
                 <button
                   class="share-button"
                   @click.stop="shareBirdList(props.list.id, props.list.title)"
@@ -349,6 +349,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0.5rem 0;
 }
 
 .prev-month {
@@ -378,9 +379,7 @@ onUnmounted(() => {
   align-items: center;
   margin-top: 0.5rem;
   margin-bottom: 0.25rem;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  padding-left: 1rem;
+  padding-left: 0.8rem;
   background: var(--color-background);
   transition: 0.1s transform ease-out;
 }

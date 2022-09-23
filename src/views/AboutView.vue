@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <div>
+    <div class="about-content">
       <h1><img src="../assets/logo.webp" alt="Birdlist" class="logo" /></h1>
       <h2>
         Log your bird observations.<br />
@@ -28,16 +28,19 @@
   align-content: center;
 }
 
-.about .logo {
-  display: flex;
+.about-content {
   width: 25rem;
-  max-width: 90%;
+  max-width: 85vw;
+}
+
+.logo {
+  display: flex;
+  width: 100%;
   margin-bottom: 2rem;
 }
 
 .privacy-notes {
-  max-width: 100%;
-  width: 25rem;
+  max-width: 45ch;
   margin-top: 2rem;
   font-size: 0.9rem;
 }

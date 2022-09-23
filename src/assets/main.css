@@ -106,17 +106,20 @@ button.secondary {
 
 /* Headings */
 .center {
-    margin-bottom: 0.5rem;
     text-align: center;
     justify-content: center;
 }
   
 .subtitle {
     color: var(--color-text-dim);
+}
+
+.heading {
     text-transform: uppercase;
-    letter-spacing: 0.3ex;
-    margin-top: 0.75rem;
-    margin-bottom: 0.5rem;
+    margin-top: 0.35rem;
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.2ex;
+    font-size: 1.4rem;
 }
 
 /* Dialogs */
