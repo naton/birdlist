@@ -30,18 +30,6 @@ function formatDate(date) {
 </template>
 
 <style scoped>
-.date {
-  color: var(--color-text-dim);
-}
-
-.name {
-  margin-right: auto;
-}
-
-.seen-by {
-  margin: -0.2em 0 -0.2em 0.5em;
-}
-
 button {
   position: absolute;
   right: 0;

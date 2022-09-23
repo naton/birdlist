@@ -132,4 +132,16 @@ function emitEdit(obs) {
   transition: 0.1s transform ease-out;
   text-align: left;
 }
+
+.date {
+  color: var(--color-text-dim);
+}
+
+.name {
+  margin-right: auto;
+}
+
+.seen-by {
+  margin: -0.2em 0 -0.2em 0.5em;
+}
 </style>
