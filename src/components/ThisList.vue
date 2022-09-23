@@ -104,12 +104,6 @@ function emitEdit(obs) {
 </template>
 
 <style>
-.month-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .empty-list {
   display: flex;
   height: 70%;
