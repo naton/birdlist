@@ -81,7 +81,6 @@ onUnmounted(() => {
       @selectList="selectList"
       :list="currentList"
       :user="me"
-      :is-logged-in="userIsLoggedIn"
     />
   </div>
   <div class="footer">
