@@ -1,10 +1,26 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed, onUnmounted } from "vue";
+import { liveQuery } from "dexie";
 import { db } from "../db";
 import ObservationsLists from "@/components/ObservationsLists.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
 import BirdsData from "@/components/BirdsData.vue";
 
+const me = ref("");
+
+/* Login */
+const userIsLoggedIn = computed(() => me.value !== "Unauthorized");
+
+const userSubscription = liveQuery(() => db.cloud.currentUser).subscribe(
+  (user) => {
+    me.value = user._value.name;
+  },
+  (error) => {
+    console.log(error);
+  }
+);
+
+/* Lists */
 const currentList = ref("monthly");
 
 function scrollToBottom(el) {
@@ -21,6 +37,7 @@ function selectList(list) {
   }
 }
 
+/* Observations */
 async function addObservation(ev) {
   const isCalculatedList =
     currentList.value.id == "monthly" || currentList.value.id == "everything";
@@ -44,11 +61,20 @@ async function addObservation(ev) {
 if (typeof HTMLDialogElement !== "function") {
   document.documentElement.classList.add("no-dialog");
 }
+
+onUnmounted(() => {
+  userSubscription.unsubscribe();
+});
 </script>
 
 <template>
   <div class="body">
-    <observations-lists @selectList="selectList" :list="currentList" />
+    <observations-lists
+      @selectList="selectList"
+      :list="currentList"
+      :user="me"
+      :is-logged-in="userIsLoggedIn"
+    />
   </div>
   <div class="footer">
     <observation-input @add="addObservation" :list="currentList" />

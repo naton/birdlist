@@ -3,7 +3,7 @@ import { computed } from "vue";
 import ObservationItem from "./ObservationItem.vue";
 import SpeciesItem from "./SpeciesItem.vue";
 
-const props = defineProps(["observations", "sort", "selected"]);
+const props = defineProps(["observations", "sort", "selected", "user"]);
 const emit = defineEmits(["sort", "select", "delete", "edit"]);
 
 const species = computed(() =>
@@ -79,6 +79,7 @@ function emitEdit(obs) {
           :key="obs.id"
           :show_date="true"
           :selected="props.selected"
+          :user="props.user"
           @select="emitSelect(obs)"
           @delete="emitDelete(id)"
           @edit="emitEdit(obs)"

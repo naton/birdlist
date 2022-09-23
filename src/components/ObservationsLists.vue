@@ -8,7 +8,7 @@ import ThisList from "@/components/ThisList.vue";
 import EditDialog from "@/components/EditDialog.vue";
 
 const componentKey = ref(0);
-const props = defineProps(["list"]);
+const props = defineProps(["list", "user", "is-logged-in"]);
 const emit = defineEmits(["selectList"]);
 
 const currentMonth = ref(new Date().getMonth());
@@ -18,23 +18,6 @@ const allObservations = ref([]);
 const tabList = ref([]);
 const isListSelected = ref(false);
 const isDialogOpen = ref(false);
-const me = ref("");
-
-/* Login */
-function login() {
-  db.cloud.login();
-}
-
-const userIsLoggedIn = computed(() => me.value !== "Unauthorized");
-
-const userSubscription = liveQuery(() => db.cloud.currentUser).subscribe(
-  (user) => {
-    me.value = user._value.name;
-  },
-  (error) => {
-    console.log(error);
-  }
-);
 
 /* Observations */
 const observationsSubscription = liveQuery(() =>
@@ -50,7 +33,7 @@ const observationsSubscription = liveQuery(() =>
 
 const allMyObservations = computed(() => {
   return allObservations.value
-    .filter((obs) => obs.owner == me.value)
+    .filter((obs) => obs.owner == props.user)
     .sort((a, b) => a.date - b.date);
 });
 
@@ -58,7 +41,7 @@ const allThisMonth = computed(() => {
   return allObservations.value
     .filter(
       (obs) =>
-        obs.owner == me.value &&
+        obs.owner == props.user &&
         obs.date.getFullYear() == new Date().getFullYear() &&
         obs.date.getMonth() == currentMonth.value
     )
@@ -95,7 +78,7 @@ function goToMonth(month) {
 function totalPerMonth(month) {
   return allObservations.value.filter(
     (obs) =>
-      obs.owner == me.value &&
+      obs.owner == props.user &&
       obs.date.getFullYear() == new Date().getFullYear() &&
       obs.date.getMonth() == month
   ).length;
@@ -214,7 +197,6 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  userSubscription.unsubscribe();
   observationsSubscription.unsubscribe();
   listsSubscription.unsubscribe();
 });
@@ -291,6 +273,7 @@ onUnmounted(() => {
           :observations="listObservations"
           :selected="currentObservation"
           :sort="currentSort"
+          :user="props.user"
           @sort="sortBy"
           @select="selectObservation"
           @edit="editObservation"
@@ -323,7 +306,11 @@ onUnmounted(() => {
       </div>
     </template>
   </tabs-list>
-  <button class="login-button" @click="login" v-if="!userIsLoggedIn">
+  <button
+    class="login-button"
+    @click="db.cloud.login()"
+    v-if="!props.isLoggedIn"
+  >
     Logga in
   </button>
   <edit-dialog

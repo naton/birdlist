@@ -1,7 +1,7 @@
 <script setup>
 import UserIcon from "./UserIcon.vue";
 
-defineProps(["obs", "show_date", "selected"]);
+const props = defineProps(["obs", "show_date", "selected", "user"]);
 const emit = defineEmits(["select", "edit"]);
 
 function formatDate(date) {
@@ -10,6 +10,10 @@ function formatDate(date) {
     day: "numeric",
     month: "short",
   }).format(date);
+}
+
+function canEdit(owner) {
+  return props.user !== "Unauthorized" && props.user === owner;
 }
 </script>
 
@@ -25,7 +29,12 @@ function formatDate(date) {
         <user-icon :user="obs.owner"></user-icon>
       </span>
     </span>
-    <button type="button" class="edit-button" @click.stop="emit('edit', obs)">
+    <button
+      type="button"
+      class="edit-button"
+      @click.stop="emit('edit', obs)"
+      :disabled="!canEdit(obs.owner)"
+    >
       ✎
     </button>
   </li>
@@ -41,6 +50,10 @@ function formatDate(date) {
   z-index: -1;
   transform: translateX(3.1rem);
   transition: 0.1s transform ease-out;
+}
+
+.edit-button:disabled {
+  opacity: 0.7;
 }
 
 .is-active {
