@@ -19,7 +19,7 @@ function formatDate(date) {
     :class="selected.id == obs.id && 'is-active'"
   >
     <span class="obs">
-      <span class="name">✔️ {{ obs.name }}</span>
+      <span class="name">✘ {{ obs.name }}</span>
       <span class="date" v-if="show_date">{{ formatDate(obs.date) }}</span>
       <span class="seen-by">
         <user-icon :user="obs.owner"></user-icon>

@@ -7,7 +7,7 @@ defineProps(["obs", "bird"]);
 <template>
   <li>
     <span class="obs">
-      <span class="name">✔️ {{ obs[0].name }}</span>
+      <span class="name">✘ {{ obs[0].name }}</span>
       <span class="seen-by">
         <user-icon
           v-for="user in [...new Set(obs.map((o) => o.owner))]"
