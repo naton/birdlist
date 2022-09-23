@@ -22,7 +22,7 @@ function groupBy(objectArray, property) {
   }, {});
 }
 
-const observationsByUser = groupBy(props.observations, "name");
+const observationsByUser = computed(() => groupBy(props.observations, "name"));
 
 function emitSort(value) {
   emit("sort", value);
