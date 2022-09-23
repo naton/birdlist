@@ -13,7 +13,7 @@ const userIsLoggedIn = computed(() => me.value !== "Unauthorized");
 
 const userSubscription = liveQuery(() => db.cloud.currentUser).subscribe(
   (user) => {
-    me.value = user._value.name;
+    me.value = user._value ? user._value.name : "";
   },
   (error) => {
     console.log(error);
