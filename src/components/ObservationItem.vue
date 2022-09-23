@@ -25,18 +25,21 @@ function formatDate(date) {
         <user-icon :user="obs.owner"></user-icon>
       </span>
     </span>
-    <button type="button" @click.stop="emit('edit', obs)">✎</button>
+    <button type="button" class="edit-button" @click.stop="emit('edit', obs)">
+      ✎
+    </button>
   </li>
 </template>
 
 <style scoped>
-button {
+.edit-button {
   position: absolute;
   right: 0;
   top: 0;
   height: 100%;
+  outline: 1px solid;
   z-index: -1;
-  transform: translateX(3rem);
+  transform: translateX(3.1rem);
   transition: 0.1s transform ease-out;
 }
 
@@ -53,8 +56,8 @@ button {
   color: var(--color-text);
 }
 
-.is-active button {
-  transform: translateX(0);
+.is-active .edit-button {
+  transform: translateX(-0.1rem);
   z-index: 0;
 }
 </style>

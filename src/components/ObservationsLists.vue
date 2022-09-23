@@ -262,7 +262,7 @@ onUnmounted(() => {
               <h2 class="subtitle center">Årskryss</h2>
             </div>
             <div class="center sidescroll">
-              <table>
+              <table class="year-summary">
                 <tbody>
                   <tr>
                     <td v-for="n in 12" :key="n">
@@ -272,8 +272,9 @@ onUnmounted(() => {
                   <tr>
                     <td v-for="n in 12" :key="n">
                       <button
-                        @click="goToMonth(n - 1)"
+                        class="month-button"
                         :class="totalPerMonth(n - 1) == '0' && 'secondary'"
+                        @click="goToMonth(n - 1)"
                       >
                         {{ totalPerMonth(n - 1) }}
                       </button>
@@ -303,15 +304,18 @@ onUnmounted(() => {
               <div class="subtitle">
                 <h2>{{ props.list.title }}</h2>
                 <button
-                  class="share"
+                  class="share-button"
                   @click.stop="shareBirdList(props.list.id, props.list.title)"
                   v-if="listObservations.length"
                 >
                   Dela
                 </button>
               </div>
-              <button class="delete" @click.prevent="deleteList(props.list.id)">
-                x
+              <button
+                class="delete-button"
+                @click.prevent="deleteList(props.list.id)"
+              >
+                ✕
               </button>
             </div>
           </template>
@@ -319,7 +323,9 @@ onUnmounted(() => {
       </div>
     </template>
   </tabs-list>
-  <button @click="login" v-if="!userIsLoggedIn">Logga in</button>
+  <button class="login-button" @click="login" v-if="!userIsLoggedIn">
+    Logga in
+  </button>
   <edit-dialog
     :key="componentKey"
     :isOpen="isDialogOpen"
@@ -352,12 +358,12 @@ onUnmounted(() => {
   overflow-x: auto;
 }
 
-.center table {
+.year-summary {
   margin: auto;
   font-size: 0.9rem;
 }
 
-table button {
+.month-button {
   min-width: 2rem;
   padding: 0.5rem;
 }
@@ -378,10 +384,10 @@ table button {
   transition: 0.1s transform ease-out;
 }
 
-.list-header .subtitle .share {
+.list-header .share-button {
   position: absolute;
-  right: 0;
-  margin-right: 0.5rem;
+  top: 0.1rem;
+  right: 0.8rem;
   margin-left: 1rem;
   padding-right: 1rem;
   padding-left: 1rem;
@@ -392,15 +398,20 @@ table button {
   transform: translateX(-3rem);
 }
 
-.list-header .delete {
+.list-header .delete-button {
   position: absolute;
-  top: 0.45rem;
+  top: 0.6rem;
   right: 0;
-  transform: translateX(3rem);
+  outline: 1px solid;
+  transform: translateX(3.1rem);
   transition: 0.1s transform ease-out;
 }
 
-.is-active.list-header .delete {
-  transform: translateX(0);
+.is-active.list-header .delete-button {
+  transform: translateX(-0.1rem);
+}
+
+.login-button {
+  align-self: flex-end;
 }
 </style>

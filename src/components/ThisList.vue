@@ -48,18 +48,20 @@ function emitEdit(obs) {
     <nav class="nav" v-if="observations.length">
       <a
         href="#bydate"
-        @click.prevent="emitSort('bydate')"
+        class="nav-link"
         :class="{
           current: sort == 'bydate',
         }"
+        @click.prevent="emitSort('bydate')"
         >Observationer</a
       >
       <a
         href="#byname"
-        @click.prevent="emitSort('byname')"
+        class="nav-link"
         :class="{
           current: sort == 'byname',
         }"
+        @click.prevent="emitSort('byname')"
         >Arter</a
       >
     </nav>
@@ -139,6 +141,11 @@ function emitEdit(obs) {
 
 .name {
   margin-right: auto;
+}
+
+.name::first-letter {
+  color: var(--color-background-dim);
+  letter-spacing: 0.5ch;
 }
 
 .seen-by {
