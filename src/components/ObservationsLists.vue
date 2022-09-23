@@ -239,11 +239,11 @@ onUnmounted(() => {
         >
           <template v-slot:header>
             <div class="month-nav">
-              <button @click.prevent="currentMonth--">«</button>
+              <button class="prev-month" @click.prevent="currentMonth--">«</button>
               <h2 class="subtitle center">
                 {{ currentMonthFormatted }}
               </h2>
-              <button @click.prevent="currentMonth++">»</button>
+              <button class="next-month" @click.prevent="currentMonth++">»</button>
             </div>
           </template>
         </this-list>
@@ -356,6 +356,20 @@ onUnmounted(() => {
 
 .sidescroll {
   overflow-x: auto;
+}
+
+.month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.prev-month {
+  margin-left: 0.8rem;
+}
+
+.next-month {
+  margin-right: 0.8rem;
 }
 
 .year-summary {
