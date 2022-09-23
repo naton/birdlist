@@ -18,7 +18,7 @@ const allObservations = ref([]);
 const tabList = ref([]);
 const isListSelected = ref(false);
 const isDialogOpen = ref(false);
-const me = ref([]);
+const me = ref("");
 
 /* Login */
 function login() {
