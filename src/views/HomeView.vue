@@ -11,14 +11,18 @@ const me = ref("");
 /* Login */
 const userIsLoggedIn = computed(() => me.value !== "Unauthorized");
 
-const userSubscription = liveQuery(() => db.cloud.currentUser).subscribe(
-  (user) => {
-    me.value = user._value ? user._value.name : "";
-  },
-  (error) => {
-    console.log(error);
-  }
-);
+let userSubscription;
+
+setTimeout(function () {
+  userSubscription = liveQuery(() => db.cloud.currentUser).subscribe(
+    (user) => {
+      me.value = user._value ? user._value.name : "";
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+}, 200);
 
 /* Lists */
 const currentList = ref("monthly");
