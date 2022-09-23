@@ -10,6 +10,20 @@ const species = computed(() =>
   [...new Set(props.observations.map((item) => item.name))].sort()
 );
 
+function groupBy(objectArray, property) {
+  return objectArray.reduce((acc, obj) => {
+    const key = obj[property];
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    // Add object to list for given key's value
+    acc[key].push(obj);
+    return acc;
+  }, {});
+}
+
+const observationsByUser = groupBy(props.observations, "name");
+
 function emitSort(value) {
   emit("sort", value);
 }
@@ -74,9 +88,9 @@ function emitEdit(obs) {
       <h3 class="center">{{ species.length }} olika arter</h3>
       <ol class="list">
         <species-item
-          v-for="bird in species"
-          :bird="bird"
-          :key="bird"
+          v-for="obs in observationsByUser"
+          :obs="obs"
+          :key="obs.id"
         ></species-item>
       </ol>
     </section>

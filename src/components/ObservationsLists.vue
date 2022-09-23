@@ -18,8 +18,25 @@ const allObservations = ref([]);
 const tabList = ref([]);
 const isListSelected = ref(false);
 const isDialogOpen = ref(false);
+const me = ref([]);
 
-/* DB subscriptions */
+/* Login */
+function login() {
+  db.cloud.login();
+}
+
+const userIsLoggedIn = computed(() => me.value !== "Unauthorized");
+
+const userSubscription = liveQuery(() => db.cloud.currentUser).subscribe(
+  (user) => {
+    me.value = user._value.name;
+  },
+  (error) => {
+    console.log(error);
+  }
+);
+
+/* Observations */
 const observationsSubscription = liveQuery(() =>
   db.observations.toArray()
 ).subscribe(
@@ -31,28 +48,17 @@ const observationsSubscription = liveQuery(() =>
   }
 );
 
-const listsSubscription = liveQuery(() => db.lists.toArray()).subscribe(
-  (lists) => {
-    tabList.value = lists;
-  },
-  (error) => {
-    console.log(error);
-  }
-);
-
-/* Lists */
-const currentMonthFormatted = computed(() => {
-  const date = new Date().setMonth(currentMonth.value);
-  return new Intl.DateTimeFormat("sv", {
-    year: "numeric",
-    month: "long",
-  }).format(date);
+const allMyObservations = computed(() => {
+  return allObservations.value
+    .filter((obs) => obs.owner == me.value)
+    .sort((a, b) => a.date - b.date);
 });
 
 const allThisMonth = computed(() => {
   return allObservations.value
     .filter(
       (obs) =>
+        obs.owner == me.value &&
         obs.date.getFullYear() == new Date().getFullYear() &&
         obs.date.getMonth() == currentMonth.value
     )
@@ -64,34 +70,6 @@ const listObservations = computed(() => {
   return allObservations.value.filter((obs) => obs.listId == listId);
 });
 
-/* Methods */
-function getMonthNameFormatted(month) {
-  const date = new Date();
-  date.setDate(1);
-  date.setMonth(month);
-  return new Intl.DateTimeFormat("sv", {
-    month: "short",
-  }).format(date);
-}
-
-function totalPerMonth(month) {
-  return allObservations.value.filter(
-    (obs) =>
-      obs.date.getFullYear() == new Date().getFullYear() &&
-      obs.date.getMonth() == month
-  ).length;
-}
-
-function goToMonth(month) {
-  currentMonth.value = month;
-  emit("selectList", "monthly");
-}
-
-function sortBy(val) {
-  return (currentSort.value = val);
-}
-
-/* Observations */
 function selectObservation(obs) {
   currentObservation.value =
     obs && currentObservation.value && currentObservation.value.id == obs.id
@@ -109,11 +87,55 @@ function editObservation(obs) {
   isDialogOpen.value = true;
 }
 
+function goToMonth(month) {
+  currentMonth.value = month;
+  emit("selectList", "monthly");
+}
+
+function totalPerMonth(month) {
+  return allObservations.value.filter(
+    (obs) =>
+      obs.owner == me.value &&
+      obs.date.getFullYear() == new Date().getFullYear() &&
+      obs.date.getMonth() == month
+  ).length;
+}
+
+function getMonthNameFormatted(month) {
+  const date = new Date();
+  date.setDate(1);
+  date.setMonth(month);
+  return new Intl.DateTimeFormat("sv", {
+    month: "short",
+  }).format(date);
+}
+
+function sortBy(val) {
+  return (currentSort.value = val);
+}
+
 function closeObservationDialog() {
   isDialogOpen.value = false;
 }
 
-/* Custom lists */
+/* Lists */
+const listsSubscription = liveQuery(() => db.lists.toArray()).subscribe(
+  (lists) => {
+    tabList.value = lists;
+  },
+  (error) => {
+    console.log(error);
+  }
+);
+
+const currentMonthFormatted = computed(() => {
+  const date = new Date().setMonth(currentMonth.value);
+  return new Intl.DateTimeFormat("sv", {
+    year: "numeric",
+    month: "long",
+  }).format(date);
+});
+
 function deleteList(listId) {
   if (
     confirm(
@@ -167,18 +189,24 @@ function shareBirdList(listId, listName) {
       email: email,
       invite: true, // Generates invite email on server on sync
       permissions: {
-        manage: "*", // Give your friend full permissions within this new realm.
+        add: ["observations"],
+        update: {
+          lists: ["title"],
+          observations: "*",
+        },
+        // manage: "*", // Give your friend full permissions within this new realm.
       },
     });
   });
 }
 
-function getSlotName(tab) {
-  return `tabPanel-${tab}`;
-}
-
 function selectList(list) {
   emit("selectList", list);
+}
+
+/* Other */
+function getSlotName(tab) {
+  return `tabPanel-${tab}`;
 }
 
 onMounted(() => {
@@ -186,6 +214,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  userSubscription.unsubscribe();
   observationsSubscription.unsubscribe();
   listsSubscription.unsubscribe();
 });
@@ -221,7 +250,7 @@ onUnmounted(() => {
 
         <this-list
           v-else-if="props.list.id === 'everything'"
-          :observations="allObservations"
+          :observations="allMyObservations"
           :selected="currentObservation"
           :sort="currentSort"
           @sort="sortBy"
@@ -290,6 +319,7 @@ onUnmounted(() => {
       </div>
     </template>
   </tabs-list>
+  <button @click="login" v-if="!userIsLoggedIn">Logga in</button>
   <edit-dialog
     :key="componentKey"
     :isOpen="isDialogOpen"

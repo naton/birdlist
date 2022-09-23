@@ -1,6 +1,8 @@
 <script setup>
-const emit = defineEmits(["select", "edit"]);
+import UserIcon from "./UserIcon.vue";
+
 defineProps(["obs", "show_date", "selected"]);
+const emit = defineEmits(["select", "edit"]);
 
 function formatDate(date) {
   return new Intl.DateTimeFormat(false, {
@@ -19,6 +21,9 @@ function formatDate(date) {
     <span class="obs">
       <span class="name">✔️ {{ obs.name }}</span>
       <span class="date" v-if="show_date">{{ formatDate(obs.date) }}</span>
+      <span class="seen-by">
+        <user-icon :user="obs.owner"></user-icon>
+      </span>
     </span>
     <button type="button" @click.stop="emit('edit', obs)">✎</button>
   </li>
@@ -28,8 +33,13 @@ function formatDate(date) {
 .date {
   color: var(--color-text-dim);
 }
+
 .name {
   margin-right: auto;
+}
+
+.seen-by {
+  margin: -0.2em 0 -0.2em 0.5em;
 }
 
 button {
