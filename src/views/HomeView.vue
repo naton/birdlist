@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { liveQuery } from "dexie";
 import { db } from "../db";
 import ObservationsLists from "@/components/ObservationsLists.vue";
@@ -62,6 +62,10 @@ if (typeof HTMLDialogElement !== "function") {
   document.documentElement.classList.add("no-dialog");
 }
 
+onMounted(() => {
+  db.cloud.sync();
+});
+
 onUnmounted(() => {
   userSubscription.unsubscribe();
 });
@@ -77,7 +81,20 @@ onUnmounted(() => {
     />
   </div>
   <div class="footer">
-    <observation-input @add="addObservation" :list="currentList" />
+    <button
+      class="login-button"
+      @click="db.cloud.login()"
+      v-if="!userIsLoggedIn"
+    >
+      Logga in
+    </button>
+    <observation-input v-else @add="addObservation" :list="currentList" />
     <birds-data />
   </div>
 </template>
+
+<style>
+.login-button {
+  width: 100%;
+}
+</style>

@@ -8,7 +8,7 @@ import ThisList from "@/components/ThisList.vue";
 import EditDialog from "@/components/EditDialog.vue";
 
 const componentKey = ref(0);
-const props = defineProps(["list", "user", "is-logged-in"]);
+const props = defineProps(["list", "user"]);
 const emit = defineEmits(["selectList"]);
 
 const currentMonth = ref(new Date().getMonth());
@@ -221,7 +221,7 @@ onUnmounted(() => {
           @edit="editObservation"
         >
           <template v-slot:header>
-            <div class="month-nav">
+            <div class="list-header month-nav">
               <button class="prev-month" @click.prevent="currentMonth--">«</button>
               <h2 class="heading center">
                 {{ currentMonthFormatted }}
@@ -308,13 +308,6 @@ onUnmounted(() => {
       </div>
     </template>
   </tabs-list>
-  <button
-    class="login-button"
-    @click="db.cloud.login()"
-    v-if="!props.isLoggedIn"
-  >
-    Logga in
-  </button>
   <edit-dialog
     :key="componentKey"
     :isOpen="isDialogOpen"
@@ -341,6 +334,7 @@ onUnmounted(() => {
 
 .list-header {
   overflow: hidden;
+  padding: 0.5rem 0;
 }
 
 .sidescroll {
@@ -351,7 +345,6 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 0;
 }
 
 .prev-month {
@@ -363,7 +356,7 @@ onUnmounted(() => {
 }
 
 .year-summary {
-  margin: auto;
+  margin: 0 auto 1.5rem;
   font-size: 0.9rem;
 }
 
@@ -379,8 +372,6 @@ onUnmounted(() => {
 .list-header .subtitle {
   display: flex;
   align-items: center;
-  margin-top: 0.5rem;
-  margin-bottom: 0.25rem;
   padding-left: 0.8rem;
   background: var(--color-background);
   transition: 0.1s transform ease-out;
@@ -411,9 +402,5 @@ onUnmounted(() => {
 
 .is-active.list-header .delete-button {
   transform: translateX(-0.1rem);
-}
-
-.login-button {
-  align-self: flex-end;
 }
 </style>
