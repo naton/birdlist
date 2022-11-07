@@ -6,6 +6,7 @@ import { db } from "../db";
 import TabsList from "@/components/TabsList.vue";
 import ThisList from "@/components/ThisList.vue";
 import EditDialog from "@/components/EditDialog.vue";
+import { getMonthName } from "../helpers";
 
 const componentKey = ref(0);
 const props = defineProps(["list", "user"]);
@@ -82,15 +83,6 @@ function totalPerMonth(month) {
       obs.date.getFullYear() == new Date().getFullYear() &&
       obs.date.getMonth() == month
   ).length;
-}
-
-function getMonthNameFormatted(month) {
-  const date = new Date();
-  date.setDate(1);
-  date.setMonth(month);
-  return new Intl.DateTimeFormat("sv", {
-    month: "short",
-  }).format(date);
 }
 
 function sortBy(val) {
@@ -222,11 +214,15 @@ onUnmounted(() => {
         >
           <template v-slot:header>
             <div class="list-header month-nav">
-              <button class="prev-month" @click.prevent="currentMonth--">«</button>
+              <button class="prev-month" @click.prevent="currentMonth--">
+                «
+              </button>
               <h2 class="heading center">
                 {{ currentMonthFormatted }}
               </h2>
-              <button class="next-month" @click.prevent="currentMonth++">»</button>
+              <button class="next-month" @click.prevent="currentMonth++">
+                »
+              </button>
             </div>
           </template>
         </this-list>
@@ -250,7 +246,7 @@ onUnmounted(() => {
                 <tbody>
                   <tr>
                     <td v-for="n in 12" :key="n">
-                      {{ getMonthNameFormatted(n - 1) }}
+                      {{ getMonthName(n - 1) }}
                     </td>
                   </tr>
                   <tr>

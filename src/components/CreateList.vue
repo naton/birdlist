@@ -28,7 +28,7 @@ async function createList(title) {
 
 <template>
   <li class="c-tabs__tab">
-    <button class="add" @click.stop="openModal">Skapa ny lista…</button>
+    <button class="add" @click.stop="openModal">Ny lista…</button>
     <dialog :open="showCreateListDialog">
       <input
         type="text"
