@@ -11,18 +11,14 @@ const me = ref("");
 /* Login */
 const userIsLoggedIn = computed(() => me.value !== "Unauthorized");
 
-let userSubscription;
-
-setTimeout(function () {
-  userSubscription = liveQuery(() => db.cloud.currentUser).subscribe(
-    (user) => {
-      me.value = user._value ? user._value.name : "";
-    },
-    (error) => {
-      console.log(error);
-    }
-  );
-}, 200);
+let userSubscription = liveQuery(() => db.cloud.currentUser).subscribe(
+  (user) => {
+    me.value = user._value ? user._value.name : "";
+  },
+  (error) => {
+    console.log(error);
+  }
+);
 
 /* Lists */
 const currentList = ref("monthly");
@@ -60,10 +56,6 @@ async function addObservation(ev) {
   setTimeout(() => {
     scrollToBottom(".body-content");
   }, 100);
-}
-
-if (typeof HTMLDialogElement !== "function") {
-  document.documentElement.classList.add("no-dialog");
 }
 
 onMounted(() => {
