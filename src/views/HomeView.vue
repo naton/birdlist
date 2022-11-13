@@ -6,18 +6,26 @@ import ObservationsLists from "@/components/ObservationsLists.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
 import BirdsData from "@/components/BirdsData.vue";
 
-const me = ref("");
+const me = ref(null);
 
 /* Login */
 const userIsLoggedIn = computed(() => me.value !== "Unauthorized");
 
-let userSubscription = liveQuery(() => db.cloud.currentUser).subscribe(
-  (user) => {
-    me.value = user._value ? user._value.name : "";
-  },
-  (error) => {
-    console.log(error);
-  }
+let userSubscription;
+
+setTimeout(
+  () =>
+    (userSubscription = liveQuery(
+      async () => await db.cloud.currentUser
+    ).subscribe(
+      (user) => {
+        me.value = user._value ? user._value.name : null;
+      },
+      (error) => {
+        console.log(error);
+      }
+    )),
+  500
 );
 
 /* Lists */
@@ -58,8 +66,8 @@ async function addObservation(ev) {
   }, 100);
 }
 
-onMounted(() => {
-  db.cloud.sync();
+onMounted(async () => {
+  await db.cloud.sync();
 });
 
 onUnmounted(() => {
@@ -78,7 +86,7 @@ onUnmounted(() => {
   <div class="footer">
     <button
       class="login-button"
-      @click="db.cloud.login()"
+      @click="db.cloud.sync()"
       v-if="!userIsLoggedIn"
     >
       Logga in

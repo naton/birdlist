@@ -48,7 +48,7 @@ function saveAndClose() {
 </script>
 
 <template>
-  <div class="dialog" v-show="props.isOpen">
+  <div class="dialog" v-if="props.isOpen">
     <h2>{{ observation.name }}</h2>
     <h3>{{ formatDate(observation.date) }}</h3>
 

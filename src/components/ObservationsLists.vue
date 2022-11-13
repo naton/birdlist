@@ -4,7 +4,7 @@ import { liveQuery } from "dexie";
 import { getTiedRealmId } from "dexie-cloud-addon";
 import { db } from "../db";
 import TabsList from "@/components/TabsList.vue";
-import ThisList from "@/components/ThisList.vue";
+import ListView from "@/components/ListView.vue";
 import EditDialog from "@/components/EditDialog.vue";
 import { getMonthName } from "../helpers";
 
@@ -21,8 +21,8 @@ const isListSelected = ref(false);
 const isDialogOpen = ref(false);
 
 /* Observations */
-const observationsSubscription = liveQuery(() =>
-  db.observations.toArray()
+let observationsSubscription = liveQuery(
+  async () => await db.observations.toArray()
 ).subscribe(
   (observations) => {
     allObservations.value = observations;
@@ -94,7 +94,9 @@ function closeObservationDialog() {
 }
 
 /* Lists */
-const listsSubscription = liveQuery(() => db.lists.toArray()).subscribe(
+let listsSubscription = liveQuery(
+  async () => await db.lists.toArray()
+).subscribe(
   (lists) => {
     tabList.value = lists;
   },
@@ -111,24 +113,28 @@ const currentMonthFormatted = computed(() => {
   }).format(date);
 });
 
-function deleteList(listId) {
-  if (
-    confirm(
-      "Är du säker på att du vill ta bort denna lista och alla dess observationer?"
-    )
-  ) {
-    return db
+async function deleteList(listId) {
+  let deleteRelatedObservations = false;
+
+  if (confirm("Är du säker på att du vill ta bort denna lista?")) {
+    deleteRelatedObservations = confirm("Radera även listans observationer?");
+
+    await db
       .transaction(
         "rw",
         [db.lists, db.observations, db.realms, db.members],
         () => {
-          // Delete possible todo-items:
-          db.observations.where({ listId: listId }).delete();
+          if (deleteRelatedObservations) {
+            // Delete possible observations:
+            db.observations.where({ listId: listId }).delete();
+          }
           // Delete the list:
           db.lists.delete(listId);
           // Delete possible realm and its members in case list was shared:
           const tiedRealmId = getTiedRealmId(listId);
+          // Empty out any tied realm from members:
           db.members.where({ realmId: tiedRealmId }).delete();
+          // Delete the tied realm if it exists:
           db.realms.delete(tiedRealmId);
         }
       )
@@ -138,41 +144,48 @@ function deleteList(listId) {
   }
 }
 
-function shareBirdList(listId, listName) {
+async function shareBirdList(listId, listName) {
   let email = prompt(
     "Ange e-postadressen till personen du vill dela denna lista med:"
   );
 
   if (!email) return;
 
-  return db.transaction("rw", [db.lists, db.realms, db.members], () => {
-    // Add or update a realm, tied to the todo-list using getTiedRealmId():
-    const realmId = getTiedRealmId(listId);
+  await db.transaction(
+    "rw",
+    [db.lists, db.observations, db.realms, db.members],
+    async () => {
+      // Add or update a realm, tied to the list using getTiedRealmId():
+      const realmId = getTiedRealmId(listId);
 
-    db.realms.put({
-      realmId,
-      name: listName,
-      represents: "a bird list",
-    });
+      await db.realms.put({
+        realmId,
+        name: listName,
+        represents: "a bird list",
+      });
 
-    // Move todo-list into the realm (if not already there):
-    db.lists.update(listId, { realmId });
-
-    // Add the members to share it to:
-    db.members.add({
-      realmId,
-      email: email,
-      invite: true, // Generates invite email on server on sync
-      permissions: {
-        add: ["observations"],
-        update: {
-          lists: ["title"],
-          observations: "*",
+      // Move list into the realm (if not already there):
+      await db.lists.update(listId, { realmId });
+      // Move all items into the new realm consistently (modify() is consistent across sync peers)
+      await db.observations
+        .where({ listId: listId })
+        .modify({ realmId: realmId });
+      // Add the members to share it to:
+      await db.members.add({
+        realmId,
+        email: email,
+        invite: true, // Generates invite email on server on sync
+        permissions: {
+          add: ["observations"],
+          update: {
+            lists: ["title"],
+            observations: "*",
+          },
+          // manage: "*", // Give your friend full permissions within this new realm.
         },
-        // manage: "*", // Give your friend full permissions within this new realm.
-      },
-    });
-  });
+      });
+    }
+  );
 }
 
 function selectList(list) {
@@ -202,7 +215,7 @@ onUnmounted(() => {
   >
     <template v-slot:[getSlotName(props.list.id)]>
       <div class="body-content">
-        <this-list
+        <list-view
           v-if="props.list.id === 'monthly'"
           :observations="allThisMonth"
           :sort="currentSort"
@@ -225,9 +238,9 @@ onUnmounted(() => {
               </button>
             </div>
           </template>
-        </this-list>
+        </list-view>
 
-        <this-list
+        <list-view
           v-else-if="props.list.id === 'everything'"
           :observations="allMyObservations"
           :selected="currentObservation"
@@ -264,9 +277,9 @@ onUnmounted(() => {
               </table>
             </div>
           </template>
-        </this-list>
+        </list-view>
 
-        <this-list
+        <list-view
           v-else
           :observations="listObservations"
           :selected="currentObservation"
@@ -286,6 +299,10 @@ onUnmounted(() => {
                 <h2 class="heading">{{ props.list.title }}</h2>
                 <button
                   class="share-button"
+                  :class="
+                    props.list.realmId === getTiedRealmId(props.list.id) &&
+                    'is-shared'
+                  "
                   @click.stop="shareBirdList(props.list.id, props.list.title)"
                   v-if="listObservations.length"
                 >
@@ -300,7 +317,7 @@ onUnmounted(() => {
               </button>
             </div>
           </template>
-        </this-list>
+        </list-view>
       </div>
     </template>
   </tabs-list>
@@ -380,6 +397,10 @@ onUnmounted(() => {
   margin-left: 1rem;
   padding-right: 1rem;
   padding-left: 1rem;
+}
+
+.share-button.is-shared::before {
+  content: "√";
 }
 
 .is-active.list-header .subtitle {

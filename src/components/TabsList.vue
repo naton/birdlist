@@ -63,6 +63,7 @@ function emitActiveTab(list) {
         }"
       >
         <select name="name" v-model="currentList" class="transparent-menu">
+          <option value="monthly">Välj lista…</option>
           <option v-for="list in tabList" :key="list.id" :value="list">
             {{ list.title }}
           </option>
@@ -116,7 +117,8 @@ function emitActiveTab(list) {
 
 .transparent-menu {
   position: absolute;
-  width: 1rem;
+  left: 0;
+  right: 0;
   height: 3.5rem;
   padding: 1.5rem 2rem;
   opacity: 0;

@@ -69,6 +69,20 @@ function emitEdit(obs) {
   <slot name="header" />
 
   <slot name="default">
+    <nav class="user-nav" v-if="users.length > 1">
+      <button
+        v-for="user in users"
+        class="user-button"
+        :class="user === selectedUser && 'user-button--active'"
+        @click="changeUser(user)"
+        :key="user"
+      >
+        <user-icon :user="user">
+          <span :class="user === props.user && 'me'">{{ user }}</span>
+        </user-icon>
+      </button>
+    </nav>
+
     <nav class="nav" v-if="observations.length">
       <a
         href="#bydate"
@@ -88,22 +102,6 @@ function emitEdit(obs) {
         @click.prevent="emitSort('byname')"
         >Arter</a
       >
-    </nav>
-
-    <nav class="user-nav">
-      <button
-        v-for="user in users"
-        class="user-button"
-        :class="user === selectedUser && 'user-button--active'"
-        @click="changeUser(user)"
-        :key="user"
-      >
-        <user-icon :user="user">
-          <span :class="user === props.user && 'me'">{{
-            user.substring(0, 8) + "…"
-          }}</span>
-        </user-icon>
-      </button>
     </nav>
 
     <section
@@ -139,7 +137,7 @@ function emitEdit(obs) {
       </ol>
     </section>
 
-    <section class="empty-list" v-if="!observations.length">
+    <section class="empty-list" v-if="user && !observations.length">
       <h3 class="center">Inga observationer</h3>
     </section>
   </slot>
@@ -151,6 +149,10 @@ function emitEdit(obs) {
   height: 70%;
   align-items: center;
   justify-content: center;
+}
+
+.list {
+  margin: 0.5rem 0 0;
 }
 
 .list li {
@@ -185,7 +187,8 @@ function emitEdit(obs) {
 }
 
 .user-nav {
-  padding: 1rem;
+  display: flex;
+  padding: 0.5rem 1rem;
   overflow: auto;
   white-space: nowrap;
 }
@@ -195,6 +198,8 @@ function emitEdit(obs) {
   padding: 0;
   color: inherit;
   background: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .user-button .user {
