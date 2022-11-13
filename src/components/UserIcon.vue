@@ -3,10 +3,11 @@ import { computed } from "vue";
 const props = defineProps(["user"]);
 
 const initial = computed(() => {
-  return props.user.substring(0, 1);
+  return props.user ? props.user.substring(0, 1) : "";
 });
 
 function cssColor(string) {
+  if (!string) return "";
   const hashCode = (str) => {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -30,6 +31,7 @@ function cssColor(string) {
     }"
     ><span class="initial">{{ initial }}</span></span
   >
+  <slot></slot>
 </template>
 
 <style>
@@ -46,8 +48,12 @@ function cssColor(string) {
   line-height: 1.3;
 }
 
+.user + span {
+  margin: 0 1ch 0 0.5ch;
+}
+
 .user + .user {
-  margin-left: -0.5em;
+  margin: 0 0 0 -0.5em;
 }
 
 .initial {
