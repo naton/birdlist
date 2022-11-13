@@ -123,25 +123,17 @@ button.secondary {
 }
 
 /* Dialogs */
-dialog {
+.dialog {
     position: fixed;
-    top: 1%;
-    left: 1%;
-    width: 98%;
-    height: 98%;
+    display: grid;
+    top: 2%;
+    right: 2%;
+    left: 2%;
+    bottom: 2%;
+    border: 2px solid;
+    background-color: var(--color-background);
     padding-bottom: 30%;
     place-content: center;
     z-index: 1;
-}
-
-dialog[open] {
-    display: grid;
-}
-
-dialog::backdrop {
-    background: #000000cc;
-}
-
-.no-dialog dialog {
-    display: none;
+    outline: 40px solid rgba(0, 0, 0, 0.5);
 }

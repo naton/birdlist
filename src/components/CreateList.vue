@@ -10,7 +10,7 @@ const title = ref("");
 function openModal() {
   showCreateListDialog.value = true;
   setTimeout(() => {
-    document.querySelector("dialog input").focus();
+    document.querySelector(".dialog input").focus();
   }, 100);
 }
 
@@ -27,9 +27,9 @@ async function createList(title) {
 </script>
 
 <template>
-  <li class="c-tabs__tab">
+  <li class="c-tabs__tab last">
     <button class="add" @click.stop="openModal">Ny lista…</button>
-    <dialog :open="showCreateListDialog">
+    <div class="dialog create-list-dialog" v-if="showCreateListDialog">
       <input
         type="text"
         v-model="title"
@@ -41,17 +41,16 @@ async function createList(title) {
         <button class="create" @click="createList(title)">Skapa lista</button>
         <button @click="closeModal">Avbryt</button>
       </div>
-    </dialog>
+    </div>
   </li>
 </template>
 
-<style scoped>
-input {
-  max-width: 90vw;
-  font-size: 2rem;
+<style>
+.c-tabs__tab.last {
+  margin-left: auto;
 }
 
-.add {
+.c-tabs__tab .add {
   align-self: center;
   margin-right: 0.5rem;
   margin-left: 1rem;
@@ -59,7 +58,12 @@ input {
   padding-left: 1rem;
 }
 
-.create {
+.create-list-dialog input {
+  max-width: 90vw;
+  font-size: 2rem;
+}
+
+.create-list-dialog .create {
   margin-top: 1rem;
 }
 </style>

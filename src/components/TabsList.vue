@@ -54,13 +54,25 @@ function emitActiveTab(list) {
         />
         <label for="tab-everything">{{ getCurrentYear() }}</label>
       </li>
-      <li class="c-tabs__tab">
-        <select name="name" v-model="currentList" class="transparent">
+      <li
+        class="c-tabs__tab"
+        :class="{
+          'c-tabs__tab--active':
+            'everything' !== props.currentList.id &&
+            'monthly' !== props.currentList.id,
+        }"
+      >
+        <select name="name" v-model="currentList" class="transparent-menu">
           <option v-for="list in tabList" :key="list.id" :value="list">
             {{ list.title }}
           </option>
         </select>
-        <img src="../assets/check-list-icon.svg" width="32" height="32" alt="Välj lista" />
+        <img
+          src="../assets/check-list-icon.svg"
+          width="32"
+          height="32"
+          alt="Välj lista"
+        />
       </li>
       <create-list @activate="emitActiveTab" />
     </ul>
@@ -82,6 +94,7 @@ function emitActiveTab(list) {
 <style>
 .c-tabs {
   display: flex;
+  width: 100%;
   align-items: center;
   list-style: none;
   overflow: auto;
@@ -101,17 +114,19 @@ function emitActiveTab(list) {
   background: var(--color-background);
 }
 
-.transparent {
+.transparent-menu {
   position: absolute;
-  left: 1rem;
-  width: 32px;
-  height: 32px;
+  width: 1rem;
+  height: 3.5rem;
+  padding: 1.5rem 2rem;
   opacity: 0;
 }
 
-.transparent + img {
+.transparent-menu + img {
   display: block;
-  margin: 0 0 0 1rem;
+  width: 2rem;
+  height: 3.5rem;
+  margin: 0 1rem;
   pointer-events: none;
 }
 </style>

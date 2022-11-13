@@ -48,7 +48,7 @@ function saveAndClose() {
 </script>
 
 <template>
-  <dialog :open="props.isOpen">
+  <div class="dialog" v-show="props.isOpen">
     <h2>{{ observation.name }}</h2>
     <h3>{{ formatDate(observation.date) }}</h3>
 
@@ -91,7 +91,7 @@ function saveAndClose() {
         Radera
       </button>
     </div>
-  </dialog>
+  </div>
 </template>
 
 <style scoped>
