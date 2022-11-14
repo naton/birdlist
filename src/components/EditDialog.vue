@@ -55,7 +55,7 @@ function saveAndClose() {
     <p v-if="observation.location">
       Plats:
       <a
-        href="https://www.openstreetmap.org/#map=16/{{ observation.location }}"
+        :href="`https://www.openstreetmap.org/#map=16/${observation.location}`"
         target="_blank"
         >{{ observation.location }}</a
       >

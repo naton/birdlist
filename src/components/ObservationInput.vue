@@ -91,19 +91,19 @@ function toggleCurrentLocation() {
         <g stroke-width="2" transform="translate(0, 0)">
           <g class="nc-loop-ripple-16-icon-o" stroke-width="2">
             <circle
-              cx="9"
-              cy="9"
+              cx="8"
+              cy="8"
               fill="none"
-              r="11"
+              r="9"
               stroke="currentColor"
               stroke-width="2"
             ></circle>
             <circle
               data-color="color-2"
-              cx="9"
-              cy="9"
+              cx="8"
+              cy="8"
               fill="none"
-              r="11"
+              r="9"
               stroke="currentColor"
               stroke-width="2"
             ></circle>
