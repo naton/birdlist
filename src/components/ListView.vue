@@ -212,7 +212,7 @@ function emitEdit(obs) {
 }
 
 .user-button--active .user {
-  border: 3px solid var(--color-text);
+  border: 2px solid var(--color-text);
 }
 
 .seen-by {

@@ -131,4 +131,10 @@ function emitActiveTab(list) {
   margin: 0 1rem;
   pointer-events: none;
 }
+
+@media (prefers-color-scheme: dark) {
+  .transparent-menu + img {
+    filter: invert(1);
+  }
+}
 </style>

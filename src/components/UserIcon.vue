@@ -46,10 +46,12 @@ function cssColor(string) {
   align-items: center;
   justify-content: center;
   line-height: 1.3;
+  filter: sepia(1);
 }
 
 .user + span {
   margin: 0 1ch 0 0.5ch;
+  font-size: 0.9em;
 }
 
 .user + .user {
@@ -57,6 +59,7 @@ function cssColor(string) {
 }
 
 .initial {
+  font-size: 1rem;
   filter: invert(1);
 }
 </style>
