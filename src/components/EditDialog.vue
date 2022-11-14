@@ -52,6 +52,15 @@ function saveAndClose() {
     <h2>{{ observation.name }}</h2>
     <h3>{{ formatDate(observation.date) }}</h3>
 
+    <p v-if="observation.location">
+      Plats:
+      <a
+        href="https://www.openstreetmap.org/#map=16/{{ observation.location }}"
+        target="_blank"
+        >{{ observation.location }}</a
+      >
+    </p>
+
     <div>
       <label for="obs-list">Ändra lista</label>
       <select id="obs-list" @change="selectedList = $event.target.value">

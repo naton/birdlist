@@ -46,7 +46,7 @@ function selectList(list) {
 }
 
 /* Observations */
-async function addObservation(ev) {
+async function addObservation(ev, listId, location) {
   const isCalculatedList =
     currentList.value.id == "monthly" || currentList.value.id == "everything";
 
@@ -55,6 +55,7 @@ async function addObservation(ev) {
     date: new Date(),
     realmId: isCalculatedList ? undefined : currentList.value.realmId,
     listId: isCalculatedList ? undefined : currentList.value.id, // Any ID other than defaults are valid here
+    location: location,
   });
 
   // Reset form field value
