@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, computed, onUnmounted } from "vue";
 import { liveQuery } from "dexie";
 import { db } from "../db";
 import ObservationsLists from "@/components/ObservationsLists.vue";
@@ -67,10 +67,6 @@ async function addObservation(ev, listId, location) {
   }, 100);
 }
 
-onMounted(async () => {
-  await db.cloud.sync();
-});
-
 onUnmounted(() => {
   userSubscription.unsubscribe();
 });
@@ -87,12 +83,12 @@ onUnmounted(() => {
   <div class="footer">
     <button
       class="login-button"
-      @click="db.cloud.sync()"
+      @click="db.cloud.login()"
       v-if="!userIsLoggedIn"
     >
-      Logga in
+      Logga in (för att synka med sparade obsar)
     </button>
-    <observation-input v-else @add="addObservation" :list="currentList" />
+    <observation-input @add="addObservation" :list="currentList" />
     <birds-data />
   </div>
 </template>

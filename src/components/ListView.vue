@@ -15,7 +15,7 @@ const users = computed(() =>
   [...new Set(props.observations.map((item) => item.owner))].sort()
 );
 
-const selectedUser = ref(props.user);
+const selectedUser = ref(null);
 
 function groupBy(objectArray, property) {
   return objectArray.reduce((acc, obj) => {
