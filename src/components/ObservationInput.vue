@@ -48,7 +48,7 @@ function toggleCurrentLocation() {
       list="birds"
       @change="emit('add', $event, props.list, currentPosition)"
       autocomplete="off"
-      placeholder="Skriv namnet på fågeln du sett…"
+      placeholder="Skriv namnet på 🐦 du sett…"
     />
     <button
       type="button"
@@ -136,7 +136,7 @@ function toggleCurrentLocation() {
 <style>
 .add-observation {
   display: flex;
-  padding: 1rem 1rem 0.5rem;
+  padding: 0.5rem 1rem;
 }
 
 .add-observation input {
@@ -146,7 +146,7 @@ function toggleCurrentLocation() {
   border-radius: var(--radius);
   box-sizing: border-box;
   color: var(--color-text);
-  background: none;
+  background: var(--color-background);
   font-size: 1.2rem;
   appearance: none;
 }

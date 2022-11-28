@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 module.exports = {
   globDirectory: "/",
-  globPatterns: ["**/*.{ico,json}"],
+  globPatterns: ["**/*.{png,js,css,svg,webp,xml,ico,html,json,webmanifest}"],
   swDest: "/sw.js",
   ignoreURLParametersMatching: [/^utm_/, /^fbclid$/],
 };

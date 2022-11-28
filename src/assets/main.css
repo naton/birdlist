@@ -30,7 +30,8 @@
 
 .footer {
     grid-area: footer;
-    box-shadow: 0px -10px 25px 10px #00000011;
+    background: var(--color-background-dim);
+    box-shadow: rgb(17 17 26 / 10%) 0px 8px 24px, rgb(17 17 26 / 10%) 0px 16px 56px, rgb(17 17 26 / 10%) 0px 24px 80px;
 }
 
 /* Navigation */
