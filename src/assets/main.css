@@ -1,20 +1,6 @@
 @import "./base.css";
 
 /* Layout */
-.container {
-    height: 100vh; /* Chrome v104 or earlier */
-    height: 100svh;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr auto;
-    gap: 0px 0px;
-    grid-auto-flow: row;
-    grid-template-areas:
-        "main"
-        "nav";
-    background: #fff url(/src/assets/logo.webp) no-repeat 50% / 70% auto;
-}
-
 .main {
     display: grid;
     grid-template-columns: 1fr;
@@ -50,15 +36,16 @@
 /* Navigation */
 .nav {
     grid-area: nav;
+    display: flex;
     text-align: center;
     padding: 0.5rem 1rem 1rem;
     background: var(--color-background);
 }
 
 .nav-link {
-    display: inline-block;
+    flex: 1;
     margin: 0 -1px 0 0;
-    padding: 0.2rem 0.6rem;
+    padding: 0.25rem 0.6rem;
     border-left: 1px solid var(--color-border);
     color: var(--color-link);
     text-decoration: none;

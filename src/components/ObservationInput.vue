@@ -155,6 +155,10 @@ function toggleCurrentLocation() {
   color: var(--color-text-dim);
 }
 
+.add-observation button {
+  margin-left: 0.3rem;
+}
+
 .has-position {
   background: var(--color-background-dim);
   color: var(--color-text);

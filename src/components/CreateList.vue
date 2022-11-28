@@ -52,7 +52,7 @@ async function createList(title) {
 
 .c-tabs__tab .add {
   align-self: center;
-  margin-right: 0.5rem;
+  margin-right: 1rem;
   margin-left: 1rem;
   padding-right: 1rem;
   padding-left: 1rem;

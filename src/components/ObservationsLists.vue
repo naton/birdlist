@@ -361,11 +361,11 @@ onUnmounted(() => {
 }
 
 .prev-month {
-  margin-left: 0.8rem;
+  margin-left: 1rem;
 }
 
 .next-month {
-  margin-right: 0.8rem;
+  margin-right: 1rem;
 }
 
 .year-summary {
@@ -385,7 +385,7 @@ onUnmounted(() => {
 .list-header .subtitle {
   display: flex;
   align-items: center;
-  padding-left: 0.8rem;
+  padding-left: 1rem;
   background: var(--color-background);
   transition: 0.1s transform ease-out;
 }
@@ -393,7 +393,7 @@ onUnmounted(() => {
 .list-header .share-button {
   position: absolute;
   top: 0.1rem;
-  right: 0.8rem;
+  right: 1rem;
   margin-left: 1rem;
   padding-right: 1rem;
   padding-left: 1rem;
