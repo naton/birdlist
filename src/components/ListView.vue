@@ -138,7 +138,7 @@ function emitEdit(obs) {
     </section>
 
     <section class="empty-list" v-if="user && !observations.length">
-      <h3 class="center">Inga observationer</h3>
+      <h3 class="center">Inga observerade 🐦</h3>
     </section>
   </slot>
 </template>

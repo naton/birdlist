@@ -304,7 +304,6 @@ onUnmounted(() => {
                     'is-shared'
                   "
                   @click.stop="shareBirdList(props.list.id, props.list.title)"
-                  v-if="listObservations.length"
                 >
                   Dela
                 </button>
@@ -338,6 +337,7 @@ onUnmounted(() => {
   max-width: 100vw;
   overflow: hidden;
   background: var(--color-background-dim);
+  box-shadow: inset rgb(17 17 26 / 10%) 0 -4px 8px 0;
 }
 
 .body-content {

@@ -6,10 +6,10 @@ import ObservationsLists from "@/components/ObservationsLists.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
 import BirdsData from "@/components/BirdsData.vue";
 
-const me = ref(null);
+const me = ref("unauthorized");
 
 /* Login */
-const userIsLoggedIn = computed(() => me.value !== "Unauthorized");
+const userIsLoggedIn = computed(() => me.value !== "unauthorized");
 
 let userSubscription;
 
@@ -19,7 +19,9 @@ setTimeout(
       async () => await db.cloud.currentUser
     ).subscribe(
       (user) => {
-        me.value = user._value ? user._value.name : null;
+        me.value = user._value
+          ? user._value.name.toLowerCase()
+          : "unauthorized";
       },
       (error) => {
         console.log(error);
@@ -79,15 +81,15 @@ onUnmounted(() => {
       :list="currentList"
       :user="me"
     />
-  </div>
-  <div class="footer">
     <button
       class="login-button"
       @click="db.cloud.login()"
       v-if="!userIsLoggedIn"
     >
-      Logga in (för att synka med sparade obsar)
+      <u>Logga in</u> för att hämta sparade 🐦
     </button>
+  </div>
+  <div class="footer">
     <observation-input @add="addObservation" :list="currentList" />
     <birds-data />
   </div>
@@ -95,6 +97,13 @@ onUnmounted(() => {
 
 <style>
 .login-button {
-  width: 100%;
+  margin: 0.5rem 1rem;
+  box-shadow: rgb(17 17 26 / 20%) 0 2px 12px;
+}
+
+.dxc-login-dlg input[type="email"] {
+  width: auto !important;
+  max-width: 100%;
+  margin-bottom: 1rem;
 }
 </style>

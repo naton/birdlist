@@ -13,7 +13,7 @@ function formatDate(date) {
 }
 
 function canEdit(owner) {
-  return props.user !== "Unauthorized" && props.user === owner;
+  return props.user !== "unauthorized" && props.user === owner;
 }
 </script>
 
@@ -35,7 +35,7 @@ function canEdit(owner) {
       @click.stop="emit('edit', obs)"
       :disabled="!canEdit(obs.owner)"
     >
-      ✎
+      ✏️
     </button>
   </li>
 </template>

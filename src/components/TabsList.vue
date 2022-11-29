@@ -112,6 +112,8 @@ function emitActiveTab(list) {
 
 .c-tabs__tab--active {
   border-top: 2px solid;
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
   background: var(--color-background);
 }
 
@@ -122,6 +124,7 @@ function emitActiveTab(list) {
   height: 3.5rem;
   padding: 1.5rem 2rem;
   opacity: 0;
+  font-size: 3rem;
 }
 
 .transparent-menu + img {
