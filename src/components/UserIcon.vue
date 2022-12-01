@@ -46,7 +46,7 @@ function cssColor(string) {
   align-items: center;
   justify-content: center;
   line-height: 1.3;
-  filter: sepia(1);
+  filter: sepia(0.7);
 }
 
 .user + span {
@@ -60,6 +60,6 @@ function cssColor(string) {
 
 .initial {
   font-size: 1rem;
-  filter: invert(1);
+  filter: invert(1) hue-rotate(45deg);
 }
 </style>
