@@ -96,7 +96,6 @@ function emitActiveTab(list) {
 .c-tabs {
   display: flex;
   width: 100%;
-  align-items: center;
   list-style: none;
   overflow: auto;
   white-space: nowrap;
@@ -115,6 +114,10 @@ function emitActiveTab(list) {
   border-top-left-radius: var(--radius);
   border-top-right-radius: var(--radius);
   background: var(--color-background);
+}
+
+.c-tabs__tab--active label {
+  padding-top: 0.8rem;
 }
 
 .transparent-menu {

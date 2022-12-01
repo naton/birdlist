@@ -231,13 +231,33 @@ onUnmounted(() => {
           <template v-slot:header>
             <div class="list-header date-nav">
               <button class="prev-date" @click.prevent="currentMonth--">
-                «
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 12 12"
+                  width="12"
+                  height="12"
+                >
+                  <path
+                    fill="currentColor"
+                    d="m9.854 1.646-1.5-1.5a.5.5 0 0 0-.708 0l-5.5 5.5a.5.5 0 0 0 0 .708l5.5 5.5a.5.5 0 0 0 .708 0l1.5-1.5a.5.5 0 0 0 0-.708L6.207 6l3.647-3.646a.5.5 0 0 0 0-.708Z"
+                  />
+                </svg>
               </button>
               <h2 class="heading center">
                 {{ currentMonthFormatted }}
               </h2>
               <button class="next-date" @click.prevent="currentMonth++">
-                »
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 12 12"
+                  width="12"
+                  height="12"
+                >
+                  <path
+                    fill="currentColor"
+                    d="m2.146 10.354 1.5 1.5a.5.5 0 0 0 .708 0l5.5-5.5a.5.5 0 0 0 0-.708l-5.5-5.5a.5.5 0 0 0-.708 0l-1.5 1.5a.5.5 0 0 0 0 .708L5.793 6 2.146 9.646a.5.5 0 0 0 0 .708Z"
+                  />
+                </svg>
               </button>
             </div>
           </template>
@@ -256,11 +276,31 @@ onUnmounted(() => {
           <template v-slot:header>
             <div class="list-header date-nav">
               <button class="prev-date" @click.prevent="currentYear--">
-                «
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 12 12"
+                  width="12"
+                  height="12"
+                >
+                  <path
+                    fill="currentColor"
+                    d="m9.854 1.646-1.5-1.5a.5.5 0 0 0-.708 0l-5.5 5.5a.5.5 0 0 0 0 .708l5.5 5.5a.5.5 0 0 0 .708 0l1.5-1.5a.5.5 0 0 0 0-.708L6.207 6l3.647-3.646a.5.5 0 0 0 0-.708Z"
+                  />
+                </svg>
               </button>
               <h2 class="heading center">Årskryss {{ currentYear }}</h2>
               <button class="next-date" @click.prevent="currentYear++">
-                »
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 12 12"
+                  width="12"
+                  height="12"
+                >
+                  <path
+                    fill="currentColor"
+                    d="m2.146 10.354 1.5 1.5a.5.5 0 0 0 .708 0l5.5-5.5a.5.5 0 0 0 0-.708l-5.5-5.5a.5.5 0 0 0-.708 0l-1.5 1.5a.5.5 0 0 0 0 .708L5.793 6 2.146 9.646a.5.5 0 0 0 0 .708Z"
+                  />
+                </svg>
               </button>
             </div>
             <div class="center sidescroll">
@@ -310,7 +350,12 @@ onUnmounted(() => {
                   class="share-button"
                   @click.stop="shareBirdList(props.list.id, props.list.title)"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    width="16"
+                    height="16"
+                  >
                     <g fill="var(--color-background-dim)">
                       <path
                         d="M4.5 5H7v5a1 1 0 0 0 2 0V5h2.5a.5.5 0 0 0 .376-.829l-3.5-4a.514.514 0 0 0-.752 0l-3.5 4A.5.5 0 0 0 4.5 5Z"
