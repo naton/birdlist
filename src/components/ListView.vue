@@ -117,7 +117,7 @@ function emitEdit(obs) {
       v-show="props.sort == 'bydate'"
       v-if="observations.length"
     >
-      <h3 class="center">{{ observations.length }} observationer</h3>
+      <h3 class="center">{{ observationsByUser.length }} observationer</h3>
       <ul class="list">
         <observation-item
           v-for="obs in observationsByUser"
@@ -134,8 +134,9 @@ function emitEdit(obs) {
     </section>
 
     <section id="byname" v-show="props.sort == 'byname'" v-if="species.length">
-      <h3 class="center">{{ species.length }} olika arter</h3>
-
+      <h3 class="center">
+        {{ Object.keys(speciesByUser).length }} olika arter
+      </h3>
       <ol class="list">
         <species-item
           v-for="obs in speciesByUser"

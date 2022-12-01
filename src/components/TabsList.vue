@@ -1,9 +1,9 @@
 <script setup>
 import { computed } from "vue";
 import CreateList from "@/components/CreateList.vue";
-import { getCurrentMonthName, getCurrentYear } from "../helpers";
+import { getCurrentYear } from "../helpers";
 
-const props = defineProps(["currentList", "tabList"]);
+const props = defineProps(["label", "currentList", "tabList"]);
 const emit = defineEmits(["activate", "edit"]);
 const currentList = computed({
   get() {
@@ -35,7 +35,7 @@ function emitActiveTab(list) {
           @change="emitActiveTab('monthly')"
           hidden
         />
-        <label for="tab-monthly">{{ getCurrentMonthName() }}</label>
+        <label for="tab-monthly">{{ props.label }}</label>
       </li>
       <li
         class="c-tabs__tab"
