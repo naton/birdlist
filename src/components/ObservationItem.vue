@@ -29,13 +29,9 @@ function canEdit(owner) {
         <user-icon :user="obs.owner"></user-icon>
       </span>
     </span>
-    <button
-      type="button"
-      class="edit-button"
-      @click.stop="emit('edit', obs)"
-      :disabled="!canEdit(obs.owner)"
-    >
-      ✏️
+    <button type="button" class="edit-button" @click.stop="emit('edit', obs)">
+      <span v-if="canEdit(obs.owner)">✏️</span>
+      <span v-else>👁</span>
     </button>
   </li>
 </template>
