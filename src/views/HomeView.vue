@@ -53,7 +53,7 @@ async function addObservation(ev, listId, location) {
     currentList.value.id == "monthly" || currentList.value.id == "everything";
 
   await db.observations.add({
-    name: ev.target.value,
+    name: ev.target.value.trim(),
     date: new Date(),
     realmId: isCalculatedList ? undefined : currentList.value.realmId,
     listId: isCalculatedList ? undefined : currentList.value.id, // Any ID other than defaults are valid here
