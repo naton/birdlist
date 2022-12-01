@@ -92,6 +92,7 @@
     <option>Grågam</option>
     <option>Grågås</option>
     <option>Gråhakedopping</option>
+    <option>Gråkråka</option>
     <option>Grålira</option>
     <option>Gråsiska</option>
     <option>Gråsparv</option>
@@ -162,7 +163,6 @@
     <option>Korttålärka</option>
     <option>Kricka</option>
     <option>Krushuvad Pelikan</option>
-    <option>Kråka</option>
     <option>Kungsfiskare</option>
     <option>Kungsfågel</option>
     <option>Kungsörn</option>
