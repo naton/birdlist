@@ -25,8 +25,14 @@ function groupBy(objectArray, property) {
     }
     // Add object to list for given key's value
     acc[key].push(obj);
-    return acc;
+    return sortObject(acc);
   }, {});
+}
+
+function sortObject(o) {
+  return Object.keys(o)
+    .sort()
+    .reduce((r, k) => ((r[k] = o[k]), r), {});
 }
 
 const observationsByUser = computed(() => {
