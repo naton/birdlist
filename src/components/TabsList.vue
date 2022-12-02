@@ -124,7 +124,7 @@ function emitActiveTab(list) {
   position: absolute;
   left: 0;
   right: 0;
-  height: 3.5rem;
+  height: 3.4rem;
   padding: 1.5rem 2rem;
   opacity: 0;
   font-size: 1.5rem;
@@ -133,7 +133,7 @@ function emitActiveTab(list) {
 .transparent-menu + img {
   display: block;
   width: 1.3rem;
-  height: 3.5rem;
+  height: 3.4rem;
   margin: 0 1.2rem;
   pointer-events: none;
 }
