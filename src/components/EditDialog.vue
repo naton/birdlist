@@ -80,10 +80,9 @@ function saveAndClose() {
             stroke-linejoin="round"
           >
             <path
-              d="M8 15.5s-5.5-5-5.5-9.5a5.5 5.5 0 0 1 11 0 6.883 6.883 0 0 1-.322 2"
+              d="M13.5 6c0 4.5-5.5 9.5-5.5 9.5s-5.5-5-5.5-9.5a5.5 5.5 0 0 1 11 0Z"
             />
-            <circle cx="8" cy="6" r="1.5" />
-            <path d="m8.5 11.5 2 2 4-4" />
+            <circle cx="8" cy="6" r="2.5" />
           </g>
         </svg>
         Visa plats på karta

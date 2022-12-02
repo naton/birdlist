@@ -68,12 +68,17 @@ function emitActiveTab(list) {
             {{ list.title }}
           </option>
         </select>
-        <img
-          src="../assets/check-list-icon.svg"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 12 12"
           width="32"
           height="32"
-          alt="Välj lista"
-        />
+        >
+          <path
+            d="M11 9H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0-8H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Z"
+          />
+          <path d="M11 5H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Z" />
+        </svg>
       </li>
       <create-list @activate="emitActiveTab" />
     </ul>
@@ -125,22 +130,16 @@ function emitActiveTab(list) {
   left: 0;
   right: 0;
   height: 3.4rem;
-  padding: 1.5rem 2rem;
+  padding: 1.5rem;
   opacity: 0;
   font-size: 1.5rem;
 }
 
-.transparent-menu + img {
+.transparent-menu + svg {
   display: block;
   width: 1.3rem;
   height: 3.4rem;
   margin: 0 1.2rem;
   pointer-events: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  .transparent-menu + img {
-    filter: invert(1);
-  }
 }
 </style>
