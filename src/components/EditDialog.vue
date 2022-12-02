@@ -5,9 +5,9 @@ import { db } from "../db";
 const props = defineProps(["isOpen", "user", "observation", "lists"]);
 const emit = defineEmits(["delete", "close"]);
 
-const selectedList = ref("");
+const selectedList = ref(props.observation.listId);
 const currentName = ref(props.observation.name);
-const currentDate = ref(new Date());
+const currentDate = ref(props.observation.date);
 
 function canEdit(owner) {
   return props.user !== "unauthorized" && props.user === owner;
@@ -103,7 +103,7 @@ function saveAndClose() {
           id="obs-date"
           type="datetime-local"
           @input="currentDate = $event.target.value"
-          :value="inputDate(observation.date || currentDate)"
+          :value="inputDate(currentDate)"
         />
       </div>
 
