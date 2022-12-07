@@ -20,7 +20,12 @@ const users = computed(() => {
   let leader = false;
 
   names.forEach((name) => {
-    const score = props.observations.filter((obs) => obs.owner === name).length;
+    const score = Object.keys(
+      groupBy(
+        props.observations.filter((obs) => obs.owner === name),
+        "name"
+      )
+    ).length;
     highestScore = score > highestScore ? score : highestScore;
     users.push({
       name,
@@ -226,16 +231,13 @@ function emitEdit(obs) {
 }
 
 .user-button {
+  min-width: 25%;
   margin: 0;
-  padding: 0;
+  padding: 5px 0 0;
   color: inherit;
   background: none;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.user-button--active {
-  min-width: 6rem;
 }
 
 .user-button .user {
@@ -243,12 +245,17 @@ function emitEdit(obs) {
   height: 2.5rem;
 }
 
-.user-button .me {
-  font-weight: bold;
+.user-button .me::before {
+  content: "Jag:";
+  display: inline-block;
+  position: absolute;
+  left: 0.1em;
+  font-style: italic;
+  font-size: 0.8em;
 }
 
 .user-button--active .user {
-  border: 1px solid var(--color-text);
+  box-shadow: inset 0 0 0 2px var(--color-text);
 }
 
 .seen-by {
