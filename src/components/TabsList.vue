@@ -68,16 +68,11 @@ function emitActiveTab(list) {
             {{ list.title }}
           </option>
         </select>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 12 12"
-          width="32"
-          height="32"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
           <path
-            d="M11 9H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0-8H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Z"
+            fill="currentColor"
+            d="M11 9H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0-8H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0 4H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Z"
           />
-          <path d="M11 5H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Z" />
         </svg>
       </li>
       <create-list @activate="emitActiveTab" />
