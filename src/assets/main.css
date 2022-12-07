@@ -75,7 +75,7 @@
 button {
     min-width: 3rem;
     min-height: 2.8rem;
-    padding: 0.65rem 0.9rem;
+    padding: 0.4rem 0.8rem;
     border: none;
     border-radius: var(--radius);
     color: var(--color-background-dim);

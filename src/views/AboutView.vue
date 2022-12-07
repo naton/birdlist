@@ -1,7 +1,17 @@
 <template>
   <div class="about">
     <div class="about-content">
-      <h1><img src="../assets/logo.webp" alt="Birdlist" class="logo" /></h1>
+      <h1 class="hidden-visually">About Birdlist</h1>
+      <picture>
+        <source srcset="../assets/logo.webp" type="image/webp" />
+        <img
+          src="../assets/logo.png"
+          alt="Birdlist"
+          width="460"
+          height="170"
+          class="logo"
+        />
+      </picture>
       <h2>
         Log your bird observations.<br />
         Make lists.<br />
@@ -35,8 +45,18 @@
 
 .logo {
   display: flex;
-  width: 100%;
+  max-width: 100%;
+  height: auto;
   margin-bottom: 2rem;
+}
+
+.hidden-visually {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+  overflow: hidden;
+  width: 0;
+  height: 0;
+  margin: 0;
 }
 
 .privacy-notes {
