@@ -41,7 +41,6 @@ function cssColor(string) {
 .user {
   position: relative;
   display: inline-flex;
-  box-sizing: content-box;
   width: 2em;
   height: 2em;
   border-radius: 50%;
@@ -80,7 +79,7 @@ function cssColor(string) {
   border-radius: 50%;
   color: var(--color-background);
   background: var(--color-text);
-  box-shadow: 0 1px 2px var(--co-grey-darkest);
+  box-shadow: 0 1px 1px 0 var(--co-grey-dark);
 }
 
 .score.leader {
