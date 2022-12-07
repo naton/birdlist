@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { liveQuery } from "dexie";
 import { db } from "../db";
 import ObservationsLists from "@/components/ObservationsLists.vue";
@@ -69,7 +69,37 @@ async function addObservation(ev, listId, location) {
   }, 100);
 }
 
+let newLeaderConfetti;
+
+/* Celebrate new leader */
+onMounted(() => {
+  const canvas = document.getElementById("canvas");
+  if (typeof confetti !== "undefined") {
+    // eslint-disable-next-line no-undef
+    newLeaderConfetti = confetti.create(canvas, {
+      resize: true,
+      useWorker: true,
+    });
+  }
+});
+
+function celebrate() {
+  function randomInRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  if (typeof newLeaderConfetti !== "undefined") {
+    newLeaderConfetti({
+      angle: randomInRange(55, 125),
+      spread: randomInRange(50, 70),
+      particleCount: randomInRange(50, 100),
+      origin: { y: 0.6 },
+    });
+  }
+}
+
 onUnmounted(() => {
+  newLeaderConfetti.reset();
   userSubscription.unsubscribe();
 });
 </script>
@@ -78,6 +108,7 @@ onUnmounted(() => {
   <div class="body">
     <observations-lists
       @selectList="selectList"
+      @newLeader="celebrate"
       :list="currentList"
       :user="me"
     />
@@ -93,6 +124,7 @@ onUnmounted(() => {
     <observation-input @add="addObservation" :list="currentList" />
     <birds-data />
   </div>
+  <canvas id="canvas"></canvas>
 </template>
 
 <style>
@@ -105,5 +137,13 @@ onUnmounted(() => {
   width: auto !important;
   max-width: 100%;
   margin-bottom: 1rem;
+}
+
+#canvas {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 </style>

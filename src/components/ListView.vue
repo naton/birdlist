@@ -1,11 +1,11 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import ObservationItem from "./ObservationItem.vue";
 import UserIcon from "./UserIcon.vue";
 import SpeciesItem from "./SpeciesItem.vue";
 
 const props = defineProps(["observations", "sort", "selected", "user"]);
-const emit = defineEmits(["sort", "select", "delete", "edit"]);
+const emit = defineEmits(["sort", "select", "delete", "edit", "newLeader"]);
 
 const species = computed(() =>
   [...new Set(props.observations.map((item) => item.name))].sort()
@@ -37,6 +37,7 @@ const users = computed(() => {
   users.forEach((user) => {
     if (user.score === highestScore) {
       user.leader = true;
+      currentLeader.value = user.name;
     }
   });
 
@@ -44,6 +45,13 @@ const users = computed(() => {
 });
 
 const selectedUser = ref(null);
+const currentLeader = ref("");
+
+watch(currentLeader, (newLeader) => {
+  if (newLeader === props.user) {
+    emit("newLeader");
+  }
+});
 
 function groupBy(objectArray, property) {
   return objectArray.reduce((acc, obj) => {

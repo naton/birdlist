@@ -10,7 +10,7 @@ import { getMonthName } from "../helpers";
 
 const componentKey = ref(0);
 const props = defineProps(["list", "user"]);
-const emit = defineEmits(["selectList"]);
+const emit = defineEmits(["selectList", "newLeader"]);
 
 const currentYear = ref(new Date().getFullYear());
 const currentMonth = ref(new Date().getMonth());
@@ -194,6 +194,10 @@ function selectList(list) {
   emit("selectList", list);
 }
 
+function newLeader() {
+  emit("newLeader");
+}
+
 /* Other */
 function getSlotName(tab) {
   return `tabPanel-${tab}`;
@@ -334,6 +338,7 @@ onUnmounted(() => {
           :selected="currentObservation"
           :sort="currentSort"
           :user="props.user"
+          @new-leader="newLeader"
           @sort="sortBy"
           @select="selectObservation"
           @edit="editObservation"
