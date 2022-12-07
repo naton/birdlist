@@ -1,11 +1,13 @@
 <script setup>
 import { ref } from "vue";
+import { getTiedRealmId } from "dexie-cloud-addon";
 import { db } from "../db";
 
 const props = defineProps(["isOpen", "user", "observation", "lists"]);
 const emit = defineEmits(["delete", "close"]);
 
 const selectedList = ref(props.observation.listId);
+const selectedListRealm = ref(props.observation.realmId);
 const currentName = ref(props.observation.name);
 const currentDate = ref(props.observation.date);
 
@@ -39,12 +41,16 @@ function deleteAndClose(id) {
 
 async function save() {
   const name = currentName.value.trim();
-  const date = new Date(currentDate.value);
+  const date = currentDate.value;
   const listId = selectedList.value;
+  const realmId = selectedListRealm.value;
+  const location = props.observation.location;
   await db.observations.update(props.observation, {
     name,
     date,
+    realmId,
     listId,
+    location,
   });
 }
 
@@ -101,14 +107,20 @@ function saveAndClose() {
         <input
           id="obs-date"
           type="datetime-local"
-          @input="currentDate = $event.target.value"
+          @input="currentDate = new Date($event.target.value)"
           :value="inputDate(currentDate)"
         />
       </div>
 
       <div class="margin-bottom">
         <label for="obs-list">Ändra lista</label>
-        <select id="obs-list" @change="selectedList = $event.target.value">
+        <select
+          id="obs-list"
+          @change="
+            selectedList = $event.target.value;
+            selectedListRealm = getTiedRealmId($event.target.value);
+          "
+        >
           <option value="">Ingen speciell lista</option>
           <option
             v-for="{ id, title } in lists"
@@ -156,7 +168,7 @@ function saveAndClose() {
 
 .dialog select,
 .dialog input {
-  max-width: 90%;
+  width: 95%;
   font-size: 1.5rem;
 }
 
