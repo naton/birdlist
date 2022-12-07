@@ -473,7 +473,7 @@ onUnmounted(() => {
 
 .list-header .delete-button {
   position: absolute;
-  top: 0.6rem;
+  top: 0.55rem;
   right: 0;
   outline: 1px solid;
   transform: translateX(3.1rem);

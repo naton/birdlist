@@ -45,8 +45,8 @@ function cssColor(string) {
   align-self: center;
   align-items: center;
   justify-content: center;
-  line-height: 1.3;
-  filter: sepia(0.7);
+  line-height: 1.2;
+  filter: sepia(0.6);
 }
 
 .user + span {

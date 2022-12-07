@@ -174,12 +174,12 @@ function emitEdit(obs) {
 
 .list .obs {
   display: flex;
+  align-items: baseline;
   justify-content: space-between;
   padding: 0.6rem 1em;
   border-bottom: 1px solid var(--color-background-dim);
   background: var(--color-background);
   transition: 0.1s transform ease-out;
-  text-align: left;
 }
 
 .date {
@@ -209,6 +209,10 @@ function emitEdit(obs) {
   background: none;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.user-button--active {
+  min-width: 6rem;
 }
 
 .user-button .user {
