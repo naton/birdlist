@@ -232,10 +232,14 @@ function emitEdit(obs) {
 }
 
 .user-nav {
+  position: sticky;
+  top: 0;
   display: flex;
   padding: 0.5rem 1rem;
+  background: var(--color-background);
   overflow: auto;
   white-space: nowrap;
+  z-index: 1;
 }
 
 .user-button {

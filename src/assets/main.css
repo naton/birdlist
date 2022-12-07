@@ -12,7 +12,7 @@
         "footer";
     grid-area: main;
     background: var(--color-background);
-    overflow: auto;
+    overflow: hidden;
 }
 
 .body {
@@ -25,7 +25,7 @@
         "body-nav"
         "body-content";
     grid-area: body;
-    overflow: auto;
+    overflow: hidden;
 }
 
 .footer {
