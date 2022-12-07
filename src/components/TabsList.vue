@@ -117,7 +117,7 @@ function emitActiveTab(list) {
 }
 
 .c-tabs__tab--active label {
-  padding: 0.8rem 1rem 1rem;
+  padding-top: 0.8rem;
 }
 
 .transparent-menu {
