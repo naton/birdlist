@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from "vue";
-const props = defineProps(["user"]);
+const props = defineProps(["user", "score", "leader"]);
 
 const initial = computed(() => {
   return props.user ? props.user.substring(0, 1) : "";
@@ -29,14 +29,19 @@ function cssColor(string) {
       color: cssColor(user),
       backgroundColor: cssColor(user),
     }"
-    ><span class="initial">{{ initial }}</span></span
-  >
+    ><span class="initial">{{ initial }}</span>
+    <span v-if="props.score" class="score" :class="props.leader && 'leader'">{{
+      props.score
+    }}</span>
+  </span>
   <slot></slot>
 </template>
 
 <style>
 .user {
+  position: relative;
   display: inline-flex;
+  box-sizing: content-box;
   width: 2em;
   height: 2em;
   border-radius: 50%;
@@ -61,5 +66,25 @@ function cssColor(string) {
 .initial {
   font-size: 1rem;
   filter: invert(1) hue-rotate(45deg);
+}
+
+.score {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  color: var(--color-background);
+  background: var(--color-text);
+  box-shadow: 0 1px 2px var(--co-grey-darkest);
+}
+
+.score.leader {
+  color: black;
+  background: gold;
 }
 </style>

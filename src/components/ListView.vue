@@ -11,9 +11,32 @@ const species = computed(() =>
   [...new Set(props.observations.map((item) => item.name))].sort()
 );
 
-const users = computed(() =>
-  [...new Set(props.observations.map((item) => item.owner))].sort()
-);
+const users = computed(() => {
+  const names = [
+    ...new Set(props.observations.map((item) => item.owner)),
+  ].sort();
+  let users = [];
+  let highestScore = 0;
+  let leader = false;
+
+  names.forEach((name) => {
+    const score = props.observations.filter((obs) => obs.owner === name).length;
+    highestScore = score > highestScore ? score : highestScore;
+    users.push({
+      name,
+      score,
+      leader,
+    });
+  });
+
+  users.forEach((user) => {
+    if (user.score === highestScore) {
+      user.leader = true;
+    }
+  });
+
+  return users;
+});
 
 const selectedUser = ref(null);
 
@@ -79,14 +102,14 @@ function emitEdit(obs) {
   <slot name="default">
     <nav class="user-nav" v-if="users.length > 1">
       <button
-        v-for="user in users"
+        v-for="{ name, score, leader } in users"
         class="user-button"
-        :class="user === selectedUser && 'user-button--active'"
-        @click="changeUser(user)"
-        :key="user"
+        :class="name === selectedUser && 'user-button--active'"
+        @click="changeUser(name)"
+        :key="name"
       >
-        <user-icon :user="user">
-          <span :class="user === props.user && 'me'">{{ user }}</span>
+        <user-icon :user="name" :score="score" :leader="leader">
+          <span :class="name === props.user && 'me'">{{ name }}</span>
         </user-icon>
       </button>
     </nav>
@@ -225,7 +248,7 @@ function emitEdit(obs) {
 }
 
 .user-button--active .user {
-  border: 2px solid var(--color-text);
+  border: 1px solid var(--color-text);
 }
 
 .seen-by {
