@@ -86,4 +86,29 @@ function cssColor(string) {
   color: black;
   background: gold;
 }
+
+.user-button .me::before {
+  content: "Jag:";
+  display: inline-block;
+  position: absolute;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.score.leader::before,
+.score.leader::after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 6px;
+  height: 20px;
+  background: inherit;
+  top: 5px;
+  transform: rotate(-12deg) skewX(-23deg);
+  z-index: -1;
+  box-shadow: 0 1px 0 0 var(--co-grey-dark);
+}
+.score.leader::after {
+  transform: rotate(12deg) skewX(23deg);
+}
 </style>
