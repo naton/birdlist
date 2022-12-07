@@ -120,15 +120,17 @@ function saveAndClose() {
           </option>
         </select>
       </div>
+      <div>
+        <button type="button" class="secondary" @click="saveAndClose">
+          Spara
+        </button>
+        <button type="button" @click="deleteAndClose(observation.id)">
+          Radera
+        </button>
+      </div>
     </details>
 
     <div v-if="canEdit(observation.owner)">
-      <button type="button" class="secondary" @click="saveAndClose">
-        Spara
-      </button>
-      <button type="button" @click="deleteAndClose(observation.id)">
-        Radera
-      </button>
       <button type="button" class="secondary" @click="emit('close')">
         Avbryt
       </button>
