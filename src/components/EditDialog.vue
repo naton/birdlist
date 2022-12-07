@@ -34,6 +34,11 @@ function inputDate(date) {
     .substring(0, 16);
 }
 
+function updateList(val) {
+  selectedList.value = val;
+  selectedListRealm.value = getTiedRealmId(val);
+}
+
 function deleteAndClose(id) {
   emit("delete", id);
   emit("close");
@@ -45,12 +50,19 @@ async function save() {
   const listId = selectedList.value;
   const realmId = selectedListRealm.value;
   const location = props.observation.location;
-  await db.observations.update(props.observation, {
-    name,
-    date,
-    realmId,
-    listId,
-    location,
+  await db.transaction("rw", [db.lists, db.observations], async () => {
+    // Move list into the realm (if not already there):
+    await db.lists.update(listId, { realmId });
+    await db.observations.update(props.observation, {
+      name,
+      date,
+      realmId,
+      listId,
+      location,
+    });
+    await db.observations
+      .where({ listId: listId })
+      .modify({ realmId: realmId });
   });
 }
 
@@ -114,13 +126,7 @@ function saveAndClose() {
 
       <div class="margin-bottom">
         <label for="obs-list">Ändra lista</label>
-        <select
-          id="obs-list"
-          @change="
-            selectedList = $event.target.value;
-            selectedListRealm = getTiedRealmId($event.target.value);
-          "
-        >
+        <select id="obs-list" @change="updateList($event.target.value)">
           <option value="">Ingen speciell lista</option>
           <option
             v-for="{ id, title } in lists"
