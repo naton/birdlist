@@ -181,7 +181,7 @@ async function shareBirdList(listId, listName) {
           add: ["observations"],
           update: {
             lists: ["title"],
-            observations: "*",
+            observations: ["*", "realmId"],
           },
           // manage: "*", // Give your friend full permissions within this new realm.
         },
