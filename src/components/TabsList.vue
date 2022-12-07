@@ -105,7 +105,7 @@ function emitActiveTab(list) {
 
 .c-tabs__tab label {
   display: block;
-  padding: 1rem;
+  padding: 1rem 1rem 0.8rem;
   text-transform: capitalize;
 }
 
@@ -117,7 +117,7 @@ function emitActiveTab(list) {
 }
 
 .c-tabs__tab--active label {
-  padding-top: 0.8rem;
+  padding: 0.8rem 1rem 1rem;
 }
 
 .transparent-menu {

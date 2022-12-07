@@ -101,7 +101,7 @@ onUnmounted(() => {
   box-shadow: rgb(17 17 26 / 20%) 0 2px 12px;
 }
 
-.dxc-login-dlg input[type="email"] {
+.dxc-login-dlg input[type] {
   width: auto !important;
   max-width: 100%;
   margin-bottom: 1rem;
