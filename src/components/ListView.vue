@@ -44,7 +44,8 @@ const selectedUser = ref(null);
 const currentLeader = ref("");
 
 watch(currentLeader, (newLeader) => {
-  if (newLeader === props.user) {
+  // Announce new leader only if you’re not alone
+  if (users.value.length > 1 && newLeader === props.user) {
     emit("newLeader");
   }
 });
