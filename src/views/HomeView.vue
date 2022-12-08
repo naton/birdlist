@@ -55,11 +55,6 @@ async function addObservation(ev, listId, location) {
 
   // Reset form field value
   ev.target.value = "";
-
-  // Make sure new value is instantly visible in viewport
-  setTimeout(() => {
-    scrollToBottom(".body-content");
-  }, 100);
 }
 
 let newLeaderConfetti;
