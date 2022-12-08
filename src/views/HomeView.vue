@@ -78,10 +78,10 @@ function celebrate() {
 
   if (typeof newLeaderConfetti !== "undefined") {
     newLeaderConfetti({
-      angle: randomInRange(55, 125),
+      angle: randomInRange(55, 105),
       spread: randomInRange(50, 70),
-      particleCount: randomInRange(50, 100),
-      origin: { y: 0.6 },
+      particleCount: randomInRange(80, 120),
+      origin: { y: 0.4 },
     });
   }
 }
