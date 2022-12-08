@@ -15,13 +15,9 @@ let userSubscription;
 
 setTimeout(
   () =>
-    (userSubscription = liveQuery(
-      async () => await db.cloud.currentUser
-    ).subscribe(
+    (userSubscription = liveQuery(async () => await db.cloud.currentUser).subscribe(
       (user) => {
-        me.value = user._value
-          ? user._value.name.toLowerCase()
-          : "unauthorized";
+        me.value = user._value ? user._value.name.toLowerCase() : "unauthorized";
       },
       (error) => {
         console.log(error);
@@ -34,9 +30,7 @@ setTimeout(
 const currentList = ref("monthly");
 
 function scrollToBottom(el) {
-  document
-    .querySelector(el)
-    .scrollTo(0, document.querySelector(el).scrollHeight + 40);
+  document.querySelector(el).scrollTo(0, document.querySelector(el).scrollHeight + 40);
 }
 
 function selectList(list) {
@@ -49,8 +43,7 @@ function selectList(list) {
 
 /* Observations */
 async function addObservation(ev, listId, location) {
-  const isCalculatedList =
-    currentList.value.id == "monthly" || currentList.value.id == "everything";
+  const isCalculatedList = currentList.value.id == "monthly" || currentList.value.id == "everything";
 
   await db.observations.add({
     name: ev.target.value.trim(),
@@ -106,17 +99,8 @@ onUnmounted(() => {
 
 <template>
   <div class="body">
-    <observations-lists
-      @selectList="selectList"
-      @newLeader="celebrate"
-      :list="currentList"
-      :user="me"
-    />
-    <button
-      class="login-button"
-      @click="db.cloud.login()"
-      v-if="!userIsLoggedIn"
-    >
+    <observations-lists @selectList="selectList" @newLeader="celebrate" :list="currentList" :user="me" />
+    <button class="login-button" @click="db.cloud.login()" v-if="!userIsLoggedIn">
       <u>Logga in</u> för att hämta sparade 🐦
     </button>
   </div>

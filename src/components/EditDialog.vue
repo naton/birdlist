@@ -27,11 +27,7 @@ function formatDate(date) {
 }
 
 function inputDate(date) {
-  return new Date(
-    new Date(date).getTime() - new Date(date).getTimezoneOffset() * 60000
-  )
-    .toISOString()
-    .substring(0, 16);
+  return new Date(new Date(date).getTime() - new Date(date).getTimezoneOffset() * 60000).toISOString().substring(0, 16);
 }
 
 function updateList(val) {
@@ -60,9 +56,7 @@ async function save() {
       listId,
       location,
     });
-    await db.observations
-      .where({ listId: listId })
-      .modify({ realmId: realmId });
+    await db.observations.where({ listId: listId }).modify({ realmId: realmId });
   });
 }
 
@@ -78,28 +72,13 @@ function saveAndClose() {
     <h3 class="margin-bottom">{{ formatDate(observation.date) }}</h3>
     <div v-if="observation.location" class="margin-bottom">
       <a
-        :href="`https://www.openstreetmap.org/#map=16/${observation.location.replace(
-          ',',
-          '/'
-        )}`"
+        :href="`https://www.openstreetmap.org/#map=16/${observation.location.replace(',', '/')}`"
         target="_blank"
         class="poi"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 16 16"
-          width="24"
-          height="24"
-        >
-          <g
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path
-              d="M13.5 6c0 4.5-5.5 9.5-5.5 9.5s-5.5-5-5.5-9.5a5.5 5.5 0 0 1 11 0Z"
-            />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="24" height="24">
+          <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13.5 6c0 4.5-5.5 9.5-5.5 9.5s-5.5-5-5.5-9.5a5.5 5.5 0 0 1 11 0Z" />
             <circle cx="8" cy="6" r="2.5" />
           </g>
         </svg>
@@ -139,24 +118,16 @@ function saveAndClose() {
         </select>
       </div>
       <div>
-        <button type="button" class="secondary" @click="saveAndClose">
-          Spara
-        </button>
-        <button type="button" @click="deleteAndClose(observation.id)">
-          Radera
-        </button>
+        <button type="button" class="secondary" @click="saveAndClose">Spara</button>
+        <button type="button" @click="deleteAndClose(observation.id)">Radera</button>
       </div>
     </details>
 
     <div v-if="canEdit(observation.owner)">
-      <button type="button" class="secondary" @click="emit('close')">
-        Avbryt
-      </button>
+      <button type="button" class="secondary" @click="emit('close')">Avbryt</button>
     </div>
     <div v-else>
-      <button type="button" class="secondary" @click="emit('close')">
-        Stäng
-      </button>
+      <button type="button" class="secondary" @click="emit('close')">Stäng</button>
     </div>
   </div>
 </template>

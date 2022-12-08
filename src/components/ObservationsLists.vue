@@ -22,9 +22,7 @@ const isListSelected = ref(false);
 const isDialogOpen = ref(false);
 
 /* Observations */
-let observationsSubscription = liveQuery(
-  async () => await db.observations.toArray()
-).subscribe(
+let observationsSubscription = liveQuery(async () => await db.observations.toArray()).subscribe(
   (observations) => {
     allObservations.value = observations;
   },
@@ -57,10 +55,7 @@ const listObservations = computed(() => {
 });
 
 function selectObservation(obs) {
-  currentObservation.value =
-    obs && currentObservation.value && currentObservation.value.id == obs.id
-      ? false
-      : obs;
+  currentObservation.value = obs && currentObservation.value && currentObservation.value.id == obs.id ? false : obs;
 }
 
 async function deleteObservation(id) {
@@ -80,10 +75,7 @@ function goToMonth(month) {
 
 function totalPerMonth(month) {
   return allObservations.value.filter(
-    (obs) =>
-      obs.owner == props.user &&
-      obs.date.getFullYear() == currentYear.value &&
-      obs.date.getMonth() == month
+    (obs) => obs.owner == props.user && obs.date.getFullYear() == currentYear.value && obs.date.getMonth() == month
   ).length;
 }
 
@@ -96,9 +88,7 @@ function closeObservationDialog() {
 }
 
 /* Lists */
-let listsSubscription = liveQuery(
-  async () => await db.lists.toArray()
-).subscribe(
+let listsSubscription = liveQuery(async () => await db.lists.toArray()).subscribe(
   (lists) => {
     tabList.value = lists;
   },
@@ -122,24 +112,20 @@ async function deleteList(listId) {
     deleteRelatedObservations = confirm("Radera även listans observationer?");
 
     await db
-      .transaction(
-        "rw",
-        [db.lists, db.observations, db.realms, db.members],
-        () => {
-          if (deleteRelatedObservations) {
-            // Delete possible observations:
-            db.observations.where({ listId: listId }).delete();
-          }
-          // Delete the list:
-          db.lists.delete(listId);
-          // Delete possible realm and its members in case list was shared:
-          const tiedRealmId = getTiedRealmId(listId);
-          // Empty out any tied realm from members:
-          db.members.where({ realmId: tiedRealmId }).delete();
-          // Delete the tied realm if it exists:
-          db.realms.delete(tiedRealmId);
+      .transaction("rw", [db.lists, db.observations, db.realms, db.members], () => {
+        if (deleteRelatedObservations) {
+          // Delete possible observations:
+          db.observations.where({ listId: listId }).delete();
         }
-      )
+        // Delete the list:
+        db.lists.delete(listId);
+        // Delete possible realm and its members in case list was shared:
+        const tiedRealmId = getTiedRealmId(listId);
+        // Empty out any tied realm from members:
+        db.members.where({ realmId: tiedRealmId }).delete();
+        // Delete the tied realm if it exists:
+        db.realms.delete(tiedRealmId);
+      })
       .then(() => {
         emit("selectList", "monthly");
       });
@@ -147,47 +133,39 @@ async function deleteList(listId) {
 }
 
 async function shareBirdList(listId, listName) {
-  let email = prompt(
-    "Ange e-postadressen till personen du vill dela denna lista med:"
-  );
+  let email = prompt("Ange e-postadressen till personen du vill dela denna lista med:");
 
   if (!email) return;
 
-  await db.transaction(
-    "rw",
-    [db.lists, db.observations, db.realms, db.members],
-    async () => {
-      // Add or update a realm, tied to the list using getTiedRealmId():
-      const realmId = getTiedRealmId(listId);
+  await db.transaction("rw", [db.lists, db.observations, db.realms, db.members], async () => {
+    // Add or update a realm, tied to the list using getTiedRealmId():
+    const realmId = getTiedRealmId(listId);
 
-      await db.realms.put({
-        realmId,
-        name: listName,
-        represents: "a bird list",
-      });
+    await db.realms.put({
+      realmId,
+      name: listName,
+      represents: "a bird list",
+    });
 
-      // Move list into the realm (if not already there):
-      await db.lists.update(listId, { realmId });
-      // Move all items into the new realm consistently (modify() is consistent across sync peers)
-      await db.observations
-        .where({ listId: listId })
-        .modify({ realmId: realmId });
-      // Add the members to share it to:
-      await db.members.add({
-        realmId,
-        email: email,
-        invite: true, // Generates invite email on server on sync
-        permissions: {
-          add: ["observations"],
-          update: {
-            lists: ["title"],
-            observations: ["*", "realmId"],
-          },
-          // manage: "*", // Give your friend full permissions within this new realm.
+    // Move list into the realm (if not already there):
+    await db.lists.update(listId, { realmId });
+    // Move all items into the new realm consistently (modify() is consistent across sync peers)
+    await db.observations.where({ listId: listId }).modify({ realmId: realmId });
+    // Add the members to share it to:
+    await db.members.add({
+      realmId,
+      email: email,
+      invite: true, // Generates invite email on server on sync
+      permissions: {
+        add: ["observations"],
+        update: {
+          lists: ["title"],
+          observations: ["*", "realmId"],
         },
-      });
-    }
-  );
+        // manage: "*", // Give your friend full permissions within this new realm.
+      },
+    });
+  });
 }
 
 function selectList(list) {
@@ -235,12 +213,7 @@ onUnmounted(() => {
           <template v-slot:header>
             <div class="list-header date-nav">
               <button class="prev-date" @click.prevent="currentMonth--">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 12 12"
-                  width="12"
-                  height="12"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12">
                   <path
                     fill="currentColor"
                     d="m9.854 1.646-1.5-1.5a.5.5 0 0 0-.708 0l-5.5 5.5a.5.5 0 0 0 0 .708l5.5 5.5a.5.5 0 0 0 .708 0l1.5-1.5a.5.5 0 0 0 0-.708L6.207 6l3.647-3.646a.5.5 0 0 0 0-.708Z"
@@ -251,12 +224,7 @@ onUnmounted(() => {
                 {{ currentMonthFormatted }}
               </h2>
               <button class="next-date" @click.prevent="currentMonth++">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 12 12"
-                  width="12"
-                  height="12"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12">
                   <path
                     fill="currentColor"
                     d="m2.146 10.354 1.5 1.5a.5.5 0 0 0 .708 0l5.5-5.5a.5.5 0 0 0 0-.708l-5.5-5.5a.5.5 0 0 0-.708 0l-1.5 1.5a.5.5 0 0 0 0 .708L5.793 6 2.146 9.646a.5.5 0 0 0 0 .708Z"
@@ -280,12 +248,7 @@ onUnmounted(() => {
           <template v-slot:header>
             <div class="list-header date-nav">
               <button class="prev-date" @click.prevent="currentYear--">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 12 12"
-                  width="12"
-                  height="12"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12">
                   <path
                     fill="currentColor"
                     d="m9.854 1.646-1.5-1.5a.5.5 0 0 0-.708 0l-5.5 5.5a.5.5 0 0 0 0 .708l5.5 5.5a.5.5 0 0 0 .708 0l1.5-1.5a.5.5 0 0 0 0-.708L6.207 6l3.647-3.646a.5.5 0 0 0 0-.708Z"
@@ -294,12 +257,7 @@ onUnmounted(() => {
               </button>
               <h2 class="heading center">Årskryss {{ currentYear }}</h2>
               <button class="next-date" @click.prevent="currentYear++">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 12 12"
-                  width="12"
-                  height="12"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12">
                   <path
                     fill="currentColor"
                     d="m2.146 10.354 1.5 1.5a.5.5 0 0 0 .708 0l5.5-5.5a.5.5 0 0 0 0-.708l-5.5-5.5a.5.5 0 0 0-.708 0l-1.5 1.5a.5.5 0 0 0 0 .708L5.793 6 2.146 9.646a.5.5 0 0 0 0 .708Z"
@@ -344,23 +302,11 @@ onUnmounted(() => {
           @edit="editObservation"
         >
           <template v-slot:header>
-            <div
-              class="list-header"
-              :class="isListSelected && 'is-active'"
-              @click="isListSelected = !isListSelected"
-            >
+            <div class="list-header" :class="isListSelected && 'is-active'" @click="isListSelected = !isListSelected">
               <div class="subtitle">
                 <h2 class="heading">{{ props.list.title }}</h2>
-                <button
-                  class="share-button"
-                  @click.stop="shareBirdList(props.list.id, props.list.title)"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 16 16"
-                    width="16"
-                    height="16"
-                  >
+                <button class="share-button" @click.stop="shareBirdList(props.list.id, props.list.title)">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
                     <g fill="var(--color-background-dim)">
                       <path
                         d="M4.5 5H7v5a1 1 0 0 0 2 0V5h2.5a.5.5 0 0 0 .376-.829l-3.5-4a.514.514 0 0 0-.752 0l-3.5 4A.5.5 0 0 0 4.5 5Z"
@@ -374,12 +320,7 @@ onUnmounted(() => {
                   Dela
                 </button>
               </div>
-              <button
-                class="delete-button"
-                @click.prevent="deleteList(props.list.id)"
-              >
-                ✕
-              </button>
+              <button class="delete-button" @click.prevent="deleteList(props.list.id)">✕</button>
             </div>
           </template>
         </list-view>

@@ -30,9 +30,7 @@ function cssColor(string) {
       backgroundColor: cssColor(user),
     }"
     ><span class="initial">{{ initial }}</span>
-    <span v-if="props.score" class="score" :class="props.leader && 'leader'">{{
-      props.score
-    }}</span>
+    <span v-if="props.score" class="score" :class="props.leader && 'leader'">{{ props.score }}</span>
   </span>
   <slot></slot>
 </template>

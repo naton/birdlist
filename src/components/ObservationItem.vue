@@ -18,10 +18,7 @@ function canEdit(owner) {
 </script>
 
 <template>
-  <li
-    @click="emit('select', obs)"
-    :class="selected.id == obs.id && 'is-active'"
-  >
+  <li @click="emit('select', obs)" :class="selected.id == obs.id && 'is-active'">
     <span class="obs">
       <span class="name">✘ {{ obs.name }}</span>
       <span class="date" v-if="show_date">{{ formatDate(obs.date) }}</span>

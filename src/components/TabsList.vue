@@ -22,10 +22,7 @@ function emitActiveTab(list) {
 <template>
   <nav class="body-nav">
     <ul class="c-tabs">
-      <li
-        class="c-tabs__tab"
-        :class="{ 'c-tabs__tab--active': 'monthly' === props.currentList.id }"
-      >
+      <li class="c-tabs__tab" :class="{ 'c-tabs__tab--active': 'monthly' === props.currentList.id }">
         <input
           type="radio"
           name="list"
@@ -57,9 +54,7 @@ function emitActiveTab(list) {
       <li
         class="c-tabs__tab"
         :class="{
-          'c-tabs__tab--active':
-            'everything' !== props.currentList.id &&
-            'monthly' !== props.currentList.id,
+          'c-tabs__tab--active': 'everything' !== props.currentList.id && 'monthly' !== props.currentList.id,
         }"
       >
         <select name="name" v-model="currentList" class="transparent-menu">

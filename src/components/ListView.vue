@@ -7,14 +7,10 @@ import SpeciesItem from "./SpeciesItem.vue";
 const props = defineProps(["observations", "sort", "selected", "user"]);
 const emit = defineEmits(["sort", "select", "delete", "edit", "newLeader"]);
 
-const species = computed(() =>
-  [...new Set(props.observations.map((item) => item.name))].sort()
-);
+const species = computed(() => [...new Set(props.observations.map((item) => item.name))].sort());
 
 const users = computed(() => {
-  const names = [
-    ...new Set(props.observations.map((item) => item.owner)),
-  ].sort();
+  const names = [...new Set(props.observations.map((item) => item.owner))].sort();
   let users = [];
   let highestScore = 0;
   let leader = false;
@@ -74,9 +70,7 @@ function sortObject(o) {
 const observationsByUser = computed(() => {
   return selectedUser.value === null
     ? props.observations
-    : props.observations
-        .filter((obs) => obs.owner === selectedUser.value)
-        .sort((a, b) => a.date - b.date);
+    : props.observations.filter((obs) => obs.owner === selectedUser.value).sort((a, b) => a.date - b.date);
 });
 
 const speciesByUser = computed(() => {
@@ -148,11 +142,7 @@ function emitEdit(obs) {
       >
     </nav>
 
-    <section
-      id="bydate"
-      v-show="props.sort == 'bydate'"
-      v-if="observations.length"
-    >
+    <section id="bydate" v-show="props.sort == 'bydate'" v-if="observations.length">
       <h3 class="center">{{ observationsByUser.length }} observationer</h3>
       <ul class="list">
         <observation-item
@@ -170,15 +160,9 @@ function emitEdit(obs) {
     </section>
 
     <section id="byname" v-show="props.sort == 'byname'" v-if="species.length">
-      <h3 class="center">
-        {{ Object.keys(speciesByUser).length }} olika arter
-      </h3>
+      <h3 class="center">{{ Object.keys(speciesByUser).length }} olika arter</h3>
       <ol class="list">
-        <species-item
-          v-for="obs in speciesByUser"
-          :obs="obs"
-          :key="obs.id"
-        ></species-item>
+        <species-item v-for="obs in speciesByUser" :obs="obs" :key="obs.id"></species-item>
       </ol>
     </section>
 

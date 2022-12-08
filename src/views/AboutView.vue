@@ -4,13 +4,7 @@
       <h1 class="hidden-visually">About Birdlist</h1>
       <picture>
         <source srcset="../assets/logo.webp" type="image/webp" />
-        <img
-          src="../assets/logo.png"
-          alt="Birdlist"
-          width="460"
-          height="170"
-          class="logo"
-        />
+        <img src="../assets/logo.png" alt="Birdlist" width="460" height="170" class="logo" />
       </picture>
       <h2>
         Log your bird observations.<br />
@@ -21,9 +15,8 @@
       <div class="privacy-notes">
         <h3>Personuppgiftshantering</h3>
         <p>
-          Genom att använda Birdlist godkänner du att din e-postadress lagras på
-          såväl din enhet som på dina vänners enheter, i de fall du delar dina
-          listor med dem.
+          Genom att använda Birdlist godkänner du att din e-postadress lagras på såväl din enhet som på dina vänners
+          enheter, i de fall du delar dina listor med dem.
         </p>
       </div>
     </div>

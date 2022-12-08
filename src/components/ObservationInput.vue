@@ -16,10 +16,7 @@ function toggleCurrentLocation() {
     };
 
     const geoSuccess = function (position) {
-      currentPosition.value = [
-        position.coords.latitude,
-        position.coords.longitude,
-      ].join(",");
+      currentPosition.value = [position.coords.latitude, position.coords.longitude].join(",");
       calculatingPosition.value = false;
     };
 
@@ -64,12 +61,7 @@ function toggleCurrentLocation() {
         viewBox="0 0 16 16"
         title="Lägg till plats"
       >
-        <g
-          fill="none"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
+        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 15.5S.5 10.5.5 6a5.5 5.5 0 0 1 10.909-1" />
           <circle cx="6" cy="6" r="1.5" />
           <circle cx="11.5" cy="11.5" r="4" />
@@ -90,14 +82,7 @@ function toggleCurrentLocation() {
       >
         <g stroke-width="2" transform="translate(0, 0)">
           <g class="nc-loop-ripple-16-icon-o" stroke-width="2">
-            <circle
-              cx="8"
-              cy="8"
-              fill="none"
-              r="9"
-              stroke="currentColor"
-              stroke-width="2"
-            ></circle>
+            <circle cx="8" cy="8" fill="none" r="9" stroke="currentColor" stroke-width="2"></circle>
             <circle
               data-color="color-2"
               cx="8"
@@ -110,21 +95,9 @@ function toggleCurrentLocation() {
           </g>
         </g>
       </svg>
-      <svg
-        v-else
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 16 16"
-        title="Plats hittad"
-      >
-        <g
-          fill="none"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path
-            d="M8 15.5s-5.5-5-5.5-9.5a5.5 5.5 0 0 1 11 0 6.883 6.883 0 0 1-.322 2"
-          />
+      <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" title="Plats hittad">
+        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 15.5s-5.5-5-5.5-9.5a5.5 5.5 0 0 1 11 0 6.883 6.883 0 0 1-.322 2" />
           <circle cx="8" cy="6" r="1.5" />
           <path d="m8.5 11.5 2 2 4-4" />
         </g>
@@ -170,8 +143,7 @@ function toggleCurrentLocation() {
 
 .nc-loop-ripple-16-icon-o * {
   transform-origin: 50% 50%;
-  animation: nc-loop-ripple-anim var(--animation-duration) infinite
-    cubic-bezier(0.215, 0.61, 0.355, 1);
+  animation: nc-loop-ripple-anim var(--animation-duration) infinite cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 .nc-loop-ripple-16-icon-o :nth-child(2) {

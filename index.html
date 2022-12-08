@@ -1,24 +1,23 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="sv">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f0dab1" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#6f6553" media="(prefers-color-scheme: dark)">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <link rel="apple-touch-icon" sizes="180x180" href="180x180.png">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f0dab1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#6f6553" media="(prefers-color-scheme: dark)" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <link rel="apple-touch-icon" sizes="180x180" href="180x180.png" />
     <link rel="icon" href="favicon.ico" />
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="mask-icon" href="safari-pinned-tab.svg" color="#ffffff">
-    <link rel="manifest" href="site.webmanifest">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+    <link rel="mask-icon" href="safari-pinned-tab.svg" color="#ffffff" />
+    <link rel="manifest" href="site.webmanifest" />
     <script>
-        navigator.serviceWorker.register("/sw.js")
+      navigator.serviceWorker.register("/sw.js");
     </script>
     <title>Birdlist</title>
     <style>
-    .container {
+      .container {
         height: 100vh; /* Chrome v104 or earlier */
         height: 100svh;
         display: grid;
@@ -27,21 +26,20 @@
         gap: 0px 0px;
         grid-auto-flow: row;
         grid-template-areas:
-            "main"
-            "nav";
+          "main"
+          "nav";
         background: #fff;
-    }
+      }
 
-    .container:empty {
+      .container:empty {
         background: #fff url(/src/assets/logo.webp) no-repeat 50% 45% / 60% auto;
-    }
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="app" class="container"></div>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script type="module" src="/src/main.js"></script>
-</body>
-
+  </body>
 </html>
