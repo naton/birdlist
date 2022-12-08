@@ -23,7 +23,7 @@ setTimeout(
         console.log(error);
       }
     )),
-  500
+  400
 );
 
 /* Lists */
@@ -34,10 +34,12 @@ function scrollToBottom(el) {
 }
 
 function selectList(list) {
+  // Calculated lists come as strings, others are full objects
   if (typeof list === "string") {
     currentList.value = { id: list };
   } else {
     currentList.value = list;
+    history.replaceState(list.name, null, "#" + list.id);
   }
 }
 
@@ -59,11 +61,18 @@ async function addObservation(ev, listId, location) {
 
 let newLeaderConfetti;
 
-/* Celebrate new leader */
-onMounted(() => {
+onMounted(async () => {
+  /* Load list from hash  in URL */
+  if (!!location.hash && location.hash.startsWith("#lst")) {
+    const listId = location.hash.replace("#", "");
+    const list = await db.lists.get(listId);
+    currentList.value = list;
+  }
+
+  /* Prepare to celebrate new leader */
   const canvas = document.getElementById("canvas");
+
   if (typeof confetti !== "undefined") {
-    // eslint-disable-next-line no-undef
     newLeaderConfetti = confetti.create(canvas, {
       resize: true,
       useWorker: true,
