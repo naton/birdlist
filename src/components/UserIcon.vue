@@ -67,13 +67,13 @@ function cssColor(string) {
 
 .score {
   position: absolute;
-  top: -3px;
-  right: -3px;
+  top: -4px;
+  right: -4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.3rem;
+  height: 1.3rem;
   border-radius: 50%;
   color: var(--color-background);
   background: var(--color-text);
@@ -98,15 +98,15 @@ function cssColor(string) {
   content: "";
   display: block;
   position: absolute;
-  width: 6px;
+  width: 7px;
   height: 20px;
   background: inherit;
   top: 5px;
-  transform: rotate(-12deg) skewX(-23deg);
+  transform: rotate(10deg) skewX(30deg);
   z-index: -1;
   box-shadow: 0 1px 0 0 var(--co-grey-dark);
 }
 .score.leader::after {
-  transform: rotate(12deg) skewX(23deg);
+  transform: rotate(350deg) skewX(330deg);
 }
 </style>
