@@ -120,7 +120,7 @@ button.secondary {
   bottom: 2%;
   border: 2px solid;
   background-color: var(--color-background);
-  padding-bottom: 30%;
+  padding: 1rem 1rem 30%;
   place-content: center;
   z-index: 2;
   outline: 40px solid rgba(0, 0, 0, 0.5);

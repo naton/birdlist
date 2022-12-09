@@ -105,6 +105,13 @@ function emitActiveTab(list) {
   margin-left: auto;
 }
 
+.c-tabs__tab.last .add {
+  margin-right: 1rem;
+  margin-left: 1rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
 .c-tabs__tab label {
   display: block;
   padding: 1rem 1rem 0.8rem;

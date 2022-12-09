@@ -69,7 +69,8 @@ function saveAndClose() {
 <template>
   <div class="dialog" v-if="props.isOpen">
     <h2>{{ observation.name }}</h2>
-    <h3 class="margin-bottom">{{ formatDate(observation.date) }}</h3>
+    <h3>{{ formatDate(observation.date) }}</h3>
+    <p class="margin-bottom">Av: {{ observation.owner }}</p>
     <div v-if="observation.location" class="margin-bottom">
       <a
         :href="`https://www.openstreetmap.org/#map=16/${observation.location.replace(',', '/')}`"
@@ -89,7 +90,7 @@ function saveAndClose() {
     <details v-if="canEdit(observation.owner)" class="margin-bottom">
       <summary>Redigera observation</summary>
       <div class="margin-bottom">
-        <label for="obs-date">Ändra namn</label>
+        <label for="obs-name">Ändra namn</label>
         <input id="obs-name" type="text" v-model="currentName" />
       </div>
 
@@ -144,8 +145,8 @@ function saveAndClose() {
 }
 
 .dialog select,
-.dialog input {
-  width: 95%;
+.dialog input,
+.dialog textarea {
   font-size: 1.5rem;
 }
 

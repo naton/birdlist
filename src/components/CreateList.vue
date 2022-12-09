@@ -45,6 +45,7 @@ async function createList() {
         placeholder="Skriv namn på listan…"
       />
       <textarea
+        class="margin-bottom"
         id="description"
         v-model="description"
         cols="30"
@@ -58,21 +59,3 @@ async function createList() {
     </div>
   </li>
 </template>
-
-<style>
-.c-tabs__tab .add {
-  margin-right: 1rem;
-  margin-left: 1rem;
-  padding-right: 1rem;
-  padding-left: 1rem;
-}
-
-.create-list-dialog input {
-  max-width: 90vw;
-  font-size: 2rem;
-}
-
-.create-list-dialog .create {
-  margin-top: 1rem;
-}
-</style>
