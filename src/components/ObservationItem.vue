@@ -49,8 +49,8 @@ function canEdit(owner) {
   </li>
 </template>
 
-<style scoped>
-.edit-button {
+<style>
+.obs + .edit-button {
   position: absolute;
   right: 0;
   top: 0;
@@ -61,29 +61,25 @@ function canEdit(owner) {
   transition: 0.1s transform ease-out;
 }
 
-.edit-button:disabled {
-  opacity: 0.7;
-}
-
-.is-active {
+li.is-active {
   position: relative;
 }
 
-.is-active .obs {
+li.is-active .obs {
   background: var(--color-background-dim);
   transform: translateX(-3rem);
 }
 
-.is-active .date {
+li.is-active .date {
   color: var(--color-text);
 }
 
-.is-active .edit-button {
+li.is-active .edit-button {
   transform: translateX(-0.1rem);
   z-index: 0;
 }
 
-.has-location {
+.obs .has-location {
   align-self: center;
   width: 16px;
   height: 16px;
