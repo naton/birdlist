@@ -6,7 +6,7 @@ import { db } from "../db";
 import TabsList from "@/components/TabsList.vue";
 import ListView from "@/components/ListView.vue";
 import EditDialog from "@/components/EditDialog.vue";
-import { getMonthName } from "../helpers";
+import { getCurrentYear, getMonthName } from "../helpers";
 
 const componentKey = ref(0);
 const props = defineProps(["list", "user"]);
@@ -71,6 +71,23 @@ function editObservation(obs) {
 function goToMonth(month) {
   currentMonth.value = month;
   emit("selectList", "monthly");
+}
+
+function prevMonth() {
+  if (currentMonth.value === 0) {
+    currentYear.value--;
+    currentMonth.value = 11;
+  }
+  currentMonth.value--;
+}
+
+function nextMonth() {
+  if (currentMonth.value === 11) {
+    currentYear.value++;
+    currentMonth.value = 0;
+  } else {
+    currentMonth.value++;
+  }
 }
 
 function totalPerMonth(month) {
@@ -193,7 +210,8 @@ onUnmounted(() => {
 
 <template>
   <tabs-list
-    :label="getMonthName(currentMonth, 'long')"
+    :monthLabel="getMonthName(currentMonth, 'long')"
+    :yearLabel="getCurrentYear(currentYear)"
     :tabList="tabList"
     :currentList="props.list"
     @activate="selectList"
@@ -212,7 +230,7 @@ onUnmounted(() => {
         >
           <template v-slot:header>
             <div class="list-header date-nav">
-              <button class="prev-date" @click.prevent="currentMonth--">
+              <button class="prev-date" @click.prevent="prevMonth">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12">
                   <path
                     fill="currentColor"
@@ -223,7 +241,7 @@ onUnmounted(() => {
               <h2 class="heading center">
                 {{ currentMonthFormatted }}
               </h2>
-              <button class="next-date" @click.prevent="currentMonth++">
+              <button class="next-date" @click.prevent="nextMonth">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12">
                   <path
                     fill="currentColor"

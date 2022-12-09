@@ -7,8 +7,8 @@ function getMonthName(month, length) {
   }).format(date);
 }
 
-function getCurrentYear() {
-  const date = new Date();
+function getCurrentYear(year) {
+  const date = year ? new Date().setFullYear(year) : new Date();
   return new Intl.DateTimeFormat("sv", {
     year: "numeric",
   }).format(date);
