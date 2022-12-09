@@ -60,11 +60,6 @@ async function createList() {
 </template>
 
 <style>
-.c-tabs__tab.last {
-  align-self: center;
-  margin-left: auto;
-}
-
 .c-tabs__tab .add {
   margin-right: 1rem;
   margin-left: 1rem;

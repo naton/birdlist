@@ -363,7 +363,7 @@ onUnmounted(() => {
   max-width: 100vw;
   overflow: hidden;
   background: var(--color-background-dim);
-  box-shadow: inset rgb(17 17 26 / 10%) 0 -4px 8px 0;
+  box-shadow: inset rgb(17 17 26 / 10%) 0 -6px 8px 0;
 }
 
 .body-content {

@@ -56,18 +56,20 @@ function emitActiveTab(list) {
           'c-tabs__tab--active': 'everything' !== props.currentList.id && 'monthly' !== props.currentList.id,
         }"
       >
-        <select name="name" v-model="currentList" class="transparent-menu">
-          <option value="monthly">Välj lista…</option>
-          <option v-for="list in tabList" :key="list.id" :value="list">
-            {{ list.title }}
-          </option>
-        </select>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
-          <path
-            fill="currentColor"
-            d="M11 9H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0-8H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0 4H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Z"
-          />
-        </svg>
+        <label>
+          <select name="name" v-model="currentList" class="transparent-menu">
+            <option value="monthly">Välj lista…</option>
+            <option v-for="list in tabList" :key="list.id" :value="list">
+              {{ list.title }}
+            </option>
+          </select>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+            <path
+              fill="currentColor"
+              d="M11 9H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0-8H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0 4H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Z"
+            />
+          </svg>
+        </label>
       </li>
       <create-list @activate="emitActiveTab" />
     </ul>
@@ -91,10 +93,16 @@ function emitActiveTab(list) {
   display: flex;
   width: 100%;
   list-style: none;
-  overflow: auto;
+  overflow-y: hidden;
+  overflow-x: auto;
   white-space: nowrap;
   padding: 0;
   overscroll-behavior: none;
+}
+
+.c-tabs__tab.last {
+  align-self: center;
+  margin-left: auto;
 }
 
 .c-tabs__tab label {
@@ -103,32 +111,30 @@ function emitActiveTab(list) {
   text-transform: capitalize;
 }
 
-.c-tabs__tab--active {
-  border-top: 4px solid;
+.c-tabs__tab--active label {
+  margin-top: 2px;
+  padding: 0.7rem 1rem 0.9rem;
+  border-top: 2px solid;
   border-top-left-radius: var(--radius);
   border-top-right-radius: var(--radius);
   background: var(--color-background);
 }
 
-.c-tabs__tab--active label {
-  padding-top: 0.8rem;
+.c-tabs__tab svg {
+  display: block;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0.1rem;
+  pointer-events: none;
 }
 
 .transparent-menu {
   position: absolute;
+  top: 0;
   left: 0;
   right: 0;
-  height: 3.4rem;
-  padding: 1.5rem;
+  bottom: 0;
   opacity: 0;
   font-size: 1.5rem;
-}
-
-.transparent-menu + svg {
-  display: block;
-  width: 1.3rem;
-  height: 3.4rem;
-  margin: 0 1.2rem;
-  pointer-events: none;
 }
 </style>

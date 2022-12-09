@@ -1,7 +1,7 @@
 <script setup>
 import UserIcon from "./UserIcon.vue";
 
-const props = defineProps(["obs", "show_date", "selected", "user"]);
+const props = defineProps(["obs", "selected", "user"]);
 const emit = defineEmits(["select", "edit"]);
 
 function formatDate(date) {
@@ -21,7 +21,23 @@ function canEdit(owner) {
   <li @click="emit('select', obs)" :class="selected.id == obs.id && 'is-active'">
     <span class="obs">
       <span class="name">✘ {{ obs.name }}</span>
-      <span class="date" v-if="show_date">{{ formatDate(obs.date) }}</span>
+
+      <svg
+        v-if="obs.location"
+        class="has-location"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 16 16"
+        width="24px"
+        height="16px"
+        title="Plats angiven"
+      >
+        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 15.5s-5.5-5-5.5-9.5a5.5 5.5 0 0 1 11 0 6.883 6.883 0 0 1-.322 2" />
+          <circle cx="8" cy="6" r="1.5" />
+          <path d="m8.5 11.5 2 2 4-4" />
+        </g>
+      </svg>
+      <span class="date">{{ formatDate(obs.date) }}</span>
       <span class="seen-by">
         <user-icon :user="obs.owner"></user-icon>
       </span>
@@ -65,5 +81,12 @@ function canEdit(owner) {
 .is-active .edit-button {
   transform: translateX(-0.1rem);
   z-index: 0;
+}
+
+.has-location {
+  align-self: center;
+  width: 16px;
+  height: 16px;
+  margin-right: 0.5rem;
 }
 </style>
