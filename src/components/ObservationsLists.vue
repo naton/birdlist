@@ -378,6 +378,7 @@ onUnmounted(() => {
 
 .sidescroll {
   overflow-x: auto;
+  padding: 0 0.8rem;
 }
 
 .date-nav {

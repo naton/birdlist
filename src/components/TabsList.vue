@@ -104,7 +104,7 @@ function emitActiveTab(list) {
 }
 
 .c-tabs__tab--active {
-  border-top: 2px solid;
+  border-top: 4px solid;
   border-top-left-radius: var(--radius);
   border-top-right-radius: var(--radius);
   background: var(--color-background);
