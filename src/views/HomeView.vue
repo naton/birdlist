@@ -80,13 +80,13 @@ onMounted(async () => {
   }
 });
 
-function celebrate() {
+async function celebrate() {
   function randomInRange(min, max) {
     return Math.random() * (max - min) + min;
   }
 
   if (typeof newLeaderConfetti !== "undefined") {
-    newLeaderConfetti({
+    await newLeaderConfetti({
       angle: randomInRange(55, 105),
       spread: randomInRange(50, 70),
       particleCount: randomInRange(80, 120),
@@ -132,6 +132,7 @@ onUnmounted(() => {
   top: 0;
   left: 0;
   right: 0;
+  width: 100%;
   height: 100%;
   pointer-events: none;
   z-index: 3;
