@@ -130,7 +130,8 @@ onUnmounted(() => {
 #canvas {
   position: fixed;
   top: 0;
-  width: 100%;
+  left: 0;
+  right: 0;
   height: 100%;
   pointer-events: none;
   z-index: 3;
