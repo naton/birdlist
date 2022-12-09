@@ -371,6 +371,15 @@ onUnmounted(() => {
   overflow: auto;
 }
 
+.body-content::-webkit-scrollbar {
+  width: 6px;
+  background: var(--color-background);
+}
+
+.body-content::-webkit-scrollbar-thumb {
+  background: var(--color-background-dim);
+}
+
 .list-header {
   overflow: hidden;
   padding: 0.5rem 0;
