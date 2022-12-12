@@ -39,7 +39,7 @@ function selectList(list) {
     currentList.value = { id: list };
   } else {
     currentList.value = list;
-    history.replaceState(list.name, null, "#" + list.id);
+    history.replaceState(history.state, "", "#" + list.id);
   }
 }
 
@@ -96,7 +96,6 @@ async function celebrate() {
 }
 
 onUnmounted(() => {
-  newLeaderConfetti.reset();
   userSubscription.unsubscribe();
 });
 </script>
