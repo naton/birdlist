@@ -373,10 +373,11 @@ onUnmounted(() => {
 
 .body-content::-webkit-scrollbar {
   width: 6px;
-  background: var(--color-background);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .body-content::-webkit-scrollbar-thumb {
+  border-radius: var(--radius);
   background: var(--color-background-dim);
 }
 
@@ -422,8 +423,9 @@ onUnmounted(() => {
 .list-header .subtitle {
   position: relative;
   display: flex;
-  align-items: center;
-  padding-left: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0 1rem;
   background: var(--color-background);
   transition: 0.1s transform ease-out;
 }
@@ -434,12 +436,8 @@ onUnmounted(() => {
 }
 
 .list-header .share-button {
-  position: absolute;
-  top: 0.1rem;
-  right: 1rem;
-  margin-left: 1rem;
-  padding-right: 1rem;
-  padding-left: 1rem;
+  margin-left: 0.5rem;
+  white-space: nowrap;
 }
 
 .is-active.list-header .subtitle {
