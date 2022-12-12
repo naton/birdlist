@@ -113,6 +113,7 @@ function emitActiveTab(list) {
 }
 
 .c-tabs__tab label {
+  position: relative;
   display: block;
   padding: 1rem 1rem 0.8rem;
   text-transform: capitalize;

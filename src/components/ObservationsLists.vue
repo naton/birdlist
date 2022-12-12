@@ -381,6 +381,7 @@ onUnmounted(() => {
 }
 
 .list-header {
+  position: relative;
   overflow: hidden;
   padding: 0.5rem 0;
 }
@@ -419,6 +420,7 @@ onUnmounted(() => {
 }
 
 .list-header .subtitle {
+  position: relative;
   display: flex;
   align-items: center;
   padding-left: 1rem;

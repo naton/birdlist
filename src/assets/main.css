@@ -39,6 +39,7 @@
 
 /* Navigation */
 .nav {
+  position: relative;
   max-width: 820px;
   width: 100%;
   grid-area: nav;
@@ -47,6 +48,7 @@
   text-align: center;
   padding: 0.5rem 1rem 1rem;
   background: var(--color-background);
+  z-index: 1;
 }
 
 .nav-link {
@@ -128,6 +130,6 @@ button.secondary {
   background-color: var(--color-background);
   padding: 1rem 1rem 30%;
   place-content: center;
-  z-index: 2;
+  z-index: 3;
   outline: 40px solid rgba(0, 0, 0, 0.5);
 }

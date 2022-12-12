@@ -52,7 +52,7 @@ watch(currentLeader, (newLeader) => {
 
 function groupBy(objectArray, property) {
   return objectArray.reduce((acc, obj) => {
-    const key = obj[property];
+    const key = obj[property].toLowerCase();
     if (!acc[key]) {
       acc[key] = [];
     }
@@ -223,7 +223,8 @@ function emitEdit(obs) {
   background: var(--color-background);
   overflow: auto;
   white-space: nowrap;
-  z-index: 1;
+  box-shadow: rgb(17 17 26 / 10%) 0 6px 8px 0;
+  z-index: 2;
 }
 
 .user-button {

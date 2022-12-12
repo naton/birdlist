@@ -52,6 +52,7 @@ function cssColor(string) {
 }
 
 .user + span {
+  position: relative;
   margin: 0 1ch 0 0.5ch;
   font-size: 0.9em;
 }
