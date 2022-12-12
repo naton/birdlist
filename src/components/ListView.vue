@@ -185,7 +185,10 @@ function emitEdit(obs) {
 }
 
 .list li {
+  display: flex;
+  align-items: center;
   overflow: hidden;
+  border-bottom: 1px solid var(--color-background-dim);
 }
 
 .list li:first-child {
@@ -194,11 +197,10 @@ function emitEdit(obs) {
 
 .list .obs {
   display: flex;
+  flex: 1;
   align-items: baseline;
   justify-content: space-between;
   padding: 0.6rem 1em;
-  border-bottom: 1px solid var(--color-background-dim);
-  background: var(--color-background);
   transition: 0.1s transform ease-out;
 }
 
@@ -219,12 +221,13 @@ function emitEdit(obs) {
   position: sticky;
   top: 0;
   display: flex;
+  margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
   background: var(--color-background);
   overflow: auto;
   white-space: nowrap;
   box-shadow: rgb(17 17 26 / 10%) 0 6px 8px 0;
-  z-index: 2;
+  z-index: 1;
 }
 
 .user-button {

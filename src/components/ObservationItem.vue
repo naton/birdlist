@@ -51,22 +51,17 @@ function canEdit(owner) {
 
 <style>
 .obs + .edit-button {
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
-  outline: 1px solid;
-  z-index: -1;
+  margin-left: -3rem;
   transform: translateX(3.1rem);
   transition: 0.1s transform ease-out;
 }
 
 li.is-active {
   position: relative;
+  background: var(--color-background-dim);
 }
 
 li.is-active .obs {
-  background: var(--color-background-dim);
   transform: translateX(-3rem);
 }
 
@@ -75,8 +70,7 @@ li.is-active .date {
 }
 
 li.is-active .edit-button {
-  transform: translateX(-0.1rem);
-  z-index: 0;
+  transform: translateX(0rem);
 }
 
 .obs .has-location {
