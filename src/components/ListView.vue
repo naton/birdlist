@@ -71,7 +71,7 @@ function sortObject(o) {
 const observationsByUser = computed(() => {
   return selectedUser.value === null
     ? props.observations
-    : props.observations.filter((obs) => obs.owner === selectedUser.value).sort((a, b) => a.date - b.date);
+    : props.observations.filter((obs) => obs.owner === selectedUser.value).sort((a, b) => b.date - a.date);
 });
 
 const speciesByUser = computed(() => {
