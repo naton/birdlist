@@ -39,18 +39,6 @@ function toggleCurrentLocation() {
 
 <template>
   <div class="add-observation">
-    <input
-      name="bird"
-      type="text"
-      list="birds"
-      @change="emit('add', $event, props.list, currentPosition)"
-      autocomplete="off"
-      :placeholder="
-        props.list.id && props.list.id.startsWith('lst')
-          ? `Lägg till 🐦 på ${list.title}…`
-          : 'Skriv namnet på 🐦 du sett…'
-      "
-    />
     <button
       type="button"
       @click="toggleCurrentLocation"
@@ -107,12 +95,25 @@ function toggleCurrentLocation() {
         </g>
       </svg>
     </button>
+    <input
+      name="bird"
+      type="text"
+      list="birds"
+      @change="emit('add', $event, props.list, currentPosition)"
+      autocomplete="off"
+      :placeholder="
+        props.list.id && props.list.id.startsWith('lst')
+          ? `Lägg till 🐦 på ${list.title}…`
+          : 'Skriv namnet på 🐦 du sett…'
+      "
+    />
   </div>
 </template>
 
 <style>
 .add-observation {
   display: flex;
+  gap: 0.3rem;
   padding: 0.5rem 1rem;
 }
 
@@ -130,10 +131,6 @@ function toggleCurrentLocation() {
 
 .add-observation input::placeholder {
   color: var(--color-text-dim);
-}
-
-.add-observation button {
-  margin-left: 0.3rem;
 }
 
 .has-position {

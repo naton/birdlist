@@ -45,7 +45,7 @@
   display: flex;
   margin: 0 auto;
   text-align: center;
-  padding: 0.5rem 1rem 1rem;
+  padding: 0.5rem 1rem;
   background: var(--color-background);
 }
 
@@ -110,8 +110,8 @@ button.secondary {
 
 .heading {
   text-transform: uppercase;
-  margin-top: 0.35rem;
-  margin-bottom: 0.35rem;
+  margin-top: 0.3rem;
+  margin-bottom: 0.3rem;
   letter-spacing: 0.15ex;
   font-size: 1.4rem;
 }
