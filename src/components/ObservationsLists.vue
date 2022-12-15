@@ -340,6 +340,10 @@ onUnmounted(() => {
               </div>
               <button class="delete-button" @click.prevent="deleteList(props.list.id)">✕</button>
             </div>
+            <details v-if="props.list.description" class="list-description">
+              <summary>Information om listan</summary>
+              {{ props.list.description }}
+            </details>
           </template>
         </list-view>
       </div>
@@ -384,7 +388,11 @@ onUnmounted(() => {
 .list-header {
   position: relative;
   overflow: hidden;
-  padding: 0.5rem 0;
+  padding: 0.25rem 0;
+}
+
+.list-description {
+  margin: 0 1rem 0.25rem;
 }
 
 .sidescroll {
@@ -407,7 +415,7 @@ onUnmounted(() => {
 }
 
 .year-summary {
-  margin: 0 auto 1.5rem;
+  margin: 0 auto 1rem;
   font-size: 0.9rem;
 }
 
@@ -447,9 +455,8 @@ onUnmounted(() => {
 
 .list-header .delete-button {
   position: absolute;
-  top: 0.55rem;
-  right: 0;
-  outline: 1px solid;
+  top: 0.25rem;
+  right: 0.1rem;
   transform: translateX(3.1rem);
   transition: 0.1s transform ease-out;
 }
