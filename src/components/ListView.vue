@@ -130,7 +130,7 @@ function emitEdit(obs) {
           current: sort == 'bydate',
         }"
         @click.prevent="emitSort('bydate')"
-        >Observationer</a
+        >Observationer <span class="nav-count">({{ observationsByUser.length }})</span></a
       >
       <a
         href="#byname"
@@ -139,12 +139,11 @@ function emitEdit(obs) {
           current: sort == 'byname',
         }"
         @click.prevent="emitSort('byname')"
-        >Arter</a
+        >Arter <span class="nav-count">({{ Object.keys(speciesByUser).length }})</span></a
       >
     </nav>
 
     <section id="bydate" v-show="props.sort == 'bydate'" v-if="observations.length">
-      <h3 class="center">{{ observationsByUser.length }} observationer</h3>
       <ul class="list">
         <observation-item
           v-for="obs in observationsByUser"
@@ -160,7 +159,6 @@ function emitEdit(obs) {
     </section>
 
     <section id="byname" v-show="props.sort == 'byname'" v-if="species.length">
-      <h3 class="center">{{ Object.keys(speciesByUser).length }} olika arter</h3>
       <ol class="list">
         <species-item v-for="obs in speciesByUser" :obs="obs" :key="obs.id"></species-item>
       </ol>
