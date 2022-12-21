@@ -150,7 +150,7 @@ function emitEdit(obs) {
         <observation-item
           v-for="obs in observationsByUser"
           :obs="obs"
-          :key="`${obs.name}-${obs.owner}`"
+          :key="obs.date"
           :selected="props.selected"
           :user="props.user"
           @select="emitSelect(obs)"
