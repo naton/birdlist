@@ -444,6 +444,8 @@ onUnmounted(() => {
 }
 
 .list-header .share-button {
+  min-height: 2.3rem;
+  align-self: center;
   margin-left: 0.5rem;
   white-space: nowrap;
 }

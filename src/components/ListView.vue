@@ -229,7 +229,8 @@ function emitEdit(obs) {
 }
 
 .user-button {
-  min-width: 25%;
+  min-width: 7rem;
+  width: 25%;
   margin: 0;
   padding: 5px 0 0;
   color: inherit;
