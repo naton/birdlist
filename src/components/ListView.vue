@@ -37,7 +37,7 @@ const users = computed(() => {
     }
   });
 
-  return users;
+  return users.sort((a, b) => b.score - a.score);
 });
 
 const selectedUser = ref(null);
@@ -109,17 +109,19 @@ function emitEdit(obs) {
 
   <slot name="default">
     <nav class="user-nav" v-if="users.length > 1">
-      <button
-        v-for="{ name, score, leader } in users"
-        class="user-button"
-        :class="name === selectedUser && 'user-button--active'"
-        @click="changeUser(name)"
-        :key="name"
-      >
-        <user-icon :user="name" :score="score" :leader="leader">
-          <span :class="name === props.user && 'me'">{{ name }}</span>
-        </user-icon>
-      </button>
+      <transition-group name="list" appear>
+        <button
+          v-for="{ name, score, leader } in users"
+          class="user-button"
+          :class="name === selectedUser && 'user-button--active'"
+          @click="changeUser(name)"
+          :key="name"
+        >
+          <user-icon :user="name" :score="score" :leader="leader">
+            <span :class="name === props.user && 'me'">{{ name }}</span>
+          </user-icon>
+        </button>
+      </transition-group>
     </nav>
 
     <nav class="nav" v-if="observations.length">
