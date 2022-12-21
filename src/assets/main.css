@@ -32,6 +32,7 @@
 }
 
 .footer {
+  position: relative;
   grid-area: footer;
   background: var(--color-background-dim);
   box-shadow: rgb(17 17 26 / 10%) 0 -6px 8px 0;
@@ -137,20 +138,36 @@ button.secondary {
   outline: 40px solid rgba(0, 0, 0, 0.5);
 }
 
+.user-nav:has(.list-enter-active) {
+  overflow: hidden;
+}
+
 .list-move, /* apply transition to moving elements */
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.5s ease;
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
 }
 
-.list-enter-from,
-.list-leave-to {
+.user-nav .list-enter-from,
+.user-nav .list-leave-to {
   opacity: 0;
-  transform: translateX(30px);
+  transform: translate3D(30px, 0px, 0px);
+}
+
+.list .list-enter-from,
+.list .list-leave-to {
+  opacity: 0;
+  transform: translate3D(0px, 30px, 0px);
 }
 
 /* ensure leaving items are taken out of layout flow so that moving
    animations can be calculated correctly. */
 .list-leave-active {
   position: absolute;
+  width: 100%;
+  margin-right: 6px;
+}
+
+.list .list-leave-active {
+  opacity: 0;
 }

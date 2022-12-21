@@ -146,24 +146,24 @@ function emitEdit(obs) {
     </nav>
 
     <section id="bydate" v-show="props.sort == 'bydate'" v-if="observations.length">
-      <ul class="list">
+      <transition-group tag="ul" name="list" class="list">
         <observation-item
           v-for="obs in observationsByUser"
           :obs="obs"
-          :key="obs.id"
+          :key="`${obs.name}-${obs.owner}`"
           :selected="props.selected"
           :user="props.user"
           @select="emitSelect(obs)"
           @delete="emitDelete(id)"
           @edit="emitEdit(obs)"
         ></observation-item>
-      </ul>
+      </transition-group>
     </section>
 
     <section id="byname" v-show="props.sort == 'byname'" v-if="species.length">
-      <ol class="list">
-        <species-item v-for="obs in speciesByUser" :obs="obs" :key="obs.id"></species-item>
-      </ol>
+      <transition-group tag="ol" name="list" class="list">
+        <species-item v-for="obs in speciesByUser" :obs="obs" :key="obs[0].name"></species-item>
+      </transition-group>
     </section>
 
     <section class="empty-list" v-if="user && !observations.length">
@@ -181,6 +181,7 @@ function emitEdit(obs) {
 }
 
 .list {
+  position: relative;
   margin: 0.5rem 0 0;
 }
 
@@ -188,11 +189,8 @@ function emitEdit(obs) {
   display: flex;
   align-items: center;
   overflow: hidden;
-  border-bottom: 1px solid var(--color-background-dim);
-}
-
-.list li:first-child {
   border-top: 1px solid var(--color-background-dim);
+  background: var(--color-background);
 }
 
 .list .obs {
