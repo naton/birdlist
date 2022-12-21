@@ -70,7 +70,7 @@ function sortObject(o) {
 
 const observationsByUser = computed(() => {
   return selectedUser.value === null
-    ? props.observations
+    ? props.observations.sort((a, b) => b.date - a.date)
     : props.observations.filter((obs) => obs.owner === selectedUser.value).sort((a, b) => b.date - a.date);
 });
 
