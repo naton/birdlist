@@ -77,8 +77,9 @@ function prevMonth() {
   if (currentMonth.value === 0) {
     currentYear.value--;
     currentMonth.value = 11;
+  } else {
+    currentMonth.value--;
   }
-  currentMonth.value--;
 }
 
 function nextMonth() {
