@@ -1,6 +1,7 @@
 {
   "name": "Birdlist",
   "short_name": "Birdlist",
+  "id": "birdlist",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -36,6 +37,12 @@
       "purpose": "any"
     },
     {
+      "src": "96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
       "src": "favicon.ico",
       "type": "image/x-icon",
       "sizes": "48x48"
@@ -53,7 +60,13 @@
     {
       "name": "About Birdlist",
       "url": "/about",
-      "description": "About Birdlist"
+      "description": "About Birdlist",
+      "icons": [{
+        "src": "96x96.png",
+        "sizes": "96x96",
+        "type": "image/png",
+        "purpose": "any"
+      }]
     }
   ]
 }
