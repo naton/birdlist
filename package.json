@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "workbox generateSW workbox-config.js && vite build",
     "preview": "vite preview --port 4173",
     "test:unit": "vitest --environment jsdom",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
@@ -23,6 +23,7 @@
     "jsdom": "^20.0.0",
     "prettier": "2.8.1",
     "vite": "^3.0.4",
-    "vitest": "^0.21.0"
+    "vitest": "^0.21.0",
+    "workbox-cli": "^6.5.4"
   }
 }
