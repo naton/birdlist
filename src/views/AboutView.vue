@@ -3,8 +3,8 @@
     <div class="about-content">
       <h1 class="hidden-visually">About Birdlist</h1>
       <picture>
-        <source srcset="../assets/logo.webp" type="image/webp" />
-        <img src="../assets/logo.png" alt="Birdlist" width="460" height="170" class="logo" />
+        <source srcset="/logo.webp" type="image/webp" />
+        <img src="/logo.png" alt="Birdlist" width="460" height="170" class="logo" />
       </picture>
       <h2>
         Log your bird observations.<br />
