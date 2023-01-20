@@ -33,7 +33,7 @@
     <option>Bläsgås</option>
     <option>Bofink</option>
     <option>Brandkronad kungsfågel</option>
-    <option>Brednäbbadsimsnäppa</option>
+    <option>Brednäbbad simsnäppa</option>
     <option>Bredstjärtad labb</option>
     <option>Bronsibis</option>
     <option>Brun kärrhök</option>
@@ -54,7 +54,7 @@
     <option>Dubbelbeckasin</option>
     <option>Dubbeltrast</option>
     <option>Duvhök</option>
-    <option>Dvärg lira</option>
+    <option>Dvärglira</option>
     <option>Dvärgbeckasin</option>
     <option>Dvärglärka</option>
     <option>Dvärgmås</option>
@@ -83,7 +83,6 @@
     <option>Flodsångare</option>
     <option>Forsärla</option>
     <option>Fältpiplärka</option>
-    <option>Glada</option>
     <option>Glasögonsångare</option>
     <option>Gluttsnäppa</option>
     <option>Gransångare</option>
@@ -99,7 +98,7 @@
     <option>Gråspett</option>
     <option>Gråtrut</option>
     <option>Gräsand</option>
-    <option>Gräshoppssångare</option>
+    <option>Gräshoppsångare</option>
     <option>Grässångare</option>
     <option>Grönbena</option>
     <option>Grönfink</option>
@@ -108,7 +107,7 @@
     <option>Grönsångare</option>
     <option>Guldfasan</option>
     <option>Gulhämpling</option>
-    <option>Gulnäbbad Lira</option>
+    <option>Gulnäbbad lira</option>
     <option>Gulsparv</option>
     <option>Gulärla</option>
     <option>Gyllensparv</option>
@@ -118,6 +117,7 @@
     <option>Göktyta</option>
     <option>Halsbandsflugsnappare</option>
     <option>Halsbandsparakit</option>
+    <option>Havslöpare</option>
     <option>Havssula</option>
     <option>Havstrut</option>
     <option>Havsörn</option>
@@ -131,6 +131,7 @@
     <option>Höksångare</option>
     <option>Hökuggla</option>
     <option>Hökörn</option>
+    <option>Iltärna</option>
     <option>Islandsknipa</option>
     <option>Islom</option>
     <option>Jaktfalk</option>
@@ -150,7 +151,7 @@
     <option>Klippnötväcka</option>
     <option>Klippsparv</option>
     <option>Klippsvala</option>
-    <option>Klyvstjärtad Stormsvala</option>
+    <option>Klykstjärtad stormsvala</option>
     <option>Knipa</option>
     <option>Knölsvan</option>
     <option>Kohäger</option>
@@ -162,7 +163,7 @@
     <option>Korsikansk nötväcka</option>
     <option>Korttålärka</option>
     <option>Kricka</option>
-    <option>Krushuvad Pelikan</option>
+    <option>Krushuvad pelikan</option>
     <option>Kungsfiskare</option>
     <option>Kungsfågel</option>
     <option>Kungsörn</option>
@@ -184,21 +185,20 @@
     <option>Långnäbbad mås</option>
     <option>Lärkfalk</option>
     <option>Lövsångare</option>
-    <option>Madeiran Stormsvala</option>
+    <option>Madeirapetrell</option>
     <option>Mandarinand</option>
     <option>Marmorand</option>
     <option>Masktörnskata</option>
     <option>Medelhavsstenskvätta</option>
     <option>Mellanspett</option>
     <option>Mindre flugsnappare</option>
-    <option>Mindre Hackspett</option>
-    <option>Mindre Iltärna</option>
+    <option>Mindre hackspett</option>
     <option>Mindre korsnäbb</option>
     <option>Mindre lira</option>
-    <option>Mindre Skrikörn</option>
+    <option>Mindre skrikörn</option>
     <option>Mindre strandpipare</option>
-    <option>Mindre Sumphöna</option>
-    <option>Mindre Sångsvan</option>
+    <option>Mindre sumphöna</option>
+    <option>Mindre sångsvan</option>
     <option>Minervauggla</option>
     <option>Morkulla</option>
     <option>Mosnäppa</option>
@@ -242,19 +242,20 @@
     <option>Rostgumpsvala</option>
     <option>Rostsparv</option>
     <option>Råka</option>
+    <option>Röd glada</option>
     <option>Rödbena</option>
     <option>Rödfalk</option>
     <option>Rödhake</option>
+    <option>Rödhalsad gås</option>
     <option>Rödhalsad nattskärra</option>
-    <option>Rödhalsadgås</option>
     <option>Rödhuvad dykand</option>
     <option>Rödhuvad törnskata</option>
     <option>Rödhöna</option>
     <option>Rödnäbbad trut</option>
     <option>Rödspov</option>
     <option>Rödstjärt</option>
+    <option>Rödstrupig piplärka</option>
     <option>Rödstrupig sångare</option>
-    <option>Rödstrupigpiplärka</option>
     <option>Rödvingetrast</option>
     <option>Rördrom</option>
     <option>Rörhöna</option>
@@ -276,7 +277,7 @@
     <option>Skedstork</option>
     <option>Skogsduva</option>
     <option>Skogssnäppa</option>
-    <option>Skotsk Korsnäbb</option>
+    <option>Skotsk korsnäbb</option>
     <option>Skrattmås</option>
     <option>Skräntärna</option>
     <option>Skäggdopping</option>
@@ -287,10 +288,10 @@
     <option>Skärsnäppa</option>
     <option>Slagfalk</option>
     <option>Slaguggla</option>
-    <option>Smalnäbbadsimsnäppa</option>
+    <option>Smalnäbbad simsnäppa</option>
     <option>Smutsgam</option>
     <option>Smådopping</option>
-    <option>Småfläckigsumphöna</option>
+    <option>Småfläckig sumphöna</option>
     <option>Smålom</option>
     <option>Småskrake</option>
     <option>Småsnäppa</option>
@@ -303,7 +304,7 @@
     <option>Snösparv</option>
     <option>Sommargylling</option>
     <option>Sothöna</option>
-    <option>Spansksparv</option>
+    <option>Spansk sparv</option>
     <option>Sparvhök</option>
     <option>Sparvuggla</option>
     <option>Spetsbergsgrissla</option>
@@ -334,24 +335,24 @@
     <option>Strömstare</option>
     <option>Styltlöpare</option>
     <option>Stäpphök</option>
-    <option>Större Hackspett</option>
+    <option>Större hackspett</option>
     <option>Större korsnäbb</option>
-    <option>Större Lira</option>
-    <option>Större Skrikörn</option>
+    <option>Större lira</option>
+    <option>Större skrikörn</option>
     <option>Större strandpipare</option>
-    <option>Svart Stare</option>
+    <option>Svart stare</option>
     <option>Svart stenskvätta</option>
     <option>Svart stork</option>
     <option>Svartbent strandpipare</option>
     <option>Svartbukig flyghöna</option>
     <option>Svarthakad buskskvätta</option>
     <option>Svarthakedopping</option>
-    <option>Svarthalsaddopping</option>
+    <option>Svarthalsad dopping</option>
     <option>Svarthuvad sparv</option>
-    <option>Svarthuvadmås</option>
+    <option>Svarthuvad mås</option>
     <option>Svarthätta</option>
     <option>Svartmes</option>
-    <option>Svartpannadtörnskata</option>
+    <option>Svartpannad törnskata</option>
     <option>Svartrödstjärt</option>
     <option>Svartsnäppa</option>
     <option>Svarttärna</option>
@@ -386,7 +387,7 @@
     <option>Tornuggla</option>
     <option>Trana</option>
     <option>Trastsångare</option>
-    <option>Tretåig Hackspett</option>
+    <option>Tretåig hackspett</option>
     <option>Tretåig mås</option>
     <option>Trädgårdssångare</option>
     <option>Trädgårdsträdkrypare</option>
@@ -410,18 +411,17 @@
     <option>Vattensångare</option>
     <option>Videsparv</option>
     <option>Vigg</option>
-    <option>Wilson's simsnäppa</option>
-    <option>Wilson's Stormsvala</option>
     <option>Vinterhämpling</option>
     <option>Vit stork</option>
     <option>Vitbukig flyghöna</option>
-    <option>Vitkindadgås</option>
-    <option>Vitnäbbad Islom</option>
-    <option>Vitryggig Hackspett</option>
+    <option>Vitkindad gås</option>
+    <option>Vitnäbbad islom</option>
+    <option>Vitryggig hackspett</option>
     <option>Vittrut</option>
     <option>Vitvingad tärna</option>
-    <option>Vitvingadtrut</option>
+    <option>Vitvingad trut</option>
     <option>Vitögd dykand</option>
+    <option>Wilsonsimsnäppa</option>
     <option>Årta</option>
     <option>Ägretthäger</option>
     <option>Ängshök</option>
