@@ -13,7 +13,19 @@
     <link rel="mask-icon" href="safari-pinned-tab.svg" color="#ffffff" />
     <link rel="manifest" href="site.webmanifest" />
     <script>
-      navigator.serviceWorker.register("/sw.js");
+      function onUpdateFound (registration) {
+        const newWorker = registration.installing;
+
+        newWorker.addEventListener('statechange', async () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            document.location.reload(true);
+          }
+        });
+      }
+
+      navigator.serviceWorker.register("/sw.js").then(registration => {
+        registration.addEventListener('updatefound', () => onUpdateFound(registration));
+      });
     </script>
     <title>Birdlist</title>
     <style>
