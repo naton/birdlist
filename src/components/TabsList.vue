@@ -83,8 +83,8 @@ function emitActiveTab(list) {
     <slot name="tabPanel-everything" />
   </template>
 
-  <template v-else v-for="list in tabList" :key="list.id">
-    <slot :name="`tabPanel-${list.id}`" />
+  <template v-else>
+    <slot :name="`tabPanel-${list.id}`" v-for="list in tabList" :key="list.id" />
   </template>
 </template>
 

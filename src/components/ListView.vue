@@ -1,13 +1,25 @@
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, reactive, computed, onMounted, watch } from "vue";
 import ObservationItem from "./ObservationItem.vue";
 import UserIcon from "./UserIcon.vue";
 import SpeciesItem from "./SpeciesItem.vue";
+import SvgChart from "./SvgChart.vue";
 
 const props = defineProps(["observations", "sort", "selected", "user"]);
 const emit = defineEmits(["sort", "select", "delete", "edit", "newLeader"]);
 
 const species = computed(() => [...new Set(props.observations.map((item) => item.name))].sort());
+
+const svg = reactive({
+  w: 0,
+  h: 0
+});
+
+function resize() {
+  const chart = document.querySelector('.chart');
+  svg.w = chart.offsetWidth;
+  svg.h = 200;
+}
 
 const users = computed(() => {
   const names = [...new Set(props.observations.map((item) => item.owner))].sort();
@@ -43,16 +55,9 @@ const users = computed(() => {
 const selectedUser = ref(null);
 const currentLeader = ref("");
 
-watch(currentLeader, (newLeader) => {
-  // Announce new leader only if you’re not alone
-  if (users.value.length > 1 && newLeader === props.user) {
-    emit("newLeader");
-  }
-});
-
 function groupBy(objectArray, property) {
   return objectArray.reduce((acc, obj) => {
-    const key = obj[property].toLowerCase();
+    const key = (typeof obj[property] === "object") ? new Date(obj[property]).toISOString().slice(0, 10) : obj[property].toLowerCase();
     if (!acc[key]) {
       acc[key] = [];
     }
@@ -72,6 +77,65 @@ const observationsByUser = computed(() => {
   return selectedUser.value === null
     ? props.observations.sort((a, b) => b.date - a.date)
     : props.observations.filter((obs) => obs.owner === selectedUser.value).sort((a, b) => b.date - a.date);
+});
+
+const observationsByDate = computed(() => {
+  return groupBy(props.observations, "date");
+});
+
+let options = reactive({
+  xMin: 0,
+  xMax: window.screen.availWidth,
+  yMin: 0,
+  yMax: 10,
+  line: {
+    smoothing: 0.15,
+    flattening: 0.5
+  }
+});
+
+let datasets = ref([]);
+
+function initGraph() {
+  options.yMax = users.value[0].score;
+  const firstObsDate = new Date(props.observations[props.observations.length - 1].date);
+  const lastObsDate = new Date(props.observations[0].date);
+  const datesDiff = parseInt((lastObsDate - firstObsDate) / (1000 * 60 * 60 * 24), 10);
+  const graphWidthOfEachDay = Math.ceil(options.xMax / datesDiff);
+  const datesWithObservations = Object.keys(observationsByDate.value);
+
+  function getValues(owner) {
+    let values = [];
+    let currentValue = 0;
+    let day = new Date(firstObsDate);
+
+    for (let days = 0; days <= datesDiff; days++) {
+      const obsDate = day.toISOString().slice(0, 10);
+      if (datesWithObservations.includes(obsDate)) {
+        currentValue += observationsByDate.value[obsDate].filter(obs => obs.owner === owner).length;
+      }
+      values.push([days * graphWidthOfEachDay, currentValue]);
+      day.setDate(day.getDate() + 1);
+    }
+
+    return values;
+  }
+
+  users.value.forEach(user => {
+    datasets.value.push({
+      name: user.name,
+      colors: {
+        path: cssColor(user.name),
+        circles: "var(--color-text-dim)"
+      },
+      values: getValues(user.name)
+    });
+  });
+};
+
+onMounted(() => {
+  window.addEventListener("resize", resize);
+  resize();
 });
 
 const speciesByUser = computed(() => {
@@ -102,6 +166,30 @@ function emitDelete(id) {
 function emitEdit(obs) {
   emit("edit", obs);
 }
+
+// TODO: Put in helper file
+function cssColor(string) {
+  if (!string) return "";
+  const hashCode = (str) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = (hash << 3) - hash + char;
+      hash = hash & hash;
+    }
+    return hash.toString(16);
+  };
+
+  return "#" + hashCode(string).substring(2, 8);
+}
+
+watch(currentLeader, (newLeader) => {
+  initGraph()
+  // Announce new leader only if you’re not alone
+  if (users.value.length > 1 && newLeader === props.user) {
+    emit("newLeader");
+  }
+});
 </script>
 
 <template>
@@ -123,6 +211,10 @@ function emitEdit(obs) {
         </button>
       </transition-group>
     </nav>
+
+    <div class="chart">
+      <svg-chart :datasets="datasets" :options="options" :svg="svg"></svg-chart>
+    </div>
 
     <nav class="nav" v-if="observations.length">
       <a

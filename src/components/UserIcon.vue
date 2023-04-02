@@ -6,6 +6,7 @@ const initial = computed(() => {
   return props.user ? props.user.substring(0, 1) : "";
 });
 
+// TODO: Put in helper file
 function cssColor(string) {
   if (!string) return "";
   const hashCode = (str) => {
