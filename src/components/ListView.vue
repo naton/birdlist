@@ -18,7 +18,7 @@ const svg = reactive({
 
 function resize() {
   if (users.value.length > 1) {
-    const chart = document.querySelector('.chart');
+    const chart = document.querySelector('.chart-wrapper');
     svg.w = chart.offsetWidth;
     svg.h = 200;
   }
@@ -92,8 +92,8 @@ let options = reactive({
   yMin: 0,
   yMax: 10,
   line: {
-    smoothing: 0.15,
-    flattening: 0.5
+    smoothing: 0.05,
+    flattening: 0.05
   }
 });
 
@@ -206,7 +206,7 @@ watch(currentLeader, (newLeader) => {
       </transition-group>
     </nav>
 
-    <div v-if="users.length > 1" class="chart">
+    <div v-if="users.length > 1" class="chart-wrapper">
       <svg-chart :datasets="datasets" :options="options" :svg="svg"></svg-chart>
     </div>
 

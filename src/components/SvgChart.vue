@@ -7,7 +7,7 @@ const viewbox = computed(() => `0 0 ${props.svg.w} ${props.svg.h}`);
 </script>
 
 <template>
-  <svg :view-box.camel="viewbox">
+  <svg :view-box.camel="viewbox" class="chart">
     <svg-chart-line :d="dataset" :o="options" :svg="props.svg" v-for="dataset in datasets"></svg-chart-line>
   </svg>
 </template>

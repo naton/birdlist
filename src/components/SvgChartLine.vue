@@ -92,6 +92,21 @@ function bezierCommand(point, i, a) {
 <template>
   <g>
     <path :style="styles.path" :d="pathD"></path>
-    <circle :cx="p[0]" :cy="p[1]" r="2.5" :style="styles.circles" v-for="p in pointsPositions" />
+    <circle :cx="p[0]" :cy="p[1]" r="2" :style="styles.circles" v-for="p in pointsPositions" />
   </g>
 </template>
+
+<style>
+.chart path {
+  stroke-width: 2;
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: draw 2s linear forwards;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+</style>
