@@ -30,6 +30,8 @@
     <link rel="mask-icon" href="safari-pinned-tab.svg" color="#ffffff" />
     <link rel="manifest" href="site.webmanifest" />
     <script>
+      const publicVapidKey = "BC-q_Qa_xZrCippKmu2_x6oRsJFP7E9II66LbGAvhUc_Hw2Xe9pm6JJFEj_07OJzIcI4NjU4ovz8oOKb1jqPyhU";
+
       function onUpdateFound(registration) {
         const newWorker = registration.installing;
 
@@ -40,8 +42,24 @@
         });
       }
 
+      async function addPushManager(registration) {
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: publicVapidKey,
+        });
+
+        await fetch("/subscribe", {
+          method: "POST",
+          body: JSON.stringify(subscription),
+          headers: {
+            "Content-Type": "application/json",
+          }
+        })
+      }
+
       navigator.serviceWorker.register("sw.js").then(registration => {
         registration.addEventListener('updatefound', () => onUpdateFound(registration));
+        addPushManager(registration).catch(console.log)
       });
     </script>
     <title>Birdlist</title>
