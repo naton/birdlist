@@ -16,9 +16,11 @@ const svg = reactive({
 });
 
 function resize() {
-  const chart = document.querySelector('.chart');
-  svg.w = chart.offsetWidth;
-  svg.h = 200;
+  if (users.value.length > 1) {
+    const chart = document.querySelector('.chart');
+    svg.w = chart.offsetWidth;
+    svg.h = 200;
+  }
 }
 
 const users = computed(() => {
@@ -212,7 +214,7 @@ watch(currentLeader, (newLeader) => {
       </transition-group>
     </nav>
 
-    <div class="chart">
+    <div v-if="users.length > 1" class="chart">
       <svg-chart :datasets="datasets" :options="options" :svg="svg"></svg-chart>
     </div>
 
