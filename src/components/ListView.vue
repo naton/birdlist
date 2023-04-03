@@ -121,8 +121,8 @@ function initGraph() {
       const obsDate = day.toISOString().slice(0, 10);
       if (datesWithObservations.includes(obsDate)) {
         currentValue += observationsByDate.value[obsDate].filter(obs => obs.owner === owner).length;
+        values.push([days * graphWidthOfEachDay, currentValue]);
       }
-      values.push([days * graphWidthOfEachDay, currentValue]);
       day.setDate(day.getDate() + 1);
     }
 
