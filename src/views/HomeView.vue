@@ -73,7 +73,7 @@ onMounted(async () => {
   const canvas = document.getElementById("canvas");
 
   if (typeof confetti !== "undefined") {
-    newLeaderConfetti = confetti.create(canvas, {
+    newLeaderConfetti = await confetti.create(canvas, {
       resize: true,
       useWorker: true,
     });

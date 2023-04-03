@@ -97,17 +97,22 @@ let options = reactive({
   }
 });
 
-let datasets = ref([]);
+const datasets = ref([]);
 
 function initGraph() {
+  if (!props.observations) {
+    return;
+  }
+
   options.yMax = users.value[0].score;
   const firstObsDate = new Date(props.observations[props.observations.length - 1].date);
   const lastObsDate = new Date(props.observations[0].date);
   const datesDiff = parseInt((lastObsDate - firstObsDate) / (1000 * 60 * 60 * 24), 10);
   const graphWidthOfEachDay = Math.ceil(options.xMax / datesDiff);
   const datesWithObservations = Object.keys(observationsByDate.value);
+  let graphData = [];
 
-  function getValues(owner) {
+  function createGraphData(owner) {
     let values = [];
     let currentValue = 0;
     let day = new Date(firstObsDate);
@@ -125,15 +130,17 @@ function initGraph() {
   }
 
   users.value.forEach(user => {
-    datasets.value.push({
+    graphData.push({
       name: user.name,
       colors: {
         path: cssColor(user.name),
         circles: "var(--color-text-dim)"
       },
-      values: getValues(user.name)
+      values: createGraphData(user.name)
     });
   });
+
+  datasets.value = graphData;
 };
 
 onMounted(() => {
