@@ -97,6 +97,14 @@ function bezierCommand(point, i, a) {
 </template>
 
 <style>
+.chart:has(g.selected) g:not(.selected) {
+  opacity: 0.2;
+}
+
+.chart g {
+  transition: 0.2s opacity ease-out;
+}
+
 .chart path {
   stroke-width: 2;
   stroke-dasharray: 2000;

@@ -207,7 +207,7 @@ watch(currentLeader, (newLeader) => {
     </nav>
 
     <div v-if="users.length > 1" class="chart-wrapper">
-      <svg-chart :datasets="datasets" :options="options" :svg="svg"></svg-chart>
+      <svg-chart :datasets="datasets" :options="options" :svg="svg" :user="selectedUser"></svg-chart>
     </div>
 
     <nav class="nav" v-if="observations.length">
