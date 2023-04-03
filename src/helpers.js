@@ -14,4 +14,19 @@ function getCurrentYear(year) {
   }).format(date);
 }
 
-export { getMonthName, getCurrentYear };
+function cssColor(string) {
+  if (!string) return "";
+  const hashCode = (str) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = (hash << 3) - hash + char;
+      hash = hash & hash;
+    }
+    return hash.toString(16);
+  };
+
+  return "#" + hashCode(string).substring(2, 8);
+}
+
+export { getMonthName, getCurrentYear, cssColor };

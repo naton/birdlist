@@ -4,6 +4,7 @@ import ObservationItem from "./ObservationItem.vue";
 import UserIcon from "./UserIcon.vue";
 import SpeciesItem from "./SpeciesItem.vue";
 import SvgChart from "./SvgChart.vue";
+import { cssColor } from "../helpers";
 
 const props = defineProps(["observations", "sort", "selected", "user"]);
 const emit = defineEmits(["sort", "select", "delete", "edit", "newLeader"]);
@@ -167,22 +168,6 @@ function emitDelete(id) {
 
 function emitEdit(obs) {
   emit("edit", obs);
-}
-
-// TODO: Put in helper file
-function cssColor(string) {
-  if (!string) return "";
-  const hashCode = (str) => {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = (hash << 3) - hash + char;
-      hash = hash & hash;
-    }
-    return hash.toString(16);
-  };
-
-  return "#" + hashCode(string).substring(2, 8);
 }
 
 watch(currentLeader, (newLeader) => {

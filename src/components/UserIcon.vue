@@ -1,26 +1,12 @@
 <script setup>
 import { computed } from "vue";
+import { cssColor } from "../helpers";
+
 const props = defineProps(["user", "score", "leader"]);
 
 const initial = computed(() => {
   return props.user ? props.user.substring(0, 1) : "";
 });
-
-// TODO: Put in helper file
-function cssColor(string) {
-  if (!string) return "";
-  const hashCode = (str) => {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = (hash << 3) - hash + char;
-      hash = hash & hash;
-    }
-    return hash.toString(16);
-  };
-
-  return "#" + hashCode(string).substring(2, 8);
-}
 </script>
 
 <template>
