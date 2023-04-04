@@ -52,9 +52,9 @@ workbox.routing.registerRoute(
     })
 );
   
-workbox.precaching.precacheAndRoute([]);
+workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
 
-// TODO: Where to put this, so that it will end up in sw.js?
+// Push notifications
 self.addEventListener('push', function(e) {
     const data = e.data.json();
     self.registration.showNotification(
