@@ -12,7 +12,7 @@ function onUpdateFound(registration) {
 }
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("dist/sw.js").then(registration => {
+  navigator.serviceWorker.register("sw.js").then(registration => {
     console.log("Service worker running…")
     registration.addEventListener('updatefound', () => onUpdateFound(registration));
   });
