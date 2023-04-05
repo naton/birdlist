@@ -24,14 +24,114 @@ const privateVapidKey = "umUxE_qhAiU-GD4e68jsI9eDktH3PiYRgEbUcqbv1bE";
 // Setup the public and private VAPID keys to web-push library.
 webpush.setVapidDetails("mailto:anton@andreasson.org", publicVapidKey, privateVapidKey);
 
-// Create route for allow client to subscribe to push notification.
-app.post('/subscribe', (req, res) => {
-  const subscription = req.body;
-  res.status(201).json({});
-  const payload = JSON.stringify({ title: "Hello World", body: "This is your first push notification" });
+// This utility function makes sure the request is valid, has a body and an endpoint property, 
+// otherwise it returns an error to the client (via https://flaviocopes.com/push-api/)
+const isValidSaveRequest = (req, res) => {
+  if (!req.body || !req.body.endpoint) {
+    res.status(400);
+    res.setHeader('Content-Type', 'application/json')
+    res.send(JSON.stringify({
+      error: {
+        id: 'no-endpoint',
+        message: 'Subscription must have an endpoint'
+      }
+    }))
+    return false;
+  }
+  return true;
+}
 
-  webpush.sendNotification(subscription, payload).catch(console.log);
-})
+function saveSubscriptionToDatabase(subscription) {
+  return new Promise((resolve, reject) => {
+    insertToDatabase(subscription, (err, id) => {
+      if (err) {
+        reject(err)
+        return
+      }
+
+      resolve(id)
+    })
+  })
+}
+
+function insertToDatabase(subscription, callback) {
+  //stub
+}
+
+function deleteSubscriptionFromDatabase(id) {
+  //stub
+}
+
+function getSubscriptionsFromDatabase() {
+  //stub
+}
+
+function triggerPush(subscription, dataToSend) {
+  return webpush.sendNotification(subscription, dataToSend)
+    .catch((err) => {
+      if (err.statusCode === 410) {
+        return deleteSubscriptionFromDatabase(subscription._id)
+      } else {
+        console.log('Subscription is no longer valid: ', err)
+      }
+    })
+}
+
+// Create route for allow client to subscribe to push notification.
+app.post('/api/subscription', (req, res) => {
+  if (!isValidSaveRequest(req, res)) {
+    return;
+  }
+
+  saveSubscriptionToDatabase(req, res.body)
+    .then((subscriptionId) => {
+      res.setHeader('Content-Type', 'application/json')
+      res.send(JSON.stringify({ data: { success: true } }))
+    })
+    .catch((err) => {
+      res.status(500)
+      res.setHeader('Content-Type', 'application/json')
+      res.send(JSON.stringify({
+        error: {
+          id: 'unable-to-save-subscription',
+          message: 'Subscription received but failed to save it'
+        }
+      }));
+    });
+
+  // const subscription = req.body;
+  // res.status(201).json({});
+  // const payload = JSON.stringify({ title: "Hello World", body: "This is your first push notification" });
+  // webpush.sendNotification(subscription, payload).catch(console.log);
+});
+
+app.post('/api/push', (req, res) => {
+  return getSubscriptionsFromDatabase()
+    .then((subscriptions) => {
+      let promiseChain = Promise.resolve()
+      for (let i = 0; i < subscriptions.length; i++) {
+        const subscription = subscriptions[i]
+        promiseChain = promiseChain.then(() => {
+          return triggerPush(subscription, dataToSend)
+        })
+      }
+      return promiseChain
+    })
+    .then(() => {
+      res.setHeader('Content-Type', 'application/json')
+      res.send(JSON.stringify({ data: { success: true } }))
+    })
+    .catch((err) => {
+      res.status(500)
+      res.setHeader('Content-Type', 'application/json')
+      res.send(JSON.stringify({
+        error: {
+          id: 'unable-to-send-messages',
+          message: `Failed to send the push ${err.message}`
+        }
+      }));
+    });
+});
 
 const PORT = 5001;
 

@@ -17,7 +17,7 @@ function askNotificationPermission(callback) {
       applicationServerKey: publicVapidKey,
     });
     // Send subscribe request
-    await fetch("http://127.0.0.1:5001/subscribe", {
+    await fetch("http://127.0.0.1:5001/api/subscription", {
       method: "POST",
       body: JSON.stringify(subscription),
       headers: {
