@@ -1,3 +1,81 @@
+const publicVapidKey = "BC-q_Qa_xZrCippKmu2_x6oRsJFP7E9II66LbGAvhUc_Hw2Xe9pm6JJFEj_07OJzIcI4NjU4ovz8oOKb1jqPyhU";
+
+function askNotificationPermission(callback) {
+  function checkNotificationPromise() {
+    try {
+      Notification.requestPermission().then();
+    } catch (e) {
+      return false;
+    }
+  
+    return true;
+  }
+
+  async function pushSubscribe(registration) {
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: publicVapidKey,
+    });
+    // Send subscribe request
+    await fetch("http://127.0.0.1:5001/subscribe", {
+      method: "POST",
+      body: JSON.stringify(subscription),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+  }
+
+  // function to actually ask the permissions
+  async function handlePermission(permission) {
+    if (permission === "granted") {
+      navigator.serviceWorker.ready.then((registration) => {
+        if ("PushManager" in window) {
+          try {
+            pushSubscribe(registration);
+           } catch (error) {
+            console.error("Error subscribing for push notifications.", error);
+          }
+        }
+      });
+
+      if (typeof callback === "function") {
+        callback();
+      }
+    }
+  }
+
+  // Let's check if the browser supports notifications
+  if (!("Notification" in window)) {
+    console.log("This browser does not support notifications.");
+  } else if (checkNotificationPromise()) {
+    Notification.requestPermission().then((permission) => {
+      handlePermission(permission);
+    });
+  } else {
+    Notification.requestPermission((permission) => {
+      handlePermission(permission);
+    });
+  }
+}
+
+async function removePushManager(callback) {
+  navigator.serviceWorker.ready.then((registration) => {
+    registration.pushManager.getSubscription().then((subscription) => {
+      // Send subscribe request
+      subscription.unsubscribe().then((successful) => {
+        // You've successfully unsubscribed
+        if (typeof callback === "function") {
+          callback();
+        }
+      })
+      .catch((e) => {
+        // Unsubscribing failed
+      });
+    });
+  });
+}
+
 function getMonthName(month, length) {
   const date = new Date();
   date.setDate(1);
@@ -29,4 +107,4 @@ function cssColor(string) {
   return "#" + hashCode(string).substring(2, 8);
 }
 
-export { getMonthName, getCurrentYear, cssColor };
+export { askNotificationPermission, removePushManager, getMonthName, getCurrentYear, cssColor };
