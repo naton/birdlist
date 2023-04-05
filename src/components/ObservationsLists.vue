@@ -6,7 +6,7 @@ import { db } from "../db";
 import TabsList from "@/components/TabsList.vue";
 import ListView from "@/components/ListView.vue";
 import EditDialog from "@/components/EditDialog.vue";
-import { getCurrentYear, getMonthName } from "../helpers";
+import { askNotificationPermission, removePushManager, getCurrentYear, getMonthName } from "../helpers";
 
 const componentKey = ref(0);
 const props = defineProps(["list", "user"]);
@@ -19,6 +19,7 @@ const currentObservation = ref(false);
 const allObservations = ref([]);
 const tabList = ref([]);
 const isDialogOpen = ref(false);
+const isNotificationsActive = ref(false);
 
 /* Observations */
 let observationsSubscription = liveQuery(async () => await db.observations.toArray()).subscribe(
@@ -102,6 +103,18 @@ function sortBy(val) {
 
 function closeObservationDialog() {
   isDialogOpen.value = false;
+}
+
+function toggleBell() {
+  isNotificationsActive.value = !isNotificationsActive.value
+}
+
+function subscribe() {
+  return askNotificationPermission(toggleBell);
+}
+
+function unsubscribe() {
+  return removePushManager(toggleBell);
 }
 
 /* Lists */
@@ -325,15 +338,15 @@ onUnmounted(() => {
                 <details>
                   <summary class="heading">{{ props.list.title }}</summary>
                   <p>{{ props.list.description }}</p>
-                <button class="share-button" @click.stop="shareBirdList(props.list.id, props.list.title)">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
-                    <g fill="var(--color-background-dim)">
+                  <button class="share-button" @click.stop="shareBirdList(props.list.id, props.list.title)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+                      <g fill="var(--color-background-dim)">
                         <path d="M4.5 5H7v5a1 1 0 0 0 2 0V5h2.5a.5.5 0 0 0 .376-.829l-3.5-4a.514.514 0 0 0-.752 0l-3.5 4A.5.5 0 0 0 4.5 5Z"/>
                         <path d="M14 7h-3v2h3v5H2V9h3V7H2a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"/>
-                    </g>
-                  </svg>
-                  Dela
-                </button>
+                      </g>
+                    </svg>
+                    Dela
+                  </button>
                   <button class="delete-button" @click.prevent="deleteList(props.list.id)">
                     <svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
                       <g fill="none" stroke="currentColor" stroke-miterlimit="10">
@@ -346,6 +359,18 @@ onUnmounted(() => {
                     Radera
                   </button>
                 </details>
+                <button class="notify-button" @click.stop="unsubscribe" v-if="isNotificationsActive">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M20 10V8A8 8 0 0 0 4 8v2a4.441 4.441 0 0 1-1.547 3.193A4.183 4.183 0 0 0 1 16c0 2.5 4.112 4 11 4s11-1.5 11-4a4.183 4.183 0 0 0-1.453-2.807A4.441 4.441 0 0 1 20 10Z"/>
+                    <path fill="currentColor" d="M9.145 21.9a2.992 2.992 0 0 0 5.71 0c-.894.066-1.844.1-2.855.1s-1.961-.032-2.855-.1Z"/>
+                  </svg>
+                </button>
+                <button class="notify-button" @click.stop="subscribe" v-else>
+                  <svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
+                    <path fill="none" stroke="currentColor" stroke-linecap="square" stroke-miterlimit="10" d="M19 11V8A7 7 0 0 0 5 8v3c0 3.3-3 4.1-3 6 0 1.7 3.9 3 10 3s10-1.3 10-3c0-1.9-3-2.7-3-6Z"/>
+                    <path fill="currentColor" d="M12 22a38.81 38.81 0 0 1-2.855-.1 2.992 2.992 0 0 0 5.71 0c-.894.066-1.844.1-2.855.1Z"/>
+                  </svg>
+                </button>
               </div>
             </div>
             <details v-if="props.list.description" class="list-description">
