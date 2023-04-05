@@ -1,16 +1,6 @@
 const publicVapidKey = "BC-q_Qa_xZrCippKmu2_x6oRsJFP7E9II66LbGAvhUc_Hw2Xe9pm6JJFEj_07OJzIcI4NjU4ovz8oOKb1jqPyhU";
 
 function askNotificationPermission(callback) {
-  function checkNotificationPromise() {
-    try {
-      Notification.requestPermission().then();
-    } catch (e) {
-      return false;
-    }
-  
-    return true;
-  }
-
   async function pushSubscribe(registration) {
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
@@ -43,6 +33,16 @@ function askNotificationPermission(callback) {
         callback();
       }
     }
+  }
+
+  function checkNotificationPromise() {
+    try {
+      Notification.requestPermission().then();
+    } catch (e) {
+      return false;
+    }
+  
+    return true;
   }
 
   // Let's check if the browser supports notifications
