@@ -18,7 +18,6 @@ const currentSort = ref("bydate");
 const currentObservation = ref(false);
 const allObservations = ref([]);
 const tabList = ref([]);
-const isListSelected = ref(false);
 const isDialogOpen = ref(false);
 
 /* Observations */
@@ -321,25 +320,33 @@ onUnmounted(() => {
           @edit="editObservation"
         >
           <template v-slot:header>
-            <div class="list-header" :class="isListSelected && 'is-active'" @click="isListSelected = !isListSelected">
+            <div class="list-header">
               <div class="subtitle">
-                <h2 class="heading">{{ props.list.title }}</h2>
+                <details>
+                  <summary class="heading">{{ props.list.title }}</summary>
+                  <p>{{ props.list.description }}</p>
                 <button class="share-button" @click.stop="shareBirdList(props.list.id, props.list.title)">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
                     <g fill="var(--color-background-dim)">
-                      <path
-                        d="M4.5 5H7v5a1 1 0 0 0 2 0V5h2.5a.5.5 0 0 0 .376-.829l-3.5-4a.514.514 0 0 0-.752 0l-3.5 4A.5.5 0 0 0 4.5 5Z"
-                        data-color="color-2"
-                      />
-                      <path
-                        d="M14 7h-3v2h3v5H2V9h3V7H2a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"
-                      />
+                        <path d="M4.5 5H7v5a1 1 0 0 0 2 0V5h2.5a.5.5 0 0 0 .376-.829l-3.5-4a.514.514 0 0 0-.752 0l-3.5 4A.5.5 0 0 0 4.5 5Z"/>
+                        <path d="M14 7h-3v2h3v5H2V9h3V7H2a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"/>
                     </g>
                   </svg>
                   Dela
                 </button>
+                  <button class="delete-button" @click.prevent="deleteList(props.list.id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
+                      <g fill="none" stroke="currentColor" stroke-miterlimit="10">
+                        <path stroke-linecap="square" d="M20 9v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9"/>
+                        <path stroke-linecap="square" d="M1 5h22"/>
+                        <path stroke-linecap="square" d="M12 12v6m-4-6v6m8-6v6"/>
+                        <path d="M8 5V1h8v4"/>
+                      </g>
+                    </svg>
+                    Radera
+                  </button>
+                </details>
               </div>
-              <button class="delete-button" @click.prevent="deleteList(props.list.id)">✕</button>
             </div>
             <details v-if="props.list.description" class="list-description">
               <summary>Information om listan</summary>
@@ -425,10 +432,6 @@ onUnmounted(() => {
   padding: 0.5rem;
 }
 
-.is-active.list-header {
-  position: relative;
-}
-
 .list-header .subtitle {
   position: relative;
   display: flex;
@@ -439,32 +442,33 @@ onUnmounted(() => {
   transition: 0.1s transform ease-out;
 }
 
-.share-button svg {
-  margin-right: 0.4rem;
-  vertical-align: text-top;
+.list-header button {
+  min-height: 2.3rem;
+}
+
+.list-header .notify-button {
+  margin-top: 0.3rem;
 }
 
 .list-header .share-button {
-  min-height: 2.3rem;
   align-self: center;
   margin-left: 0.5rem;
   white-space: nowrap;
 }
 
-.is-active.list-header .subtitle {
-  background: var(--color-background-dim);
-  transform: translateX(-3rem);
-}
-
 .list-header .delete-button {
-  position: absolute;
-  top: 0.25rem;
-  right: 0.1rem;
-  transform: translateX(3.1rem);
-  transition: 0.1s transform ease-out;
+  margin-left: 1rem;
 }
 
-.is-active.list-header .delete-button {
-  transform: translateX(-0.1rem);
+.notify-button svg {
+  width: 20px;
+  vertical-align: middle;
+}
+
+.share-button svg,
+.delete-button svg {
+  width: 16px;
+  margin-right: 0.4rem;
+  vertical-align: text-top;
 }
 </style>
