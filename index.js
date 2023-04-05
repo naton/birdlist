@@ -2,9 +2,15 @@ const express = require('express');
 const webpush = require('web-push');
 const bodyParser = require('body-parser');
 const path = require('path');
+const cors = require('cors');
 
 // Create express app.
 const app = express();
+
+// Add CORS
+app.use(cors({
+  origin: ['http://localhost:4173','http://localhost:5173']
+}));
 
 // Use body parser which we will use to parse request body that sending from client.
 app.use(bodyParser.json());

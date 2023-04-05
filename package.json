@@ -11,12 +11,13 @@
   },
   "dependencies": {
     "body-parser": "^1.19.2",
-    "express": "^4.17.3",
-    "web-push": "^3.4.5",
+    "cors": "^2.8.5",
     "dexie": "^4.0.1-alpha.10",
     "dexie-cloud-addon": "^4.0.1-beta.33",
+    "express": "^4.17.3",
     "vue": "^3.2.47",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "web-push": "^3.4.5"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
