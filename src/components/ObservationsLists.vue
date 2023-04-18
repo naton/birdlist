@@ -189,6 +189,10 @@ async function shareBirdList(listId, listName) {
 
 function selectList(list) {
   emit("selectList", list);
+
+  if (list === "monthly" || list === "everything") {
+    document.location.hash = "";
+  }
 }
 
 function newLeader() {
