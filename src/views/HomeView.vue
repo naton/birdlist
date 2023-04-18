@@ -23,7 +23,7 @@ setTimeout(
         console.log(error);
       }
     )),
-  400
+  1000
 );
 
 /* Lists */
