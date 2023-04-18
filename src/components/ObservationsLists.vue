@@ -126,7 +126,7 @@ async function deleteList(listId) {
   let deleteRelatedObservations = false;
 
   if (confirm("Är du säker på att du vill ta bort denna lista?")) {
-    deleteRelatedObservations = confirm("Radera även listans observationer?");
+    deleteRelatedObservations = (listObservations.value.length > 0) && confirm("Radera även listans observationer?");
 
     await db
       .transaction("rw", [db.lists, db.observations, db.realms, db.members], () => {
