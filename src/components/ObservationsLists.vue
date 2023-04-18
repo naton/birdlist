@@ -326,7 +326,7 @@ onUnmounted(() => {
               <div class="subtitle">
                 <details>
                   <summary class="heading">{{ props.list.title }}</summary>
-                  <p>{{ props.list.description }}</p>
+                  <p class="list-description">{{ props.list.description }}</p>
                 <button class="share-button" @click.stop="shareBirdList(props.list.id, props.list.title)">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
                     <g fill="var(--color-background-dim)">
@@ -350,10 +350,6 @@ onUnmounted(() => {
                 </details>
               </div>
             </div>
-            <details v-if="props.list.description" class="list-description">
-              <summary>Information om listan</summary>
-              {{ props.list.description }}
-            </details>
           </template>
         </list-view>
       </div>
@@ -402,7 +398,7 @@ onUnmounted(() => {
 }
 
 .list-description {
-  margin: 0 1rem 0.25rem;
+  margin: 0 0.5rem 1rem;
 }
 
 .sidescroll {
