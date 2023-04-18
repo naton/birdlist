@@ -147,6 +147,8 @@ async function deleteList(listId) {
         emit("selectList", "monthly");
       });
   }
+
+  document.location.hash = "";
 }
 
 async function shareBirdList(listId, listName) {
