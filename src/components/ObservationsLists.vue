@@ -122,35 +122,6 @@ const currentMonthFormatted = computed(() => {
   }).format(date);
 });
 
-async function deleteList(listId) {
-  let deleteRelatedObservations = false;
-
-  if (confirm("Är du säker på att du vill ta bort denna lista?")) {
-    deleteRelatedObservations = (listObservations.value.length > 0) && confirm("Radera även listans observationer?");
-
-    await db
-      .transaction("rw", [db.lists, db.observations, db.realms, db.members], () => {
-        if (deleteRelatedObservations) {
-          // Delete possible observations:
-          db.observations.where({ listId: listId }).delete();
-        }
-        // Delete the list:
-        db.lists.delete(listId);
-        // Delete possible realm and its members in case list was shared:
-        const tiedRealmId = getTiedRealmId(listId);
-        // Empty out any tied realm from members:
-        db.members.where({ realmId: tiedRealmId }).delete();
-        // Delete the tied realm if it exists:
-        db.realms.delete(tiedRealmId);
-      })
-      .then(() => {
-        emit("selectList", "monthly");
-      });
-  }
-
-  document.location.hash = "";
-}
-
 async function shareBirdList(listId, listName) {
   let email = prompt("Ange e-postadressen till personen du vill dela denna lista med:");
 
@@ -331,25 +302,14 @@ onUnmounted(() => {
                 <details>
                   <summary class="heading">{{ props.list.title }}</summary>
                   <p class="list-description">{{ props.list.description }}</p>
-                <button class="share-button" @click.stop="shareBirdList(props.list.id, props.list.title)">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
-                    <g fill="var(--color-background-dim)">
-                        <path d="M4.5 5H7v5a1 1 0 0 0 2 0V5h2.5a.5.5 0 0 0 .376-.829l-3.5-4a.514.514 0 0 0-.752 0l-3.5 4A.5.5 0 0 0 4.5 5Z"/>
-                        <path d="M14 7h-3v2h3v5H2V9h3V7H2a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"/>
-                    </g>
-                  </svg>
-                  Dela
-                </button>
-                  <button class="delete-button" @click.prevent="deleteList(props.list.id)">
-                    <svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
-                      <g fill="none" stroke="currentColor" stroke-miterlimit="10">
-                        <path stroke-linecap="square" d="M20 9v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9"/>
-                        <path stroke-linecap="square" d="M1 5h22"/>
-                        <path stroke-linecap="square" d="M12 12v6m-4-6v6m8-6v6"/>
-                        <path d="M8 5V1h8v4"/>
+                  <button class="share-button" @click.stop="shareBirdList(props.list.id, props.list.title)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+                      <g fill="var(--color-background-dim)">
+                          <path d="M4.5 5H7v5a1 1 0 0 0 2 0V5h2.5a.5.5 0 0 0 .376-.829l-3.5-4a.514.514 0 0 0-.752 0l-3.5 4A.5.5 0 0 0 4.5 5Z"/>
+                          <path d="M14 7h-3v2h3v5H2V9h3V7H2a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"/>
                       </g>
                     </svg>
-                    Radera
+                    Dela
                   </button>
                 </details>
               </div>
@@ -458,17 +418,12 @@ onUnmounted(() => {
   white-space: nowrap;
 }
 
-.list-header .delete-button {
-  margin-left: 1rem;
-}
-
 .notify-button svg {
   width: 20px;
   vertical-align: middle;
 }
 
-.share-button svg,
-.delete-button svg {
+.share-button svg {
   width: 16px;
   margin-right: 0.4rem;
   vertical-align: text-top;

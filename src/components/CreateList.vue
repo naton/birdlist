@@ -2,21 +2,31 @@
 import { ref } from "vue";
 import { db } from "../db";
 
+const props = defineProps(["list"]);
 const emit = defineEmits(["activate"]);
 
-const showCreateListDialog = ref(false);
+const showListDialog = ref(false);
 const title = ref("");
 const description = ref("");
 
-function openModal() {
-  showCreateListDialog.value = true;
+function openModal(hasTitle) {
+  showListDialog.value = true;
+
+  if (hasTitle) {
+    title.value = props.list.title;
+    description.value = props.list.description;
+  } else {
+    title.value = "";
+    description.value = "";
+  }
+
   setTimeout(() => {
     document.querySelector(".dialog input").focus();
   }, 100);
 }
 
 function closeModal() {
-  showCreateListDialog.value = false;
+  showListDialog.value = false;
 }
 
 async function createList() {
@@ -30,17 +40,54 @@ async function createList() {
   emit("activate", list);
   closeModal();
 }
+
+async function updateList(listId) {
+  await db.transaction("rw", [db.lists], async () => {
+    await db.lists.where({ id: listId }).modify({ title: title.value, description: description.value });
+  });
+  closeModal();
+}
+
+async function deleteList(listId) {
+  let deleteRelatedObservations = false;
+
+  if (confirm("Är du säker på att du vill ta bort denna lista?")) {
+    deleteRelatedObservations = confirm("Radera även listans observationer?");
+
+    await db
+      .transaction("rw", [db.lists, db.observations, db.realms, db.members], () => {
+        if (deleteRelatedObservations) {
+          // Delete possible observations:
+          db.observations.where({ listId: listId }).delete();
+        }
+        // Delete the list:
+        db.lists.delete(listId);
+        // Delete possible realm and its members in case list was shared:
+        const tiedRealmId = getTiedRealmId(listId);
+        // Empty out any tied realm from members:
+        db.members.where({ realmId: tiedRealmId }).delete();
+        // Delete the tied realm if it exists:
+        db.realms.delete(tiedRealmId);
+      })
+      .then(() => {
+        emit("selectList", "monthly");
+        document.location.hash = "";
+      });
+  }
+}
 </script>
 
 <template>
   <li class="c-tabs__tab last">
-    <button class="add" @click.stop="openModal">Ny lista…</button>
-    <div class="dialog create-list-dialog" v-if="showCreateListDialog">
+    <button class="add" @click.stop="openModal(props.list.title)">
+      <span v-if="props.list.title">Uppdatera lista</span>
+      <span v-else>Ny lista…</span>
+    </button>
+    <div class="dialog create-list-dialog" v-if="showListDialog">
       <input
         class="margin-bottom"
         type="text"
         v-model="title"
-        @keyup.enter="createList()"
         @keyup.esc="closeModal"
         placeholder="Skriv namn på listan…"
       />
@@ -52,10 +99,40 @@ async function createList() {
         rows="10"
         placeholder="Ev tävlingsregler, syften med listan, etc"
       ></textarea>
-      <div>
-        <button class="create" @click="createList(title)">Skapa lista</button>
+      <div class="buttons">
+        <button v-if="props.list.title" class="update-button" @click="updateList(props.list.id)">Spara</button>
+        <button v-if="props.list.title" class="delete-button" @click="deleteList(props.list.id)">
+          <svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
+            <g fill="none" stroke="currentColor" stroke-miterlimit="10">
+              <path stroke-linecap="square" d="M20 9v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9"/>
+              <path stroke-linecap="square" d="M1 5h22"/>
+              <path stroke-linecap="square" d="M12 12v6m-4-6v6m8-6v6"/>
+              <path d="M8 5V1h8v4"/>
+            </g>
+          </svg>
+          Radera
+        </button>
+        <button v-else class="create" @click="createList(title)">Skapa lista</button>
         <button @click="closeModal">Avbryt</button>
       </div>
     </div>
   </li>
 </template>
+
+<style>
+.buttons {
+  display: flex;
+  align-items: center;
+}
+
+.buttons button {
+  display: inline-flex;
+  align-items: center;
+}
+
+.delete-button svg {
+  width: 16px;
+  margin-right: 0.4rem;
+  vertical-align: text-top;
+}
+</style>

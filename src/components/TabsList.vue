@@ -26,8 +26,8 @@ function emitActiveTab(list) {
           type="radio"
           name="list"
           id="tab-monthly"
-          :value="props.currentList.id"
-          :checked="'monthly' === props.currentList.id"
+          :value="currentList.id"
+          :checked="'monthly' === currentList.id"
           @change="emitActiveTab('monthly')"
           hidden
         />
@@ -36,15 +36,15 @@ function emitActiveTab(list) {
       <li
         class="c-tabs__tab"
         :class="{
-          'c-tabs__tab--active': 'everything' === props.currentList.id,
+          'c-tabs__tab--active': 'everything' === currentList.id,
         }"
       >
         <input
           type="radio"
           name="list"
           id="tab-everything"
-          :value="props.currentList.id"
-          :checked="'everything' === props.currentList.id"
+          :value="currentList.id"
+          :checked="'everything' === currentList.id"
           @change="emitActiveTab('everything')"
           hidden
         />
@@ -53,7 +53,7 @@ function emitActiveTab(list) {
       <li
         class="c-tabs__tab"
         :class="{
-          'c-tabs__tab--active': 'everything' !== props.currentList.id && 'monthly' !== props.currentList.id,
+          'c-tabs__tab--active': 'everything' !== currentList.id && 'monthly' !== currentList.id,
         }"
       >
         <label>
@@ -71,15 +71,15 @@ function emitActiveTab(list) {
           </svg>
         </label>
       </li>
-      <create-list @activate="emitActiveTab" />
+      <create-list @activate="emitActiveTab" :list="currentList" />
     </ul>
   </nav>
 
-  <template v-if="'monthly' === props.currentList.id">
+  <template v-if="'monthly' === currentList.id">
     <slot name="tabPanel-monthly" />
   </template>
 
-  <template v-else-if="'everything' === props.currentList.id">
+  <template v-else-if="'everything' === currentList.id">
     <slot name="tabPanel-everything" />
   </template>
 
