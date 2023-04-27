@@ -108,7 +108,7 @@ onUnmounted(() => {
 <template>
   <div class="body">
     <observations-lists @selectList="selectList" @newLeader="celebrate" :list="currentList" :user="me" :key="me" />
-    <button class="login-button" @click="db.cloud.login()" v-if="!userIsLoggedIn">
+    <button class="login-button" @click="login()" v-if="!userIsLoggedIn">
       <u>Logga in</u> för att hämta sparade 🐦
     </button>
   </div>
