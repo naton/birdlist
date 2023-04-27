@@ -7,24 +7,26 @@ import ObservationInput from "@/components/ObservationInput.vue";
 import BirdsData from "@/components/BirdsData.vue";
 
 const me = ref("unauthorized");
+let loginInterval;
+let userSubscription;
 
 /* Login */
 const userIsLoggedIn = computed(() => me.value !== "unauthorized");
 
-let userSubscription;
-
-setTimeout(
-  () =>
-    (userSubscription = liveQuery(async () => await db.cloud.currentUser).subscribe(
-      (user) => {
-        me.value = user._value ? user._value.name.toLowerCase() : "unauthorized";
-      },
-      (error) => {
-        console.log(error);
+function login() {
+  userSubscription = liveQuery(() => db.cloud.currentUser).subscribe(
+    (user) => {
+      if (user._value) {
+        me.value = user._value.name.toLowerCase()
+        clearInterval(loginInterval);
       }
-    )),
-  1000
-);
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+
+}
 
 /* Lists */
 const currentList = ref("monthly");
@@ -62,7 +64,10 @@ async function addObservation(ev, listId, location) {
 let newLeaderConfetti;
 
 onMounted(async () => {
-  /* Load list from hash  in URL */
+  /* Try to login */
+  loginInterval = setInterval(login, 100);
+
+  /* Load list from hash in URL, if available */
   if (!!location.hash && location.hash.startsWith("#lst")) {
     const listId = location.hash.replace("#", "");
     const list = await db.lists.get(listId);
@@ -102,7 +107,7 @@ onUnmounted(() => {
 
 <template>
   <div class="body">
-    <observations-lists @selectList="selectList" @newLeader="celebrate" :list="currentList" :user="me" />
+    <observations-lists @selectList="selectList" @newLeader="celebrate" :list="currentList" :user="me" :key="me" />
     <button class="login-button" @click="db.cloud.login()" v-if="!userIsLoggedIn">
       <u>Logga in</u> för att hämta sparade 🐦
     </button>
