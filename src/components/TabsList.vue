@@ -100,6 +100,10 @@ function emitActiveTab(list) {
   overscroll-behavior: none;
 }
 
+.c-tabs__tab {
+  min-width: 3.6rem;
+}
+
 .c-tabs__tab.last {
   align-self: center;
   margin-left: auto;
@@ -115,6 +119,8 @@ function emitActiveTab(list) {
 .c-tabs__tab label {
   position: relative;
   display: block;
+  width: 100%;
+  height: 100%;;
   padding: 1rem 1rem 0.8rem;
   text-transform: capitalize;
 }
@@ -129,7 +135,7 @@ function emitActiveTab(list) {
 }
 
 .c-tabs__tab svg {
-  display: block;
+  position: absolute;
   width: 1.6rem;
   height: 1.6rem;
   padding: 0.1rem;
@@ -141,7 +147,7 @@ function emitActiveTab(list) {
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  min-height: 100%;
   opacity: 0;
   font-size: 1.5rem;
 }
