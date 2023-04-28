@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "dexie": "^4.0.1-alpha.10",
-    "dexie-cloud-addon": "^4.0.1-beta.33",
+    "dexie-cloud-addon": "^4.0.1-beta.35",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
   },
