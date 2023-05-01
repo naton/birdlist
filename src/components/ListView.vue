@@ -261,7 +261,7 @@ watch(currentLeader, (newLeader) => {
           current: sort == 'comments',
         }"
         @click.prevent="emitSort('comments')"
-      >💬</a>
+      >💬 <span class="nav-count">({{ Object.keys(comments).length }})</span></a>
     </nav>
 
     <section id="bydate" v-if="observations.length && props.sort == 'bydate'">
