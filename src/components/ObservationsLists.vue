@@ -17,6 +17,7 @@ const currentMonth = ref(new Date().getMonth());
 const currentSort = ref("bydate");
 const currentObservation = ref(false);
 const allObservations = ref([]);
+const allComments = ref([]);
 const tabList = ref([]);
 const isDialogOpen = ref(false);
 
@@ -51,6 +52,21 @@ const allThisMonth = computed(() => {
 const listObservations = computed(() => {
   const listId = props.list.id;
   return allObservations.value.filter((obs) => obs.listId == listId);
+});
+
+/* Comments */
+let commentsSubscription = liveQuery(async () => await db.comments.toArray()).subscribe(
+  (comments) => {
+    allComments.value = comments;
+  },
+  (error) => {
+    console.log(error);
+  }
+);
+
+const listComments = computed(() => {
+  const listId = props.list.id;
+  return allComments.value.filter((comment) => comment.listId == listId);
 });
 
 function selectObservation(obs) {
@@ -181,6 +197,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   observationsSubscription.unsubscribe();
+  commentsSubscription.unsubscribe();
   listsSubscription.unsubscribe();
 });
 </script>
@@ -288,6 +305,7 @@ onUnmounted(() => {
         <list-view
           v-else
           :observations="listObservations"
+          :comments="listComments"
           :selected="currentObservation"
           :sort="currentSort"
           :user="props.user"

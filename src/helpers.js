@@ -29,4 +29,12 @@ function cssColor(string) {
   return "#" + hashCode(string).substring(2, 8);
 }
 
-export { getMonthName, getCurrentYear, cssColor };
+function formatDate(date) {
+  return new Intl.DateTimeFormat(false, {
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+  }).format(date);
+}
+
+export { getMonthName, getCurrentYear, cssColor, formatDate };

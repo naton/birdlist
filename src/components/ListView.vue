@@ -1,15 +1,24 @@
 <script setup>
 import { ref, reactive, computed, onMounted, watch } from "vue";
+import { db } from "../db";
 import ObservationItem from "./ObservationItem.vue";
 import UserIcon from "./UserIcon.vue";
 import SpeciesItem from "./SpeciesItem.vue";
+import CommentItem from "./CommentItem.vue";
 import SvgChart from "./SvgChart.vue";
 import { cssColor } from "../helpers";
 
-const props = defineProps(["observations", "sort", "selected", "user"]);
+const props = defineProps(["observations", "comments", "sort", "selected", "user"]);
 const emit = defineEmits(["sort", "select", "delete", "edit", "newLeader"]);
 
 const species = computed(() => [...new Set(props.observations.map((item) => item.name))].sort());
+const listId = computed(() => {
+  if (!props.comments) {
+    return;
+  }
+
+  return location.hash.replace("#", "");
+});
 
 const svg = reactive({
   w: 0,
@@ -177,6 +186,21 @@ function emitEdit(obs) {
   emit("edit", obs);
 }
 
+const comment = ref("");
+
+/* Comments */
+async function addComment() {
+  await db.comments.add({
+    comment: comment.value.trim(),
+    userId: props.user,
+    date: new Date(),
+    listId: listId.value,
+  });
+
+  // Reset form field value
+  comment.value = "";
+}
+
 watch(currentLeader, (newLeader) => {
   initGraph()
   // Announce new leader only if you’re not alone
@@ -218,7 +242,7 @@ watch(currentLeader, (newLeader) => {
           current: sort == 'bydate',
         }"
         @click.prevent="emitSort('bydate')"
-        >Observationer <span class="nav-count">({{ observationsByUser.length }})</span></a
+        >Obsar <span class="nav-count">({{ observationsByUser.length }})</span></a
       >
       <a
         href="#byname"
@@ -229,9 +253,18 @@ watch(currentLeader, (newLeader) => {
         @click.prevent="emitSort('byname')"
         >Arter <span class="nav-count">({{ Object.keys(speciesByUser).length }})</span></a
       >
+      <a
+        v-if="listId"
+        href="#comments"
+        class="nav-link"
+        :class="{
+          current: sort == 'comments',
+        }"
+        @click.prevent="emitSort('comments')"
+      >💬</a>
     </nav>
 
-    <section id="bydate" v-show="props.sort == 'bydate'" v-if="observations.length">
+    <section id="bydate" v-if="observations.length && props.sort == 'bydate'">
       <transition-group tag="ul" name="list" class="list">
         <observation-item
           v-for="obs in observationsByUser"
@@ -246,9 +279,21 @@ watch(currentLeader, (newLeader) => {
       </transition-group>
     </section>
 
-    <section id="byname" v-show="props.sort == 'byname'" v-if="species.length">
+    <section id="byname" v-if="species.length && props.sort == 'byname'">
       <transition-group tag="ol" name="list" class="list">
         <species-item v-for="obs in speciesByUser" :obs="obs" :key="obs[0].name"></species-item>
+      </transition-group>
+    </section>
+
+    <section id="comments" v-if="listId && props.sort == 'comments'">
+      <form>
+        <div>
+          <textarea v-model="comment" class="comment-input" placeholder="Skriv nåt trevligt till de andra på listan…"></textarea>
+          <button class="comment-btn" @click.prevent="addComment">Skicka</button>
+        </div>
+      </form>
+      <transition-group tag="ol" name="list" class="list">
+        <comment-item v-for="comment in comments" :comment="comment" :key="id"></comment-item>
       </transition-group>
     </section>
 
@@ -345,5 +390,18 @@ watch(currentLeader, (newLeader) => {
 
 .seen-by {
   margin: -0.2em 0 -0.2em 0.5em;
+}
+
+.comment-input {
+  width: calc(100% - 2rem);
+  height: 4rem;
+  margin: 1rem 1rem 0;
+  padding: 0.5rem;
+  font-size: inherit;
+}
+
+.comment-btn {
+  width: calc(100% - 2rem);
+  margin: 0 1rem 1rem;
 }
 </style>
