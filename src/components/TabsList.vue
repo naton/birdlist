@@ -134,7 +134,7 @@ function emitActiveTab(list) {
   background: var(--color-background);
 }
 
-.c-tabs__tab svg {
+.c-tabs__tab label > svg {
   position: absolute;
   width: 1.6rem;
   height: 1.6rem;
