@@ -9,6 +9,10 @@ import BirdsData from "@/components/BirdsData.vue";
 const me = ref("unauthorized");
 let loginInterval;
 let userSubscription;
+let invitesSubscription;
+
+/* Invites */
+const invites = ref([]);
 
 /* Login */
 const userIsLoggedIn = computed(() => me.value !== "unauthorized");
@@ -26,6 +30,11 @@ function login() {
     }
   );
 
+  invitesSubscription = liveQuery(async () => await db.cloud.invites).subscribe(
+    (invites) => {
+      invites.value = invites;
+    }
+  );
 }
 
 /* Lists */
@@ -102,10 +111,24 @@ async function celebrate() {
 
 onUnmounted(() => {
   userSubscription.unsubscribe();
+  invitesSubscription.unsubscribe();
 });
 </script>
 
 <template>
+  <div class="invites" v-if="invites.length">
+    <h1>🎉 Du har blivit inbjuden till en lista!</h1>
+    <ul>
+        <li v-for="invite in invites" :key="invite.id">
+          You are invited to act as {{ invite.roles?.join(", ") }}
+          in the realm {{ invite.realm.name }}
+          
+          <button class="btn" @click=invite.accept()>Accept</button>
+          <button class="btn" @click=invite.reject()>Reject</button>
+        </li>
+    </ul>
+  </div>
+
   <div class="body">
     <observations-lists @selectList="selectList" @newLeader="celebrate" :list="currentList" :user="me" :key="me" />
     <button class="login-button" @click="login()" v-if="!userIsLoggedIn">
@@ -129,6 +152,25 @@ onUnmounted(() => {
   width: auto !important;
   max-width: 100%;
   margin-bottom: 1rem;
+}
+
+.invites {
+  position: absolute;
+  top: 32%;
+  right: 1rem;
+  left: 1rem;
+  z-index: 1;
+  padding: 1rem;
+  border-radius: var(--radius);
+  box-shadow: 0 3px 12px rgb(0 0 0 / 15%);
+  color: var(--color-text);
+  background: var(--color-background-dim);
+  text-align: center;
+}
+
+.invites ul {
+  margin: 1rem;
+  list-style: none;
 }
 
 #canvas {
