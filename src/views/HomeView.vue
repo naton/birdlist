@@ -73,8 +73,8 @@ onMounted(async () => {
   loginInterval = setInterval(login, 100);
 
   /* Load list from hash in URL, if available */
-  if (!!location.hash && location.hash.startsWith("#lst")) {
-    const listId = location.hash.replace("#", "");
+  if (!!document.location.hash && document.location.hash.startsWith("#lst")) {
+    const listId = document.location.hash.replace("#", "");
     const list = await db.lists.get(listId);
     currentList.value = list;
   }
