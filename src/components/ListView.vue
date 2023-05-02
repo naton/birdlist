@@ -17,7 +17,7 @@ const listId = computed(() => {
     return;
   }
 
-  return location.hash.replace("#", "");
+  return document.location.hash.replace("#", "");
 });
 
 const svg = reactive({
