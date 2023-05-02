@@ -30,7 +30,7 @@ function login() {
     }
   );
 
-  invitesSubscription = liveQuery(async () => await db.cloud.invites).subscribe(
+  invitesSubscription = liveQuery(() => db.cloud.invites).subscribe(
     (invites) => {
       invites.value = invites;
     }
