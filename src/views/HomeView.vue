@@ -116,11 +116,9 @@ onUnmounted(() => {
     <h1>🎉 Du har blivit inbjuden till en lista!</h1>
     <ul>
         <li v-for="invite in invites" :key="invite.id">
-          You are invited to act as {{ invite.roles?.join(", ") }}
-          in the realm {{ invite.realm.name }}
-          
-          <button class="btn" @click=invite.accept()>Accept</button>
-          <button class="btn" @click=invite.reject()>Reject</button>
+          Du har blivit inbjuden av {{ invite.invitedBy?.name }} till <b>{{ invite.realm?.name }}</b>.
+          <button class="btn" @click=invite.accept()>Tacka ja</button>
+          <button class="btn" @click=invite.reject()>Avstå</button>
         </li>
     </ul>
   </div>
