@@ -23,7 +23,7 @@ function cssColor(string) {
       hash = (hash << 3) - hash + char;
       hash = hash & hash;
     }
-    return hash.toString(16);
+    return hash.toString(16) + "0";
   };
 
   return "#" + hashCode(string).substring(2, 8);
