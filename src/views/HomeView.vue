@@ -40,10 +40,6 @@ function login() {
 /* Lists */
 const currentList = ref("monthly");
 
-function scrollToBottom(el) {
-  document.querySelector(el).scrollTo(0, document.querySelector(el).scrollHeight + 40);
-}
-
 function selectList(list) {
   // Calculated lists come as strings, others are full objects
   if (typeof list === "string") {
