@@ -44,7 +44,7 @@ function selectList(list) {
   // Calculated lists come as strings, others are full objects
   if (typeof list === "string") {
     currentList.value = { id: list };
-  } else {
+  } else if (list && list.id) {
     currentList.value = list;
     history.replaceState(history.state, "", "#" + list.id);
   }
