@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import { getTiedRealmId } from "dexie-cloud-addon";
 import { db } from "../db";
 
 const props = defineProps(["list"]);
@@ -70,7 +71,8 @@ async function deleteList(listId) {
         db.realms.delete(tiedRealmId);
       })
       .then(() => {
-        emit("selectList", "monthly");
+        emit("activate", "monthly");
+        showListDialog.value = false;
         document.location.hash = "";
       });
   }
