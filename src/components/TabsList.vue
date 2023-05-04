@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import CreateList from "@/components/CreateList.vue";
 
-const props = defineProps(["monthLabel", "yearLabel", "currentList", "tabList"]);
+const props = defineProps(["monthLabel", "yearLabel", "currentList", "tabList", "user"]);
 const emit = defineEmits(["activate", "edit"]);
 const currentList = computed({
   get() {
@@ -71,7 +71,7 @@ function emitActiveTab(list) {
           </svg>
         </label>
       </li>
-      <create-list @activate="emitActiveTab" :list="currentList" />
+      <create-list @activate="emitActiveTab" :list="currentList" :user="props.user" />
     </ul>
   </nav>
 

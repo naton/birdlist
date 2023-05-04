@@ -19,6 +19,7 @@ const currentObservation = ref(false);
 const allObservations = ref([]);
 const allComments = ref([]);
 const tabList = ref([]);
+const isListOwner = computed(() => props.user === props.list.owner);
 const isDialogOpen = ref(false);
 
 /* Observations */
@@ -209,6 +210,7 @@ onUnmounted(() => {
     :yearLabel="getCurrentYear(currentYear)"
     :tabList="tabList"
     :currentList="props.list"
+    :user="props.user"
     @activate="selectList"
   >
     <template v-slot:[getSlotName(props.list.id)]>
@@ -321,7 +323,8 @@ onUnmounted(() => {
                 <details>
                   <summary class="heading">{{ props.list.title }}</summary>
                   <p class="list-description">{{ props.list.description }}</p>
-                  <button class="share-button" @click.stop="shareBirdList(props.list.id, props.list.title)">
+                  <p class="list-owner">Skapad av {{ props.list.owner }}</p>
+                  <button v-if="isListOwner" class="share-button" @click.stop="shareBirdList(props.list.id, props.list.title)">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
                       <g fill="var(--color-background-dim)">
                           <path d="M4.5 5H7v5a1 1 0 0 0 2 0V5h2.5a.5.5 0 0 0 .376-.829l-3.5-4a.514.514 0 0 0-.752 0l-3.5 4A.5.5 0 0 0 4.5 5Z"/>
@@ -380,8 +383,13 @@ onUnmounted(() => {
   padding: 0.25rem 0;
 }
 
-.list-description {
+.list-description,
+.list-owner {
   margin: 0 0.5rem 1rem;
+}
+
+.list-owner {
+  font-size: 0.9rem;
 }
 
 .sidescroll {

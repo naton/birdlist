@@ -1,19 +1,20 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { getTiedRealmId } from "dexie-cloud-addon";
 import { db } from "../db";
 
-const props = defineProps(["list"]);
+const props = defineProps(["list", "user"]);
 const emit = defineEmits(["activate"]);
 
 const showListDialog = ref(false);
 const title = ref("");
 const description = ref("");
+const isListOwner = computed(() => props.user === props.list.owner);
 
 function openModal(hasTitle) {
   showListDialog.value = true;
 
-  if (hasTitle) {
+  if (isListOwner.value && hasTitle) {
     title.value = props.list.title;
     description.value = props.list.description;
   } else {
@@ -82,7 +83,7 @@ async function deleteList(listId) {
 <template>
   <li class="c-tabs__tab last">
     <button class="add" @click.stop="openModal(props.list.title)">
-      <span v-if="props.list.title">Uppdatera lista</span>
+      <span v-if="isListOwner && props.list.title">Uppdatera lista</span>
       <span v-else>Ny lista…</span>
     </button>
     <div class="dialog create-list-dialog" v-if="showListDialog">
@@ -101,10 +102,9 @@ async function deleteList(listId) {
         rows="10"
         placeholder="Ev tävlingsregler, syften med listan, etc"
       ></textarea>
-      <p>Listan skapad av {{ list.owner }}</p>
       <div class="buttons">
-        <button v-if="props.list.title" class="update-button" @click="updateList(props.list.id)">Spara</button>
-        <button v-if="props.list.title" class="delete-button" @click="deleteList(props.list.id)">
+        <button v-if="isListOwner && props.list.title" class="update-button" @click="updateList(props.list.id)">Spara</button>
+        <button v-if="isListOwner && props.list.title" class="delete-button" @click="deleteList(props.list.id)">
           <svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
             <g fill="none" stroke="currentColor" stroke-miterlimit="10">
               <path stroke-linecap="square" d="M20 9v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9"/>
