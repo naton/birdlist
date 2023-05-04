@@ -202,6 +202,17 @@ button.secondary {
   overflow: hidden;
 }
 
+/* Icons */
+.delete-button svg {
+  width: 16px;
+  vertical-align: text-top;
+}
+
+.delete-button:not(:only-child) {
+  margin-right: 0.4rem;
+}
+
+/* Animations */
 .list-move, /* apply transition to moving elements */
 .list-enter-active,
 .list-leave-active {

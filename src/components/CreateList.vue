@@ -133,10 +133,4 @@ async function deleteList(listId) {
   display: inline-flex;
   align-items: center;
 }
-
-.delete-button svg {
-  width: 16px;
-  margin-right: 0.4rem;
-  vertical-align: text-top;
-}
 </style>
