@@ -101,6 +101,7 @@ async function deleteList(listId) {
         rows="10"
         placeholder="Ev tävlingsregler, syften med listan, etc"
       ></textarea>
+      <p>Listan skapad av {{ list.owner }}</p>
       <div class="buttons">
         <button v-if="props.list.title" class="update-button" @click="updateList(props.list.id)">Spara</button>
         <button v-if="props.list.title" class="delete-button" @click="deleteList(props.list.id)">
@@ -125,6 +126,7 @@ async function deleteList(listId) {
 .buttons {
   display: flex;
   align-items: center;
+  margin-top: 1rem;
 }
 
 .buttons button {
