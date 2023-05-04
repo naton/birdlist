@@ -6,8 +6,8 @@ import ObservationsLists from "@/components/ObservationsLists.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
 import BirdsData from "@/components/BirdsData.vue";
 
+/* Me */
 const currentUser = useObservable(db.cloud.currentUser);
-const me = ref(currentUser?.name || "unauthorized");
 
 /* Invites */
 const listInvites = useObservable(db.cloud.invites);
@@ -91,7 +91,7 @@ async function celebrate() {
   </div>
 
   <div class="body">
-    <observations-lists @selectList="selectList" @newLeader="celebrate" :list="currentList" :user="me" :key="me" />
+    <observations-lists @selectList="selectList" @newLeader="celebrate" :list="currentList" :user="currentUser.name" :key="currentUser.name" />
   </div>
   <div class="footer">
     <observation-input @add="addObservation" :list="currentList" />
