@@ -1,39 +1,16 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
-import { liveQuery } from "dexie";
+import { ref, onMounted } from "vue";
 import { db } from "../db";
+import { useObservable } from '@vueuse/rxjs';
 import ObservationsLists from "@/components/ObservationsLists.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
 import BirdsData from "@/components/BirdsData.vue";
 
-const me = ref("unauthorized");
-let loginInterval;
-let userSubscription;
-let invitesSubscription;
+const currentUser = useObservable(db.cloud.currentUser);
+const me = ref(currentUser?.name || "unauthorized");
 
 /* Invites */
-const invites = ref([]);
-
-/* Login */
-function login() {
-  userSubscription = liveQuery(() => db.cloud.currentUser).subscribe(
-    (user) => {
-      if (user._value) {
-        me.value = user._value.name.toLowerCase()
-        clearInterval(loginInterval);
-      }
-    },
-    (error) => {
-      console.log(error);
-    }
-  );
-
-  invitesSubscription = liveQuery(() => db.cloud.invites).subscribe(
-    (invites) => {
-      invites.value = invites;
-    }
-  );
-}
+const listInvites = useObservable(db.cloud.invites);
 
 /* Lists */
 const currentList = ref("monthly");
@@ -67,9 +44,6 @@ async function addObservation(ev, listId, location) {
 let newLeaderConfetti;
 
 onMounted(async () => {
-  /* Try to login */
-  loginInterval = setInterval(login, 200);
-
   /* Load list from hash in URL, if available */
   if (!!document.location.hash && document.location.hash.startsWith("#lst")) {
     const listId = document.location.hash.replace("#", "");
@@ -102,30 +76,22 @@ async function celebrate() {
     });
   }
 }
-
-onUnmounted(() => {
-  userSubscription.unsubscribe();
-  invitesSubscription.unsubscribe();
-});
 </script>
 
 <template>
-  <div class="invites" v-if="invites.length">
-    <h1>🎉 Du har blivit inbjuden till en lista!</h1>
+  <div class="invites" v-if="listInvites.length">
+    <h2>🎉 Du har blivit inbjuden till en lista!</h2> 
     <ul>
-        <li v-for="invite in invites" :key="invite.id">
-          Du har blivit inbjuden av {{ invite.invitedBy?.name }} till <b>{{ invite.realm?.name }}</b>.
-          <button class="btn" @click=invite.accept()>Tacka ja</button>
-          <button class="btn" @click=invite.reject()>Avstå</button>
+        <li v-for="invite in listInvites" :key="invite.id">
+          <p>Du har blivit inbjuden till listan <b>{{ invite.realm?.name }}</b> av {{ invite.invitedBy?.name }}.</p>
+          <button class="btn" @click="invite.accept()">Tacka ja</button>
+          <button class="btn" @click="invite.reject()">Avstå</button>
         </li>
     </ul>
   </div>
 
   <div class="body">
     <observations-lists @selectList="selectList" @newLeader="celebrate" :list="currentList" :user="me" :key="me" />
-    <button class="login-button" @click="login()" v-if="me === 'unauthorized'">
-      <u>Logga in</u> för att hämta sparade 🐦
-    </button>
   </div>
   <div class="footer">
     <observation-input @add="addObservation" :list="currentList" />
@@ -135,11 +101,6 @@ onUnmounted(() => {
 </template>
 
 <style>
-.login-button {
-  margin: 0.5rem 1rem;
-  box-shadow: rgb(17 17 26 / 20%) 0 2px 12px;
-}
-
 .dxc-login-dlg input[type] {
   width: auto !important;
   max-width: 100%;
@@ -163,6 +124,14 @@ onUnmounted(() => {
 .invites ul {
   margin: 1rem;
   list-style: none;
+}
+
+.invites p {
+  margin: 1rem 0.5rem 0.25rem;
+}
+
+.invites b {
+  font-weight: bold;
 }
 
 #canvas {
