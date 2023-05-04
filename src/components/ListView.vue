@@ -293,7 +293,7 @@ watch(currentLeader, (newLeader) => {
         </div>
       </form>
       <transition-group tag="ol" name="list" class="list">
-        <comment-item v-for="comment in comments" :comment="comment" :key="id"></comment-item>
+        <comment-item v-for="comment in comments" :comment="comment" :user="user" :key="comment.id"></comment-item>
       </transition-group>
     </section>
 
