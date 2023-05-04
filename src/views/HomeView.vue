@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { db } from "../db";
-import { useObservable } from '@vueuse/rxjs';
+import { useObservable } from "@vueuse/rxjs";
 import ObservationsLists from "@/components/ObservationsLists.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
 import BirdsData from "@/components/BirdsData.vue";
