@@ -76,7 +76,7 @@ onMounted(async () => {
   if (!!document.location.hash && document.location.hash.startsWith("#lst")) {
     const listId = document.location.hash.replace("#", "");
     const list = await db.lists.get(listId);
-    currentList.value = list;
+    currentList.value = list ? list : { id: "monthly" };
   }
 
   /* Prepare to celebrate new leader */
