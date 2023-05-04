@@ -70,7 +70,7 @@ let newLeaderConfetti;
 
 onMounted(async () => {
   /* Try to login */
-  loginInterval = setInterval(login, 100);
+  loginInterval = setInterval(login, 200);
 
   /* Load list from hash in URL, if available */
   if (!!document.location.hash && document.location.hash.startsWith("#lst")) {
