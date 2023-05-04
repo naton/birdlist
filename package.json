@@ -9,8 +9,10 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@vueuse/rxjs": "^10.1.2",
     "dexie": "^4.0.1-alpha.10",
     "dexie-cloud-addon": "^4.0.1-beta.39",
+    "rxjs": "^7.8.1",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
   },
