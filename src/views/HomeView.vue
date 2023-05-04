@@ -15,8 +15,6 @@ let invitesSubscription;
 const invites = ref([]);
 
 /* Login */
-const userIsLoggedIn = computed(() => me.value !== "unauthorized");
-
 function login() {
   userSubscription = liveQuery(() => db.cloud.currentUser).subscribe(
     (user) => {
@@ -125,7 +123,7 @@ onUnmounted(() => {
 
   <div class="body">
     <observations-lists @selectList="selectList" @newLeader="celebrate" :list="currentList" :user="me" :key="me" />
-    <button class="login-button" @click="login()" v-if="!userIsLoggedIn">
+    <button class="login-button" @click="login()" v-if="me === 'unauthorized'">
       <u>Logga in</u> för att hämta sparade 🐦
     </button>
   </div>
