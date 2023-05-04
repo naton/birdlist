@@ -143,7 +143,7 @@ async function shareBirdList(listId, listName) {
 
   if (!email) return;
 
-  await db.transaction("rw", [db.lists, db.observations, db.realms, db.members], async () => {
+  await db.transaction("rw", [db.lists, db.observations, db.comments, db.realms, db.members], async () => {
     // Add or update a realm, tied to the list using getTiedRealmId():
     const realmId = getTiedRealmId(listId);
 
@@ -157,13 +157,14 @@ async function shareBirdList(listId, listName) {
     await db.lists.update(listId, { realmId });
     // Move all items into the new realm consistently (modify() is consistent across sync peers)
     await db.observations.where({ listId: listId }).modify({ realmId: realmId });
+    await db.comments.where({ listId: listId }).modify({ realmId: realmId });
     // Add the members to share it to:
     await db.members.add({
       realmId,
       email: email,
       invite: true, // Generates invite email on server on sync
       permissions: {
-        add: ["observations"],
+        add: ["observations", "comments"],
         update: {
           lists: ["title"],
           observations: ["*", "realmId"],
