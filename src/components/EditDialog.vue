@@ -118,7 +118,7 @@ function saveAndClose() {
           </option>
         </select>
       </div>
-      <div>
+      <div class="margin-bottom">
         <button type="button" class="secondary" @click="saveAndClose">Spara</button>
         <button type="button" @click="deleteAndClose(observation.id)">Radera</button>
       </div>
