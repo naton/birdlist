@@ -28,14 +28,33 @@ function selectList(list) {
 /* Observations */
 async function addObservation(ev, listId, location) {
   const isCalculatedList = currentList.value.id == "monthly" || currentList.value.id == "everything";
+  let bird = ev.target.value;
+  let date = new Date();
+  const isBatchImport = bird.includes(","); // Probably multiple birds
+  const hasCustomDate = bird.startsWith("20") && bird.includes(":"); // Probably a date
 
-  await db.observations.add({
-    name: ev.target.value.trim(),
-    date: new Date(),
-    realmId: isCalculatedList ? undefined : currentList.value.realmId,
-    listId: isCalculatedList ? undefined : currentList.value.id, // Any ID other than defaults are valid here
-    location: location,
-  });
+  if (hasCustomDate) {
+    const customDate = new Date(bird.split(":")[0]);
+    date = isNaN(customDate) ? new Date() : customDate;
+    bird = bird.split(":")[1];
+  }
+
+  async function add(bird) {
+    await db.observations.add({
+        name: bird.trim(),
+        date: date,
+        realmId: isCalculatedList ? undefined : currentList.value.realmId,
+        listId: isCalculatedList ? undefined : currentList.value.id, // Any ID other than defaults are valid here
+        location: location,
+      });
+  }
+
+  if (isBatchImport) {
+    const birds = bird.split(",");
+    birds.forEach(async (bird) => add(bird));
+  } else {
+    add(bird);
+  }
 
   // Reset form field value
   ev.target.value = "";
