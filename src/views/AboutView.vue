@@ -1,3 +1,12 @@
+<script setup>
+import { db } from "../db";
+
+function logout() {
+  db.table('$logins').clear();
+  document.location.href = "/";
+}
+</script>
+
 <template>
   <div class="about">
     <div class="about-content">
@@ -12,13 +21,15 @@
         Share with friends.
       </h2>
 
-      <div class="privacy-notes">
+      <div class="privacy-notes margin-bottom">
         <h3>Personuppgiftshantering</h3>
         <p>
           Genom att använda Birdlist godkänner du att din e-postadress lagras på såväl din enhet som på dina vänners
           enheter, i de fall du delar dina listor med dem.
         </p>
       </div>
+
+      <button type="button" class="button" @click="logout()">Logga ut</button>
     </div>
   </div>
 </template>
