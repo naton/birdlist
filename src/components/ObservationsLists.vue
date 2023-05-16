@@ -34,7 +34,7 @@ let observationsSubscription = liveQuery(async () => await db.observations.toArr
 
 const allMyObservations = computed(() => {
   return allObservations.value
-    .filter((obs) => obs.owner == props.user)
+    .filter((obs) => (obs.owner == props.user || obs.owner == "unauthorized"))
     .filter((obs) => obs.date.getFullYear() == currentYear.value)
     .sort((a, b) => a.date - b.date);
 });
@@ -43,7 +43,7 @@ const allThisMonth = computed(() => {
   return allObservations.value
     .filter(
       (obs) =>
-        obs.owner == props.user &&
+        (obs.owner == props.user || obs.owner == "unauthorized") &&
         obs.date.getFullYear() == currentYear.value &&
         obs.date.getMonth() == currentMonth.value
     )
@@ -109,7 +109,10 @@ function nextMonth() {
 
 function totalPerMonth(month) {
   return allObservations.value.filter(
-    (obs) => obs.owner == props.user && obs.date.getFullYear() == currentYear.value && obs.date.getMonth() == month
+    (obs) => 
+      (obs.owner == props.user || obs.owner == "unauthorized") &&
+      obs.date.getFullYear() == currentYear.value &&
+      obs.date.getMonth() == month
   ).length;
 }
 

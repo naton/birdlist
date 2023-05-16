@@ -12,7 +12,7 @@ const currentName = ref(props.observation.name);
 const currentDate = ref(props.observation.date);
 
 function canEdit(owner) {
-  return props.user !== "unauthorized" && props.user === owner;
+  return owner === "unauthorized" || props.user === owner;
 }
 
 function formatDate(date) {

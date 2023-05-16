@@ -6,7 +6,7 @@ const props = defineProps(["obs", "selected", "user"]);
 const emit = defineEmits(["select", "edit"]);
 
 function canEdit(owner) {
-  return props.user !== "unauthorized" && props.user === owner;
+  return owner === "unauthorized" || props.user === owner;
 }
 </script>
 
