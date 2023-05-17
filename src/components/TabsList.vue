@@ -21,6 +21,27 @@ function emitActiveTab(list) {
 <template>
   <nav class="body-nav">
     <ul class="c-tabs">
+      <li
+        class="c-tabs__tab"
+        :class="{
+          'c-tabs__tab--active': 'everything' !== currentList.id && 'monthly' !== currentList.id,
+        }"
+      >
+        <label>
+          <select name="name" v-model="currentList" class="transparent-menu">
+            <option value="monthly">Välj lista…</option>
+            <option v-for="list in tabList" :key="list.id" :value="list">
+              {{ list.title }}
+            </option>
+          </select>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+            <path
+              fill="currentColor"
+              d="M11 9H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0-8H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0 4H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Z"
+            />
+          </svg>
+        </label>
+      </li>
       <li class="c-tabs__tab" :class="{ 'c-tabs__tab--active': 'monthly' === props.currentList.id }">
         <input
           type="radio"
@@ -49,27 +70,6 @@ function emitActiveTab(list) {
           hidden
         />
         <label for="tab-everything">{{ props.yearLabel }}</label>
-      </li>
-      <li
-        class="c-tabs__tab"
-        :class="{
-          'c-tabs__tab--active': 'everything' !== currentList.id && 'monthly' !== currentList.id,
-        }"
-      >
-        <label>
-          <select name="name" v-model="currentList" class="transparent-menu">
-            <option value="monthly">Välj lista…</option>
-            <option v-for="list in tabList" :key="list.id" :value="list">
-              {{ list.title }}
-            </option>
-          </select>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
-            <path
-              fill="currentColor"
-              d="M11 9H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0-8H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0 4H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Z"
-            />
-          </svg>
-        </label>
       </li>
       <create-list @activate="emitActiveTab" :list="currentList" :user="props.user" />
     </ul>
