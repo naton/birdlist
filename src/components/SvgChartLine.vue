@@ -44,14 +44,14 @@ const pointsPositions = computed(() => {
     const x = lib.map(
       e[0],
       props.o.xMin,
-      props.o.xMax,
+      props.o.xMax + 8,
       0,
       props.svg.w
     );
     const y = lib.map(
       e[1],
-      props.o.yMin,
-      props.o.yMax,
+      props.o.yMin - 2,
+      props.o.yMax + 4,
       props.svg.h,
       0
     );
