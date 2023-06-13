@@ -41,12 +41,12 @@ async function addObservation(ev, listId, location) {
 
   async function add(bird) {
     await db.observations.add({
-        name: bird.trim(),
-        date: date,
-        realmId: isCalculatedList ? undefined : currentList.value.realmId,
-        listId: isCalculatedList ? undefined : currentList.value.id, // Any ID other than defaults are valid here
-        location: location,
-      });
+      name: bird.trim(),
+      date: date,
+      realmId: isCalculatedList ? undefined : currentList.value.realmId,
+      listId: isCalculatedList ? undefined : currentList.value.id, // Any ID other than defaults are valid here
+      location: location,
+    });
   }
 
   if (isBatchImport) {
