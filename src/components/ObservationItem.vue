@@ -1,19 +1,12 @@
 <script setup>
 import UserIcon from "./UserIcon.vue";
+import { formatDate } from "../helpers";
 
 const props = defineProps(["obs", "selected", "user"]);
 const emit = defineEmits(["select", "edit"]);
 
-function formatDate(date) {
-  return new Intl.DateTimeFormat(false, {
-    weekday: "long",
-    day: "numeric",
-    month: "short",
-  }).format(date);
-}
-
 function canEdit(owner) {
-  return props.user !== "unauthorized" && props.user === owner;
+  return owner === "unauthorized" || props.user === owner;
 }
 </script>
 

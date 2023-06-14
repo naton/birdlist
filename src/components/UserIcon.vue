@@ -13,8 +13,8 @@ const initial = computed(() => {
   <span
     class="user"
     :style="{
-      color: cssColor(user),
-      backgroundColor: cssColor(user),
+      color: cssColor(props.user),
+      backgroundColor: cssColor(props.user),
     }"
     ><span class="initial">{{ initial }}</span>
     <span v-if="props.score" class="score" :class="props.leader && 'leader'">{{ props.score }}</span>

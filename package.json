@@ -10,13 +10,15 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "@vueuse/rxjs": "^10.1.2",
     "body-parser": "^1.19.2",
     "cors": "^2.8.5",
-    "dexie": "^4.0.1-alpha.10",
-    "dexie-cloud-addon": "^4.0.1-beta.33",
+    "dexie": "^4.0.1-alpha.21",
+    "dexie-cloud-addon": "^4.0.1-beta.40",
     "express": "^4.17.3",
-    "vue": "^3.2.47",
-    "vue-router": "^4.1.6",
+    "rxjs": "^7.8.1",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.2",
     "web-push": "^3.4.5"
   },
   "devDependencies": {

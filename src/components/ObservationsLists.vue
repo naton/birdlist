@@ -17,7 +17,9 @@ const currentMonth = ref(new Date().getMonth());
 const currentSort = ref("bydate");
 const currentObservation = ref(false);
 const allObservations = ref([]);
+const allComments = ref([]);
 const tabList = ref([]);
+const isListOwner = computed(() => props.user === props.list.owner);
 const isDialogOpen = ref(false);
 const isSubscribed = ref(false);
 
@@ -33,7 +35,7 @@ let observationsSubscription = liveQuery(async () => await db.observations.toArr
 
 const allMyObservations = computed(() => {
   return allObservations.value
-    .filter((obs) => obs.owner == props.user)
+    .filter((obs) => (obs.owner == props.user || obs.owner == "unauthorized"))
     .filter((obs) => obs.date.getFullYear() == currentYear.value)
     .sort((a, b) => a.date - b.date);
 });
@@ -42,7 +44,7 @@ const allThisMonth = computed(() => {
   return allObservations.value
     .filter(
       (obs) =>
-        obs.owner == props.user &&
+        (obs.owner == props.user || obs.owner == "unauthorized") &&
         obs.date.getFullYear() == currentYear.value &&
         obs.date.getMonth() == currentMonth.value
     )
@@ -52,6 +54,21 @@ const allThisMonth = computed(() => {
 const listObservations = computed(() => {
   const listId = props.list.id;
   return allObservations.value.filter((obs) => obs.listId == listId);
+});
+
+/* Comments */
+let commentsSubscription = liveQuery(async () => await db.comments.toArray()).subscribe(
+  (comments) => {
+    allComments.value = comments;
+  },
+  (error) => {
+    console.log(error);
+  }
+);
+
+const listComments = computed(() => {
+  const listId = props.list.id;
+  return allComments.value.filter((comment) => comment.listId == listId);
 });
 
 function selectObservation(obs) {
@@ -93,7 +110,10 @@ function nextMonth() {
 
 function totalPerMonth(month) {
   return allObservations.value.filter(
-    (obs) => obs.owner == props.user && obs.date.getFullYear() == currentYear.value && obs.date.getMonth() == month
+    (obs) => 
+      (obs.owner == props.user || obs.owner == "unauthorized") &&
+      obs.date.getFullYear() == currentYear.value &&
+      obs.date.getMonth() == month
   ).length;
 }
 
@@ -135,39 +155,12 @@ const currentMonthFormatted = computed(() => {
   }).format(date);
 });
 
-async function deleteList(listId) {
-  let deleteRelatedObservations = false;
-
-  if (confirm("Är du säker på att du vill ta bort denna lista?")) {
-    deleteRelatedObservations = confirm("Radera även listans observationer?");
-
-    await db
-      .transaction("rw", [db.lists, db.observations, db.realms, db.members], () => {
-        if (deleteRelatedObservations) {
-          // Delete possible observations:
-          db.observations.where({ listId: listId }).delete();
-        }
-        // Delete the list:
-        db.lists.delete(listId);
-        // Delete possible realm and its members in case list was shared:
-        const tiedRealmId = getTiedRealmId(listId);
-        // Empty out any tied realm from members:
-        db.members.where({ realmId: tiedRealmId }).delete();
-        // Delete the tied realm if it exists:
-        db.realms.delete(tiedRealmId);
-      })
-      .then(() => {
-        emit("selectList", "monthly");
-      });
-  }
-}
-
 async function shareBirdList(listId, listName) {
   let email = prompt("Ange e-postadressen till personen du vill dela denna lista med:");
 
   if (!email) return;
 
-  await db.transaction("rw", [db.lists, db.observations, db.realms, db.members], async () => {
+  await db.transaction("rw", [db.lists, db.observations, db.comments, db.realms, db.members], async () => {
     // Add or update a realm, tied to the list using getTiedRealmId():
     const realmId = getTiedRealmId(listId);
 
@@ -181,15 +174,15 @@ async function shareBirdList(listId, listName) {
     await db.lists.update(listId, { realmId });
     // Move all items into the new realm consistently (modify() is consistent across sync peers)
     await db.observations.where({ listId: listId }).modify({ realmId: realmId });
+    await db.comments.where({ listId: listId }).modify({ realmId: realmId });
     // Add the members to share it to:
     await db.members.add({
       realmId,
       email: email,
       invite: true, // Generates invite email on server on sync
       permissions: {
-        add: ["observations"],
+        add: ["observations", "comments"],
         update: {
-          lists: ["title"],
           observations: ["*", "realmId"],
         },
         // manage: "*", // Give your friend full permissions within this new realm.
@@ -200,6 +193,10 @@ async function shareBirdList(listId, listName) {
 
 function selectList(list) {
   emit("selectList", list);
+
+  if (list === "monthly" || list === "everything") {
+    document.location.hash = "";
+  }
 }
 
 function newLeader() {
@@ -217,6 +214,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   observationsSubscription.unsubscribe();
+  commentsSubscription.unsubscribe();
   listsSubscription.unsubscribe();
 });
 </script>
@@ -227,6 +225,7 @@ onUnmounted(() => {
     :yearLabel="getCurrentYear(currentYear)"
     :tabList="tabList"
     :currentList="props.list"
+    :user="props.user"
     @activate="selectList"
   >
     <template v-slot:[getSlotName(props.list.id)]>
@@ -324,6 +323,7 @@ onUnmounted(() => {
         <list-view
           v-else
           :observations="listObservations"
+          :comments="listComments"
           :selected="currentObservation"
           :sort="currentSort"
           :user="props.user"
@@ -337,44 +337,20 @@ onUnmounted(() => {
               <div class="subtitle">
                 <details>
                   <summary class="heading">{{ props.list.title }}</summary>
-                  <p>{{ props.list.description }}</p>
-                  <button class="share-button" @click.stop="shareBirdList(props.list.id, props.list.title)">
+                  <p class="list-description">{{ props.list.description }}</p>
+                  <p class="list-owner">Skapad av {{ props.list.owner }}</p>
+                  <button v-if="isListOwner" class="share-button" @click.stop="shareBirdList(props.list.id, props.list.title)">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
                       <g fill="var(--color-background-dim)">
-                        <path d="M4.5 5H7v5a1 1 0 0 0 2 0V5h2.5a.5.5 0 0 0 .376-.829l-3.5-4a.514.514 0 0 0-.752 0l-3.5 4A.5.5 0 0 0 4.5 5Z"/>
-                        <path d="M14 7h-3v2h3v5H2V9h3V7H2a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"/>
+                          <path d="M4.5 5H7v5a1 1 0 0 0 2 0V5h2.5a.5.5 0 0 0 .376-.829l-3.5-4a.514.514 0 0 0-.752 0l-3.5 4A.5.5 0 0 0 4.5 5Z"/>
+                          <path d="M14 7h-3v2h3v5H2V9h3V7H2a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"/>
                       </g>
                     </svg>
                     Dela
                   </button>
-                  <button type="button" class="delete-button" @click.prevent="deleteList(props.list.id)">
-                    <svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
-                      <g fill="none" stroke="currentColor" stroke-miterlimit="10">
-                        <path stroke-linecap="square" d="M20 9v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9"/>
-                        <path stroke-linecap="square" d="M1 5h22"/>
-                        <path stroke-linecap="square" d="M12 12v6m-4-6v6m8-6v6"/>
-                        <path d="M8 5V1h8v4"/>
-                      </g>
-                    </svg>
-                    Radera
-                  </button>
                 </details>
-                <button type="button" class="notify-button" @click.prevent="toggleSubscription">
-                  <svg v-if="!isSubscribed" xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
-                    <path fill="none" stroke="currentColor" stroke-linecap="square" stroke-miterlimit="10" d="M19 11V8A7 7 0 0 0 5 8v3c0 3.3-3 4.1-3 6 0 1.7 3.9 3 10 3s10-1.3 10-3c0-1.9-3-2.7-3-6Z"/>
-                    <path fill="currentColor" d="M12 22a38.81 38.81 0 0 1-2.855-.1 2.992 2.992 0 0 0 5.71 0c-.894.066-1.844.1-2.855.1Z"/>
-                  </svg>
-                  <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M20 10V8A8 8 0 0 0 4 8v2a4.441 4.441 0 0 1-1.547 3.193A4.183 4.183 0 0 0 1 16c0 2.5 4.112 4 11 4s11-1.5 11-4a4.183 4.183 0 0 0-1.453-2.807A4.441 4.441 0 0 1 20 10Z"/>
-                    <path fill="currentColor" d="M9.145 21.9a2.992 2.992 0 0 0 5.71 0c-.894.066-1.844.1-2.855.1s-1.961-.032-2.855-.1Z"/>
-                  </svg>
-                </button>
               </div>
             </div>
-            <details v-if="props.list.description" class="list-description">
-              <summary>Information om listan</summary>
-              {{ props.list.description }}
-            </details>
           </template>
         </list-view>
       </div>
@@ -422,8 +398,13 @@ onUnmounted(() => {
   padding: 0.25rem 0;
 }
 
-.list-description {
-  margin: 0 1rem 0.25rem;
+.list-description,
+.list-owner {
+  margin: 0 0.5rem 1rem;
+}
+
+.list-owner {
+  font-size: 0.9rem;
 }
 
 .sidescroll {
@@ -479,17 +460,12 @@ onUnmounted(() => {
   white-space: nowrap;
 }
 
-.list-header .delete-button {
-  margin-left: 1rem;
-}
-
 .notify-button svg {
   width: 20px;
   vertical-align: middle;
 }
 
-.share-button svg,
-.delete-button svg {
+.share-button svg {
   width: 16px;
   margin-right: 0.4rem;
   vertical-align: text-top;

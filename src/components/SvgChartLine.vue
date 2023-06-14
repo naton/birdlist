@@ -44,14 +44,14 @@ const pointsPositions = computed(() => {
     const x = lib.map(
       e[0],
       props.o.xMin,
-      props.o.xMax,
+      props.o.xMax + 8,
       0,
       props.svg.w
     );
     const y = lib.map(
       e[1],
-      props.o.yMin,
-      props.o.yMax,
+      props.o.yMin - 2,
+      props.o.yMax + 4,
       props.svg.h,
       0
     );
@@ -97,6 +97,14 @@ function bezierCommand(point, i, a) {
 </template>
 
 <style>
+.chart:has(g.selected) g:not(.selected) {
+  opacity: 0.2;
+}
+
+.chart g {
+  transition: 0.2s opacity ease-out;
+}
+
 .chart path {
   stroke-width: 2;
   stroke-dasharray: 2000;

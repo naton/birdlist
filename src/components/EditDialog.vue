@@ -12,7 +12,7 @@ const currentName = ref(props.observation.name);
 const currentDate = ref(props.observation.date);
 
 function canEdit(owner) {
-  return props.user !== "unauthorized" && props.user === owner;
+  return owner === "unauthorized" || props.user === owner;
 }
 
 function formatDate(date) {
@@ -118,7 +118,7 @@ function saveAndClose() {
           </option>
         </select>
       </div>
-      <div>
+      <div class="margin-bottom">
         <button type="button" class="secondary" @click="saveAndClose">Spara</button>
         <button type="button" @click="deleteAndClose(observation.id)">Radera</button>
       </div>

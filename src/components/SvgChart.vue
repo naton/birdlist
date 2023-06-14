@@ -1,13 +1,17 @@
 <script setup>
-import { reactive, computed } from 'vue';
+import { computed } from 'vue';
 import SvgChartLine from './SvgChartLine.vue';
 
-const props = defineProps(["datasets", "options", "svg"]);
+const props = defineProps(["datasets", "options", "svg", "user"]);
 const viewbox = computed(() => `0 0 ${props.svg.w} ${props.svg.h}`);
+
+function selectedClass(name) {
+  return name === props.user ? "selected" : null;
+};
 </script>
 
 <template>
   <svg :view-box.camel="viewbox" class="chart">
-    <svg-chart-line :d="dataset" :o="options" :svg="props.svg" v-for="dataset in datasets"></svg-chart-line>
+    <svg-chart-line :d="dataset" :o="options" :svg="props.svg" :class="selectedClass(dataset.name)" v-for="dataset in datasets"></svg-chart-line>
   </svg>
 </template>

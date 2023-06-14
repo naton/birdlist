@@ -1,12 +1,13 @@
 import Dexie from "dexie";
 import dexieCloud from "dexie-cloud-addon";
 
-export const db = new Dexie("birdlist", { addons: [dexieCloud] });
+export const db = new Dexie("birdlist", { addons: [dexieCloud], cache: "disabled" });
 
-db.version(5).stores({
+db.version(8).stores({
   // Application tables
   lists: "@id, title",
-  observations: "@id, name, date, listId", // Primary key and indexed props
+  observations: "@id, name, date, listId",
+  comments: "@id, comment, date, listId",
   // Access Control tables
   // (Note: these tables need to be named exactly like in this sample,
   // and will correspond to server-side access control of Dexie Cloud)
