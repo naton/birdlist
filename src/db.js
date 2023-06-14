@@ -1,7 +1,7 @@
 import Dexie from "dexie";
 import dexieCloud from "dexie-cloud-addon";
 
-export const db = new Dexie("birdlist", { addons: [dexieCloud] });
+export const db = new Dexie("birdlist", { addons: [dexieCloud], cache: "disabled" });
 
 db.version(8).stores({
   // Application tables
