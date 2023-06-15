@@ -13,7 +13,7 @@
     "@vueuse/rxjs": "^10.1.2",
     "body-parser": "^1.19.2",
     "cors": "^2.8.5",
-    "dexie": "^4.0.1-alpha.21",
+    "dexie": "^4.0.1-alpha.22",
     "dexie-cloud-addon": "^4.0.1-beta.40",
     "express": "^4.17.3",
     "rxjs": "^7.8.1",
