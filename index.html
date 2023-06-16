@@ -29,22 +29,6 @@
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
     <link rel="mask-icon" href="safari-pinned-tab.svg" color="#ffffff" />
     <link rel="manifest" href="site.webmanifest" />
-    <script>
-      function onUpdateFound(registration) {
-        const newWorker = registration.installing;
-
-        newWorker.addEventListener('statechange', async () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            newWorker.skipWaiting();
-            document.location.reload(true);
-          }
-        });
-      }
-
-      navigator.serviceWorker.register("sw.js").then(registration => {
-        registration.addEventListener('updatefound', () => onUpdateFound(registration));
-      });
-    </script>
     <title>Birdlist</title>
     <style>
       .container {

@@ -3,18 +3,24 @@
   "version": "1.0.1",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && workbox generateSW workbox-config.js",
+    "build": "vite build && workbox injectManifest workbox-config.js",
     "preview": "vite preview --port 4173",
     "test:unit": "vitest --environment jsdom",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "start": "node index.js"
   },
   "dependencies": {
     "@vueuse/rxjs": "^10.1.2",
+    "body-parser": "^1.19.2",
+    "cors": "^2.8.5",
     "dexie": "^4.0.1-alpha.22",
     "dexie-cloud-addon": "^4.0.1-beta.40",
+    "dotenv": "^16.1.4",
+    "express": "^4.17.3",
     "rxjs": "^7.8.1",
     "vue": "^3.3.4",
-    "vue-router": "^4.2.2"
+    "vue-router": "^4.2.2",
+    "web-push": "^3.4.5"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",

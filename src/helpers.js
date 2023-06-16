@@ -1,3 +1,85 @@
+const publicVapidKey = "BC-q_Qa_xZrCippKmu2_x6oRsJFP7E9II66LbGAvhUc_Hw2Xe9pm6JJFEj_07OJzIcI4NjU4ovz8oOKb1jqPyhU";
+
+function askNotificationPermission(callback) {
+  console.log("askNotificationPermission…")
+  async function pushSubscribe(registration) {
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: publicVapidKey,
+    });
+    // Send subscribe request
+    await fetch("//" + document.location.hostname + ":5001/api/subscription", {
+      method: "POST",
+      body: JSON.stringify(subscription),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    }).then(data => console.log(data));
+  }
+
+  // function to actually ask the permissions
+  async function handlePermission(permission) {
+    console.log("handlePermission…")
+    if (permission === "granted") {
+      console.log("granted…")
+      navigator.serviceWorker.ready.then((registration) => {
+        if ("PushManager" in window) {
+          console.log("PushManager available…")
+          try {
+            pushSubscribe(registration);
+           } catch (error) {
+            console.error("Error subscribing for push notifications.", error);
+          }
+        }
+      });
+
+      if (typeof callback === "function") {
+        callback();
+      }
+    }
+  }
+
+  function checkNotificationPromise() {
+    try {
+      Notification.requestPermission().then();
+    } catch (e) {
+      return false;
+    }
+  
+    return true;
+  }
+
+  // Let's check if the browser supports notifications
+  if (!("Notification" in window)) {
+    console.log("This browser does not support notifications.");
+  } else if (checkNotificationPromise()) {
+    Notification.requestPermission().then((permission) => {
+      handlePermission(permission);
+    });
+  } else {
+    Notification.requestPermission((permission) => {
+      handlePermission(permission);
+    });
+  }
+}
+
+async function removePushManager(callback) {
+  navigator.serviceWorker.ready.then((registration) => {
+    registration.pushManager.getSubscription().then((subscription) => {
+      // Send subscribe request
+      subscription.unsubscribe().then((successful) => {
+        // You've successfully unsubscribed
+        if (typeof callback === "function") {
+          callback();
+        }
+      })
+      .catch((e) => {
+        // Unsubscribing failed
+      });
+    });
+  });
+}
+
 function getMonthName(month, length) {
   const date = new Date();
   date.setDate(1);
@@ -37,4 +119,4 @@ function formatDate(date) {
   }).format(date);
 }
 
-export { getMonthName, getCurrentYear, cssColor, formatDate };
+export { askNotificationPermission, removePushManager, getMonthName, getCurrentYear, cssColor, formatDate };
