@@ -1,11 +1,12 @@
+require('dotenv').config();
 const express = require('express');
 const webpush = require('web-push');
 const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 
-const publicVapidKey = "BC-q_Qa_xZrCippKmu2_x6oRsJFP7E9II66LbGAvhUc_Hw2Xe9pm6JJFEj_07OJzIcI4NjU4ovz8oOKb1jqPyhU";
-const privateVapidKey = "umUxE_qhAiU-GD4e68jsI9eDktH3PiYRgEbUcqbv1bE";
+const publicVapidKey = "BCdNo6sKYMp-fo3y-XbkvzusLaOyuF13I28kwdaFR3NjqruD730kaNIaNTsPbYOQLJG2CDXBVBvZQRtXmLo4SFw";
+const privateVapidKey = process.env.VAPID_PRIVATE;
 const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaXJkbGlzdEBzeXN0ZW0ubG9jYWwiLCJzY29wZXMiOlsiQUNDRVNTX0RCIl0sImlhdCI6MTY4MDYzNjc0NSwibmJmIjoxNjgwNjM2NDQ1LCJleHAiOjE2ODA2NDAzNDUsImF1ZCI6WyJodHRwczovL3p5aDJobzRzNi5kZXhpZS5jbG91ZCIsInp5aDJobzRzNiJdLCJpc3MiOiJEYXZpZElzc3VlciJ9.NTiByo-GbQnpj2-T-ID4TfDZZSffHuEG7re75uBPlQM";
 const accessHeaders = { "Authorization": "Bearer " + accessToken }
 
