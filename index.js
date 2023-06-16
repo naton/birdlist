@@ -15,7 +15,7 @@ const app = express();
 
 // Add CORS
 app.use(cors({
-  origin: ['http://localhost:4173','http://localhost:5173']
+  origin: ['http://localhost:4173', 'http://localhost:5173', 'https://deploy-preview-5--birdlist.netlify.app', 'https://birdlist.netlify.app']
 }));  
 
 // Use body parser which we will use to parse request body that sending from client.
@@ -45,6 +45,7 @@ const isValidSaveRequest = (req, res) => {
 }
 
 function saveSubscriptionToDatabase(subscription) {
+  console.log("saveSubscriptionToDatabase…")
   return new Promise((resolve, reject) => {
     insertToDatabase(subscription, (err, id) => {
       if (err) {
@@ -58,6 +59,7 @@ function saveSubscriptionToDatabase(subscription) {
 }
 
 function insertToDatabase(subscription, callback) {
+  console.log("insertToDatabase…")
   fetch("https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions", {
     method: "POST",
     headers: accessHeaders
@@ -65,6 +67,7 @@ function insertToDatabase(subscription, callback) {
 }
 
 function deleteSubscriptionFromDatabase(id) {
+  console.log("deleteSubscriptionFromDatabase…")
   fetch(`https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions/${id}`, {
     method: "DELETE",
     headers: accessHeaders
@@ -72,6 +75,7 @@ function deleteSubscriptionFromDatabase(id) {
 }
 
 function getSubscriptionsFromDatabase() {
+  console.log("getSubscriptionsFromDatabase…")
   fetch("https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions", {
     method: "GET",
     headers: accessHeaders
@@ -79,6 +83,7 @@ function getSubscriptionsFromDatabase() {
 }
 
 function triggerPush(subscription, dataToSend) {
+  console.log("triggerPush…")
   return webpush.sendNotification(subscription, dataToSend)
     .catch((err) => {
       if (err.statusCode === 410) {

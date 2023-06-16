@@ -1,6 +1,7 @@
 const publicVapidKey = "BC-q_Qa_xZrCippKmu2_x6oRsJFP7E9II66LbGAvhUc_Hw2Xe9pm6JJFEj_07OJzIcI4NjU4ovz8oOKb1jqPyhU";
 
 function askNotificationPermission(callback) {
+  console.log("askNotificationPermission…")
   async function pushSubscribe(registration) {
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
@@ -13,14 +14,17 @@ function askNotificationPermission(callback) {
       headers: {
         "Content-Type": "application/json",
       }
-    });
+    }).then(data => console.log(data));
   }
 
   // function to actually ask the permissions
   async function handlePermission(permission) {
+    console.log("handlePermission…")
     if (permission === "granted") {
+      console.log("granted…")
       navigator.serviceWorker.ready.then((registration) => {
         if ("PushManager" in window) {
+          console.log("PushManager available…")
           try {
             pushSubscribe(registration);
            } catch (error) {
