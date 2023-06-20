@@ -110,7 +110,7 @@ async function celebrate() {
   </div>
 
   <div class="body">
-    <observations-lists @selectList="selectList" @newLeader="celebrate" :list="currentList" :user="currentUser.name" :key="currentUser.name" />
+    <observations-lists @selectList="selectList" @newLeader="celebrate" :list="currentList" :user="currentUser.name" :key="currentUser" />
   </div>
   <div class="footer">
     <observation-input @add="addObservation" :list="currentList" />
