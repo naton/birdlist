@@ -15,7 +15,7 @@ const app = express();
 
 // Add CORS
 app.use(cors({
-  origin: ['http://localhost:4173', 'http://localhost:5173', 'https://deploy-preview-5--birdlist.netlify.app', 'https://birdlist.netlify.app']
+  origin: ['http://localhost:4173', 'http://localhost:5173', 'https://birdlist.app']
 }));  
 
 // Use body parser which we will use to parse request body that sending from client.
@@ -116,10 +116,10 @@ app.post('/api/subscription', (req, res) => {
       }));
     });
 
-  // const subscription = req.body;
-  // res.status(201).json({});
-  // const payload = JSON.stringify({ title: "Hello World", body: "This is your first push notification" });
-  // webpush.sendNotification(subscription, payload).catch(console.log);
+  const subscription = req.body;
+  res.status(201).json({});
+  const payload = JSON.stringify({ title: "Hello World", body: "This is your first push notification" });
+  webpush.sendNotification(subscription, payload).catch(console.log);
 });
 
 app.post('/api/push', (req, res) => {
