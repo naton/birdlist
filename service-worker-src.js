@@ -1,55 +1,90 @@
-importScripts("https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js")
+function main(workbox) {
+  const CACHE_VERSION = 1.0;
+  const {
+    core: { clientsClaim, setCacheNameDetails },
+    expiration: { ExpirationPlugin },
+    precaching: { cleanupOutdatedCaches, precacheAndRoute },
+    routing: { registerRoute },
+    strategies: { StaleWhileRevalidate },
+  } = workbox;
 
-workbox.skipWaiting();
-workbox.clientsClaim();
+  clientsClaim();
 
-// cache name
-workbox.core.setCacheNameDetails({
+  self.skipWaiting();
+
+  cleanupOutdatedCaches();
+
+  // cache name
+  setCacheNameDetails({
     prefix: 'birdlist-cache',
     precache: 'precache',
     runtime: 'runtime',
-});
-  
-// runtime cache
-// 1. stylesheet
-workbox.routing.registerRoute(
+  });
+
+  // runtime cache
+  // 1. stylesheet
+  registerRoute(
     new RegExp('\.css$'),
-    workbox.strategies.cacheFirst({
-        cacheName: 'birdlist-cache-css',
-        plugins: [
-            new workbox.expiration.Plugin({
-                maxAgeSeconds: 60 * 60 * 24 * 7, // cache for one week
-                maxEntries: 20, // only cache 20 request
-                purgeOnQuotaError: true
-            })
-        ]
+    new StaleWhileRevalidate({
+      cacheName: 'birdlist-cache-css',
+      plugins: [
+        new ExpirationPlugin({
+          maxAgeSeconds: 60 * 60 * 24 * 7, // cache for one week
+          maxEntries: 20, // only cache 20 request
+          purgeOnQuotaError: true
+        })
+      ]
     })
-);
+  );
 
-// 2. images
-workbox.routing.registerRoute(
+  // 2. images
+  registerRoute(
     new RegExp('\.(png|svg|jpg|webp|avif)$'),
-    workbox.strategies.cacheFirst({
-        cacheName: 'birdlist-cache-img',
-        plugins: [
-            new workbox.expiration.Plugin({
-                maxAgeSeconds: 60 * 60 * 24 * 7,
-                maxEntries: 50,
-                purgeOnQuotaError: true
-            })
-        ]
+    new StaleWhileRevalidate({
+      cacheName: 'birdlist-cache-img',
+      plugins: [
+        new ExpirationPlugin({
+          maxAgeSeconds: 60 * 60 * 24 * 7, // cache for one week
+          maxEntries: 20, // only cache 20 request
+          purgeOnQuotaError: true
+        })
+      ]
     })
-);
+  );
 
-// 3. cache Dexie Cloud result
-workbox.routing.registerRoute(
-    new RegExp('https://zyh2ho4s6.dexie.cloud/'),
-    workbox.strategies.staleWhileRevalidate({
-        cacheName: 'birdlist-cache-content',
-        cacheExpiration: {
-            maxAgeSeconds: 60 * 10 //cache the content for 10 min
-        }
+  // 3. html
+  registerRoute(
+    new RegExp('\.(html)$'),
+    new StaleWhileRevalidate({
+      cacheName: 'birdlist-cache-html',
+      plugins: [
+        new ExpirationPlugin({
+          maxAgeSeconds: 60 * 60 * 24 * 7, // cache for one week
+          maxEntries: 5, // only cache 5 request
+          purgeOnQuotaError: true
+        })
+      ]
     })
-);
-  
-workbox.precaching.precacheAndRoute([]);
+  );
+
+  // 4. cache Dexie Cloud result
+  registerRoute(
+      new RegExp('https://zyh2ho4s6.dexie.cloud/'),
+      new NetworkFirst({
+          cacheName: 'birdlist-cache-content',
+          cacheExpiration: {
+              maxAgeSeconds: 60 * 10 //cache the content for 10 min
+          }
+      })
+  );
+
+  precacheAndRoute([]);
+}
+
+if (typeof importScripts === "function") {
+  importScripts("https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js");
+
+  if (workbox) {
+    main(workbox);
+  }
+}
