@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@vueuse/rxjs": "^10.1.2",
-    "dexie": "^4.0.1-alpha.25",
-    "dexie-cloud-addon": "^4.0.1-beta.46",
+    "dexie": "^4.0.1-beta.1",
+    "dexie-cloud-addon": "^4.0.1-beta.52",
     "rxjs": "^7.8.1",
     "vue": "^3.3.4",
     "vue-router": "^4.2.2"
