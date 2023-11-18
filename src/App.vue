@@ -6,7 +6,6 @@ function onUpdateFound(registration) {
 
   newWorker.addEventListener('statechange', async () => {
     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-      newWorker.skipWaiting();
       document.location.reload(true);
     }
   });
