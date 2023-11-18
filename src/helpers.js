@@ -1,4 +1,5 @@
-const publicVapidKey = "BC-q_Qa_xZrCippKmu2_x6oRsJFP7E9II66LbGAvhUc_Hw2Xe9pm6JJFEj_07OJzIcI4NjU4ovz8oOKb1jqPyhU";
+const publicVapidKey = "BHzijUVWeXw8HDf3SQ3dLJiI-oW6FGtzY0j0CW1-cLGH_kv0n6Wm9rH341AtDi06uNrQe6PAE7GNnp_dUnPcoGY";
+const apiHost = document.location.host.includes('localhost') ? 'http://localhost:5001' : 'https://birdlist.app:5001';
 
 function askNotificationPermission(callback) {
   console.log("askNotificationPermission…")
@@ -8,13 +9,27 @@ function askNotificationPermission(callback) {
       applicationServerKey: publicVapidKey,
     });
     // Send subscribe request
-    await fetch("//" + document.location.hostname + ":5001/api/subscription", {
+    await fetch(apiHost + "/api/subscription", {
       method: "POST",
       body: JSON.stringify(subscription),
       headers: {
         "Content-Type": "application/json",
       }
-    }).then(data => console.log(data));
+    }).then(data => console.log(data))
+      .catch(error => {
+        if (typeof error.json === "function") {
+          error.json().then(jsonError => {
+            console.log("JSON error from API");
+            console.log(jsonError);
+          }).catch(error => {
+            console.log("Generic error from API");
+            console.log(error.statusText);
+          });
+        } else {
+          console.log("Fetch error");
+          console.log(error);
+        }
+      });
   }
 
   // function to actually ask the permissions

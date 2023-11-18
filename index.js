@@ -6,7 +6,7 @@ const path = require('path');
 const cors = require('cors');
 const fetch = require("node-fetch");
 
-const publicVapidKey = "BG1SYY2-0d-RCeXQm_QCUCUgQaAsMBLW4yd99rcstilZtfnQvkHVaKUTzIbEu4kxXOrC8HlzInR9UpOHAxVHgq0";
+const publicVapidKey = process.env.VAPID_PUBLIC;
 const privateVapidKey = process.env.VAPID_PRIVATE;
 const pricateDexieCloudKey = process.env.DEXIE_CLOUD_CLIENTID;
 const pricateDexieCloudSecret = process.env.DEXIE_CLOUD_CLIENTSECRET;
