@@ -1,5 +1,5 @@
 function main(workbox) {
-  const CACHE_VERSION = 1.0;
+  const CACHE_VERSION = 1.1;
   const {
     core: { clientsClaim, setCacheNameDetails },
     expiration: { ExpirationPlugin },
@@ -73,7 +73,7 @@ function main(workbox) {
       new NetworkFirst({
           cacheName: 'birdlist-cache-content',
           cacheExpiration: {
-              maxAgeSeconds: 60 * 10 //cache the content for 10 min
+              maxAgeSeconds: 60 * 2 //cache the content for 2 minutes
           }
       })
   );
