@@ -5,7 +5,7 @@ function main(workbox) {
     expiration: { ExpirationPlugin },
     precaching: { cleanupOutdatedCaches, precacheAndRoute },
     routing: { registerRoute },
-    strategies: { StaleWhileRevalidate },
+    strategies: { NetworkFirst, StaleWhileRevalidate },
   } = workbox;
 
   clientsClaim();
