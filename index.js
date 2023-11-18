@@ -4,11 +4,14 @@ const webpush = require('web-push');
 const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
+const fetch = require("node-fetch");
 
-const publicVapidKey = "BCdNo6sKYMp-fo3y-XbkvzusLaOyuF13I28kwdaFR3NjqruD730kaNIaNTsPbYOQLJG2CDXBVBvZQRtXmLo4SFw";
+const publicVapidKey = "BG1SYY2-0d-RCeXQm_QCUCUgQaAsMBLW4yd99rcstilZtfnQvkHVaKUTzIbEu4kxXOrC8HlzInR9UpOHAxVHgq0";
 const privateVapidKey = process.env.VAPID_PRIVATE;
-const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaXJkbGlzdEBzeXN0ZW0ubG9jYWwiLCJzY29wZXMiOlsiQUNDRVNTX0RCIl0sImlhdCI6MTY4NzQ0MjUxOSwibmJmIjoxNjg3NDQyMjE5LCJleHAiOjE2ODc0NDYxMTksImF1ZCI6WyJodHRwczovL3p5aDJobzRzNi5kZXhpZS5jbG91ZCIsInp5aDJobzRzNiJdLCJpc3MiOiJEYXZpZElzc3VlciJ9.WwzwyRhjWtoBBDELKObiEGvziy2Ork_d4bO3TvmdUuY";
-const accessHeaders = { "Authorization": "Bearer " + accessToken }
+const pricateDexieCloudKey = process.env.DEXIE_CLOUD_CLIENTID;
+const pricateDexieCloudSecret = process.env.DEXIE_CLOUD_CLIENTSECRET;
+const accessToken = initDexieCloudAuth();
+const accessHeaders = { "Authorization": "Bearer " + accessToken };
 
 // Create express app.
 const app = express();
@@ -25,7 +28,26 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "client")))
 
 // Setup the public and private VAPID keys to web-push library.
-webpush.setVapidDetails("mailto:anton@andreasson.org", publicVapidKey, privateVapidKey);
+webpush.setVapidDetails("mailto: <anton@andreasson.org>", publicVapidKey, privateVapidKey);
+
+function initDexieCloudAuth() {
+  console.log("gettingAuthToken…")
+  fetch("https://zyh2ho4s6.dexie.cloud/token", {
+    method: "POST",
+    body: JSON.stringify({ 
+      grant_type: "client_credentials",
+      sscopes: ["ACCESS_DB"],
+      client_id: pricateDexieCloudKey,
+      client_secret: pricateDexieCloudSecret,
+      claims: {
+        sub: "birdlist@system.local"
+      }
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    }
+  }).then(data => data);
+}
 
 // This utility function makes sure the request is valid, has a body and an endpoint property, 
 // otherwise it returns an error to the client (via https://flaviocopes.com/push-api/)
