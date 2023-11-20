@@ -5,6 +5,7 @@ import { useObservable } from "@vueuse/rxjs";
 import ObservationsLists from "@/components/ObservationsLists.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
 import BirdsData from "@/components/BirdsData.vue";
+import { pushNewBirdAlert } from "../helpers"
 
 /* Me */
 const currentUser = useObservable(db.cloud.currentUser);
@@ -47,6 +48,10 @@ async function addObservation(ev, listId, location) {
       listId: isCalculatedList ? undefined : currentList.value.id, // Any ID other than defaults are valid here
       location: location,
     });
+    await pushNewBirdAlert({
+      title: "New bird spotted: " + bird.trim(),
+      body: currentList.value.id
+    })
   }
 
   if (isBatchImport) {

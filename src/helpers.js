@@ -16,20 +16,6 @@ function askNotificationPermission(callback) {
         "Content-Type": "application/json",
       }
     }).then(data => console.log(data))
-      .catch(error => {
-        if (typeof error.json === "function") {
-          error.json().then(jsonError => {
-            console.log("JSON error from API");
-            console.log(jsonError);
-          }).catch(error => {
-            console.log("Generic error from API");
-            console.log(error.statusText);
-          });
-        } else {
-          console.log("Fetch error");
-          console.log(error);
-        }
-      });
   }
 
   // function to actually ask the permissions
@@ -95,6 +81,16 @@ async function removePushManager(callback) {
   });
 }
 
+async function pushNewBirdAlert(msg) {
+  await fetch(apiHost + "/api/push", {
+    method: "POST",
+    body: JSON.stringify(msg),
+    headers: {
+      "Content-Type": "application/json",
+    }
+  }).then(data => console.log(data))
+}
+
 function getMonthName(month, length) {
   const date = new Date();
   date.setDate(1);
@@ -134,4 +130,4 @@ function formatDate(date) {
   }).format(date);
 }
 
-export { askNotificationPermission, removePushManager, getMonthName, getCurrentYear, cssColor, formatDate };
+export { askNotificationPermission, removePushManager, pushNewBirdAlert, getMonthName, getCurrentYear, cssColor, formatDate };
