@@ -48,10 +48,13 @@ async function addObservation(ev, listId, location) {
       listId: isCalculatedList ? undefined : currentList.value.id, // Any ID other than defaults are valid here
       location: location,
     });
-    await pushNewBirdAlert({
-      title: "New bird spotted: " + bird.trim(),
-      body: currentList.value.id
-    })
+
+    if (!isCalculatedList) {
+      await pushNewBirdAlert({
+        title: "New bird spotted: " + bird.trim(),
+        body: currentList.value.id
+      })
+    }
   }
 
   if (isBatchImport) {
