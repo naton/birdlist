@@ -8,17 +8,15 @@ const fetch = require("node-fetch");
 
 const publicVapidKey = process.env.VAPID_PUBLIC;
 const privateVapidKey = process.env.VAPID_PRIVATE;
-const pricateDexieCloudKey = process.env.DEXIE_CLOUD_CLIENTID;
-const pricateDexieCloudSecret = process.env.DEXIE_CLOUD_CLIENTSECRET;
-const accessToken = initDexieCloudAuth();
-const accessHeaders = { "Authorization": "Bearer " + accessToken };
+const privateDexieCloudKey = process.env.DEXIE_CLOUD_CLIENTID;
+const privateDexieCloudSecret = process.env.DEXIE_CLOUD_CLIENTSECRET;
 
 // Create express app.
 const app = express();
 
 // Add CORS
 app.use(cors({
-  origin: ['http://localhost:4173', 'http://localhost:5173', 'https://birdlist.app']
+  origin: ['http://localhost:5173', 'https://birdlist.app:5001']
 }));  
 
 // Use body parser which we will use to parse request body that sending from client.
@@ -28,26 +26,30 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "client")))
 
 // Setup the public and private VAPID keys to web-push library.
-webpush.setVapidDetails("mailto: <anton@andreasson.org>", publicVapidKey, privateVapidKey);
+webpush.setVapidDetails("mailto:anton@andreasson.org", publicVapidKey, privateVapidKey);
 
-function initDexieCloudAuth() {
-  console.log("gettingAuthToken…")
+function getDexieCloudAccessToken() {
+  console.log("getDexieCloudAccessToken…")
   fetch("https://zyh2ho4s6.dexie.cloud/token", {
     method: "POST",
-    body: JSON.stringify({ 
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
       grant_type: "client_credentials",
-      sscopes: ["ACCESS_DB"],
-      client_id: pricateDexieCloudKey,
-      client_secret: pricateDexieCloudSecret,
+      scopes: ["ACCESS_DB"],
+      client_id: privateDexieCloudKey,
+      client_secret: privateDexieCloudSecret,
       claims: {
         sub: "birdlist@system.local"
       }
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    }
-  }).then(data => data);
+    })
+  }).then(data => data.accessToken);
 }
+
+function getAccessHeader() {
+  return "Bearer " + getDexieCloudAccessToken();
+};
 
 // This utility function makes sure the request is valid, has a body and an endpoint property, 
 // otherwise it returns an error to the client (via https://flaviocopes.com/push-api/)
@@ -84,24 +86,24 @@ function insertToDatabase(subscription, callback) {
   console.log("insertToDatabase…")
   fetch("https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions", {
     method: "POST",
-    headers: accessHeaders
-  }).then(response => console.log(response));
+    headers: { "Authorization": getAccessHeader() }
+  }).then(response => console.log("insertToDatabase: ", response));
 }
 
 function deleteSubscriptionFromDatabase(id) {
   console.log("deleteSubscriptionFromDatabase…")
   fetch(`https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions/${id}`, {
     method: "DELETE",
-    headers: accessHeaders
-  }).then(response => console.log(response));
+    headers: { "Authorization": getAccessHeader() }
+  }).then(response => console.log("deleteSubscriptionFromDatabase: ", response));
 }
 
 function getSubscriptionsFromDatabase() {
   console.log("getSubscriptionsFromDatabase…")
   fetch("https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions", {
     method: "GET",
-    headers: accessHeaders
-  }).then(response => console.log(response));
+    headers: { "Authorization": getAccessHeader() }
+  }).then(response => console.log("getSubscriptionsFromDatabase: ", response));
 }
 
 function triggerPush(subscription, dataToSend) {
@@ -151,6 +153,10 @@ app.post('/api/push', (req, res) => {
       for (let i = 0; i < subscriptions.length; i++) {
         const subscription = subscriptions[i]
         promiseChain = promiseChain.then(() => {
+          let dataToSend = JSON.stringify({
+            title: "Hello World again",
+            body: "This is your second push notification"
+          });
           return triggerPush(subscription, dataToSend)
         })
       }
