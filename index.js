@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, "client")))
 // Setup the public and private VAPID keys to web-push library.
 webpush.setVapidDetails("mailto:anton@andreasson.org", publicVapidKey, privateVapidKey);
 
-function getDexieCloudAccessToken() {
+async function getDexieCloudAccessToken() {
   console.log("getDexieCloudAccessToken…")
   fetch("https://zyh2ho4s6.dexie.cloud/token", {
     method: "POST",
@@ -47,8 +47,8 @@ function getDexieCloudAccessToken() {
   }).then(data => data.accessToken);
 }
 
-function getAccessHeader() {
-  return "Bearer " + getDexieCloudAccessToken();
+async function getAccessHeader() {
+  return "Bearer " + await getDexieCloudAccessToken();
 };
 
 // This utility function makes sure the request is valid, has a body and an endpoint property, 
