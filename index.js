@@ -37,7 +37,7 @@ async function getDexieCloudAccessToken() {
     },
     body: JSON.stringify({
       grant_type: "client_credentials",
-      scopes: ["ACCESS_DB"],
+      scopes: ["ACCESS_DB", "GLOBAL_READ", "GLOBAL_WRITE"],
       client_id: privateDexieCloudKey,
       client_secret: privateDexieCloudSecret,
       claims: {
@@ -82,27 +82,27 @@ function saveSubscriptionToDatabase(subscription) {
   })
 }
 
-function insertToDatabase(subscription, callback) {
+async function insertToDatabase(subscription, callback) {
   console.log("insertToDatabase…")
   fetch("https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions", {
     method: "POST",
-    headers: { "Authorization": getAccessHeader() }
+    headers: { "Authorization": await getAccessHeader() }
   }).then(response => console.log("insertToDatabase: ", response));
 }
 
-function deleteSubscriptionFromDatabase(id) {
+async function deleteSubscriptionFromDatabase(id) {
   console.log("deleteSubscriptionFromDatabase…")
   fetch(`https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions/${id}`, {
     method: "DELETE",
-    headers: { "Authorization": getAccessHeader() }
+    headers: { "Authorization": await getAccessHeader() }
   }).then(response => console.log("deleteSubscriptionFromDatabase: ", response));
 }
 
-function getSubscriptionsFromDatabase() {
+async function getSubscriptionsFromDatabase() {
   console.log("getSubscriptionsFromDatabase…")
   fetch("https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions", {
     method: "GET",
-    headers: { "Authorization": getAccessHeader() }
+    headers: { "Authorization": await getAccessHeader() }
   }).then(response => console.log("getSubscriptionsFromDatabase: ", response));
 }
 
