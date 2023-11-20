@@ -1,5 +1,5 @@
 const publicVapidKey = "BHzijUVWeXw8HDf3SQ3dLJiI-oW6FGtzY0j0CW1-cLGH_kv0n6Wm9rH341AtDi06uNrQe6PAE7GNnp_dUnPcoGY";
-const apiHost = document.location.host.includes('localhost') ? 'http://localhost:5001' : 'https://birdlist.app:5001';
+const apiHost = document.location.host.includes('localhost') ? 'http://localhost:5001' : 'https://birdlist.app:443';
 
 function askNotificationPermission(callback) {
   console.log("askNotificationPermission…")
