@@ -50,7 +50,7 @@ async function addObservation(ev, listId, location) {
     });
 
     if (!isCalculatedList) {
-      await pushNewBirdAlert({
+      pushNewBirdAlert({
         title: "New bird spotted: " + bird.trim(),
         body: currentList.value.id
       })

@@ -81,13 +81,13 @@ async function removePushManager(callback) {
   });
 }
 
-async function pushNewBirdAlert(msg) {
-  await fetch(apiHost + "/api/push", {
+function pushNewBirdAlert(msg) {
+  fetch(apiHost + "/api/push", {
     method: "POST",
-    body: JSON.stringify(msg),
     headers: {
-      "Content-Type": "application/json",
-    }
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(msg)
   }).then(data => console.log(data))
 }
 

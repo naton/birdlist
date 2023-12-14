@@ -4,7 +4,7 @@ const webpush = require('web-push');
 const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
-const fetch = require("node-fetch");
+const fetch = require('node-fetch');
 
 const publicVapidKey = process.env.VAPID_PUBLIC;
 const privateVapidKey = process.env.VAPID_PRIVATE;
@@ -28,27 +28,34 @@ app.use(express.static(path.join(__dirname, "client")))
 // Setup the public and private VAPID keys to web-push library.
 webpush.setVapidDetails("mailto:anton@andreasson.org", publicVapidKey, privateVapidKey);
 
-async function getDexieCloudAccessToken() {
+const getDexieCloudAccessToken = async () => {
   console.log("getDexieCloudAccessToken…")
-  fetch("https://zyh2ho4s6.dexie.cloud/token", {
+
+  const payload = {
+    "grant_type": "client_credentials",
+    "scopes": ["ACCESS_DB", "GLOBAL_READ", "GLOBAL_WRITE"],
+    "client_id": privateDexieCloudKey,
+    "client_secret": privateDexieCloudSecret,
+    "claims": {
+      "sub": "birdlist@system.local"
+    }
+  };
+  
+  const apiCallPromise = await fetch("https://zyh2ho4s6.dexie.cloud/token", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      grant_type: "client_credentials",
-      scopes: ["ACCESS_DB", "GLOBAL_READ", "GLOBAL_WRITE"],
-      client_id: privateDexieCloudKey,
-      client_secret: privateDexieCloudSecret,
-      claims: {
-        sub: "birdlist@system.local"
-      }
-    })
-  }).then(data => data.accessToken);
+    body: JSON.stringify(payload)
+  });
+
+  const apiCallObj = await apiCallPromise.json();
+  return apiCallObj.accessToken;
 }
 
 async function getAccessHeader() {
-  return "Bearer " + await getDexieCloudAccessToken();
+  const header = "Bearer " + await getDexieCloudAccessToken();
+  return header;
 };
 
 // This utility function makes sure the request is valid, has a body and an endpoint property, 
@@ -84,10 +91,16 @@ function saveSubscriptionToDatabase(subscription) {
 
 async function insertToDatabase(subscription, callback) {
   console.log("insertToDatabase…")
-  fetch("https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions", {
+  const apiCallPromise = await fetch("https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions", {
     method: "POST",
-    headers: { "Authorization": await getAccessHeader() }
-  }).then(response => console.log("insertToDatabase: ", response));
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": await getAccessHeader()
+    },
+    body: JSON.stringify(subscription.body)
+  });
+  const apiCallObj = await apiCallPromise;
+  console.log("insertToDatabase: ", apiCallObj)
 }
 
 async function deleteSubscriptionFromDatabase(id) {
@@ -100,10 +113,12 @@ async function deleteSubscriptionFromDatabase(id) {
 
 async function getSubscriptionsFromDatabase() {
   console.log("getSubscriptionsFromDatabase…")
-  fetch("https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions", {
+  const apiCallPromise = await fetch("https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions", {
     method: "GET",
     headers: { "Authorization": await getAccessHeader() }
-  }).then(response => console.log("getSubscriptionsFromDatabase: ", response));
+  });
+  const apiCallObj = await apiCallPromise;
+  return apiCallObj.json();
 }
 
 function triggerPush(subscription, dataToSend) {
@@ -111,7 +126,7 @@ function triggerPush(subscription, dataToSend) {
   return webpush.sendNotification(subscription, dataToSend)
     .catch((err) => {
       if (err.statusCode === 410) {
-        return deleteSubscriptionFromDatabase(subscription._id)
+        return deleteSubscriptionFromDatabase(subscription.id)
       } else {
         console.log('Subscription is no longer valid: ', err)
       }
@@ -146,17 +161,14 @@ app.post('/api/subscription', (req, res) => {
   webpush.sendNotification(subscription, payload).catch(console.log);
 });
 
-app.post('/api/push', (req, res) => {
-  return getSubscriptionsFromDatabase()
+app.post('/api/push', async (req, res) => {
+  await getSubscriptionsFromDatabase()
     .then((subscriptions) => {
       let promiseChain = Promise.resolve()
       for (let i = 0; i < subscriptions.length; i++) {
         const subscription = subscriptions[i]
         promiseChain = promiseChain.then(() => {
-          let dataToSend = JSON.stringify({
-            title: "Hello World again",
-            body: "This is your second push notification"
-          });
+          let dataToSend = JSON.stringify(req.body); // { title: "New bird spotted:", body: '[listid]' }
           return triggerPush(subscription, dataToSend)
         })
       }
