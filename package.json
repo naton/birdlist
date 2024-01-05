@@ -1,6 +1,6 @@
 {
   "name": "birdlist",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build && workbox injectManifest workbox-config.js",
@@ -19,19 +19,19 @@
     "express": "^4.17.3",
     "node-fetch": "^2.7.0",
     "rxjs": "^7.8.1",
-    "vue": "^3.3.4",
-    "vue-router": "^4.2.2",
-    "web-push": "^3.4.5"
+    "vue": "^3.4.5",
+    "vue-router": "^4.2.5",
+    "web-push": "^3.6.5"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
-    "@vitejs/plugin-vue": "^3.0.1",
+    "@vitejs/plugin-vue": "^5.0.2",
     "@vue/test-utils": "^2.0.2",
     "eslint": "^8.29.0",
     "eslint-plugin-vue": "^9.8.0",
     "jsdom": "^20.0.0",
     "prettier": "2.8.1",
-    "vite": "^3.0.4",
+    "vite": "^5.0.11",
     "vitest": "^0.21.0",
     "workbox-cli": "^6.5.4"
   }
