@@ -12,6 +12,7 @@
     "@vueuse/rxjs": "^10.1.2",
     "dexie": "^4.0.1-beta.1",
     "dexie-cloud-addon": "^4.0.1-beta.52",
+    "pinia-plugin-persistedstate": "^3.2.1",
     "rxjs": "^7.8.1",
     "vue": "^3.3.4",
     "vue-router": "^4.2.2"

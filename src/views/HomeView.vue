@@ -1,13 +1,19 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onBeforeMount, onMounted } from "vue";
+import { storeToRefs } from 'pinia'
 import { db } from "../db";
 import { useObservable } from "@vueuse/rxjs";
 import ObservationsLists from "@/components/ObservationsLists.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
-import BirdsData from "@/components/BirdsData.vue";
+import { useSettingsStore } from '../stores/settings.js'
+import { useBirdsStore } from '../stores/birds.js'
 
-/* Me */
-const currentUser = useObservable(db.cloud.currentUser);
+const settingsStore = useSettingsStore()
+const { lang, currentUser } = storeToRefs(settingsStore)
+
+const birdStore = useBirdsStore()
+const { loadAllBirds } = birdStore
+const { birds } = storeToRefs(birdStore)
 
 /* Invites */
 const listInvites = useObservable(db.cloud.invites);
@@ -62,6 +68,10 @@ async function addObservation(ev, listId, location) {
 
 let newLeaderConfetti;
 
+onBeforeMount(() => {
+  loadAllBirds(lang.value)
+}),
+
 onMounted(async () => {
   /* Load list from hash in URL, if available */
   if (!!document.location.hash && document.location.hash.startsWith("#lst")) {
@@ -114,7 +124,9 @@ async function celebrate() {
   </div>
   <div class="footer">
     <observation-input @add="addObservation" :list="currentList" />
-    <birds-data />
+    <datalist id="birds">
+      <option v-for="{ id, name } in birds" :key="id" :value="name">{{ name }}</option>
+    </datalist>
   </div>
   <canvas id="canvas"></canvas>
 </template>
