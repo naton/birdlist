@@ -1,5 +1,9 @@
 <script setup>
 import { ref } from "vue";
+import { useSettingsStore } from '../stores/settings.js'
+
+const settingsStore = useSettingsStore()
+const { t } = settingsStore
 
 const props = defineProps(["list"]);
 const emit = defineEmits(["add"]);
@@ -103,9 +107,8 @@ function toggleCurrentLocation() {
       autocomplete="off"
       :placeholder="
         props.list.id && props.list.id.startsWith('lst')
-          ? `Lägg till 🐦 på ${list.title}…`
-          : 'Skriv namnet på 🐦 du sett…'
-      "
+          ? t('Add_Bird_To') + `${list.title}…`
+          : t('Enter_The_Name_Of_The_Bird')"
     />
   </div>
 </template>

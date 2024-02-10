@@ -7,6 +7,10 @@ import TabsList from "@/components/TabsList.vue";
 import ListView from "@/components/ListView.vue";
 import EditDialog from "@/components/EditDialog.vue";
 import { getCurrentYear, getMonthName } from "../helpers";
+import { useSettingsStore } from '../stores/settings.js'
+
+const settingsStore = useSettingsStore()
+const { t } = settingsStore
 
 const componentKey = ref(0);
 const props = defineProps(["list", "user"]);
@@ -272,7 +276,7 @@ onUnmounted(() => {
                   />
                 </svg>
               </button>
-              <h2 class="heading center">Årskryss {{ currentYear }}</h2>
+              <h2 class="heading center">{{ currentYear }}</h2>
               <button class="next-date" @click.prevent="currentYear++">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12">
                   <path
@@ -325,7 +329,7 @@ onUnmounted(() => {
                 <details>
                   <summary class="heading">{{ props.list.title }}</summary>
                   <p class="list-description">{{ props.list.description }}</p>
-                  <p class="list-owner">Skapad av {{ props.list.owner }}</p>
+                  <p class="list-owner">{{ t("Created_By") }} {{ props.list.owner }}</p>
                   <button v-if="isListOwner" class="share-button" @click.stop="shareBirdList(props.list.id, props.list.title)">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
                       <g fill="var(--color-background-dim)">
@@ -333,7 +337,7 @@ onUnmounted(() => {
                           <path d="M14 7h-3v2h3v5H2V9h3V7H2a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"/>
                       </g>
                     </svg>
-                    Dela
+                    {{ t("Share") }}
                   </button>
                 </details>
               </div>

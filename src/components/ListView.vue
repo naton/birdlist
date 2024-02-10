@@ -1,5 +1,6 @@
 <script setup>
 import { ref, reactive, computed, onMounted, watch } from "vue";
+import { useSettingsStore } from '../stores/settings.js'
 import { db } from "../db";
 import ObservationItem from "./ObservationItem.vue";
 import UserIcon from "./UserIcon.vue";
@@ -7,6 +8,9 @@ import SpeciesItem from "./SpeciesItem.vue";
 import CommentItem from "./CommentItem.vue";
 import SvgChart from "./SvgChart.vue";
 import { cssColor } from "../helpers";
+
+const settingsStore = useSettingsStore()
+const { t } = settingsStore
 
 const props = defineProps(["observations", "comments", "sort", "selected", "user"]);
 const emit = defineEmits(["sort", "select", "delete", "edit", "newLeader"]);
@@ -298,7 +302,7 @@ watch(currentLeader, (newLeader) => {
     </section>
 
     <section class="empty-list" v-if="user && !observations.length">
-      <h3 class="center">Inga observerade 🐦</h3>
+      <h3 class="center">{{ t("No_Observations")}}</h3>
     </section>
   </slot>
 </template>

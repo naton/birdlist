@@ -17,8 +17,7 @@ async function deleteComment(id) {
   <li>
     <div class="comment">
       <span class="meta">
-        <user-icon :user="props.comment.owner"></user-icon> skrev
-        {{ formatDate(props.comment.date) }}:
+        <user-icon :user="props.comment.owner"></user-icon> @ {{ formatDate(props.comment.date) }}:
       </span>
       <p>{{ props.comment.comment }}</p>
       <button v-if="isCommentAuthor" class="delete-button" @click="deleteComment(props.comment.id)">

@@ -1,7 +1,11 @@
 <script setup>
 import { ref } from "vue";
+import { useSettingsStore } from '../stores/settings.js'
 import { getTiedRealmId } from "dexie-cloud-addon";
 import { db } from "../db";
+
+const settingsStore = useSettingsStore()
+const { t } = settingsStore
 
 const props = defineProps(["isOpen", "user", "observation", "lists"]);
 const emit = defineEmits(["delete", "close"]);
@@ -70,7 +74,7 @@ function saveAndClose() {
   <div class="dialog" v-if="props.isOpen">
     <h2>{{ observation.name }}</h2>
     <h3>{{ formatDate(observation.date) }}</h3>
-    <p class="margin-bottom">Av: {{ observation.owner }}</p>
+    <p class="margin-bottom">{{ t("By") }}: {{ observation.owner }}</p>
     <div v-if="observation.location" class="margin-bottom">
       <a
         :href="`https://www.openstreetmap.org/#map=16/${observation.location.replace(',', '/')}`"
@@ -83,19 +87,19 @@ function saveAndClose() {
             <circle cx="8" cy="6" r="2.5" />
           </g>
         </svg>
-        Visa plats på karta
+        {{ t("Show_On_Map") }}
       </a>
     </div>
 
     <details v-if="canEdit(observation.owner)" class="margin-bottom">
-      <summary>Redigera observation</summary>
+      <summary>{{ t("Edit_Observation") }}</summary>
       <div class="margin-bottom">
-        <label for="obs-name">Ändra namn</label>
+        <label for="obs-name">{{ t("Change_Name") }}</label>
         <input id="obs-name" type="text" v-model="currentName" />
       </div>
 
       <div class="margin-bottom">
-        <label for="obs-date">Ändra datum</label>
+        <label for="obs-date">{{ t("Change_Date") }}</label>
         <input
           id="obs-date"
           type="datetime-local"
@@ -105,9 +109,9 @@ function saveAndClose() {
       </div>
 
       <div class="margin-bottom">
-        <label for="obs-list">Ändra lista</label>
+        <label for="obs-list">{{ t("Change_List") }}</label>
         <select id="obs-list" @change="updateList($event.target.value)">
-          <option value="">Ingen speciell lista</option>
+          <option value="">{{ t("No_Special_List") }}</option>
           <option
             v-for="{ id, title } in lists"
             :value="id"
@@ -119,13 +123,13 @@ function saveAndClose() {
         </select>
       </div>
       <div class="margin-bottom">
-        <button type="button" class="secondary" @click="saveAndClose">Spara</button>
-        <button type="button" @click="deleteAndClose(observation.id)">Radera</button>
+        <button type="button" class="secondary" @click="saveAndClose">{{ t("Save") }}</button>
+        <button type="button" @click="deleteAndClose(observation.id)">{{ t("Delete") }}</button>
       </div>
     </details>
 
     <div v-if="canEdit(observation.owner)">
-      <button type="button" class="secondary" @click="emit('close')">Avbryt</button>
+      <button type="button" class="secondary" @click="emit('close')">{{ t("Cancel") }}</button>
     </div>
     <div v-else>
       <button type="button" class="secondary" @click="emit('close')">Stäng</button>

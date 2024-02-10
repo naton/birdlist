@@ -1,35 +1,29 @@
 <script setup>
-import { db } from "../db";
+import { storeToRefs } from 'pinia'
+import { useSettingsStore } from '../stores/settings.js'
 
-function logout() {
-  db.table('$logins').clear();
-  document.location.href = "/";
-}
+const settingsStore = useSettingsStore()
+const { t } = settingsStore
 </script>
 
 <template>
   <div class="about">
     <div class="about-content">
-      <h1 class="hidden-visually">About Birdlist</h1>
+      <h1 class="hidden-visually">{{ t("About")}} Birdlist</h1>
       <picture>
         <source srcset="/logo.webp" type="image/webp" />
         <img src="/logo.png" alt="Birdlist" width="460" height="170" class="logo" />
       </picture>
       <h2>
-        Log your bird observations.<br />
-        Make lists.<br />
-        Share with friends.
+        {{ t("Log_Your_Bird_Observations") }}.<br />
+        {{ t("Make_Lists") }}.<br />
+        {{ t("Share_With_Friends") }}.
       </h2>
 
       <div class="privacy-notes margin-bottom">
-        <h3>Personuppgiftshantering</h3>
-        <p>
-          Genom att använda Birdlist godkänner du att din e-postadress lagras på såväl din enhet som på dina vänners
-          enheter, i de fall du delar dina listor med dem.
-        </p>
+        <h3>{{ t("Personal_Data_Processing") }}</h3>
+        <p>{{ t("By_Using_Birdlist_Info") }}</p>
       </div>
-
-      <button type="button" class="button" @click="logout()">Logga ut</button>
     </div>
   </div>
 </template>

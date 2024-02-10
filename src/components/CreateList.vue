@@ -1,7 +1,11 @@
 <script setup>
 import { ref, computed } from "vue";
+import { useSettingsStore } from '../stores/settings.js'
 import { getTiedRealmId } from "dexie-cloud-addon";
 import { db } from "../db";
+
+const settingsStore = useSettingsStore()
+const { t } = settingsStore
 
 const props = defineProps(["list", "user"]);
 const emit = defineEmits(["activate"]);
@@ -83,8 +87,8 @@ async function deleteList(listId) {
 <template>
   <li class="c-tabs__tab last">
     <button class="add" @click.stop="openModal(props.list.title)">
-      <span v-if="isListOwner && props.list.title">Uppdatera lista</span>
-      <span v-else>Ny lista…</span>
+      <span v-if="isListOwner && props.list.title">{{ t("Update_List") }}</span>
+      <span v-else>{{ t("New_List") }}…</span>
     </button>
     <div class="dialog create-list-dialog" v-if="showListDialog">
       <input
@@ -92,7 +96,7 @@ async function deleteList(listId) {
         type="text"
         v-model="title"
         @keyup.esc="closeModal"
-        placeholder="Skriv namn på listan…"
+        :placeholder="t('Enter_The_Name_Of_The_List')"
       />
       <textarea
         class="margin-bottom"
@@ -100,10 +104,10 @@ async function deleteList(listId) {
         v-model="description"
         cols="30"
         rows="10"
-        placeholder="Ev tävlingsregler, syften med listan, etc"
+        :placeholder="t('List_Rules_Etc')"
       ></textarea>
       <div class="buttons">
-        <button v-if="isListOwner && props.list.title" class="update-button" @click="updateList(props.list.id)">Spara</button>
+        <button v-if="isListOwner && props.list.title" class="update-button" @click="updateList(props.list.id)">{{ t("Save") }}</button>
         <button v-if="isListOwner && props.list.title" class="delete-button" @click="deleteList(props.list.id)">
           <svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
             <g fill="none" stroke="currentColor" stroke-miterlimit="10">
@@ -113,10 +117,10 @@ async function deleteList(listId) {
               <path d="M8 5V1h8v4"/>
             </g>
           </svg>
-          Radera
+          {{ t("Delete") }}
         </button>
-        <button v-else class="create" @click="createList(title)">Skapa lista</button>
-        <button @click="closeModal">Avbryt</button>
+        <button v-else class="create" @click="createList(title)">{{ t("Create_List") }}</button>
+        <button @click="closeModal">{{ t("Cancel") }}</button>
       </div>
     </div>
   </li>

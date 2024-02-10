@@ -9,6 +9,7 @@ import { useSettingsStore } from '../stores/settings.js'
 import { useBirdsStore } from '../stores/birds.js'
 
 const settingsStore = useSettingsStore()
+const { t } = settingsStore
 const { lang, currentUser } = storeToRefs(settingsStore)
 
 const birdStore = useBirdsStore()
@@ -109,12 +110,12 @@ async function celebrate() {
 
 <template>
   <div class="invites" v-if="listInvites.length">
-    <h2>🎉 Du har blivit inbjuden till en lista!</h2> 
+    <h2>🎉 {{ t("You_Have_Been_Invited_To_A_List") }}!</h2> 
     <ul>
         <li v-for="invite in listInvites" :key="invite.id">
-          <p>Du har blivit inbjuden till listan <b>{{ invite.realm?.name }}</b> av {{ invite.invitedBy?.name }}.</p>
-          <button class="btn" @click="invite.accept()">Tacka ja</button>
-          <button class="btn" @click="invite.reject()">Avstå</button>
+          <p>{{ t("You_Have_Been_Invited_To_The_List") }} <b>{{ invite.realm?.name }}</b> {{ t("By").toLowerCase() }} {{ invite.invitedBy?.name }}.</p>
+          <button class="btn" @click="invite.accept()">{{ t("Accept") }}</button>
+          <button class="btn" @click="invite.reject()">{{ t("Deny") }}</button>
         </li>
     </ul>
   </div>
@@ -125,7 +126,7 @@ async function celebrate() {
   <div class="footer">
     <observation-input @add="addObservation" :list="currentList" />
     <datalist id="birds">
-      <option v-for="{ id, name } in birds" :key="id" :value="name">{{ name }}</option>
+      <option v-for="(bird, index) in birds" :key="index" :value="bird.name">{{ bird.name }}</option>
     </datalist>
   </div>
   <canvas id="canvas"></canvas>

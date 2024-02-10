@@ -1,6 +1,10 @@
 <script setup>
+import { useSettingsStore } from '../stores/settings.js'
 import { computed } from "vue";
 import CreateList from "@/components/CreateList.vue";
+
+const settingsStore = useSettingsStore()
+const { t } = settingsStore
 
 const props = defineProps(["monthLabel", "yearLabel", "currentList", "tabList", "user"]);
 const emit = defineEmits(["activate", "edit"]);
@@ -29,7 +33,7 @@ function emitActiveTab(list) {
       >
         <label>
           <select name="name" v-model="currentList" class="transparent-menu">
-            <option value="monthly">Välj lista…</option>
+            <option value="monthly">{{ t("Select_List") }}…</option>
             <option v-for="list in tabList" :key="list.id" :value="list">
               {{ list.title }}
             </option>
