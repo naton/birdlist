@@ -113,19 +113,12 @@ function emitActiveTab(list) {
   margin-left: auto;
 }
 
-.c-tabs__tab.last .add {
-  margin-right: 1rem;
-  margin-left: 1rem;
-  padding-right: 1rem;
-  padding-left: 1rem;
-}
-
 .c-tabs__tab label {
   position: relative;
   display: block;
-  width: 100%;
   height: 100%;;
-  padding: 1rem 1rem 0.8rem;
+  padding: 1rem 0.4rem 0.8rem 0.8rem;
+  font-size: 1.2rem;
   text-transform: capitalize;
 }
 

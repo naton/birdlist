@@ -5,6 +5,7 @@ import { db } from "../db";
 
 export const useSettingsStore = defineStore('settings', () => {
     const lang = ref("sv")
+    const hue = ref("45")
     const texts = ref({})
     const currentUser = useObservable(db.cloud.currentUser);
 
@@ -26,16 +27,21 @@ export const useSettingsStore = defineStore('settings', () => {
         loadTexts(newLang);
     })
 
+    watch(hue, (newHue) => {
+        document.documentElement.style = `--hue: ${newHue}`;
+    })
+
     return {
-        t,
         lang,
+        hue,
         texts,
         currentUser,
+        t,
         loadTexts,
     }
 }, {
     persist: {
         key: 'birdlist-settings',
-        paths: ['lang'],
+        paths: ['lang', 'hue'],
     }
 })

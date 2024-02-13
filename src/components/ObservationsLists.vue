@@ -359,30 +359,6 @@ onUnmounted(() => {
 </template>
 
 <style>
-.body-nav {
-  grid-area: body-nav;
-  display: flex;
-  max-width: 100vw;
-  overflow: hidden;
-  background: var(--color-background-dim);
-  box-shadow: inset rgb(17 17 26 / 10%) 0 -6px 8px 0;
-}
-
-.body-content {
-  grid-area: body-content;
-  overflow: auto;
-}
-
-.body-content::-webkit-scrollbar {
-  width: 6px;
-  background: rgba(0, 0, 0, 0.05);
-}
-
-.body-content::-webkit-scrollbar-thumb {
-  border-radius: var(--radius);
-  background: var(--color-background-dim);
-}
-
 .list-header {
   position: relative;
   overflow: hidden;

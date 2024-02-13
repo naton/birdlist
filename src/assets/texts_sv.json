@@ -8,7 +8,7 @@
     "Enter_The_Name_Of_The_List": "Ange namnet på listan",
     "List_Rules_Etc": "Ev tävlingsregler, syften med listan, etc",
     "New_List": "Ny lista",
-    "Update_List": "Uppdatera lista",
+    "Edit_List": "Ändra lista",
     "Add_Bird_To": "Lägg till 🐦 på",
     "Observations": "Observationer",
     "Species": "Art",
@@ -36,5 +36,6 @@
     "You_Have_Been_Invited_To_The_List": "Du har blivit inbjuden till listan",
     "Accept": "Tacka ja",
     "Deny": "Avstå",
-    "By_Using_Birdlist_Info": "Genom att använda Birdlist godkänner du att din e-postadress lagras på din enhet samt på dina vänners enheter, om du delar dina listor med dem."
+    "By_Using_Birdlist_Info": "Genom att använda Birdlist godkänner du att din e-postadress lagras på din enhet samt på dina vänners enheter, om du delar dina listor med dem.",
+    "Theme_Color": "Tema-färg"
 }]

@@ -87,7 +87,7 @@ async function deleteList(listId) {
 <template>
   <li class="c-tabs__tab last">
     <button class="add" @click.stop="openModal(props.list.title)">
-      <span v-if="isListOwner && props.list.title">{{ t("Update_List") }}</span>
+      <span v-if="isListOwner && props.list.title">{{ t("Edit_List") }}</span>
       <span v-else>{{ t("New_List") }}…</span>
     </button>
     <div class="dialog create-list-dialog" v-if="showListDialog">

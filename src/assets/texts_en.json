@@ -8,7 +8,7 @@
     "Enter_The_Name_Of_The_List": "Enter the name of the list",
     "List_Rules_Etc": "Possible competition rules, purpose of the list, etc.",
     "New_List": "New list",
-    "Update_List": "Update list",
+    "Edit_List": "Edit list",
     "Add_Bird_To": "Add 🐦 to",
     "Observations": "Observations",
     "Species": "Species",
@@ -36,5 +36,6 @@
     "You_Have_Been_Invited_To_The_List": "You have been invited to the list",
     "Accept": "Accept",
     "Deny": "Deny",
-    "By_Using_Birdlist_Info": "By using Birdlist, you agree that your email address is stored on your device as well as on your friends' devices, in case you share your lists with them."
+    "By_Using_Birdlist_Info": "By using Birdlist, you agree that your email address is stored on your device as well as on your friends' devices, in case you share your lists with them.",
+    "Theme_Color": "Theme color"
 }]
