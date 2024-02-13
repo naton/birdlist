@@ -3,6 +3,7 @@ import { onBeforeMount } from 'vue'
 import { storeToRefs } from 'pinia'
 import { RouterLink, RouterView } from "vue-router";
 import { useSettingsStore } from './stores/settings.js'
+import InvitesList from './components/InvitesList.vue'
 
 const settingsStore = useSettingsStore()
 const { t, loadTexts } = settingsStore
@@ -15,6 +16,7 @@ onBeforeMount(() => {
 
 <template>
   <main class="main">
+    <invites-list />
     <router-view />
   </main>
   <nav class="nav">
