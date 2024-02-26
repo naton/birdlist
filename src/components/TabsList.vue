@@ -1,21 +1,17 @@
 <script setup>
-import { useSettingsStore } from '../stores/settings.js'
-import { computed } from "vue";
+import { storeToRefs } from "pinia";
 import CreateList from "@/components/CreateList.vue";
+import { useSettingsStore } from "../stores/settings.js";
+import { useListsStore } from "../stores/lists.js";
 
-const settingsStore = useSettingsStore()
-const { t } = settingsStore
+const settingsStore = useSettingsStore();
+const { t } = settingsStore;
 
-const props = defineProps(["monthLabel", "yearLabel", "currentList", "tabList", "user"]);
+const listsStore = useListsStore();
+const { myLists, currentList } = storeToRefs(listsStore);
+
+const props = defineProps(["monthLabel", "yearLabel", "user"]);
 const emit = defineEmits(["activate", "edit"]);
-const currentList = computed({
-  get() {
-    return props.currentList;
-  },
-  set(list) {
-    emit("activate", list);
-  },
-});
 
 function emitActiveTab(list) {
   emit("activate", list);
@@ -34,7 +30,7 @@ function emitActiveTab(list) {
         <label>
           <select name="name" v-model="currentList" class="transparent-menu">
             <option value="monthly">{{ t("Select_List") }}…</option>
-            <option v-for="list in tabList" :key="list.id" :value="list">
+            <option v-for="list in myLists" :key="list.id" :value="list">
               {{ list.title }}
             </option>
           </select>
@@ -46,7 +42,7 @@ function emitActiveTab(list) {
           </svg>
         </label>
       </li>
-      <li class="c-tabs__tab" :class="{ 'c-tabs__tab--active': 'monthly' === props.currentList.id }">
+      <li class="c-tabs__tab" :class="{ 'c-tabs__tab--active': 'monthly' === currentList.id }">
         <input
           type="radio"
           name="list"
@@ -75,7 +71,7 @@ function emitActiveTab(list) {
         />
         <label for="tab-everything">{{ props.yearLabel }}</label>
       </li>
-      <create-list @activate="emitActiveTab" :list="currentList" :user="props.user" />
+      <create-list @activate="emitActiveTab" :list="currentList" />
     </ul>
   </nav>
 
@@ -88,7 +84,7 @@ function emitActiveTab(list) {
   </template>
 
   <template v-else>
-    <slot :name="`tabPanel-${list.id}`" v-for="list in tabList" :key="list.id" />
+    <slot :name="`tabPanel-${list.id}`" v-for="list in myLists" :key="list.id" />
   </template>
 </template>
 
@@ -116,7 +112,7 @@ function emitActiveTab(list) {
 .c-tabs__tab label {
   position: relative;
   display: block;
-  height: 100%;;
+  height: 100%;
   padding: 1rem 0.4rem 0.8rem 0.8rem;
   font-size: 1.2rem;
   text-transform: capitalize;

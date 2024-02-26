@@ -1,7 +1,8 @@
 <script setup>
 import { ref, reactive, computed, onMounted, watch } from "vue";
-import { useSettingsStore } from '../stores/settings.js'
+import { storeToRefs } from "pinia";
 import { db } from "../db";
+import { useSettingsStore } from "@/stores/settings.js";
 import ObservationItem from "./ObservationItem.vue";
 import UserIcon from "./UserIcon.vue";
 import SpeciesItem from "./SpeciesItem.vue";
@@ -9,10 +10,12 @@ import CommentItem from "./CommentItem.vue";
 import SvgChart from "./SvgChart.vue";
 import { cssColor } from "../helpers";
 
-const settingsStore = useSettingsStore()
-const { t } = settingsStore
+const props = defineProps(["comments", "sort", "selected", "observations"]);
 
-const props = defineProps(["observations", "comments", "sort", "selected", "user"]);
+const settingsStore = useSettingsStore();
+const { t } = settingsStore;
+const { currentUser } = storeToRefs(settingsStore);
+
 const emit = defineEmits(["sort", "select", "delete", "edit", "newLeader"]);
 
 const species = computed(() => [...new Set(props.observations.map((item) => item.name))].sort());
@@ -26,19 +29,19 @@ const listId = computed(() => {
 
 const svg = reactive({
   w: 0,
-  h: 0
+  h: 0,
 });
 
 function resize() {
   if (users.value.length > 1) {
-    const chart = document.querySelector('.chart-wrapper');
+    const chart = document.querySelector(".chart-wrapper");
     svg.w = chart.offsetWidth;
     svg.h = 200;
   }
 }
 
 const users = computed(() => {
-  const names = [...new Set(props.observations.map((item) => item.owner))].sort();
+  const names = [...new Set(props.observations.map((obs) => obs.owner))].sort();
   let users = [];
   let highestScore = 0;
   let leader = false;
@@ -73,7 +76,10 @@ const currentLeader = ref("");
 
 function groupBy(objectArray, property) {
   return objectArray.reduce((acc, obj) => {
-    const key = (typeof obj[property] === "object") ? new Date(obj[property]).toISOString().slice(0, 10) : obj[property].toLowerCase();
+    const key =
+      typeof obj[property] === "object"
+        ? new Date(obj[property]).toISOString().slice(0, 10)
+        : obj[property].toLowerCase();
     if (!acc[key]) {
       acc[key] = [];
     }
@@ -106,8 +112,8 @@ let options = reactive({
   yMax: 10,
   line: {
     smoothing: 0.05,
-    flattening: 0.05
-  }
+    flattening: 0.05,
+  },
 });
 
 const datasets = ref([]);
@@ -133,7 +139,7 @@ function initGraph() {
     for (let days = 0; days <= datesDiff; days++) {
       const obsDate = day.toISOString().slice(0, 10);
       if (datesWithObservations.includes(obsDate)) {
-        currentValue += observationsByDate.value[obsDate].filter(obs => obs.owner === owner).length;
+        currentValue += observationsByDate.value[obsDate].filter((obs) => obs.owner === owner).length;
         values.push([days * graphWidthOfEachDay, currentValue]);
       }
       day.setDate(day.getDate() + 1);
@@ -142,19 +148,19 @@ function initGraph() {
     return values;
   }
 
-  users.value.forEach(user => {
+  users.value.forEach((user) => {
     graphData.push({
       name: user.name,
       colors: {
         path: cssColor(user.name),
-        circles: "var(--color-text-dim)"
+        circles: "var(--color-text-dim)",
       },
-      values: createGraphData(user.name)
+      values: createGraphData(user.name),
     });
   });
 
   datasets.value = graphData;
-};
+}
 
 onMounted(() => {
   window.addEventListener("resize", resize);
@@ -196,7 +202,7 @@ const comment = ref("");
 async function addComment() {
   await db.comments.add({
     comment: comment.value.trim(),
-    userId: props.user,
+    userId: currentUser.value?.name,
     date: new Date(),
     listId: listId.value,
   });
@@ -206,9 +212,9 @@ async function addComment() {
 }
 
 watch(currentLeader, (newLeader) => {
-  initGraph()
+  initGraph();
   // Announce new leader only if you’re not alone
-  if (users.value.length > 1 && newLeader === props.user) {
+  if (users.value.length > 1 && newLeader === currentUser.value?.name) {
     emit("newLeader");
   }
 });
@@ -218,7 +224,7 @@ watch(currentLeader, (newLeader) => {
   <slot name="header" />
 
   <slot name="default">
-    <nav class="user-nav" v-if="users.length > 1">
+    <nav class="user-nav" v-if="users?.length > 1">
       <transition-group name="list" appear>
         <button
           v-for="{ name, score, leader } in users"
@@ -235,10 +241,16 @@ watch(currentLeader, (newLeader) => {
     </nav>
 
     <div class="chart-wrapper">
-      <svg-chart v-if="users.length > 1" :datasets="datasets" :options="options" :svg="svg" :user="selectedUser"></svg-chart>
+      <svg-chart
+        v-if="users?.length > 1"
+        :datasets="datasets"
+        :options="options"
+        :svg="svg"
+        :user="selectedUser"
+      ></svg-chart>
     </div>
 
-    <nav class="nav" v-if="observations.length">
+    <nav class="nav" v-if="props.observations.length">
       <a
         href="#bydate"
         class="nav-link"
@@ -246,7 +258,7 @@ watch(currentLeader, (newLeader) => {
           current: sort == 'bydate',
         }"
         @click.prevent="emitSort('bydate')"
-        >Obsar <span class="nav-count">({{ observationsByUser.length }})</span></a
+        >{{ t("Observations")}} <span class="nav-count">({{ observationsByUser.length }})</span></a
       >
       <a
         href="#byname"
@@ -255,7 +267,7 @@ watch(currentLeader, (newLeader) => {
           current: sort == 'byname',
         }"
         @click.prevent="emitSort('byname')"
-        >Arter <span class="nav-count">({{ Object.keys(speciesByUser).length }})</span></a
+        >{{ t("Species") }} <span class="nav-count">({{ Object.keys(speciesByUser).length }})</span></a
       >
       <a
         v-if="listId"
@@ -265,10 +277,11 @@ watch(currentLeader, (newLeader) => {
           current: sort == 'comments',
         }"
         @click.prevent="emitSort('comments')"
-      >💬 <span class="nav-count">({{ Object.keys(comments).length }})</span></a>
+        >💬 <span class="nav-count">({{ Object.keys(comments).length }})</span></a
+      >
     </nav>
 
-    <section id="bydate" v-if="observations.length && props.sort == 'bydate'">
+    <section id="bydate" v-if="props.observations.length && props.sort == 'bydate'">
       <transition-group tag="ul" name="list" class="list">
         <observation-item
           v-for="obs in observationsByUser"
@@ -292,17 +305,21 @@ watch(currentLeader, (newLeader) => {
     <section id="comments" v-if="listId && props.sort == 'comments'">
       <form>
         <div>
-          <textarea v-model="comment" class="comment-input" placeholder="Skriv nåt trevligt till de andra på listan…"></textarea>
+          <textarea
+            v-model="comment"
+            class="comment-input"
+            placeholder="Skriv nåt trevligt till de andra på listan…"
+          ></textarea>
           <button class="comment-btn" @click.prevent="addComment">Skicka</button>
         </div>
       </form>
       <transition-group tag="ol" name="list" class="list">
-        <comment-item v-for="comment in comments" :comment="comment" :user="user" :key="comment.id"></comment-item>
+        <comment-item v-for="comment in comments" :comment="comment" :user="currentUser.name" :key="comment.id"></comment-item>
       </transition-group>
     </section>
 
-    <section class="empty-list" v-if="user && !observations.length">
-      <h3 class="center">{{ t("No_Observations")}}</h3>
+    <section class="empty-list" v-if="currentUser.name && !props.observations.length">
+      <h3 class="center">{{ t("No_Observations") }}</h3>
     </section>
   </slot>
 </template>

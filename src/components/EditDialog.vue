@@ -1,13 +1,19 @@
 <script setup>
 import { ref } from "vue";
-import { useSettingsStore } from '../stores/settings.js'
+import { storeToRefs } from 'pinia'
 import { getTiedRealmId } from "dexie-cloud-addon";
 import { db } from "../db";
+import { useSettingsStore } from '../stores/settings.js'
+import { useListsStore } from '../stores/lists.js'
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
+const { currentUser } = storeToRefs(settingsStore)
 
-const props = defineProps(["isOpen", "user", "observation", "lists"]);
+const listsStore = useListsStore()
+const { myLists } = storeToRefs(listsStore)
+
+const props = defineProps(["isOpen", "observation"]);
 const emit = defineEmits(["delete", "close"]);
 
 const selectedList = ref(props.observation.listId);
@@ -16,7 +22,7 @@ const currentName = ref(props.observation.name);
 const currentDate = ref(props.observation.date);
 
 function canEdit(owner) {
-  return owner === "unauthorized" || props.user === owner;
+  return owner === "unauthorized" || currentUser.name === owner;
 }
 
 function formatDate(date) {
@@ -113,7 +119,7 @@ function saveAndClose() {
         <select id="obs-list" @change="updateList($event.target.value)">
           <option value="">{{ t("No_Special_List") }}</option>
           <option
-            v-for="{ id, title } in lists"
+            v-for="{ id, title } in myLists"
             :value="id"
             :key="id"
             :selected="id === observation.listId && 'selected'"

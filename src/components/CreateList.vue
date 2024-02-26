@@ -1,19 +1,21 @@
 <script setup>
 import { ref, computed } from "vue";
+import { storeToRefs } from "pinia";
 import { useSettingsStore } from '../stores/settings.js'
 import { getTiedRealmId } from "dexie-cloud-addon";
 import { db } from "../db";
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
+const { currentUser } = storeToRefs(settingsStore)
 
-const props = defineProps(["list", "user"]);
+const props = defineProps(["list"]);
 const emit = defineEmits(["activate"]);
 
 const showListDialog = ref(false);
 const title = ref("");
 const description = ref("");
-const isListOwner = computed(() => props.user === props.list.owner);
+const isListOwner = computed(() => currentUser.value?.name === props.list.owner);
 
 function openModal(hasTitle) {
   showListDialog.value = true;

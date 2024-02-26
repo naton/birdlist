@@ -1,11 +1,15 @@
 <script setup>
 import { ref } from "vue";
+import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '../stores/settings.js'
+import { useListsStore } from '../stores/lists.js'
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
 
-const props = defineProps(["list"]);
+const listsStore = useListsStore()
+const { currentList } = storeToRefs(listsStore)
+
 const emit = defineEmits(["add"]);
 
 const calculatingPosition = ref(false);
@@ -103,11 +107,11 @@ function toggleCurrentLocation() {
       name="bird"
       type="text"
       list="birds"
-      @change="emit('add', $event, props.list, currentPosition)"
+      @change="emit('add', $event, currentList, currentPosition)"
       autocomplete="off"
       :placeholder="
-        props.list.id && props.list.id.startsWith('lst')
-          ? t('Add_Bird_To') + `${list.title}…`
+        currentList.id?.startsWith('lst')
+          ? t('Add_Bird_To') + `${currentList.title}…`
           : t('Enter_The_Name_Of_The_Bird')"
     />
   </div>

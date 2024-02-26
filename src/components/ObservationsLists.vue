@@ -1,66 +1,33 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { storeToRefs } from 'pinia'
 import { liveQuery } from "dexie";
-import { getTiedRealmId } from "dexie-cloud-addon";
 import { db } from "../db";
 import TabsList from "@/components/TabsList.vue";
-import ListView from "@/components/ListView.vue";
-import EditDialog from "@/components/EditDialog.vue";
+import CustomList from "@/views/lists/CustomList.vue";
+import YearlyList from "@/views/lists/YearlyList.vue";
+import MonthlyList from "@/views/lists/MonthlyList.vue";
 import { getCurrentYear, getMonthName } from "../helpers";
-import { useSettingsStore } from '../stores/settings.js'
+import { useSettingsStore } from "@/stores/settings.js";
+import { useListsStore } from '../stores/lists.js'
+import { useObservationsStore } from '../stores/observations.js'
 
 const settingsStore = useSettingsStore()
-const { t } = settingsStore
+const { currentYear, currentMonth } = storeToRefs(settingsStore)
 
-const componentKey = ref(0);
+const listsStore = useListsStore()
+const { currentList } = storeToRefs(listsStore)
+
+const observationsStore = useObservationsStore()
+const { allListObservations, allThisMonth, allMyObservations } = storeToRefs(observationsStore)
+
 const props = defineProps(["list", "user"]);
 const emit = defineEmits(["selectList", "newLeader"]);
 
-const currentYear = ref(new Date().getFullYear());
-const currentMonth = ref(new Date().getMonth());
-const currentSort = ref("bydate");
-const currentObservation = ref(false);
-const allObservations = ref([]);
 const allComments = ref([]);
-const tabList = ref([]);
-const isListOwner = computed(() => props.user === props.list.owner);
-const isDialogOpen = ref(false);
-
-/* Observations */
-let observationsSubscription = liveQuery(async () => await db.observations.toArray()).subscribe(
-  (observations) => {
-    allObservations.value = observations;
-  },
-  (error) => {
-    console.log(error);
-  }
-);
-
-const allMyObservations = computed(() => {
-  return allObservations.value
-    .filter((obs) => (obs.owner == props.user || obs.owner == "unauthorized"))
-    .filter((obs) => obs.date.getFullYear() == currentYear.value)
-    .sort((a, b) => a.date - b.date);
-});
-
-const allThisMonth = computed(() => {
-  return allObservations.value
-    .filter(
-      (obs) =>
-        (obs.owner == props.user || obs.owner == "unauthorized") &&
-        obs.date.getFullYear() == currentYear.value &&
-        obs.date.getMonth() == currentMonth.value
-    )
-    .sort((a, b) => a.date - b.date);
-});
-
-const listObservations = computed(() => {
-  const listId = props.list.id;
-  return allObservations.value.filter((obs) => obs.listId == listId);
-});
 
 /* Comments */
-let commentsSubscription = liveQuery(async () => await db.comments.toArray()).subscribe(
+liveQuery(async () => await db.comments.toArray()).subscribe(
   (comments) => {
     allComments.value = comments;
   },
@@ -70,117 +37,9 @@ let commentsSubscription = liveQuery(async () => await db.comments.toArray()).su
 );
 
 const listComments = computed(() => {
-  const listId = props.list.id;
+  const listId = currentList.id;
   return allComments.value.filter((comment) => comment.listId == listId);
 });
-
-function selectObservation(obs) {
-  currentObservation.value = obs && currentObservation.value && currentObservation.value.id == obs.id ? false : obs;
-}
-
-async function deleteObservation(id) {
-  db.observations.delete(id);
-}
-
-function editObservation(obs) {
-  componentKey.value += 1; // refresh modal component
-  currentObservation.value = obs;
-  isDialogOpen.value = true;
-}
-
-function goToMonth(month) {
-  currentMonth.value = month;
-  emit("selectList", "monthly");
-}
-
-function prevMonth() {
-  if (currentMonth.value === 0) {
-    currentYear.value--;
-    currentMonth.value = 11;
-  } else {
-    currentMonth.value--;
-  }
-}
-
-function nextMonth() {
-  if (currentMonth.value === 11) {
-    currentYear.value++;
-    currentMonth.value = 0;
-  } else {
-    currentMonth.value++;
-  }
-}
-
-function totalPerMonth(month) {
-  return allObservations.value.filter(
-    (obs) => 
-      (obs.owner == props.user || obs.owner == "unauthorized") &&
-      obs.date.getFullYear() == currentYear.value &&
-      obs.date.getMonth() == month
-  ).length;
-}
-
-function sortBy(val) {
-  return (currentSort.value = val);
-}
-
-function closeObservationDialog() {
-  isDialogOpen.value = false;
-}
-
-/* Lists */
-let listsSubscription = liveQuery(async () => await db.lists.toArray()).subscribe(
-  (lists) => {
-    tabList.value = lists;
-  },
-  (error) => {
-    console.log(error);
-  }
-);
-
-const currentMonthFormatted = computed(() => {
-  const date = new Date().setFullYear(currentYear.value, currentMonth.value);
-  return new Intl.DateTimeFormat("sv", {
-    year: "numeric",
-    month: "long",
-  }).format(date);
-});
-
-async function shareBirdList(listId, listName) {
-  let email = prompt("Ange e-postadressen till personen du vill dela denna lista med:");
-
-  if (!email) return;
-
-  await db.transaction("rw", [db.lists, db.observations, db.comments, db.realms, db.members], async () => {
-    // Add or update a realm, tied to the list using getTiedRealmId():
-    const realmId = getTiedRealmId(listId);
-
-    await db.realms.put({
-      realmId,
-      name: listName,
-      represents: "a bird list",
-    });
-
-    // Move list into the realm (if not already there):
-    await db.lists.update(listId, { realmId });
-    // Move all items into the new realm consistently (modify() is consistent across sync peers)
-    await db.observations.where({ listId: listId }).modify({ realmId: realmId });
-    await db.comments.where({ listId: listId }).modify({ realmId: realmId });
-    // Add the members to share it to:
-    await db.members.add({
-      realmId,
-      email: email,
-      invite: true, // Generates invite email on server on sync
-      permissions: {
-        add: ["observations", "comments"],
-        update: {
-          observations: ["*", "realmId"],
-        },
-        // manage: "*", // Give your friend full permissions within this new realm.
-      },
-    });
-  });
-}
 
 function selectList(list) {
   emit("selectList", list);
@@ -195,18 +54,12 @@ function newLeader() {
 }
 
 /* Other */
-function getSlotName(tab) {
-  return `tabPanel-${tab}`;
+function getSlotName(id) {
+  return `tabPanel-${id}`;
 }
 
 onMounted(() => {
   emit("selectList", "monthly");
-});
-
-onUnmounted(() => {
-  observationsSubscription.unsubscribe();
-  commentsSubscription.unsubscribe();
-  listsSubscription.unsubscribe();
 });
 </script>
 
@@ -214,148 +67,21 @@ onUnmounted(() => {
   <tabs-list
     :monthLabel="getMonthName(currentMonth, 'long')"
     :yearLabel="getCurrentYear(currentYear)"
-    :tabList="tabList"
-    :currentList="props.list"
-    :user="props.user"
     @activate="selectList"
   >
-    <template v-slot:[getSlotName(props.list.id)]>
+    <template v-slot:[getSlotName(currentList.id)]>
       <div class="body-content">
-        <list-view
-          v-if="props.list.id === 'monthly'"
-          :observations="allThisMonth"
-          :sort="currentSort"
-          :selected="currentObservation"
-          :user="props.user"
-          @sort="sortBy"
-          @select="selectObservation"
-          @edit="editObservation"
-        >
-          <template v-slot:header>
-            <div class="list-header date-nav">
-              <button class="prev-date" @click.prevent="prevMonth">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12">
-                  <path
-                    fill="currentColor"
-                    d="m9.854 1.646-1.5-1.5a.5.5 0 0 0-.708 0l-5.5 5.5a.5.5 0 0 0 0 .708l5.5 5.5a.5.5 0 0 0 .708 0l1.5-1.5a.5.5 0 0 0 0-.708L6.207 6l3.647-3.646a.5.5 0 0 0 0-.708Z"
-                  />
-                </svg>
-              </button>
-              <h2 class="heading center">
-                {{ currentMonthFormatted }}
-              </h2>
-              <button class="next-date" @click.prevent="nextMonth">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12">
-                  <path
-                    fill="currentColor"
-                    d="m2.146 10.354 1.5 1.5a.5.5 0 0 0 .708 0l5.5-5.5a.5.5 0 0 0 0-.708l-5.5-5.5a.5.5 0 0 0-.708 0l-1.5 1.5a.5.5 0 0 0 0 .708L5.793 6 2.146 9.646a.5.5 0 0 0 0 .708Z"
-                  />
-                </svg>
-              </button>
-            </div>
-          </template>
-        </list-view>
-
-        <list-view
-          v-else-if="props.list.id === 'everything'"
-          :observations="allMyObservations"
-          :selected="currentObservation"
-          :sort="currentSort"
-          :user="props.user"
-          @sort="sortBy"
-          @select="selectObservation"
-          @edit="editObservation"
-        >
-          <template v-slot:header>
-            <div class="list-header date-nav">
-              <button class="prev-date" @click.prevent="currentYear--">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12">
-                  <path
-                    fill="currentColor"
-                    d="m9.854 1.646-1.5-1.5a.5.5 0 0 0-.708 0l-5.5 5.5a.5.5 0 0 0 0 .708l5.5 5.5a.5.5 0 0 0 .708 0l1.5-1.5a.5.5 0 0 0 0-.708L6.207 6l3.647-3.646a.5.5 0 0 0 0-.708Z"
-                  />
-                </svg>
-              </button>
-              <h2 class="heading center">{{ currentYear }}</h2>
-              <button class="next-date" @click.prevent="currentYear++">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12">
-                  <path
-                    fill="currentColor"
-                    d="m2.146 10.354 1.5 1.5a.5.5 0 0 0 .708 0l5.5-5.5a.5.5 0 0 0 0-.708l-5.5-5.5a.5.5 0 0 0-.708 0l-1.5 1.5a.5.5 0 0 0 0 .708L5.793 6 2.146 9.646a.5.5 0 0 0 0 .708Z"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div class="center sidescroll">
-              <table class="year-summary">
-                <tbody>
-                  <tr>
-                    <td v-for="n in 12" :key="n">
-                      {{ getMonthName(n - 1) }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td v-for="n in 12" :key="n">
-                      <button
-                        class="month-button"
-                        :class="totalPerMonth(n - 1) == '0' && 'secondary'"
-                        @click="goToMonth(n - 1)"
-                      >
-                        {{ totalPerMonth(n - 1) }}
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </template>
-        </list-view>
-
-        <list-view
-          v-else
-          :observations="listObservations"
-          :comments="listComments"
-          :selected="currentObservation"
-          :sort="currentSort"
-          :user="props.user"
+        <monthly-list v-if="currentList.id === 'monthly'"
+          :observations="allThisMonth"></monthly-list>
+        <yearly-list v-else-if="currentList.id === 'everything'"
+          :observations="allMyObservations"></yearly-list>
+        <custom-list v-else
+          :observations="allListObservations"
           @new-leader="newLeader"
-          @sort="sortBy"
-          @select="selectObservation"
-          @edit="editObservation"
-        >
-          <template v-slot:header>
-            <div class="list-header">
-              <div class="subtitle">
-                <details>
-                  <summary class="heading">{{ props.list.title }}</summary>
-                  <p class="list-description">{{ props.list.description }}</p>
-                  <p class="list-owner">{{ t("Created_By") }} {{ props.list.owner }}</p>
-                  <button v-if="isListOwner" class="share-button" @click.stop="shareBirdList(props.list.id, props.list.title)">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
-                      <g fill="var(--color-background-dim)">
-                          <path d="M4.5 5H7v5a1 1 0 0 0 2 0V5h2.5a.5.5 0 0 0 .376-.829l-3.5-4a.514.514 0 0 0-.752 0l-3.5 4A.5.5 0 0 0 4.5 5Z"/>
-                          <path d="M14 7h-3v2h3v5H2V9h3V7H2a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"/>
-                      </g>
-                    </svg>
-                    {{ t("Share") }}
-                  </button>
-                </details>
-              </div>
-            </div>
-          </template>
-        </list-view>
+          ></custom-list>
       </div>
     </template>
   </tabs-list>
-  <edit-dialog
-    :key="componentKey"
-    :isOpen="isDialogOpen"
-    :user="props.user"
-    :observation="currentObservation"
-    :lists="tabList"
-    @delete="deleteObservation"
-    @close="closeObservationDialog"
-  />
 </template>
 
 <style>
