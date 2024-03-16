@@ -3,7 +3,6 @@ import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
-import { useObservationsStore } from "@/stores/observations.js";
 import ListView from "@/components/ListView.vue";
 
 const props = defineProps(["observations"]);
@@ -16,8 +15,9 @@ const listsStore = useListsStore();
 const { sortBy } = listsStore;
 const { currentSort } = storeToRefs(listsStore);
 
-const observationsStore = useObservationsStore();
-const { editObservation } = observationsStore;
+function edit() {
+  emit("edit")
+}
 
 function prevMonth() {
   if (currentMonth.value === 0) {
@@ -51,7 +51,7 @@ const currentMonthFormatted = computed(() => {
     :observations="props.observations"
     :sort="currentSort"
     @sort="sortBy"
-    @edit="editObservation"
+    @edit="edit"
   >
     <template v-slot:header>
       <div class="list-header date-nav">

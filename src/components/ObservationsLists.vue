@@ -21,7 +21,7 @@ const { currentList } = storeToRefs(listsStore)
 const observationsStore = useObservationsStore()
 const { allListObservations, allThisMonth, allMyObservations } = storeToRefs(observationsStore)
 
-const emit = defineEmits(["openDialog", "selectList", "newLeader"]);
+const emit = defineEmits(["edit", "selectList", "newLeader"]);
 
 const allComments = ref([]);
 
@@ -40,6 +40,10 @@ const listComments = computed(() => {
   return allComments.value.filter((comment) => comment.listId == listId);
 });
 
+function edit() {
+  emit("edit");
+}
+
 function selectList(list) {
   emit("selectList", list);
 
@@ -50,11 +54,6 @@ function selectList(list) {
 
 function newLeader() {
   emit("newLeader");
-}
-
-/* Other */
-function getSlotName(id) {
-  return `tabPanel-${id}`;
 }
 
 onMounted(() => {
@@ -68,16 +67,21 @@ onMounted(() => {
     :yearLabel="getCurrentYear(currentYear)"
     @activate="selectList"
   >
-    <template v-slot:[getSlotName(currentList.id)]>
+    <template v-slot:[`tabPanel-${currentList.id}`]>
       <div class="body-content">
         <monthly-list v-if="currentList.id === 'monthly'"
           :observations="allThisMonth"
-        ></monthly-list>
+          @edit="edit"
+          ></monthly-list>
         <yearly-list v-else-if="currentList.id === 'everything'"
           :observations="allMyObservations"
+          @activate="selectList"
+          @edit="edit"
         ></yearly-list>
         <custom-list v-else
           :observations="allListObservations"
+          :comments="listComments"
+          @edit="edit"
           @new-leader="newLeader"
           ></custom-list>
       </div>

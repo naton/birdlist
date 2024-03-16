@@ -6,7 +6,6 @@ import { db } from "../db";
 import { formatDateAndTime, inputDate } from "@/helpers";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
-import { useObservationsStore } from '../stores/observations.js'
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
@@ -15,48 +14,46 @@ const { currentUser } = storeToRefs(settingsStore)
 const listsStore = useListsStore()
 const { myLists } = storeToRefs(listsStore)
 
-const observationsStore = useObservationsStore();
-const { editDialog } = storeToRefs(observationsStore);
-
-const emit = defineEmits(["delete", "close"]);
+const emit = defineEmits(["delete"]);
 
 const currentObservation = defineModel();
+const editDialog = ref();
+const isEditing = ref(false);
 
-const selectedList = ref(currentObservation?.value.listId);
-const selectedListRealm = ref(currentObservation?.value.realmId);
+function currentListName() {
+  const list = myLists.value?.find(list => list.id == currentObservation.value.listId);
+  return list ? list.title : t("No_Special_List");
+}
 
 function canEdit(owner) {
-  return owner === "unauthorized" || currentUser.name === owner;
+  return owner === "unauthorized" || currentUser?.value.name === owner;
 }
 
-function updateList(val) {
-  selectedList.value = val;
-  selectedListRealm.value = getTiedRealmId(val);
-}
-
-function deleteAndClose(id, elm) {
+function deleteAndClose(id) {
   emit("delete", id);
-  close(elm);
+  closeModal();
 }
 
 function showModal() {
-  editDialog.$el.showModal();
+  editDialog.value?.showModal();
 }
 
-function close(elm) {
-  elm.closest("dialog").close();
+function closeModal() {
+  isEditing.value = false;
+  editDialog.value?.close();
 }
 
 async function save() {
-  const name = currentObservation?.value.name.trim();
-  const date = currentObservation?.value.date;
-  const location = currentObservation?.value.location;
-  const listId = selectedList.value;
-  const realmId = selectedListRealm.value;
+  const obs = currentObservation.value;
+  const name = obs.name.trim();
+  const date = obs.date;
+  const location = obs.location;
+  const listId = obs.listId;
+  const realmId = getTiedRealmId(obs.listId);
   await db.transaction("rw", [db.lists, db.observations], async () => {
     // Move list into the realm (if not already there):
     await db.lists.update(listId, { realmId });
-    await db.observations.update(currentObservation.value, {
+    await db.observations.update(obs, {
       name,
       date,
       realmId,
@@ -69,18 +66,51 @@ async function save() {
 
 function saveAndClose() {
   save();
-  emit("close");
+  closeModal();
+  isEditing.value = false;
 }
 
 defineExpose({
-  showModal,
+  show: showModal,
+  close: closeModal,
 });
 </script>
 
 <template>
-  <dialog ref="editDialog" class="dialog" v-if="currentObservation">
-    <h2>{{ currentObservation.name }}</h2>
-    <h3>{{ formatDateAndTime(currentObservation.date) }}</h3>
+  <dialog ref="editDialog" class="dialog">
+    <h2 v-if="!isEditing">{{ currentObservation.name }}</h2>
+    <div v-else>
+      <label for="obs-name">{{ t("Change_Name") }}</label>
+      <input id="obs-name" type="text" v-model="currentObservation.name" />
+    </div>
+
+    <h3 v-if="!isEditing">{{ formatDateAndTime(currentObservation.date) }}</h3>
+    <div v-else>
+      <label for="obs-date">{{ t("Change_Date") }}</label>
+      <input
+        id="obs-date"
+        type="datetime-local"
+        @input="currentObservation.date = new Date($event.target.value)"
+        :value="inputDate(currentObservation.date)"
+      />
+    </div>
+
+    <p v-if="!isEditing">{{ t("List")}}: {{ currentListName() }}</p>
+    <div v-else>
+      <label for="obs-list">{{ t("Change_List") }}</label>
+      <select id="obs-list" v-model="currentObservation.listId">
+        <option value="">{{ t("No_Special_List") }}</option>
+        <option
+          v-for="{ id, title } in myLists"
+          :value="id"
+          :key="id"
+          :selected="id === currentObservation?.listId && 'selected'"
+        >
+          {{ title }}
+        </option>
+      </select>
+    </div>
+
     <p class="margin-bottom">{{ t("By") }}: {{ currentObservation.owner }}</p>
     <div v-if="currentObservation.location" class="margin-bottom">
       <a
@@ -98,48 +128,11 @@ defineExpose({
       </a>
     </div>
 
-    <details v-if="canEdit(currentObservation?.owner)" class="margin-bottom">
-      <summary>{{ t("Edit_Observation") }}</summary>
-      <div class="margin-bottom">
-        <label for="obs-name">{{ t("Change_Name") }}</label>
-        <input id="obs-name" type="text" v-model="currentObservation.name" />
-      </div>
-
-      <div class="margin-bottom">
-        <label for="obs-date">{{ t("Change_Date") }}</label>
-        <input
-          id="obs-date"
-          type="datetime-local"
-          @input="currentObservation.date = new Date($event.target.value)"
-          :value="inputDate(currentObservation.date)"
-        />
-      </div>
-
-      <div class="margin-bottom">
-        <label for="obs-list">{{ t("Change_List") }}</label>
-        <select id="obs-list" @change="updateList($event.target.value)">
-          <option value="">{{ t("No_Special_List") }}</option>
-          <option
-            v-for="{ id, title } in myLists"
-            :value="id"
-            :key="id"
-            :selected="id === currentObservation?.listId && 'selected'"
-          >
-            {{ title }}
-          </option>
-        </select>
-      </div>
-      <div class="margin-bottom">
-        <button type="button" class="secondary" @click="saveAndClose($event.target)">{{ t("Save") }}</button>
-        <button type="button" @click="deleteAndClose(currentObservation?.id, $event.target)">{{ t("Delete") }}</button>
-      </div>
-    </details>
-
-    <div v-if="canEdit(currentObservation?.owner)">
-      <button type="button" class="secondary" @click="close($event.target)">{{ t("Cancel") }}</button>
-    </div>
-    <div v-else>
-      <button type="button" class="secondary" @click="close($event.target)">{{ t("Close") }}</button>
+    <div>
+      <button v-if="isEditing" type="button" class="secondary" @click="saveAndClose()">{{ t("Save") }} & {{ t("Close") }}</button>
+      <button v-else type="button" class="secondary" :disabled="!canEdit(currentObservation.owner)" @click="isEditing = true">{{ t("Edit") }}</button>
+      <button v-if="isEditing" type="button" @click="deleteAndClose(currentObservation?.id)">{{ t("Delete") }}</button>
+      <button type="button" class="secondary" @click="closeModal()">{{ t("Cancel") }}</button>
     </div>
   </dialog>
 </template>
@@ -147,6 +140,11 @@ defineExpose({
 <style>
 .dialog h2 {
   font-weight: bold;
+}
+
+button[disabled] {
+  opacity: 0.4;
+  filter: grayscale(1);
 }
 
 .dialog label {

@@ -2,26 +2,26 @@
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
-import { useObservationsStore } from "@/stores/observations.js";
 import { getMonthName } from "@/helpers";
 import ListView from "@/components/ListView.vue";
 
 const props = defineProps(["observations"]);
-const emit = defineEmits(["openDialog", "selectList", "sort", "edit"]);
+const emit = defineEmits(["openDialog", "activate", "sort", "edit"]);
 
 const settingsStore = useSettingsStore();
-const { currentUser, currentYear } = storeToRefs(settingsStore);
+const { currentUser, currentYear, currentMonth } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
 const { sortBy } = listsStore;
 const { currentSort } = storeToRefs(listsStore);
 
-const observationsStore = useObservationsStore();
-const { editObservation } = observationsStore;
+function edit() {
+  emit("edit")
+}
 
 function goToMonth(month) {
   currentMonth.value = month;
-  emit("selectList", "monthly");
+  emit("activate", "monthly");
 }
 
 function totalPerMonth(month) {
@@ -39,7 +39,7 @@ function totalPerMonth(month) {
     :observations="props.observations"
     :sort="currentSort"
     @sort="sortBy"
-    @edit="editObservation"
+    @edit="edit"
   >
     <template v-slot:header>
       <div class="list-header date-nav">

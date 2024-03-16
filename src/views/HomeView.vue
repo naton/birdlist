@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { db } from "../db";
 import ObservationsLists from "@/components/ObservationsLists.vue";
@@ -16,8 +16,14 @@ const listsStore = useListsStore();
 const { currentList } = storeToRefs(listsStore);
 
 const observationsStore = useObservationsStore();
-const { currentObservation, editDialog } = storeToRefs(observationsStore);
+const { currentObservation } = storeToRefs(observationsStore);
 const { addObservation, deleteObservation } = observationsStore;
+
+const modal = ref();
+
+function showModal() {
+  modal.value?.show();
+}
 
 /* Lists */
 function selectList(list) {
@@ -42,8 +48,8 @@ onMounted(async () => {
 
 <template>
   <div class="body">
-    <observations-lists @selectList="selectList" />
-    <edit-dialog ref="editDialog" v-model="currentObservation" @delete="deleteObservation" />
+    <observations-lists @selectList="selectList" @edit="showModal" />
+    <edit-dialog ref="modal" v-model="currentObservation" @delete="deleteObservation" />
   </div>
   <div class="footer">
     <observation-input @add="addObservation" :lang="lang" />

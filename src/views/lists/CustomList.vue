@@ -3,7 +3,6 @@ import { computed, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
-import { useObservationsStore } from "@/stores/observations.js";
 import ListView from "@/components/ListView.vue";
 
 const props = defineProps(["observations"]);
@@ -17,8 +16,9 @@ const listsStore = useListsStore();
 const { sortBy, shareBirdList } = listsStore;
 const { currentSort, currentList } = storeToRefs(listsStore);
 
-const observationsStore = useObservationsStore();
-const { editObservation } = observationsStore;
+function edit() {
+  emit("edit")
+}
 
 const isListOwner = computed(() => currentUser.value.name === currentList.owner);
 
@@ -65,7 +65,7 @@ async function celebrate() {
     :sort="currentSort"
     @newLeader="celebrate"
     @sort="sortBy"
-    @edit="editObservation"
+    @edit="edit"
   >
     <template v-slot:header>
       <div class="list-header">

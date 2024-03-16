@@ -82,11 +82,6 @@ export const useObservationsStore = defineStore("observation", () => {
     currentObservation.value = obs;
   }
 
-  function editObservation(obs) {
-    currentObservation.value = obs;
-//    editDialog.value.showModal();
-  }
-
   async function deleteObservation(id) {
     db.observations.delete(id);
   }
@@ -99,7 +94,6 @@ export const useObservationsStore = defineStore("observation", () => {
     allMyObservations,
     allListObservations,
     addObservation,
-    editObservation,
     deleteObservation,
     selectObservation,
   };
