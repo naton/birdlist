@@ -37,4 +37,23 @@ function formatDate(date) {
   }).format(date);
 }
 
-export { getMonthName, getCurrentYear, cssColor, formatDate };
+function formatDateAndTime(date) {
+  return new Intl.DateTimeFormat(false, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  }).format(date);
+}
+
+function inputDate(date) {
+  if (!date) {
+    return;
+  }
+
+  return new Date(new Date(date).getTime() - new Date(date).getTimezoneOffset() * 60000).toISOString().substring(0, 16);
+}
+
+export { getMonthName, getCurrentYear, cssColor, formatDate, formatDateAndTime, inputDate };

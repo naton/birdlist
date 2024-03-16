@@ -1,8 +1,8 @@
 <script setup>
 import { computed } from "vue";
 import { db } from "../db";
-import UserIcon from "./UserIcon.vue";
-import { formatDate } from "../helpers";
+import UserIcon from "./icons/UserIcon.vue";
+import { formatDate } from "@/helpers";
 
 const props = defineProps(["comment", "user"]);
 

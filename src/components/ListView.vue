@@ -3,20 +3,23 @@ import { ref, reactive, computed, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { db } from "../db";
 import { useSettingsStore } from "@/stores/settings.js";
+import { useObservationsStore } from "@/stores/observations.js";
 import ObservationItem from "./ObservationItem.vue";
-import UserIcon from "./UserIcon.vue";
+import UserIcon from "./icons/UserIcon.vue";
 import SpeciesItem from "./SpeciesItem.vue";
 import CommentItem from "./CommentItem.vue";
 import SvgChart from "./SvgChart.vue";
-import { cssColor } from "../helpers";
+import { cssColor } from "@/helpers";
 
-const props = defineProps(["comments", "sort", "selected", "observations"]);
+const props = defineProps(["comments", "sort", "observations"]);
+const emit = defineEmits(["sort", "delete", "edit", "newLeader"]);
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
 const { currentUser } = storeToRefs(settingsStore);
 
-const emit = defineEmits(["sort", "select", "delete", "edit", "newLeader"]);
+const observationsStore = useObservationsStore();
+const { selectObservation } = observationsStore;
 
 const species = computed(() => [...new Set(props.observations.map((item) => item.name))].sort());
 const listId = computed(() => {
@@ -185,7 +188,7 @@ function emitSort(value) {
 }
 
 function emitSelect(obs) {
-  emit("select", obs);
+  selectObservation(obs);
 }
 
 function emitDelete(id) {
@@ -287,11 +290,10 @@ watch(currentLeader, (newLeader) => {
           v-for="obs in observationsByUser"
           :obs="obs"
           :key="obs.date"
-          :selected="props.selected"
-          :user="props.user"
+          :user="currentUser.name"
           @select="emitSelect(obs)"
           @delete="emitDelete(id)"
-          @edit="emitEdit(obs)"
+          @edit="emitEdit"
         ></observation-item>
       </transition-group>
     </section>

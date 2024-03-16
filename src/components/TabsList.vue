@@ -1,8 +1,8 @@
 <script setup>
 import { storeToRefs } from "pinia";
 import CreateList from "@/components/CreateList.vue";
-import { useSettingsStore } from "../stores/settings.js";
-import { useListsStore } from "../stores/lists.js";
+import { useSettingsStore } from "@/stores/settings.js";
+import { useListsStore } from "@/stores/lists.js";
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;

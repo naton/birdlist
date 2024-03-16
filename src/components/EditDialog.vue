@@ -1,10 +1,12 @@
 <script setup>
-import { ref } from "vue";
+import { ref, defineExpose } from "vue";
 import { storeToRefs } from 'pinia'
 import { getTiedRealmId } from "dexie-cloud-addon";
 import { db } from "../db";
+import { formatDateAndTime, inputDate } from "@/helpers";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
+import { useObservationsStore } from '../stores/observations.js'
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
@@ -13,31 +15,18 @@ const { currentUser } = storeToRefs(settingsStore)
 const listsStore = useListsStore()
 const { myLists } = storeToRefs(listsStore)
 
-const props = defineProps(["isOpen", "observation"]);
+const observationsStore = useObservationsStore();
+const { editDialog } = storeToRefs(observationsStore);
+
 const emit = defineEmits(["delete", "close"]);
 
-const selectedList = ref(props.observation.listId);
-const selectedListRealm = ref(props.observation.realmId);
-const currentName = ref(props.observation.name);
-const currentDate = ref(props.observation.date);
+const currentObservation = defineModel();
+
+const selectedList = ref(currentObservation?.value.listId);
+const selectedListRealm = ref(currentObservation?.value.realmId);
 
 function canEdit(owner) {
   return owner === "unauthorized" || currentUser.name === owner;
-}
-
-function formatDate(date) {
-  return new Intl.DateTimeFormat(false, {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  }).format(date);
-}
-
-function inputDate(date) {
-  return new Date(new Date(date).getTime() - new Date(date).getTimezoneOffset() * 60000).toISOString().substring(0, 16);
 }
 
 function updateList(val) {
@@ -45,21 +34,29 @@ function updateList(val) {
   selectedListRealm.value = getTiedRealmId(val);
 }
 
-function deleteAndClose(id) {
+function deleteAndClose(id, elm) {
   emit("delete", id);
-  emit("close");
+  close(elm);
+}
+
+function showModal() {
+  editDialog.$el.showModal();
+}
+
+function close(elm) {
+  elm.closest("dialog").close();
 }
 
 async function save() {
-  const name = currentName.value.trim();
-  const date = currentDate.value;
+  const name = currentObservation?.value.name.trim();
+  const date = currentObservation?.value.date;
+  const location = currentObservation?.value.location;
   const listId = selectedList.value;
   const realmId = selectedListRealm.value;
-  const location = props.observation.location;
   await db.transaction("rw", [db.lists, db.observations], async () => {
     // Move list into the realm (if not already there):
     await db.lists.update(listId, { realmId });
-    await db.observations.update(props.observation, {
+    await db.observations.update(currentObservation.value, {
       name,
       date,
       realmId,
@@ -74,16 +71,20 @@ function saveAndClose() {
   save();
   emit("close");
 }
+
+defineExpose({
+  showModal,
+});
 </script>
 
 <template>
-  <div class="dialog" v-if="props.isOpen">
-    <h2>{{ observation.name }}</h2>
-    <h3>{{ formatDate(observation.date) }}</h3>
-    <p class="margin-bottom">{{ t("By") }}: {{ observation.owner }}</p>
-    <div v-if="observation.location" class="margin-bottom">
+  <dialog ref="editDialog" class="dialog" v-if="currentObservation">
+    <h2>{{ currentObservation.name }}</h2>
+    <h3>{{ formatDateAndTime(currentObservation.date) }}</h3>
+    <p class="margin-bottom">{{ t("By") }}: {{ currentObservation.owner }}</p>
+    <div v-if="currentObservation.location" class="margin-bottom">
       <a
-        :href="`https://www.openstreetmap.org/#map=16/${observation.location.replace(',', '/')}`"
+        :href="`https://www.openstreetmap.org/#map=16/${currentObservation.location.replace(',', '/')}`"
         target="_blank"
         class="poi"
       >
@@ -97,11 +98,11 @@ function saveAndClose() {
       </a>
     </div>
 
-    <details v-if="canEdit(observation.owner)" class="margin-bottom">
+    <details v-if="canEdit(currentObservation?.owner)" class="margin-bottom">
       <summary>{{ t("Edit_Observation") }}</summary>
       <div class="margin-bottom">
         <label for="obs-name">{{ t("Change_Name") }}</label>
-        <input id="obs-name" type="text" v-model="currentName" />
+        <input id="obs-name" type="text" v-model="currentObservation.name" />
       </div>
 
       <div class="margin-bottom">
@@ -109,8 +110,8 @@ function saveAndClose() {
         <input
           id="obs-date"
           type="datetime-local"
-          @input="currentDate = new Date($event.target.value)"
-          :value="inputDate(currentDate)"
+          @input="currentObservation.date = new Date($event.target.value)"
+          :value="inputDate(currentObservation.date)"
         />
       </div>
 
@@ -122,25 +123,25 @@ function saveAndClose() {
             v-for="{ id, title } in myLists"
             :value="id"
             :key="id"
-            :selected="id === observation.listId && 'selected'"
+            :selected="id === currentObservation?.listId && 'selected'"
           >
             {{ title }}
           </option>
         </select>
       </div>
       <div class="margin-bottom">
-        <button type="button" class="secondary" @click="saveAndClose">{{ t("Save") }}</button>
-        <button type="button" @click="deleteAndClose(observation.id)">{{ t("Delete") }}</button>
+        <button type="button" class="secondary" @click="saveAndClose($event.target)">{{ t("Save") }}</button>
+        <button type="button" @click="deleteAndClose(currentObservation?.id, $event.target)">{{ t("Delete") }}</button>
       </div>
     </details>
 
-    <div v-if="canEdit(observation.owner)">
-      <button type="button" class="secondary" @click="emit('close')">{{ t("Cancel") }}</button>
+    <div v-if="canEdit(currentObservation?.owner)">
+      <button type="button" class="secondary" @click="close($event.target)">{{ t("Cancel") }}</button>
     </div>
     <div v-else>
-      <button type="button" class="secondary" @click="emit('close')">Stäng</button>
+      <button type="button" class="secondary" @click="close($event.target)">{{ t("Close") }}</button>
     </div>
-  </div>
+  </dialog>
 </template>
 
 <style>

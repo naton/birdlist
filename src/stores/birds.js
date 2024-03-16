@@ -10,6 +10,6 @@ export const useBirdsStore = defineStore('bird', () => {
 
     return {
         birds,
-        loadAllBirds
+        loadAllBirds,
     }
 })

@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from "vue";
-import { cssColor } from "../helpers";
+import { cssColor } from "@/helpers";
 
 const props = defineProps(["user", "score", "leader"]);
 

@@ -1,23 +1,30 @@
 <script setup>
-import { ref, onBeforeMount, onMounted } from "vue";
-import { storeToRefs } from 'pinia'
+import { onBeforeMount, onMounted } from "vue";
+import { storeToRefs } from "pinia";
 import { db } from "../db";
 import ObservationsLists from "@/components/ObservationsLists.vue";
+import EditDialog from "@/components/EditDialog.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
-import { useSettingsStore } from '../stores/settings.js'
-import { useBirdsStore } from '../stores/birds.js'
+import { useSettingsStore } from "@/stores/settings.js";
+import { useListsStore } from "@/stores/lists.js";
+import { useObservationsStore } from "@/stores/observations.js";
+import { useBirdsStore } from "@/stores/birds.js";
 
-const settingsStore = useSettingsStore()
-const { t } = settingsStore
-const { lang, currentUser } = storeToRefs(settingsStore)
+const settingsStore = useSettingsStore();
+const { lang } = storeToRefs(settingsStore);
 
-const birdStore = useBirdsStore()
-const { loadAllBirds } = birdStore
-const { birds } = storeToRefs(birdStore)
+const birdStore = useBirdsStore();
+const { loadAllBirds } = birdStore;
+const { birds } = storeToRefs(birdStore);
+
+const listsStore = useListsStore();
+const { currentList } = storeToRefs(listsStore);
+
+const observationsStore = useObservationsStore();
+const { currentObservation, editDialog } = storeToRefs(observationsStore);
+const { addObservation, deleteObservation } = observationsStore;
 
 /* Lists */
-const currentList = ref("monthly");
-
 function selectList(list) {
   // Calculated lists come as strings, others are full objects
   if (typeof list === "string") {
@@ -28,46 +35,9 @@ function selectList(list) {
   }
 }
 
-/* Observations */
-async function addObservation(ev, listId, location) {
-  const isCalculatedList = currentList.value.id == "monthly" || currentList.value.id == "everything";
-  let bird = ev.target.value;
-  let date = new Date();
-  const isBatchImport = bird.includes(","); // Probably multiple birds
-  const hasCustomDate = bird.startsWith("20") && bird.includes(":"); // Probably a date
-
-  if (hasCustomDate) {
-    const customDate = new Date(bird.split(":")[0]);
-    date = isNaN(customDate) ? new Date() : customDate;
-    bird = bird.split(":")[1];
-  }
-
-  async function add(bird) {
-    await db.observations.add({
-      name: bird.trim(),
-      date: date,
-      realmId: isCalculatedList ? undefined : currentList.value.realmId,
-      listId: isCalculatedList ? undefined : currentList.value.id, // Any ID other than defaults are valid here
-      location: location,
-    });
-  }
-
-  if (isBatchImport) {
-    const birds = bird.split(",");
-    birds.forEach(async (bird) => add(bird));
-  } else {
-    add(bird);
-  }
-
-  // Reset form field value
-  ev.target.value = "";
-}
-
-let newLeaderConfetti;
-
 onBeforeMount(() => {
-  loadAllBirds(lang.value)
-}),
+  loadAllBirds(lang.value);
+});
 
 onMounted(async () => {
   /* Load list from hash in URL, if available */
@@ -76,40 +46,16 @@ onMounted(async () => {
     const list = await db.lists.get(listId);
     currentList.value = list ? list : { id: "monthly" };
   }
-
-  /* Prepare to celebrate new leader */
-  const canvas = document.getElementById("canvas");
-
-  if (typeof confetti !== "undefined") {
-    newLeaderConfetti = await confetti.create(canvas, {
-      resize: true,
-      useWorker: true,
-    });
-  }
 });
-
-async function celebrate() {
-  function randomInRange(min, max) {
-    return Math.random() * (max - min) + min;
-  }
-
-  if (typeof newLeaderConfetti !== "undefined") {
-    await newLeaderConfetti({
-      angle: randomInRange(55, 105),
-      spread: randomInRange(50, 70),
-      particleCount: randomInRange(80, 120),
-      origin: { y: 0.4 },
-    });
-  }
-}
 </script>
 
 <template>
   <div class="body">
-    <observations-lists @selectList="selectList" @newLeader="celebrate" :list="currentList" :user="currentUser.name" :key="currentUser.name" />
+    <observations-lists @selectList="selectList" />
+    <edit-dialog ref="editDialog" v-model="currentObservation" @delete="deleteObservation" />
   </div>
   <div class="footer">
-    <observation-input @add="addObservation" :list="currentList" />
+    <observation-input @add="addObservation" />
     <datalist id="birds">
       <option v-for="(bird, index) in birds" :key="index" :value="bird.name">{{ bird.name }}</option>
     </datalist>

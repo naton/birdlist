@@ -1,5 +1,5 @@
 <script setup>
-import UserIcon from "./UserIcon.vue";
+import UserIcon from "./icons/UserIcon.vue";
 
 defineProps(["obs", "bird"]);
 </script>

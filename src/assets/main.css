@@ -240,19 +240,15 @@ button.secondary {
 }
 
 /* Dialogs */
-.dialog {
-  position: fixed;
+.dialog[open] {
   display: grid;
-  top: 2%;
-  right: 2%;
-  left: 2%;
-  bottom: 2%;
+  width: 100%;
+  height: 100dvh;
+  margin: 1rem;
+  padding: 1rem;
   border: 2px solid;
   background-color: var(--color-background);
-  padding: 1rem 1rem 30%;
   place-content: center;
-  z-index: 3;
-  outline: 40px solid rgba(0, 0, 0, 0.5);
 }
 
 .user-nav:has(.list-enter-active) {

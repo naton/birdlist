@@ -21,8 +21,7 @@ const { currentList } = storeToRefs(listsStore)
 const observationsStore = useObservationsStore()
 const { allListObservations, allThisMonth, allMyObservations } = storeToRefs(observationsStore)
 
-const props = defineProps(["list", "user"]);
-const emit = defineEmits(["selectList", "newLeader"]);
+const emit = defineEmits(["openDialog", "selectList", "newLeader"]);
 
 const allComments = ref([]);
 
@@ -72,9 +71,11 @@ onMounted(() => {
     <template v-slot:[getSlotName(currentList.id)]>
       <div class="body-content">
         <monthly-list v-if="currentList.id === 'monthly'"
-          :observations="allThisMonth"></monthly-list>
+          :observations="allThisMonth"
+        ></monthly-list>
         <yearly-list v-else-if="currentList.id === 'everything'"
-          :observations="allMyObservations"></yearly-list>
+          :observations="allMyObservations"
+        ></yearly-list>
         <custom-list v-else
           :observations="allListObservations"
           @new-leader="newLeader"
