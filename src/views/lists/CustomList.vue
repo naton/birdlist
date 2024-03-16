@@ -63,6 +63,7 @@ async function celebrate() {
   <list-view
     :observations="props.observations"
     :sort="currentSort"
+    :list="currentList"
     @newLeader="celebrate"
     @sort="sortBy"
     @edit="edit"

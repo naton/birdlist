@@ -1,8 +1,6 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { storeToRefs } from 'pinia'
-import { liveQuery } from "dexie";
-import { db } from "../db";
 import TabsList from "@/components/TabsList.vue";
 import CustomList from "@/views/lists/CustomList.vue";
 import YearlyList from "@/views/lists/YearlyList.vue";
@@ -11,6 +9,7 @@ import { getCurrentYear, getMonthName } from "../helpers";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from '../stores/lists.js'
 import { useObservationsStore } from '../stores/observations.js'
+import { useCommentsStore } from "@/stores/comments.js";
 
 const settingsStore = useSettingsStore()
 const { currentYear, currentMonth } = storeToRefs(settingsStore)
@@ -21,23 +20,15 @@ const { currentList } = storeToRefs(listsStore)
 const observationsStore = useObservationsStore()
 const { allListObservations, allThisMonth, allMyObservations } = storeToRefs(observationsStore)
 
+const commentsStore = useCommentsStore()
+const { allComments } = storeToRefs(commentsStore)
+
 const emit = defineEmits(["edit", "selectList", "newLeader"]);
 
-const allComments = ref([]);
-
 /* Comments */
-liveQuery(async () => await db.comments.toArray()).subscribe(
-  (comments) => {
-    allComments.value = comments;
-  },
-  (error) => {
-    console.log(error);
-  }
-);
-
 const listComments = computed(() => {
   const listId = currentList.id;
-  return allComments.value.filter((comment) => comment.listId == listId);
+  return listId ? allComments.value?.filter((comment) => comment.listId == listId) : [];
 });
 
 function edit() {

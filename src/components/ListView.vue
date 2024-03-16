@@ -11,7 +11,7 @@ import CommentItem from "./CommentItem.vue";
 import SvgChart from "./SvgChart.vue";
 import { cssColor } from "@/helpers";
 
-const props = defineProps(["comments", "sort", "observations"]);
+const props = defineProps(["list", "comments", "sort", "observations"]);
 const emit = defineEmits(["sort", "delete", "edit", "newLeader"]);
 
 const settingsStore = useSettingsStore();
@@ -22,13 +22,6 @@ const observationsStore = useObservationsStore();
 const { selectObservation } = observationsStore;
 
 const species = computed(() => [...new Set(props.observations.map((item) => item.name))].sort());
-const listId = computed(() => {
-  if (!props.comments) {
-    return;
-  }
-
-  return document.location.hash.replace("#", "");
-});
 
 const svg = reactive({
   w: 0,
@@ -205,13 +198,17 @@ const comment = ref("");
 async function addComment() {
   await db.comments.add({
     comment: comment.value.trim(),
-    userId: currentUser.value?.name,
+    userId: currentUser.value.name,
     date: new Date(),
-    listId: listId.value,
+    listId: props.list.listId,
   });
 
   // Reset form field value
   comment.value = "";
+}
+
+function noOfComments() {
+  return props.comments ? Object.keys(props.comments).length : "0"
 }
 
 watch(currentLeader, (newLeader) => {
@@ -273,14 +270,14 @@ watch(currentLeader, (newLeader) => {
         >{{ t("Species") }} <span class="nav-count">({{ Object.keys(speciesByUser).length }})</span></a
       >
       <a
-        v-if="listId"
+        v-if="props.comments"
         href="#comments"
         class="nav-link"
         :class="{
           current: sort == 'comments',
         }"
         @click.prevent="emitSort('comments')"
-        >💬 <span class="nav-count">({{ Object.keys(comments).length }})</span></a
+        >💬 <span class="nav-count">({{ noOfComments() }})</span></a
       >
     </nav>
 
@@ -304,19 +301,19 @@ watch(currentLeader, (newLeader) => {
       </transition-group>
     </section>
 
-    <section id="comments" v-if="listId && props.sort == 'comments'">
+    <section id="comments" v-if="props.list && props.sort == 'comments'">
       <form>
         <div>
           <textarea
             v-model="comment"
             class="comment-input"
-            placeholder="Skriv nåt trevligt till de andra på listan…"
+            :placeholder="t('Write_Something_To_The_Others')"
           ></textarea>
-          <button class="comment-btn" @click.prevent="addComment">Skicka</button>
+          <button class="comment-btn" @click.prevent="addComment">{{ t("Submit") }}</button>
         </div>
       </form>
       <transition-group tag="ol" name="list" class="list">
-        <comment-item v-for="comment in comments" :comment="comment" :user="currentUser.name" :key="comment.id"></comment-item>
+        <comment-item v-for="comment in props.comments" :comment="comment" :user="currentUser.name" :key="comment.id"></comment-item>
       </transition-group>
     </section>
 
