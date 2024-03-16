@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, onMounted } from "vue";
+import { onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { db } from "../db";
 import ObservationsLists from "@/components/ObservationsLists.vue";
@@ -8,14 +8,9 @@ import ObservationInput from "@/components/ObservationInput.vue";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
 import { useObservationsStore } from "@/stores/observations.js";
-import { useBirdsStore } from "@/stores/birds.js";
 
 const settingsStore = useSettingsStore();
 const { lang } = storeToRefs(settingsStore);
-
-const birdStore = useBirdsStore();
-const { loadAllBirds } = birdStore;
-const { birds } = storeToRefs(birdStore);
 
 const listsStore = useListsStore();
 const { currentList } = storeToRefs(listsStore);
@@ -35,10 +30,6 @@ function selectList(list) {
   }
 }
 
-onBeforeMount(() => {
-  loadAllBirds(lang.value);
-});
-
 onMounted(async () => {
   /* Load list from hash in URL, if available */
   if (!!document.location.hash && document.location.hash.startsWith("#lst")) {
@@ -55,10 +46,7 @@ onMounted(async () => {
     <edit-dialog ref="editDialog" v-model="currentObservation" @delete="deleteObservation" />
   </div>
   <div class="footer">
-    <observation-input @add="addObservation" />
-    <datalist id="birds">
-      <option v-for="(bird, index) in birds" :key="index" :value="bird.name">{{ bird.name }}</option>
-    </datalist>
+    <observation-input @add="addObservation" :lang="lang" />
   </div>
   <canvas id="canvas"></canvas>
 </template>

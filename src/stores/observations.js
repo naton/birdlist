@@ -47,9 +47,9 @@ export const useObservationsStore = defineStore("observation", () => {
     return allObservations.value.filter((obs) => obs.listId == listId);
   });
 
-  async function addObservation(ev, listId, location) {
+  async function addObservation(bird, location) {
+    console.log(bird, location)
     const isCalculatedList = currentList.value.id == "monthly" || currentList.value.id == "everything";
-    let bird = ev.target.value;
     let date = new Date();
     const isBatchImport = bird.includes(","); // Probably multiple birds
     const hasCustomDate = bird.startsWith("20") && bird.includes(":"); // Probably a date
@@ -76,9 +76,6 @@ export const useObservationsStore = defineStore("observation", () => {
     } else {
       add(bird);
     }
-  
-    // Reset form field value
-    ev.target.value = "";
   }
 
   function selectObservation(obs) {

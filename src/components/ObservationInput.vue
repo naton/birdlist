@@ -1,11 +1,18 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
 import { storeToRefs } from 'pinia'
 import AddLocationIcon from "./icons/AddLocationIcon.vue";
 import FetchingLocationIcon from "./icons/FetchingLocationIcon.vue";
 import LocationFoundIcon from "./icons/LocationFoundIcon.vue";
+import vue3SimpleTypeahead from "vue3-simple-typeahead";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
+import { useBirdsStore } from "@/stores/birds.js";
+import 'vue3-simple-typeahead/dist/vue3-simple-typeahead.css'; //Optional default CSS
+
+const birdStore = useBirdsStore();
+const { loadAllBirds } = birdStore;
+const { birds } = storeToRefs(birdStore);
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
@@ -14,6 +21,7 @@ const listsStore = useListsStore()
 const { currentList } = storeToRefs(listsStore)
 
 const emit = defineEmits(["add"]);
+const props = defineProps(["lang"]);
 
 const calculatingPosition = ref(false);
 const currentPosition = ref("");
@@ -46,6 +54,17 @@ function toggleCurrentLocation() {
     currentPosition.value = "";
   }
 }
+
+const addObservationInput = ref();
+
+function add(bird) {
+  emit('add', bird.name, currentPosition.value);
+  addObservationInput.value.clearInput();
+}
+
+onBeforeMount(() => {
+  loadAllBirds(props.lang);
+});
 </script>
 
 <template>
@@ -62,17 +81,18 @@ function toggleCurrentLocation() {
       <fetching-location-icon v-else-if="calculatingPosition"></fetching-location-icon>
       <location-found-icon v-else></location-found-icon>
     </button>
-    <input
-      name="bird"
-      type="text"
-      list="birds"
-      @change="emit('add', $event, currentList, currentPosition)"
-      autocomplete="off"
+    <vue3-simple-typeahead
+      ref="addObservationInput"
       :placeholder="
         currentList.id?.startsWith('lst')
           ? t('Add_Bird_To') + `${currentList.title}…`
           : t('Enter_The_Name_Of_The_Bird')"
-    />
+      :items="birds"
+      :minInputLength="1"
+      :itemProjection="(bird) => bird.name"
+      @selectItem="(bird) => add(bird)"
+    >
+    </vue3-simple-typeahead>
   </div>
 </template>
 
@@ -91,7 +111,7 @@ function toggleCurrentLocation() {
   box-sizing: border-box;
   color: var(--color-text);
   background: var(--color-background);
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   appearance: none;
 }
 
@@ -127,5 +147,21 @@ function toggleCurrentLocation() {
     opacity: 0;
     transform: scale(1);
   }
+}
+
+.add-observation .simple-typeahead-list {
+  bottom: 3rem;
+  border-radius: var(--radius);
+  box-shadow: rgb(17 17 26 / 12%) 0 -6px 12px 0;
+}
+
+.add-observation .simple-typeahead-list-footer,
+.add-observation .simple-typeahead-list-header,
+.add-observation .simple-typeahead-list-item {
+    background-color: var(--color-background) !important;
+}
+
+.add-observation .simple-typeahead-list-item-active {
+  background-color: var(--color-background-dim) !important;
 }
 </style>
