@@ -30,7 +30,8 @@ export const useSettingsStore = defineStore("settings", () => {
     }
 
     function setThemeColor() {
-      document.querySelector('meta[name="theme-color"]').content = getThemeColor();
+      document.querySelector('meta[name="theme-color"]').content =
+      document.querySelector('meta[name="msapplication-TileColor"]').content = getThemeColor();
     }
 
     watch(lang, (newLang) => {
@@ -39,7 +40,9 @@ export const useSettingsStore = defineStore("settings", () => {
 
     watch(hue, (newHue) => {
       document.documentElement.style = `--hue: ${newHue}`;
-      setThemeColor();
+      if (document.querySelector(".body-nav")) {
+        setThemeColor();
+      }
     });
 
     var matchMediaDark = window.matchMedia("(prefers-color-scheme: dark)");

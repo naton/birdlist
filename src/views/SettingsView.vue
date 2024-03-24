@@ -15,11 +15,8 @@ function logout() {
 
 <template>
     <div class="body">
-        <div class="body-nav">
-            <h1>{{ t("Settings") }}</h1>
-            <button type="button" class="button" @click="logout()">{{ t("Logout") }}</button>
-        </div>
         <div class="body-content settings">
+            <h1>{{ t("Settings") }}</h1>
             <div>
                 <label for="lang">{{ t("Language") }}</label>
                 <select id="lang" v-model="lang">
@@ -31,6 +28,7 @@ function logout() {
                 <label for="hue">{{ t("Theme_Color") }}</label>
                 <input id="hue" type="range" v-model="hue" min="0" max="360">
             </div>
+            <button type="button" class="button" @click="logout()">{{ t("Logout") }}</button>
         </div>
     </div>
 </template>
@@ -45,5 +43,9 @@ function logout() {
     align-self: start;
     gap: 1rem;
     padding: 1rem;
+}
+
+input[type="range"] {
+    width: 100%;
 }
 </style>

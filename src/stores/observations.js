@@ -83,7 +83,7 @@ export const useObservationsStore = defineStore("observation", () => {
   }
 
   async function deleteObservation(id) {
-    db.observations.delete(id);
+    await db.observations.delete(id);
   }
 
   return {

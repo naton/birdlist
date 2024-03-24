@@ -48,15 +48,6 @@ const { t } = settingsStore
   margin-bottom: 2rem;
 }
 
-.hidden-visually {
-  position: absolute;
-  clip: rect(0, 0, 0, 0);
-  overflow: hidden;
-  width: 0;
-  height: 0;
-  margin: 0;
-}
-
 .privacy-notes {
   max-width: 45ch;
   margin-top: 2rem;
