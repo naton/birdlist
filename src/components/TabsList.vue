@@ -21,12 +21,7 @@ function emitActiveTab(list) {
 <template>
   <nav class="body-nav">
     <ul class="c-tabs">
-      <li
-        class="c-tabs__tab"
-        :class="{
-          'c-tabs__tab--active': 'everything' !== currentList.id && 'monthly' !== currentList.id,
-        }"
-      >
+      <li class="c-tabs__tab" :class="{ 'c-tabs__tab--active': 'everything' !== currentList.id && 'monthly' !== currentList.id, }">
         <label>
           <select name="name" v-model="currentList" class="transparent-menu">
             <option value="monthly">{{ t("Select_List") }}…</option>
@@ -35,40 +30,16 @@ function emitActiveTab(list) {
             </option>
           </select>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
-            <path
-              fill="currentColor"
-              d="M11 9H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0-8H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0 4H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Z"
-            />
+            <path fill="currentColor" d="M11 9H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0-8H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Zm0 4H1a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2Z" />
           </svg>
         </label>
       </li>
       <li class="c-tabs__tab" :class="{ 'c-tabs__tab--active': 'monthly' === currentList.id }">
-        <input
-          type="radio"
-          name="list"
-          id="tab-monthly"
-          :value="currentList.id"
-          :checked="'monthly' === currentList.id"
-          @change="emitActiveTab('monthly')"
-          hidden
-        />
+        <input type="radio" name="list" id="tab-monthly" :value="currentList.id" :checked="'monthly' === currentList.id" @change="emitActiveTab('monthly')" hidden />
         <label for="tab-monthly">{{ props.monthLabel }}</label>
       </li>
-      <li
-        class="c-tabs__tab"
-        :class="{
-          'c-tabs__tab--active': 'everything' === currentList.id,
-        }"
-      >
-        <input
-          type="radio"
-          name="list"
-          id="tab-everything"
-          :value="currentList.id"
-          :checked="'everything' === currentList.id"
-          @change="emitActiveTab('everything')"
-          hidden
-        />
+      <li class="c-tabs__tab" :class="{ 'c-tabs__tab--active': 'everything' === currentList.id, }">
+        <input type="radio" name="list" id="tab-everything" :value="currentList.id" :checked="'everything' === currentList.id" @change="emitActiveTab('everything')" hidden />
         <label for="tab-everything">{{ props.yearLabel }}</label>
       </li>
       <create-list @activate="emitActiveTab" :list="currentList" />

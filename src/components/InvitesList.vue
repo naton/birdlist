@@ -11,16 +11,16 @@ const listInvites = useObservable(db.cloud.invites);
 </script>
 
 <template>
-    <div class="invites" v-if="listInvites.length">
-        <h2>🎉 {{ t("You_Have_Been_Invited_To_A_List") }}!</h2> 
-        <ul>
-            <li v-for="invite in listInvites" :key="invite.id">
-                <p>{{ t("You_Have_Been_Invited_To_The_List") }} <b>{{ invite.realm?.name }}</b> {{ t("By").toLowerCase() }} {{ invite.invitedBy?.name }}.</p>
-                <button class="btn" @click="invite.accept()">{{ t("Accept") }}</button>
-                <button class="btn" @click="invite.reject()">{{ t("Deny") }}</button>
-            </li>
-        </ul>
-    </div>
+  <div class="invites" v-if="listInvites.length">
+    <h2>🎉 {{ t("You_Have_Been_Invited_To_A_List") }}!</h2>
+    <ul>
+      <li v-for="invite in listInvites" :key="invite.id">
+        <p>{{ t("You_Have_Been_Invited_To_The_List") }} <b>{{ invite.realm?.name }}</b> {{ t("By").toLowerCase() }} {{ invite.invitedBy?.name }}.</p>
+        <button class="btn" @click="invite.accept()">{{ t("Accept") }}</button>
+        <button class="btn" @click="invite.reject()">{{ t("Deny") }}</button>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <style>

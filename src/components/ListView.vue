@@ -167,9 +167,9 @@ const speciesByUser = computed(() => {
   return selectedUser.value === null
     ? groupBy(props.observations, "name")
     : groupBy(
-        props.observations.filter((obs) => obs.owner === selectedUser.value),
-        "name"
-      );
+      props.observations.filter((obs) => obs.owner === selectedUser.value),
+      "name"
+    );
 });
 
 function changeUser(user) {
@@ -226,13 +226,7 @@ watch(currentLeader, (newLeader) => {
   <slot name="default">
     <nav class="user-nav" v-if="users?.length > 1">
       <transition-group name="list" appear>
-        <button
-          v-for="{ name, score, leader } in users"
-          class="user-button"
-          :class="name === selectedUser && 'user-button--active'"
-          @click="changeUser(name)"
-          :key="name"
-        >
+        <button v-for="{ name, score, leader } in users" class="user-button" :class="name === selectedUser && 'user-button--active'" @click="changeUser(name)" :key="name">
           <user-icon :user="name" :score="score" :leader="leader">
             <span :class="name === props.user && 'me'">{{ name }}</span>
           </user-icon>
@@ -241,57 +235,18 @@ watch(currentLeader, (newLeader) => {
     </nav>
 
     <div class="chart-wrapper">
-      <svg-chart
-        v-if="users?.length > 1"
-        :datasets="datasets"
-        :options="options"
-        :svg="svg"
-        :user="selectedUser"
-      ></svg-chart>
+      <svg-chart v-if="users?.length > 1" :datasets="datasets" :options="options" :svg="svg" :user="selectedUser"></svg-chart>
     </div>
 
     <nav class="nav" v-if="props.observations.length">
-      <a
-        href="#bydate"
-        class="nav-link"
-        :class="{
-          current: sort == 'bydate',
-        }"
-        @click.prevent="emitSort('bydate')"
-        >{{ t("Observations")}} <span class="nav-count">({{ observationsByUser.length }})</span></a
-      >
-      <a
-        href="#byname"
-        class="nav-link"
-        :class="{
-          current: sort == 'byname',
-        }"
-        @click.prevent="emitSort('byname')"
-        >{{ t("Species") }} <span class="nav-count">({{ Object.keys(speciesByUser).length }})</span></a
-      >
-      <a
-        v-if="props.comments"
-        href="#comments"
-        class="nav-link"
-        :class="{
-          current: sort == 'comments',
-        }"
-        @click.prevent="emitSort('comments')"
-        >💬 <span class="nav-count">({{ noOfComments() }})</span></a
-      >
+      <a href="#bydate" class="nav-link" :class="{ current: sort == 'bydate', }" @click.prevent="emitSort('bydate')">{{ t("Observations") }} <span class="nav-count">({{ observationsByUser.length }})</span></a>
+      <a href="#byname" class="nav-link" :class="{ current: sort == 'byname', }" @click.prevent="emitSort('byname')">{{ t("Species") }} <span class="nav-count">({{ Object.keys(speciesByUser).length }})</span></a>
+      <a v-if="props.comments" href="#comments" class="nav-link" :class="{ current: sort == 'comments', }" @click.prevent="emitSort('comments')">💬 <span class="nav-count">({{ noOfComments() }})</span></a>
     </nav>
 
     <section id="bydate" v-if="props.observations.length && props.sort == 'bydate'">
       <transition-group tag="ul" name="list" class="list">
-        <observation-item
-          v-for="obs in observationsByUser"
-          :obs="obs"
-          :key="obs.date"
-          :user="currentUser.name"
-          @select="emitSelect(obs)"
-          @delete="emitDelete(id)"
-          @edit="emitEdit"
-        ></observation-item>
+        <observation-item v-for="obs in observationsByUser" :obs="obs" :key="obs.date" :user="currentUser.name" @select="emitSelect(obs)" @delete="emitDelete(id)" @edit="emitEdit"></observation-item>
       </transition-group>
     </section>
 
@@ -304,11 +259,7 @@ watch(currentLeader, (newLeader) => {
     <section id="comments" v-if="props.list && props.sort == 'comments'">
       <form>
         <div>
-          <textarea
-            v-model="comment"
-            class="comment-input"
-            :placeholder="t('Write_Something_To_The_Others')"
-          ></textarea>
+          <textarea v-model="comment" class="comment-input" :placeholder="t('Write_Something_To_The_Others')"></textarea>
           <button class="comment-btn" @click.prevent="addComment">{{ t("Submit") }}</button>
         </div>
       </form>

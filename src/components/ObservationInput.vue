@@ -69,29 +69,14 @@ onBeforeMount(() => {
 
 <template>
   <div class="add-observation">
-    <button
-      type="button"
-      @click="toggleCurrentLocation"
-      :class="{
-        'is-tracking': calculatingPosition,
-        'has-position': currentPosition,
-      }"
-    >
+    <button type="button" @click="toggleCurrentLocation" :class="{ 'is-tracking': calculatingPosition, 'has-position': currentPosition, }">
       <add-location-icon v-if="!currentPosition && !calculatingPosition"></add-location-icon>
       <fetching-location-icon v-else-if="calculatingPosition"></fetching-location-icon>
       <location-found-icon v-else></location-found-icon>
     </button>
-    <vue3-simple-typeahead
-      ref="addObservationInput"
-      :placeholder="
-        currentList.id?.startsWith('lst')
-          ? t('Add_Bird_To') + `${currentList.title}…`
-          : t('Enter_The_Name_Of_The_Bird')"
-      :items="birds"
-      :minInputLength="1"
-      :itemProjection="(bird) => bird.name"
-      @selectItem="(bird) => add(bird)"
-    >
+    <vue3-simple-typeahead ref="addObservationInput" :placeholder="currentList.id?.startsWith('lst')
+      ? t('Add_Bird_To') + `${currentList.title}…`
+      : t('Enter_The_Name_Of_The_Bird')" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => add(bird)">
     </vue3-simple-typeahead>
   </div>
 </template>
@@ -158,7 +143,7 @@ onBeforeMount(() => {
 .add-observation .simple-typeahead-list-footer,
 .add-observation .simple-typeahead-list-header,
 .add-observation .simple-typeahead-list-item {
-    background-color: var(--color-background) !important;
+  background-color: var(--color-background) !important;
 }
 
 .add-observation .simple-typeahead-list-item-active {

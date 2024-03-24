@@ -53,28 +53,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <tabs-list
-    :monthLabel="getMonthName(currentMonth, 'long')"
-    :yearLabel="getCurrentYear(currentYear)"
-    @activate="selectList"
-  >
+  <tabs-list :monthLabel="getMonthName(currentMonth, 'long')" :yearLabel="getCurrentYear(currentYear)" @activate="selectList">
     <template v-slot:[`tabPanel-${currentList.id}`]>
       <div class="body-content">
-        <monthly-list v-if="currentList.id === 'monthly'"
-          :observations="allThisMonth"
-          @edit="edit"
-          ></monthly-list>
-        <yearly-list v-else-if="currentList.id === 'everything'"
-          :observations="allMyObservations"
-          @activate="selectList"
-          @edit="edit"
-        ></yearly-list>
-        <custom-list v-else
-          :observations="allListObservations"
-          :comments="listComments"
-          @edit="edit"
-          @new-leader="newLeader"
-          ></custom-list>
+        <monthly-list v-if="currentList.id === 'monthly'" :observations="allThisMonth" @edit="edit"></monthly-list>
+        <yearly-list v-else-if="currentList.id === 'everything'" :observations="allMyObservations" @activate="selectList" @edit="edit"></yearly-list>
+        <custom-list v-else :observations="allListObservations" :comments="listComments" @edit="edit" @new-leader="newLeader"></custom-list>
       </div>
     </template>
   </tabs-list>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineExpose } from "vue";
+import { ref } from "vue";
 import { storeToRefs } from 'pinia'
 import { getTiedRealmId } from "dexie-cloud-addon";
 import { db } from "../db";
@@ -87,25 +87,15 @@ defineExpose({
     <h3 v-if="!isEditing">{{ formatDateAndTime(currentObservation.date) }}</h3>
     <div v-else>
       <label for="obs-date">{{ t("Change_Date") }}</label>
-      <input
-        id="obs-date"
-        type="datetime-local"
-        @input="currentObservation.date = new Date($event.target.value)"
-        :value="inputDate(currentObservation.date)"
-      />
+      <input id="obs-date" type="datetime-local" @input="currentObservation.date = new Date($event.target.value)" :value="inputDate(currentObservation.date)" />
     </div>
 
-    <p v-if="!isEditing">{{ t("List")}}: {{ currentListName() }}</p>
+    <p v-if="!isEditing">{{ t("List") }}: {{ currentListName() }}</p>
     <div v-else>
       <label for="obs-list">{{ t("Change_List") }}</label>
       <select id="obs-list" v-model="currentObservation.listId">
         <option value="">{{ t("No_Special_List") }}</option>
-        <option
-          v-for="{ id, title } in myLists"
-          :value="id"
-          :key="id"
-          :selected="id === currentObservation?.listId && 'selected'"
-        >
+        <option v-for="{ id, title } in myLists" :value="id" :key="id" :selected="id === currentObservation?.listId && 'selected'">
           {{ title }}
         </option>
       </select>
@@ -113,11 +103,7 @@ defineExpose({
 
     <p class="margin-bottom">{{ t("By") }}: {{ currentObservation.owner }}</p>
     <div v-if="currentObservation.location" class="margin-bottom">
-      <a
-        :href="`https://www.openstreetmap.org/#map=16/${currentObservation.location.replace(',', '/')}`"
-        target="_blank"
-        class="poi"
-      >
+      <a :href="`https://www.openstreetmap.org/#map=16/${currentObservation.location.replace(',', '/')}`" target="_blank" class="poi">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="24" height="24">
           <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
             <path d="M13.5 6c0 4.5-5.5 9.5-5.5 9.5s-5.5-5-5.5-9.5a5.5 5.5 0 0 1 11 0Z" />

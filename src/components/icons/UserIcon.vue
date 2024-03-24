@@ -10,13 +10,7 @@ const initial = computed(() => {
 </script>
 
 <template>
-  <span
-    class="user"
-    :style="{
-      color: cssColor(props.user),
-      backgroundColor: cssColor(props.user),
-    }"
-    ><span class="initial">{{ initial }}</span>
+  <span class="user" :style="{ color: cssColor(props.user), backgroundColor: cssColor(props.user), }"><span class="initial">{{ initial }}</span>
     <span v-if="props.score" class="score" :class="props.leader && 'leader'">{{ props.score }}</span>
   </span>
   <slot></slot>
@@ -94,6 +88,7 @@ const initial = computed(() => {
   z-index: -1;
   box-shadow: 0 1px 0 0 var(--co-grey-dark);
 }
+
 .score.leader::after {
   transform: rotate(350deg) skewX(330deg);
 }

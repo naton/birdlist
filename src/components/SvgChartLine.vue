@@ -9,7 +9,7 @@ const lib = {
   },
   range(start, end, tick) {
     const s = Math.round(start / tick) * tick
-    return Array.from({ 
+    return Array.from({
       length: Math.floor((end - start) / tick)
     }, (v, k) => {
       return k * tick + s
@@ -33,10 +33,10 @@ const styles = computed(() => {
 });
 
 const pathD = computed(() => {
-  return pointsPositions.value.reduce((acc, e, i, a) => i === 0 
+  return pointsPositions.value.reduce((acc, e, i, a) => i === 0
     ? `M ${a[a.length - 1][0]},${props.svg.h} L ${e[0]},${props.svg.h} L ${e[0]},${e[1]}`
     : `${acc} ${bezierCommand(e, i, a)}`
-  , "");
+    , "");
 });
 
 const pointsPositions = computed(() => {
