@@ -6,7 +6,7 @@ import { useSettingsStore } from './stores/settings.js'
 import InvitesList from './components/InvitesList.vue'
 
 const settingsStore = useSettingsStore()
-const { t, loadTexts } = settingsStore
+const { loadTexts } = settingsStore
 const { lang, texts } = storeToRefs(settingsStore)
 
 onBeforeMount(() => {

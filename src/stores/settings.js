@@ -48,8 +48,8 @@ export const useSettingsStore = defineStore("settings", () => {
     var matchMediaDark = window.matchMedia("(prefers-color-scheme: dark)");
     var matchMediaLight = window.matchMedia("(prefers-color-scheme: light)");
 
-    matchMediaDark.addEventListener("change", (e) => setThemeColor());
-    matchMediaLight.addEventListener("change", (e) => setThemeColor());
+    matchMediaDark.addEventListener("change", () => setThemeColor());
+    matchMediaLight.addEventListener("change", () => setThemeColor());
 
     return {
       lang,
