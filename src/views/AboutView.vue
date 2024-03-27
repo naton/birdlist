@@ -1,15 +1,52 @@
 <script setup>
-import { storeToRefs } from 'pinia'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import * as THREE from 'three'
+import BIRDS from 'vanta/dist/vanta.birds.min'
 import { useSettingsStore } from '../stores/settings.js'
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
+
+const vantaRef = ref();
+let vantaEffect = null;
+
+onMounted(() => {
+  vantaEffect = BIRDS({
+    el: vantaRef.value,
+    THREE: THREE,
+    mouseControls: false,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 400.00,
+    minWidth: 200.00,
+    scale: 1.00,
+    scaleMobile: 1.00,
+    backgroundColor: 0xffffff,
+    color1: 0x898989,
+    color2: 0x4d4d4d,
+    colorMode: "lerpGradient",
+    birdSize: 0.80,
+    wingSpan: 14.00,
+    speedLimit: 9.00,
+    separation: 41.00,
+    alignment: 33.00,
+    cohesion: 42.00,
+    backgroundAlpha: 0.00,
+  })
+})
+
+onBeforeUnmount(() => {
+  if (vantaEffect) {
+    vantaEffect.destroy()
+  }
+})
 </script>
 
 <template>
-  <div class="about">
+  <div class="about" ref="vantaRef">
     <div class="about-content">
       <h1 class="hidden-visually">{{ t("About")}} Birdlist</h1>
+      {{ currentTheme }}
       <picture>
         <source srcset="/logo.webp" type="image/webp" />
         <img src="/logo.png" alt="Birdlist" width="460" height="170" class="logo" />
@@ -34,6 +71,10 @@ const { t } = settingsStore
   place-items: center;
   padding: 1rem;
   align-content: center;
+}
+
+.about canvas {
+  filter: invert(0.5);
 }
 
 .about-content {
