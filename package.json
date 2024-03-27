@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@vueuse/rxjs": "^10.1.2",
-    "dexie": "^4.0.1-beta.14",
-    "dexie-cloud-addon": "^4.0.1-beta.58",
+    "dexie": "^4.0.1",
+    "dexie-cloud-addon": "^4.0.1",
     "pinia-plugin-persistedstate": "^3.2.1",
     "rxjs": "^7.8.1",
     "vue": "^3.4.21",
