@@ -12,13 +12,13 @@ const { currentUser } = storeToRefs(settingsStore)
 const props = defineProps(["list"]);
 const emit = defineEmits(["activate"]);
 
-const showListDialog = ref(false);
+const listDialog = ref();
 const title = ref("");
 const description = ref("");
 const isListOwner = computed(() => currentUser.value?.name === props.list.owner);
 
 function openModal(hasTitle) {
-  showListDialog.value = true;
+  listDialog.value.showModal();
 
   if (isListOwner.value && hasTitle) {
     title.value = props.list.title;
@@ -34,7 +34,7 @@ function openModal(hasTitle) {
 }
 
 function closeModal() {
-  showListDialog.value = false;
+  listDialog.value.close();
 }
 
 async function createList() {
@@ -79,7 +79,7 @@ async function deleteList(listId) {
       })
       .then(() => {
         emit("activate", "monthly");
-        showListDialog.value = false;
+        closeModal();
         document.location.hash = "";
       });
   }
@@ -92,7 +92,7 @@ async function deleteList(listId) {
       <span v-if="isListOwner && props.list.title">{{ t("Edit_List") }}</span>
       <span v-else>{{ t("New_List") }}…</span>
     </button>
-    <div class="dialog create-list-dialog" v-if="showListDialog">
+    <dialog ref="listDialog" class="dialog">
       <input class="margin-bottom" type="text" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" />
       <textarea class="margin-bottom" id="description" v-model="description" cols="30" rows="10" :placeholder="t('List_Rules_Etc')"></textarea>
       <div class="buttons">
@@ -111,7 +111,7 @@ async function deleteList(listId) {
         <button v-else class="create" @click="createList(title)">{{ t("Create_List") }}</button>
         <button @click="closeModal">{{ t("Cancel") }}</button>
       </div>
-    </div>
+    </dialog>
   </li>
 </template>
 

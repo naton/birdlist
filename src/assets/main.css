@@ -131,13 +131,7 @@ svg {
 }
 
 .body-content::-webkit-scrollbar {
-  width: 6px;
-  background: rgba(0, 0, 0, 0.05);
-}
-
-.body-content::-webkit-scrollbar-thumb {
-  border-radius: var(--radius);
-  background: var(--color-background-dim);
+  display: none;
 }
 
 .footer {
@@ -186,6 +180,10 @@ svg {
   color: var(--color-text);
   background: var(--color-background-dim);
   font-weight: bold;
+}
+
+.nav-link svg {
+  vertical-align: middle;
 }
 
 .nav-count {
@@ -257,8 +255,9 @@ button.secondary {
 .dialog[open] {
   display: grid;
   width: 80%;
+  height: fit-content;
   max-width: 700px;
-  margin: auto auto 25vh;
+  margin: auto;
   padding: 1rem;
   border: 2px solid;
   border-radius: var(--radius);
