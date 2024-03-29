@@ -3,7 +3,7 @@ import { storeToRefs } from "pinia";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
 import { getMonthName } from "@/helpers";
-import ListView from "@/components/ListView.vue";
+import ObservationList from "@/components/ObservationList.vue";
 
 const props = defineProps(["observations"]);
 const emit = defineEmits(["openDialog", "activate", "sort", "edit"]);
@@ -35,7 +35,7 @@ function totalPerMonth(month) {
 </script>
 
 <template>
-  <list-view
+  <observation-list
     :observations="props.observations"
     :sort="currentSort"
     @sort="sortBy"
@@ -84,5 +84,5 @@ function totalPerMonth(month) {
         </table>
       </div>
     </template>
-  </list-view>
+  </observation-list>
 </template>

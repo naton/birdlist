@@ -40,10 +40,8 @@ function selectList(list) {
 <template>
   <div class="body">
     <router-view v-slot="{ Component, route }">
-        <transition mode="out-in">
-            <component :is="Component" :key="`${route.path}`"></component>
-        </transition>
-        <observations-lists v-if="!Component" @selectList="selectList" @edit="showModal" />
+      <component :is="Component" :key="`${route.path}`"></component>
+      <observations-lists v-if="!Component" @selectList="selectList" @edit="showModal" />
     </router-view>
   </div>
   <div class="footer">

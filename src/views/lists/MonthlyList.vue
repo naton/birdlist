@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
-import ListView from "@/components/ListView.vue";
+import ObservationList from "@/components/ObservationList.vue";
 
 const props = defineProps(["observations"]);
 const emit = defineEmits(["openDialog", "sort", "edit"]);
@@ -47,7 +47,7 @@ const currentMonthFormatted = computed(() => {
 </script>
 
 <template>
-  <list-view
+  <observation-list
     :observations="props.observations"
     :sort="currentSort"
     @sort="sortBy"
@@ -76,5 +76,5 @@ const currentMonthFormatted = computed(() => {
         </button>
       </div>
     </template>
-  </list-view>
+  </observation-list>
 </template>

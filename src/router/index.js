@@ -20,7 +20,9 @@ const router = createRouter({
           path: "/list/:id",
           name: "list",
           component: () => import("../views/SingleList.vue"),
-          props: true,
+          props: route => ({
+            id: route.params.id,
+          }),
         },
       ],
     },

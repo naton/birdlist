@@ -3,12 +3,19 @@ import { storeToRefs } from 'pinia'
 import { RouterLink } from 'vue-router';
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from "@/stores/lists.js";
+import CreateList from "@/components/CreateList.vue";
+
+const emit = defineEmits(["activate"]);
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
 
 const listsStore = useListsStore();
-const { myLists } = storeToRefs(listsStore);
+const { myLists, currentList } = storeToRefs(listsStore);
+
+function emitActiveTab(list) {
+  emit("activate", list);
+}
 </script>
 
 <template>
@@ -22,13 +29,16 @@ const { myLists } = storeToRefs(listsStore);
             </ul>
         </div>
     </div>
+    <create-list @activate="emitActiveTab" :list="currentList" />
 </template>
 
 <style>
 .lists-content {
   display: grid;
-  align-self: start;
+  align-content: start;
   gap: 1rem;
   padding: 1rem;
+  overflow: auto;
+  height: calc(100dvh - 8.5rem);
 }
 </style>

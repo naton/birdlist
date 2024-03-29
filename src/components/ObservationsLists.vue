@@ -2,7 +2,6 @@
 import { computed, onMounted } from "vue";
 import { storeToRefs } from 'pinia'
 import TabsList from "@/components/TabsList.vue";
-import CustomList from "@/views/lists/CustomList.vue";
 import YearlyList from "@/views/lists/YearlyList.vue";
 import MonthlyList from "@/views/lists/MonthlyList.vue";
 import { getCurrentYear, getMonthName } from "../helpers";
@@ -18,7 +17,7 @@ const listsStore = useListsStore()
 const { currentList } = storeToRefs(listsStore)
 
 const observationsStore = useObservationsStore()
-const { allListObservations, allThisMonth, allMyObservations } = storeToRefs(observationsStore)
+const { allThisMonth, allMyObservations } = storeToRefs(observationsStore)
 
 const commentsStore = useCommentsStore()
 const { allComments } = storeToRefs(commentsStore)
@@ -58,7 +57,6 @@ onMounted(() => {
       <div class="body-content">
         <monthly-list v-if="currentList.id === 'monthly'" :observations="allThisMonth" @edit="edit"></monthly-list>
         <yearly-list v-else-if="currentList.id === 'everything'" :observations="allMyObservations" @activate="selectList" @edit="edit"></yearly-list>
-        <custom-list v-else :observations="allListObservations" :comments="listComments" @edit="edit" @new-leader="newLeader"></custom-list>
       </div>
     </template>
   </tabs-list>
