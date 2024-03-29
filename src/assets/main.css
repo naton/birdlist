@@ -174,9 +174,9 @@ svg {
   border-bottom-right-radius: var(--radius);
 }
 
-.nav-link.router-link-active,
+.nav-link.router-link-exact-active,
 .nav-link.current {
-  border-width: 2px;
+  box-shadow: inset 0 0 0 1px var(--color-text);
   color: var(--color-text);
   background: var(--color-background-dim);
   font-weight: bold;

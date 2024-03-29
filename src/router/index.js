@@ -10,6 +10,19 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+      children: [
+        {
+          path: "lists",
+          name: "lists",
+          component: () => import("../views/ListsView.vue"),
+        },
+        {
+          path: "/list/:id",
+          name: "list",
+          component: () => import("../views/SingleList.vue"),
+          props: true,
+        },
+      ],
     },
     {
       path: "/friends",

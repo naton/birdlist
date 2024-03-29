@@ -282,28 +282,6 @@ watch(currentLeader, (newLeader) => {
   justify-content: center;
 }
 
-.list {
-  position: relative;
-  margin: 0.5rem 0 0;
-}
-
-.list li {
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  border-top: 1px solid var(--color-background-dim);
-  background: var(--color-background);
-}
-
-.list .obs {
-  display: flex;
-  flex: 1;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 0.6rem 1em;
-  transition: 0.1s transform ease-out;
-}
-
 .date {
   color: var(--color-text-dim);
 }

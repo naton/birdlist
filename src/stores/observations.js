@@ -47,6 +47,10 @@ export const useObservationsStore = defineStore("observation", () => {
     return allObservations.value.filter((obs) => obs.listId == listId);
   });
 
+  function getListObservations(listId) {
+    return allObservations.value.filter((obs) => obs.listId == listId);
+  };
+
   async function addObservation(bird, location) {
     console.log(bird, location)
     const isCalculatedList = currentList.value.id == "monthly" || currentList.value.id == "everything";
@@ -93,6 +97,7 @@ export const useObservationsStore = defineStore("observation", () => {
     allThisMonth,
     allMyObservations,
     allListObservations,
+    getListObservations,
     addObservation,
     deleteObservation,
     selectObservation,
