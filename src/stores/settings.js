@@ -1,4 +1,4 @@
-import { ref, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import { defineStore } from "pinia";
 import { useObservable } from "@vueuse/rxjs";
 import { db } from "../db";
@@ -34,6 +34,32 @@ export const useSettingsStore = defineStore("settings", () => {
       document.querySelector('meta[name="msapplication-TileColor"]').content = getThemeColor();
     }
 
+    function prevMonth() {
+      if (currentMonth.value === 0) {
+        currentYear.value--;
+        currentMonth.value = 11;
+      } else {
+        currentMonth.value--;
+      }
+    }
+    
+    function nextMonth() {
+      if (currentMonth.value === 11) {
+        currentYear.value++;
+        currentMonth.value = 0;
+      } else {
+        currentMonth.value++;
+      }
+    }
+
+    const currentMonthFormatted = computed(() => {
+      const date = new Date().setFullYear(currentYear.value, currentMonth.value);
+      return new Intl.DateTimeFormat("sv", {
+        year: "numeric",
+        month: "long",
+      }).format(date);
+    });
+
     watch(lang, (newLang) => {
       loadTexts(newLang);
     });
@@ -58,8 +84,11 @@ export const useSettingsStore = defineStore("settings", () => {
       currentUser,
       currentYear,
       currentMonth,
+      currentMonthFormatted,
       t,
       loadTexts,
+      prevMonth,
+      nextMonth,
     };
   },
   {

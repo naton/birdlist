@@ -1,13 +1,18 @@
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 import { defineStore } from "pinia";
 import { db } from "../db";
 import { liveQuery } from "dexie";
 import { getTiedRealmId } from "dexie-cloud-addon";
 
 export const useListsStore = defineStore("list", () => {
+  const route = useRoute();
+
   const myLists = ref(null);
-  const currentList = ref("monthly");
   const currentSort = ref("bydate");
+  const currentList = computed(() => {
+    return myLists.value?.find((list) => list.id == route.params.id);
+  });
 
   /* Lists */
   liveQuery(async () => await db.lists.toArray()).subscribe(

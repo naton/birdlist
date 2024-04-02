@@ -43,13 +43,18 @@ export const useObservationsStore = defineStore("observation", () => {
   });
 
   const allListObservations = computed(() => {
-    const listId = currentList.value.id;
+    const listId = currentList.value?.id;
     return allObservations.value.filter((obs) => obs.listId == listId);
   });
 
-  function getListObservations(listId) {
-    return allObservations.value.filter((obs) => obs.listId == listId);
-  };
+  function getTotalPerMonth(month) {
+    return allObservations.value.filter(
+      (obs) =>
+        (obs.owner == currentUser.value?.name || obs.owner == "unauthorized") &&
+        obs.date.getFullYear() == currentYear.value &&
+        obs.date.getMonth() == month
+    ).length;
+  }  
 
   async function addObservation(bird, location) {
     console.log(bird, location)
@@ -97,7 +102,7 @@ export const useObservationsStore = defineStore("observation", () => {
     allThisMonth,
     allMyObservations,
     allListObservations,
-    getListObservations,
+    getTotalPerMonth,
     addObservation,
     deleteObservation,
     selectObservation,

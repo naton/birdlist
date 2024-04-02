@@ -10,12 +10,11 @@ const { t } = settingsStore
 const { currentUser } = storeToRefs(settingsStore)
 
 const props = defineProps(["list"]);
-const emit = defineEmits(["activate"]);
 
 const listDialog = ref();
 const title = ref("");
 const description = ref("");
-const isListOwner = computed(() => currentUser.value?.name === props.list.owner);
+const isListOwner = computed(() => currentUser.value?.name === props.list?.owner);
 
 function openModal(hasTitle) {
   listDialog.value.showModal();
@@ -45,7 +44,7 @@ async function createList() {
   });
   // Fetch the list to activate it
   const list = await db.lists.get(newId);
-  emit("activate", list);
+  router.push({ name: "list", params: { id: list.id } });
   closeModal();
 }
 
@@ -78,7 +77,6 @@ async function deleteList(listId) {
         db.realms.delete(tiedRealmId);
       })
       .then(() => {
-        emit("activate", "monthly");
         closeModal();
         document.location.hash = "";
       });
@@ -87,32 +85,30 @@ async function deleteList(listId) {
 </script>
 
 <template>
-  <li class="c-tabs__tab last">
-    <button class="add" @click.stop="openModal(props.list.title)">
-      <span v-if="isListOwner && props.list.title">{{ t("Edit_List") }}</span>
-      <span v-else>{{ t("New_List") }}…</span>
-    </button>
-    <dialog ref="listDialog" class="dialog">
-      <input class="margin-bottom" type="text" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" />
-      <textarea class="margin-bottom" id="description" v-model="description" cols="30" rows="10" :placeholder="t('List_Rules_Etc')"></textarea>
-      <div class="buttons">
-        <button v-if="isListOwner && props.list.title" class="update-button" @click="updateList(props.list.id)">{{ t("Save") }}</button>
-        <button v-if="isListOwner && props.list.title" class="delete-button" @click="deleteList(props.list.id)">
-          <svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
-            <g fill="none" stroke="currentColor" stroke-miterlimit="10">
-              <path stroke-linecap="square" d="M20 9v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9" />
-              <path stroke-linecap="square" d="M1 5h22" />
-              <path stroke-linecap="square" d="M12 12v6m-4-6v6m8-6v6" />
-              <path d="M8 5V1h8v4" />
-            </g>
-          </svg>
-          {{ t("Delete") }}
-        </button>
-        <button v-else class="create" @click="createList(title)">{{ t("Create_List") }}</button>
-        <button @click="closeModal">{{ t("Cancel") }}</button>
-      </div>
-    </dialog>
-  </li>
+  <button class="add" @click.stop="openModal(props.list.title)">
+    <span v-if="isListOwner && props.list.title">{{ t("Edit_List") }}</span>
+    <span v-else>{{ t("Create_New_List") }}…</span>
+  </button>
+  <dialog ref="listDialog" class="dialog">
+    <input class="margin-bottom" type="text" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" />
+    <textarea class="margin-bottom" id="description" v-model="description" cols="30" rows="10" :placeholder="t('List_Rules_Etc')"></textarea>
+    <div class="buttons">
+      <button v-if="isListOwner && props.list.title" class="update-button" @click="updateList(props.list.id)">{{ t("Save") }}</button>
+      <button v-if="isListOwner && props.list.title" class="delete-button" @click="deleteList(props.list.id)">
+        <svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
+          <g fill="none" stroke="currentColor" stroke-miterlimit="10">
+            <path stroke-linecap="square" d="M20 9v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9" />
+            <path stroke-linecap="square" d="M1 5h22" />
+            <path stroke-linecap="square" d="M12 12v6m-4-6v6m8-6v6" />
+            <path d="M8 5V1h8v4" />
+          </g>
+        </svg>
+        {{ t("Delete") }}
+      </button>
+      <button v-else class="create" @click="createList(title)">{{ t("Create_List") }}</button>
+      <button @click="closeModal">{{ t("Cancel") }}</button>
+    </div>
+  </dialog>
 </template>
 
 <style>

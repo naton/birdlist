@@ -1,14 +1,16 @@
 <script setup>
 import { ref, onBeforeMount } from "vue";
+import { useRoute } from "vue-router";
 import { storeToRefs } from 'pinia'
 import AddLocationIcon from "./icons/AddLocationIcon.vue";
 import FetchingLocationIcon from "./icons/FetchingLocationIcon.vue";
 import LocationFoundIcon from "./icons/LocationFoundIcon.vue";
 import vue3SimpleTypeahead from "vue3-simple-typeahead";
 import { useSettingsStore } from '../stores/settings.js'
-import { useListsStore } from '../stores/lists.js'
 import { useBirdsStore } from "@/stores/birds.js";
 import 'vue3-simple-typeahead/dist/vue3-simple-typeahead.css'; //Optional default CSS
+
+const route = useRoute();
 
 const birdStore = useBirdsStore();
 const { loadAllBirds } = birdStore;
@@ -16,9 +18,6 @@ const { birds } = storeToRefs(birdStore);
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
-
-const listsStore = useListsStore()
-const { currentList } = storeToRefs(listsStore)
 
 const emit = defineEmits(["add"]);
 const props = defineProps(["lang"]);
@@ -74,8 +73,8 @@ onBeforeMount(() => {
       <fetching-location-icon v-else-if="calculatingPosition"></fetching-location-icon>
       <location-found-icon v-else></location-found-icon>
     </button>
-    <vue3-simple-typeahead ref="addObservationInput" :placeholder="currentList.id?.startsWith('lst')
-      ? t('Add_Bird_To') + ` ${currentList.title}…`
+    <vue3-simple-typeahead ref="addObservationInput" :placeholder="route.params.id
+      ? t('Add_Bird_To') + ` this list…`
       : t('Enter_The_Name_Of_The_Bird')" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => add(bird)">
     </vue3-simple-typeahead>
   </div>

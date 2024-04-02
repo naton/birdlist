@@ -46,7 +46,6 @@ onBeforeUnmount(() => {
   <div class="about" ref="vantaRef">
     <div class="about-content">
       <h1 class="hidden-visually">{{ t("About")}} Birdlist</h1>
-      {{ currentTheme }}
       <picture>
         <source srcset="/logo.webp" type="image/webp" />
         <img src="/logo.png" alt="Birdlist" width="460" height="170" class="logo" />

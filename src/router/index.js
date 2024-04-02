@@ -7,22 +7,32 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
+      path: "/home",
       name: "home",
       component: HomeView,
       children: [
         {
-          path: "lists",
+          path: "/lists",
           name: "lists",
           component: () => import("../views/ListsView.vue"),
+          children: [
+            {
+              path: "/lists/:id",
+              name: "list",
+              component: () => import("../views/lists/SingleList.vue"),
+            },
+          ],
         },
         {
-          path: "/list/:id",
-          name: "list",
-          component: () => import("../views/SingleList.vue"),
-          props: route => ({
-            id: route.params.id,
-          }),
+          alias: "/",
+          path: "/monthly",
+          name: "monthly",
+          component: () => import("../views/lists/MonthlyList.vue"),
+        },
+        {
+          path: "/yearly",
+          name: "yearly",
+          component: () => import("../views/lists/YearlyList.vue"),
         },
       ],
     },

@@ -2,18 +2,14 @@
 import { ref } from "vue";
 import { RouterView } from "vue-router";
 import { storeToRefs } from "pinia";
-import ObservationsLists from "@/components/ObservationsLists.vue";
+import { useSettingsStore } from "@/stores/settings.js";
+import { useObservationsStore } from "@/stores/observations.js";
+import MonthlyList from "@/views/lists/MonthlyList.vue";
 import EditDialog from "@/components/EditDialog.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
-import { useSettingsStore } from "@/stores/settings.js";
-import { useListsStore } from "@/stores/lists.js";
-import { useObservationsStore } from "@/stores/observations.js";
 
 const settingsStore = useSettingsStore();
 const { lang } = storeToRefs(settingsStore);
-
-const listsStore = useListsStore();
-const { currentList } = storeToRefs(listsStore);
 
 const observationsStore = useObservationsStore();
 const { currentObservation } = storeToRefs(observationsStore);
@@ -24,24 +20,13 @@ const modal = ref();
 function showModal() {
   modal.value?.show();
 }
-
-/* Lists */
-function selectList(list) {
-  // Calculated lists come as strings, others are full objects
-  if (typeof list === "string") {
-    currentList.value = { id: list };
-  } else if (list && list.id) {
-    currentList.value = list;
-    history.replaceState(history.state, "", "#" + list.id);
-  }
-}
 </script>
 
 <template>
   <div class="body">
     <router-view v-slot="{ Component, route }">
       <component :is="Component" :key="`${route.path}`"></component>
-      <observations-lists v-if="!Component" @selectList="selectList" @edit="showModal" />
+      <monthly-list v-if="!Component" @selectList="selectList" @edit="showModal" />
     </router-view>
   </div>
   <div class="footer">
@@ -67,6 +52,36 @@ function selectList(list) {
   height: 100%;
   pointer-events: none;
   z-index: 4;
+}
+
+.c-tabs {
+  display: flex;
+  list-style: none;
+  overflow-y: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 0;
+  overscroll-behavior: none;
+}
+
+.c-tabs__tab > a {
+  min-width: 5rem;
+  display: block;
+  padding: 1rem 0.4rem 0.8rem 0.8rem;
+  color: inherit;
+  font-size: 1.2rem;
+  text-transform: capitalize;
+  text-decoration: none;
+  text-align: center;
+}
+
+.c-tabs__tab > .router-link-active {
+  margin-top: 2px;
+  padding: 0.7rem 1rem 0.9rem;
+  border-top: 2px solid;
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+  background: var(--color-background);
 }
 
 .list-header {

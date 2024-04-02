@@ -56,4 +56,30 @@ function inputDate(date) {
   return new Date(new Date(date).getTime() - new Date(date).getTimezoneOffset() * 60000).toISOString().substring(0, 16);
 }
 
-export { getMonthName, getCurrentYear, cssColor, formatDate, formatDateAndTime, inputDate };
+let newLeaderConfetti;
+
+async function celebrate() {
+  function randomInRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  if (typeof newLeaderConfetti !== "undefined") {
+    await newLeaderConfetti({
+      angle: randomInRange(55, 105),
+      spread: randomInRange(50, 70),
+      particleCount: randomInRange(80, 120),
+      origin: { y: 0.4 },
+    });
+  }
+}
+
+async function setupConfetti() {
+  if (typeof confetti !== "undefined") {
+    newLeaderConfetti = await confetti.create(canvas, {
+      resize: true,
+      useWorker: true,
+    });
+  }
+}
+
+export { getMonthName, getCurrentYear, cssColor, formatDate, formatDateAndTime, inputDate, celebrate, setupConfetti };

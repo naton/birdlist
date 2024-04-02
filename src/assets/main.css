@@ -62,7 +62,7 @@ ul {
   padding: 0;
 }
 
-svg {
+*:not(button) > svg {
   vertical-align: bottom;
 }
 
@@ -109,6 +109,7 @@ svg {
 .body-nav {
   grid-area: body-nav;
   display: flex;
+  justify-content: center;
   max-width: 100vw;
   min-height: 3rem;
   overflow: hidden;
@@ -157,10 +158,10 @@ svg {
   flex: 1;
   margin: 0 -1px 0 0;
   padding: 0.75rem 0.15rem;
-  border-left: 1px solid var(--color-border);
-  color: var(--color-link);
-  text-decoration: none;
   border: 1px solid;
+  color: var(--color-link);
+  font-size: 0.75rem;
+  text-decoration: none;
   white-space: nowrap;
 }
 
@@ -174,7 +175,7 @@ svg {
   border-bottom-right-radius: var(--radius);
 }
 
-.nav-link.router-link-exact-active,
+.nav-link.router-link-active,
 .nav-link.current {
   box-shadow: inset 0 0 0 1px var(--color-text);
   color: var(--color-text);
@@ -182,13 +183,8 @@ svg {
   font-weight: bold;
 }
 
-.nav-link svg {
-  vertical-align: middle;
-}
-
 .nav-count {
   font-weight: normal;
-  font-size: 0.9rem;
 }
 
 /* Selects */
@@ -215,7 +211,7 @@ svg {
 /* Buttons */
 button {
   min-width: 3rem;
-  min-height: 2.8rem;
+  min-height: 2.7rem;
   padding: 0.4rem 0.8rem;
   border: none;
   border-radius: var(--radius);
