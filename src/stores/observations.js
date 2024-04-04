@@ -13,7 +13,6 @@ export const useObservationsStore = defineStore("observation", () => {
   const { currentList } = storeToRefs(listsStore);
 
   const allObservations = ref([]);
-  const currentObservation = ref({});
   
   liveQuery(async () => await db.observations.toArray()).subscribe(
     (observations) => {
@@ -57,8 +56,6 @@ export const useObservationsStore = defineStore("observation", () => {
   }  
 
   async function addObservation(bird, location) {
-    console.log(bird, location)
-    const isCalculatedList = currentList.value.id == "monthly" || currentList.value.id == "everything";
     let date = new Date();
     const isBatchImport = bird.includes(","); // Probably multiple birds
     const hasCustomDate = bird.startsWith("20") && bird.includes(":"); // Probably a date
@@ -73,8 +70,8 @@ export const useObservationsStore = defineStore("observation", () => {
       await db.observations.add({
         name: bird.trim(),
         date: date,
-        realmId: isCalculatedList ? undefined : currentList.value.realmId,
-        listId: isCalculatedList ? undefined : currentList.value.id, // Any ID other than defaults are valid here
+        realmId: currentList.value ? currentList.value.realmId : undefined,
+        listId: currentList.value ? currentList.value.id : undefined, // Any ID other than defaults are valid here
         location: location,
       });
     }
@@ -87,10 +84,6 @@ export const useObservationsStore = defineStore("observation", () => {
     }
   }
 
-  function selectObservation(obs) {
-    currentObservation.value = obs;
-  }
-
   async function deleteObservation(id) {
     await db.observations.delete(id);
   }
@@ -98,13 +91,11 @@ export const useObservationsStore = defineStore("observation", () => {
   return {
     currentYear,
     currentMonth,
-    currentObservation,
     allThisMonth,
     allMyObservations,
     allListObservations,
     getTotalPerMonth,
     addObservation,
     deleteObservation,
-    selectObservation,
   };
 });

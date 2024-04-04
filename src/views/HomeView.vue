@@ -12,21 +12,23 @@ const settingsStore = useSettingsStore();
 const { lang } = storeToRefs(settingsStore);
 
 const observationsStore = useObservationsStore();
-const { currentObservation } = storeToRefs(observationsStore);
 const { addObservation, deleteObservation } = observationsStore;
 
 const modal = ref();
 
-function showModal() {
-  modal.value?.show();
+const currentObservation = ref(null);
+
+function openModal(obs) {
+  currentObservation.value = obs;
+  modal.value?.openModal();
 }
 </script>
 
 <template>
   <div class="body">
-    <router-view v-slot="{ Component, route }">
-      <component :is="Component" :key="`${route.path}`"></component>
-      <monthly-list v-if="!Component" @selectList="selectList" @edit="showModal" />
+    <router-view v-slot="{ Component, route }" @edit="openModal">
+      <component :is="Component" :key="`${route.path}`" @edit="openModal"></component>
+      <monthly-list v-if="!Component" @selectList="selectList" />
     </router-view>
   </div>
   <div class="footer">
@@ -82,6 +84,11 @@ function showModal() {
   border-top-left-radius: var(--radius);
   border-top-right-radius: var(--radius);
   background: var(--color-background);
+}
+
+.c-tabs__tab svg {
+  vertical-align: baseline;
+  margin-right: 0.3rem;
 }
 
 .list-header {

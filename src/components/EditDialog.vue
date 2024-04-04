@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, defineExpose } from "vue";
 import { storeToRefs } from 'pinia'
 import { getTiedRealmId } from "dexie-cloud-addon";
 import { db } from "../db";
@@ -17,11 +17,13 @@ const { myLists } = storeToRefs(listsStore)
 const emit = defineEmits(["delete"]);
 
 const currentObservation = defineModel();
-const editDialog = ref();
+
+const editDialog = ref(null);
+
 const isEditing = ref(false);
 
 function currentListName() {
-  const list = myLists.value?.find(list => list.id == currentObservation.value.listId);
+  const list = myLists.value?.find(list => list.id == currentObservation.value?.listId);
   return list ? list.title : t("No_Special_List");
 }
 
@@ -34,13 +36,13 @@ function deleteAndClose(id) {
   closeModal();
 }
 
-function showModal() {
-  editDialog.value?.showModal();
+function openModal() {
+  editDialog.value.showModal();
 }
 
 function closeModal() {
   isEditing.value = false;
-  editDialog.value?.close();
+  editDialog.value.close();
 }
 
 async function save() {
@@ -71,20 +73,20 @@ function saveAndClose() {
 }
 
 defineExpose({
-  show: showModal,
-  close: closeModal,
+  openModal,
+  closeModal,
 });
 </script>
 
 <template>
   <dialog ref="editDialog" class="dialog">
-    <h2 v-if="!isEditing">{{ currentObservation.name }}</h2>
+    <h2 v-if="!isEditing">{{ currentObservation?.name }}</h2>
     <div v-else>
       <label for="obs-name">{{ t("Change_Name") }}</label>
       <input id="obs-name" type="text" v-model="currentObservation.name" />
     </div>
 
-    <h3 v-if="!isEditing">{{ formatDateAndTime(currentObservation.date) }}</h3>
+    <h3 v-if="!isEditing">{{ formatDateAndTime(currentObservation?.date) }}</h3>
     <div v-else>
       <label for="obs-date">{{ t("Change_Date") }}</label>
       <input id="obs-date" type="datetime-local" @input="currentObservation.date = new Date($event.target.value)" :value="inputDate(currentObservation.date)" />
@@ -101,8 +103,8 @@ defineExpose({
       </select>
     </div>
 
-    <p class="margin-bottom">{{ t("By") }}: {{ currentObservation.owner }}</p>
-    <div v-if="currentObservation.location" class="margin-bottom">
+    <p class="margin-bottom">{{ t("By") }}: {{ currentObservation?.owner }}</p>
+    <div v-if="currentObservation?.location" class="margin-bottom">
       <a :href="`https://www.openstreetmap.org/#map=16/${currentObservation.location.replace(',', '/')}`" target="_blank" class="poi">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="24" height="24">
           <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
@@ -116,7 +118,7 @@ defineExpose({
 
     <div>
       <button v-if="isEditing" type="button" class="secondary" @click="saveAndClose()">{{ t("Save") }} & {{ t("Close") }}</button>
-      <button v-else type="button" class="secondary" :disabled="!canEdit(currentObservation.owner)" @click="isEditing = true">{{ t("Edit") }}</button>
+      <button v-else type="button" class="secondary" :disabled="!canEdit(currentObservation?.owner)" @click="isEditing = true">{{ t("Edit") }}</button>
       <button v-if="isEditing" type="button" @click="deleteAndClose(currentObservation?.id)">{{ t("Delete") }}</button>
       <button type="button" class="secondary" @click="closeModal()">{{ t("Cancel") }}</button>
     </div>

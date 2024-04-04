@@ -81,7 +81,7 @@ onBeforeUnmount(() => {
   max-width: 85vw;
 }
 
-.logo {
+.about .logo {
   display: flex;
   max-width: 100%;
   height: auto;
@@ -92,11 +92,5 @@ onBeforeUnmount(() => {
   max-width: 45ch;
   margin-top: 2rem;
   font-size: 0.9rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  .about .logo {
-    filter: invert(1);
-  }
 }
 </style>

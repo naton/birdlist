@@ -23,8 +23,8 @@ const listsStore = useListsStore();
 const { sortBy } = listsStore;
 const { currentSort } = storeToRefs(listsStore);
 
-function edit() {
-  emit("edit")
+function edit(obs) {
+  emit("edit", obs)
 }
 
 function goToMonth(month) {

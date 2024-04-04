@@ -6,7 +6,7 @@ import { useListsStore } from "@/stores/lists.js";
 import NavTabs from "@/components/NavTabs.vue";
 import ObservationList from "@/components/ObservationList.vue";
 
-const emit = defineEmits(["openDialog", "sort", "edit"]);
+const emit = defineEmits(["sort", "edit"]);
 
 const settingsStore = useSettingsStore();
 const { prevMonth, nextMonth } = settingsStore;
@@ -19,8 +19,8 @@ const listsStore = useListsStore();
 const { sortBy } = listsStore;
 const { currentSort } = storeToRefs(listsStore);
 
-function edit() {
-  emit("edit")
+function edit(obs) {
+  emit("edit", obs)
 }
 </script>
 

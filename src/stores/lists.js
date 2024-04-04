@@ -1,5 +1,5 @@
 import { computed, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { defineStore } from "pinia";
 import { db } from "../db";
 import { liveQuery } from "dexie";
@@ -7,6 +7,7 @@ import { getTiedRealmId } from "dexie-cloud-addon";
 
 export const useListsStore = defineStore("list", () => {
   const route = useRoute();
+  const router = useRouter();
 
   const myLists = ref(null);
   const currentSort = ref("bydate");
@@ -26,6 +27,60 @@ export const useListsStore = defineStore("list", () => {
 
   function sortBy(val) {
     return (currentSort.value = val);
+  }
+
+  async function createList(title, description) {
+    // Insert the list in the db with title and descripton
+    const newId = await db.lists.add({
+      title,
+      description,
+    });
+    // Fetch the list to activate it
+    const list = await db.lists.get(newId);
+    router.push({ name: "list", params: { id: list.id } });
+    closeModal();
+  }
+
+  async function updateList(list, callback) {
+    await db.transaction("rw", [db.lists], async () => {
+      await db.lists.where({ id: list.id }).modify({
+        title: list.title,
+        description: list.description,
+      });
+    });
+    if (callback) {
+      callback();
+    }
+  }
+
+  async function deleteList(listId) {
+    let deleteRelatedObservations = false;
+  
+    if (confirm("Är du säker på att du vill ta bort denna lista?")) {
+      deleteRelatedObservations = confirm("Radera även listans observationer?");
+  
+      await db
+        .transaction("rw", [db.lists, db.observations, db.realms, db.members], () => {
+          if (deleteRelatedObservations) {
+            // Delete possible observations:
+            db.observations.where({ listId: listId }).delete();
+          }
+          // Delete the list:
+          db.lists.delete(listId);
+          // Delete possible realm and its members in case list was shared:
+          const tiedRealmId = getTiedRealmId(listId);
+          // Empty out any tied realm from members:
+          db.members.where({ realmId: tiedRealmId }).delete();
+          // Delete the tied realm if it exists:
+          db.realms.delete(tiedRealmId);
+        })
+        .then(() => {
+          closeModal();
+          document.location.hash = "";
+        });
+
+      router.push({ name: "lists" });
+    }
   }
 
   async function shareBirdList(listId, listName) {
@@ -69,6 +124,9 @@ export const useListsStore = defineStore("list", () => {
     currentList,
     currentSort,
     sortBy,
-    shareBirdList
+    createList,
+    updateList,
+    deleteList,
+    shareBirdList,
   };
 });

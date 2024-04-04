@@ -56,6 +56,27 @@ function inputDate(date) {
   return new Date(new Date(date).getTime() - new Date(date).getTimezoneOffset() * 60000).toISOString().substring(0, 16);
 }
 
+function groupBy(objectArray, property) {
+  return objectArray.reduce((acc, obj) => {
+    const key =
+      typeof obj[property] === "object"
+        ? new Date(obj[property]).toISOString().slice(0, 10)
+        : obj[property].toLowerCase();
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    // Add object to list for given key's value
+    acc[key].push(obj);
+    return sortObject(acc);
+  }, {});
+}
+
+function sortObject(o) {
+  return Object.keys(o)
+    .sort()
+    .reduce((r, k) => ((r[k] = o[k]), r), {});
+}
+
 let newLeaderConfetti;
 
 async function celebrate() {
@@ -74,7 +95,9 @@ async function celebrate() {
 }
 
 async function setupConfetti() {
-  if (typeof confetti !== "undefined") {
+  const canvas = document.getElementById("canvas");
+
+  if (typeof confetti !== "undefined" && canvas) {
     newLeaderConfetti = await confetti.create(canvas, {
       resize: true,
       useWorker: true,
@@ -82,4 +105,14 @@ async function setupConfetti() {
   }
 }
 
-export { getMonthName, getCurrentYear, cssColor, formatDate, formatDateAndTime, inputDate, celebrate, setupConfetti };
+export {
+  getMonthName,
+  getCurrentYear,
+  groupBy,
+  cssColor,
+  formatDate,
+  formatDateAndTime,
+  inputDate,
+  celebrate,
+  setupConfetti,
+};
