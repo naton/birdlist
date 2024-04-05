@@ -9,16 +9,16 @@ export const useListsStore = defineStore("list", () => {
   const route = useRoute();
   const router = useRouter();
 
-  const myLists = ref(null);
+  const allLists = ref(null);
   const currentSort = ref("bydate");
-  const currentList = computed(() => {
-    return myLists.value?.find((list) => list.id == route.params.id);
-  });
+  const currentListExpanded = ref(true);
+  const currentList = ref();
 
   /* Lists */
   liveQuery(async () => await db.lists.toArray()).subscribe(
     (lists) => {
-      myLists.value = lists;
+      allLists.value = lists;
+      currentList.value = allLists.value.find((list) => list.id == route.params.id);
     },
     (error) => {
       console.log(error);
@@ -35,10 +35,8 @@ export const useListsStore = defineStore("list", () => {
       title,
       description,
     });
-    // Fetch the list to activate it
-    const list = await db.lists.get(newId);
-    router.push({ name: "list", params: { id: list.id } });
-    closeModal();
+    currentList.value = allLists.value.find((list) => list.id == newId);
+    return newId;
   }
 
   async function updateList(list, callback) {
@@ -75,7 +73,6 @@ export const useListsStore = defineStore("list", () => {
           db.realms.delete(tiedRealmId);
         })
         .then(() => {
-          closeModal();
           document.location.hash = "";
         });
 
@@ -83,10 +80,8 @@ export const useListsStore = defineStore("list", () => {
     }
   }
 
-  async function shareBirdList(listId, listName) {
-    let email = prompt("Ange e-postadressen till personen du vill dela denna lista med:");
-  
-    if (!email) return;
+  async function shareBirdList(listId, listName, friends) {
+    if (!listId) return;
   
     await db.transaction("rw", [db.lists, db.observations, db.comments, db.realms, db.members], async () => {
       // Add or update a realm, tied to the list using getTiedRealmId():
@@ -104,24 +99,27 @@ export const useListsStore = defineStore("list", () => {
       await db.observations.where({ listId: listId }).modify({ realmId: realmId });
       await db.comments.where({ listId: listId }).modify({ realmId: realmId });
       // Add the members to share it to:
-      await db.members.add({
-        realmId,
-        email: email,
-        invite: true, // Generates invite email on server on sync
-        permissions: {
-          add: ["observations", "comments"],
-          update: {
-            observations: ["*", "realmId"],
+      db.members.bulkAdd(
+        [...friends].map((friend) => ({
+          realmId,
+          email: friend.email,
+          invite: true, // Generates invite email on server on sync
+          permissions: {
+            add: ["observations", "comments"],
+            update: {
+              observations: ["*", "realmId"],
+            },
+            // manage: "*", // Give your friend full permissions within this new realm.
           },
-          // manage: "*", // Give your friend full permissions within this new realm.
-        },
-      });
+        }))
+      );
     });
   }
 
   return {
-    myLists,
+    allLists,
     currentList,
+    currentListExpanded,
     currentSort,
     sortBy,
     createList,
@@ -129,4 +127,10 @@ export const useListsStore = defineStore("list", () => {
     deleteList,
     shareBirdList,
   };
+},
+{
+  persist: {
+    key: "birdlist-lists",
+    paths: ["currentList", "currentSort", "currentListExpanded"],
+  },
 });

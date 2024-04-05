@@ -27,8 +27,17 @@ function openModal(obs) {
 <template>
   <div class="body">
     <router-view v-slot="{ Component, route }" @edit="openModal">
-      <component :is="Component" :key="`${route.path}`" @edit="openModal"></component>
-      <monthly-list v-if="!Component" @selectList="selectList" />
+      <template v-if="Component">
+        <KeepAlive>
+          <Suspense>
+            <component :is="Component" :key="`${route.path}`" />
+            <template #fallback>
+              Loading...
+            </template>
+          </Suspense>
+        </KeepAlive>
+      </template>
+      <monthly-list v-else />
     </router-view>
   </div>
   <div class="footer">
@@ -125,13 +134,16 @@ function openModal(obs) {
 }
 
 .year-summary {
-  margin: 0 auto 1rem;
-  font-size: 0.9rem;
+  margin: 0 auto 0.5rem;
+  border-collapse: collapse;
+  font-size: 0.8rem;
 }
 
 .month-button {
   min-width: 2rem;
-  padding: 0.5rem;
+  min-height: 2rem;
+  margin: 2px;
+  padding: 0;
 }
 
 .list {

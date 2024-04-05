@@ -1,7 +1,5 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import * as THREE from 'three'
-import BIRDS from 'vanta/dist/vanta.birds.min'
 import { useSettingsStore } from '../stores/settings.js'
 
 const settingsStore = useSettingsStore()
@@ -10,10 +8,12 @@ const { t } = settingsStore
 const vantaRef = ref();
 let vantaEffect = null;
 
-onMounted(() => {
+onMounted(async () => {
+  window.THREE = await import('three');
+  const { default: BIRDS } = await import("vanta/dist/vanta.birds.min");
   vantaEffect = BIRDS({
     el: vantaRef.value,
-    THREE: THREE,
+    THREE: window.THREE,
     mouseControls: false,
     touchControls: true,
     gyroControls: false,
@@ -43,7 +43,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="about" ref="vantaRef">
+  <div class="about">
     <div class="about-content">
       <h1 class="hidden-visually">{{ t("About")}} Birdlist</h1>
       <picture>
@@ -62,19 +62,29 @@ onBeforeUnmount(() => {
       </div>
     </div>
   </div>
+  <div ref="vantaRef" class="birds-anim"></div>
 </template>
 
 <style>
+.birds-anim {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.birds-anim canvas {
+  filter: invert(0.5);
+}
+
 .about {
   display: grid;
   place-items: center;
   padding: 1rem;
   align-content: center;
-}
-
-.about canvas {
-  filter: invert(0.5);
-}
+}  
 
 .about-content {
   width: 25rem;

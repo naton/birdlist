@@ -5,7 +5,7 @@ import { useSettingsStore } from '../stores/settings.js'
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
-const { lang, hue } = storeToRefs(settingsStore)
+const { lang, hue, currentUser } = storeToRefs(settingsStore)
 
 function logout() {
   db.table('$logins').clear();
@@ -16,7 +16,10 @@ function logout() {
 <template>
     <div class="body">
         <div class="body-content settings">
-            <h1>{{ t("Settings") }}</h1>
+            <header>
+                <h1>{{ t("Settings") }}</h1>
+                <h2>{{ currentUser.userId }}</h2>
+            </header>
             <div>
                 <label for="lang">{{ t("Language") }}</label>
                 <select id="lang" v-model="lang">

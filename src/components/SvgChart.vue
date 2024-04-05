@@ -11,7 +11,9 @@ function selectedClass(name) {
 </script>
 
 <template>
-  <svg :view-box.camel="viewbox" class="chart">
-    <svg-chart-line :d="dataset" :o="options" :svg="props.svg" :class="selectedClass(dataset.name)" v-for="dataset in datasets"></svg-chart-line>
-  </svg>
+  <div class="chart-wrapper">
+    <svg :view-box.camel="viewbox" class="chart">
+      <svg-chart-line :d="dataset" :o="options" :svg="props.svg" :class="selectedClass(dataset.name)" v-for="dataset in datasets"></svg-chart-line>
+    </svg>
+  </div>
 </template>

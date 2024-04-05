@@ -1,7 +1,9 @@
 <script setup>
+import { db } from "../db";
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { RouterLink, RouterView } from 'vue-router';
+import { useObservable } from "@vueuse/rxjs";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from "@/stores/lists.js";
 import ListsIcon from "@/components/icons/ListsIcon.vue";
@@ -14,9 +16,11 @@ const { t } = settingsStore
 
 const listsStore = useListsStore();
 const { createList } = listsStore;
-const { myLists, currentList } = storeToRefs(listsStore);
+const { allLists, currentList } = storeToRefs(listsStore);
 
 const createListDialog = ref(null);
+
+const listInvites = useObservable(db.cloud.invites);
 
 function newList() {
   createListDialog.value.openModal();
@@ -24,6 +28,10 @@ function newList() {
 
 function selectList(list) {
   currentList.value = list;
+}
+
+function deleteInvite(invite) {
+  db.members.delete(invite.id)
 }
 
 function emitEdit(obs) {
@@ -47,9 +55,18 @@ function emitEdit(obs) {
           <div class="lists-content">
             <h1>{{ t("Lists") }}</h1>
             <ul class="list">
-              <li v-for="list in myLists" :key="list.id" @click="selectList(list)">
+              <li v-for="list in allLists" :key="list.id" @click="selectList(list)">
                 <lists-icon />
                 <router-link :to="{ name: 'list', params: { id: list.id } }">{{ list.title }}</router-link>
+              </li>
+            </ul>
+            <h2 v-if="listInvites.length">{{ t("Invites") }}</h2>
+            <ul class="list">
+              <li v-for="list in listInvites.filter(invite => invite.rejected)" :key="list.id">
+                <lists-icon />
+                {{ list.realm.name }}
+                <button @click="list.accept()">{{ t("Accept") }}</button>
+                <button @click="deleteInvite(list)">{{ t("Delete") }}</button>
               </li>
             </ul>
           </div>

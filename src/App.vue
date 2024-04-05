@@ -11,6 +11,7 @@ const { lang, texts } = storeToRefs(settingsStore)
 
 onBeforeMount(() => {
   texts.value = loadTexts(lang.value)
+  document.addEventListener('dblclick', () => false);
 })
 </script>
 
@@ -38,10 +39,10 @@ onBeforeMount(() => {
 <style>
 .main-nav a {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.5rem 0;
   flex-direction: column;
   align-items: center;
-  font-size: 0.5rem;
+  font-size: 0.75rem;
   line-height: 1;
 }
 </style>

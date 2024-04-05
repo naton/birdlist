@@ -3,6 +3,7 @@ import { ref, reactive, computed, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
+import { useFriendsStore } from "@/stores/friends.js";
 import { useCommentsStore } from "@/stores/comments.js";
 import ObservationItem from "./ObservationItem.vue";
 import ObservationsIcon from "./icons/ObservationsIcon.vue";
@@ -26,6 +27,9 @@ const { currentList } = storeToRefs(listsStore);
 
 const commentsStore = useCommentsStore();
 const { addComment } = commentsStore;
+
+const friendsStore = useFriendsStore();
+const { getFriendlyName } = friendsStore;
 
 const species = computed(() => [...new Set(props.observations.map((item) => item.name))].sort());
 
@@ -209,20 +213,19 @@ watch(currentLeader, (newLeader) => {
 </script>
 
 <template>
+  <slot name="header" />
   <slot name="default">
     <nav class="user-nav" v-if="users?.length > 1">
       <transition-group name="list" appear>
         <button v-for="{ name, score, leader } in users" class="user-button" :class="name === selectedUser && 'user-button--active'" @click="changeUser(name)" :key="name">
           <user-initial :user="name" :score="score" :leader="leader">
-            <span :class="name === props.user && 'me'">{{ name }}</span>
+            <span :class="name === props.user && 'me'">{{ getFriendlyName(name) }}</span>
           </user-initial>
         </button>
       </transition-group>
     </nav>
 
-    <div class="chart-wrapper">
-      <svg-chart v-if="users?.length > 1" :datasets="datasets" :options="options" :svg="svg" :user="selectedUser"></svg-chart>
-    </div>
+    <svg-chart v-if="users?.length > 1" :datasets="datasets" :options="options" :svg="svg" :user="selectedUser"></svg-chart>
 
     <nav class="nav" v-if="props.observations.length">
       <a href="#bydate" class="nav-link" :class="{ current: sort == 'bydate', }" @click.prevent="emitSort('bydate')">
@@ -258,9 +261,9 @@ watch(currentLeader, (newLeader) => {
       </transition-group>
     </section>
 
-    <section id="comments" v-if="currentList && props.sort == 'comments'">
+    <section id="comments" v-if="props.observations.length && currentList && props.sort == 'comments'">
       <form>
-        <div>
+        <div class="comment-form">
           <textarea v-model="comment" class="comment-input" :placeholder="t('Write_Something_To_The_Others')"></textarea>
           <button class="comment-btn" @click.prevent="addNewComment">{{ t("Submit") }}</button>
         </div>
@@ -339,16 +342,27 @@ watch(currentLeader, (newLeader) => {
   margin: -0.2em 0 -0.2em 0.5em;
 }
 
+.comment-form {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+}
+
 .comment-input {
-  width: calc(100% - 2rem);
-  height: 4rem;
-  margin: 1rem 1rem 0;
+  margin: 1rem 0 1rem 1rem;
   padding: 0.5rem;
   font-size: inherit;
+  border: none;
+  color: var(--color-text);
+  background: var(--color-background-dim);
+}
+
+.comment-input::placeholder {
+  color: var(--color-text-dim);
 }
 
 .comment-btn {
-  width: calc(100% - 2rem);
-  margin: 0 1rem 1rem;
+  margin: 1rem 1rem 1rem 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 </style>

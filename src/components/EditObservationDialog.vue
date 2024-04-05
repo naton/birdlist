@@ -15,7 +15,7 @@ const { t } = settingsStore
 const { currentUser } = storeToRefs(settingsStore)
 
 const listsStore = useListsStore()
-const { myLists } = storeToRefs(listsStore)
+const { allLists } = storeToRefs(listsStore)
 
 const observationsStore = useObservationsStore()
 const { saveObservation } = observationsStore
@@ -29,7 +29,7 @@ const editObservationDialog = ref(null);
 const isEditing = ref(false);
 
 function currentListName() {
-  const list = myLists.value?.find(list => list.id == currentObservation.value?.listId);
+  const list = allLists.value?.find(list => list.id == currentObservation.value?.listId);
   return list ? list.title : t("No_Special_List");
 }
 
@@ -99,7 +99,7 @@ defineExpose({
         <label for="obs-list">{{ t("Change_List") }}</label>
         <select id="obs-list" v-model="currentObservation.listId">
           <option value="">{{ t("No_Special_List") }}</option>
-          <option v-for="{ id, title } in myLists" :value="id" :key="id" :selected="id === currentObservation?.listId && 'selected'">
+          <option v-for="{ id, title } in allLists" :value="id" :key="id" :selected="id === currentObservation?.listId && 'selected'">
             {{ title }}
           </option>
         </select>
@@ -124,38 +124,8 @@ defineExpose({
   align-items: center;
 }
 
-.dialog h2 {
-  font-weight: bold;
-}
-
 button[disabled] {
   opacity: 0.4;
   filter: grayscale(1);
-}
-
-.dialog label {
-  display: block;
-  margin-top: 1rem;
-  font-weight: bold;
-}
-
-.dialog select,
-.dialog input,
-.dialog textarea {
-  font-size: 1.4rem;
-  font-family: inherit;
-}
-
-.dialog .poi {
-  color: var(--color-link);
-  text-decoration: none;
-}
-
-.dialog .poi svg {
-  vertical-align: top;
-}
-
-.margin-bottom {
-  margin-bottom: 1.5rem;
 }
 </style>

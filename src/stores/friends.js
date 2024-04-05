@@ -16,6 +16,10 @@ export const useFriendsStore = defineStore("friend", () => {
     }
   );
 
+  function getFriendlyName(email) {
+    return allFriends.value.find(f => f.email === email)?.name || email;
+  }
+
   async function addFriend(name, email) {
     await db.friends.add({
       name: name.trim(),
@@ -29,6 +33,7 @@ export const useFriendsStore = defineStore("friend", () => {
 
   return {
     allFriends,
+    getFriendlyName,
     addFriend,
     deleteFriend,
   };

@@ -105,6 +105,12 @@ async function setupConfetti() {
   }
 }
 
+function destroyConfetti() {
+  if (typeof newLeaderConfetti !== "undefined") {
+    newLeaderConfetti.reset();
+  }
+}
+
 export {
   getMonthName,
   getCurrentYear,
@@ -115,4 +121,5 @@ export {
   inputDate,
   celebrate,
   setupConfetti,
+  destroyConfetti,
 };

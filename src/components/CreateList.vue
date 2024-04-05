@@ -1,7 +1,10 @@
 <script setup>
 import { ref, defineExpose } from "vue";
+import { useRouter } from "vue-router";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
+
+const router = useRouter()
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
@@ -15,6 +18,12 @@ const listDialog = ref(null);
 
 function openModal() {
   listDialog.value.showModal();
+}
+
+async function createListAndClose() {
+  const listId = await createList(title.value, description.value);
+  router.push({ name: "list", params: { id: listId } });
+  closeModal();
 }
 
 function closeModal() {
@@ -32,7 +41,7 @@ defineExpose({
     <input class="margin-bottom" type="text" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
     <textarea class="margin-bottom" id="description" v-model="description" cols="30" rows="10" :placeholder="t('List_Rules_Etc')"></textarea>
     <div class="buttons">
-      <button class="create" @click="createList(title, description)">{{ t("Create_List") }}</button>
+      <button class="create" @click="createListAndClose">{{ t("Create_List") }}</button>
       <button @click="closeModal">{{ t("Cancel") }}</button>
     </div>
   </dialog>

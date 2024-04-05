@@ -30,7 +30,7 @@ function edit(obs) {
   <div class="body-content">
     <observation-list
       :observations="allThisMonth"
-      :sort="currentSort"
+      :sort="currentSort === 'comments' ? 'bydate' : currentSort"
       @sort="sortBy"
       @edit="edit"
     >

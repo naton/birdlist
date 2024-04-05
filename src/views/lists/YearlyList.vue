@@ -31,7 +31,6 @@ function goToMonth(month) {
   currentMonth.value = month;
   router.push({ name: "monthly" });
 }
-
 </script>
 
 <template>
@@ -40,7 +39,7 @@ function goToMonth(month) {
   <div class="body-content">
     <observation-list
       :observations="allMyObservations"
-      :sort="currentSort"
+      :sort="currentSort === 'comments' ? 'bydate' : currentSort"
       @sort="sortBy"
       @edit="edit"
     >

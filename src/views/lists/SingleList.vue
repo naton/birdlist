@@ -1,8 +1,8 @@
 <script setup>
-import { ref, computed, defineAsyncComponent, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { ref, computed, defineAsyncComponent, onMounted, onBeforeUnmount, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
-import { setupConfetti, celebrate } from "@/helpers";
+import { setupConfetti, destroyConfetti, celebrate } from "@/helpers";
 import { useSettingsStore } from '@/stores/settings.js'
 import { useListsStore } from "@/stores/lists.js";
 import { useObservationsStore } from "@/stores/observations.js";
@@ -11,8 +11,10 @@ import ListInfo from "@/components/ListInfo.vue";
 import EditListDialog from "@/components/EditListDialog.vue";
 const ObservationList = defineAsyncComponent(() => import("@/components/ObservationList.vue"));
 
-const route = useRoute();
 const emit = defineEmits(["openDialog", "sort", "edit"]);
+
+const route = useRoute();
+const router = useRouter();
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
@@ -20,7 +22,7 @@ const { currentUser } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
 const { sortBy } = listsStore;
-const { currentSort, currentList } = storeToRefs(listsStore);
+const { allLists, currentSort, currentList } = storeToRefs(listsStore);
 
 const observationsStore = useObservationsStore();
 const { allListObservations } = storeToRefs(observationsStore);
@@ -43,8 +45,18 @@ function edit(obs) {
   emit("edit", obs)
 }
 
+watch(currentList, (list) => {
+  if (!allLists.value.find(l => l.id === list.id)) {
+    router.push({ name: "lists" });
+  }
+});
+
 onMounted(() => {
   setupConfetti();
+});
+
+onBeforeUnmount(() => {
+  destroyConfetti();
 });
 </script>
 
