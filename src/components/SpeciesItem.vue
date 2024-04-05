@@ -1,5 +1,5 @@
 <script setup>
-import UserIcon from "./icons/UserIcon.vue";
+import UserInitial from "./icons/UserInitial.vue";
 
 defineProps(["obs", "bird"]);
 </script>
@@ -9,7 +9,7 @@ defineProps(["obs", "bird"]);
     <span class="obs">
       <span class="name">✘ {{ obs[0].name }}</span>
       <span class="seen-by">
-        <user-icon v-for="user in [...new Set(obs.map((o) => o.owner))]" :key="user" :user="user"></user-icon>
+        <user-initial v-for="user in [...new Set(obs.map((o) => o.owner))]" :key="user" :user="user" />
       </span>
     </span>
   </li>

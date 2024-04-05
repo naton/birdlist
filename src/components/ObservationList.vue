@@ -5,7 +5,10 @@ import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
 import { useCommentsStore } from "@/stores/comments.js";
 import ObservationItem from "./ObservationItem.vue";
-import UserIcon from "./icons/UserIcon.vue";
+import ObservationsIcon from "./icons/ObservationsIcon.vue";
+import BirdsIcon from "./icons/BirdsIcon.vue";
+import CommentsIcon from "./icons/CommentsIcon.vue";
+import UserInitial from "./icons/UserInitial.vue";
 import SpeciesItem from "./SpeciesItem.vue";
 import CommentItem from "./CommentItem.vue";
 import SvgChart from "./SvgChart.vue";
@@ -19,7 +22,6 @@ const { t } = settingsStore;
 const { currentUser } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
-const { shareBirdList } = listsStore;
 const { currentList } = storeToRefs(listsStore);
 
 const commentsStore = useCommentsStore();
@@ -70,8 +72,6 @@ const users = computed(() => {
 
   return users.sort((a, b) => b.score - a.score);
 });
-
-const isListOwner = computed(() => currentUser.value?.name === props.list?.owner);
 
 const selectedObservation = defineModel();
 const selectedUser = ref(null);
@@ -209,40 +209,13 @@ watch(currentLeader, (newLeader) => {
 </script>
 
 <template>
-  <slot name="header">
-    <div class="list-header">
-      <div class="subtitle">
-        <details>
-          <summary class="heading">{{ currentList?.title }}</summary>
-          <p class="list-description">{{ currentList?.description }}</p>
-          <p class="list-owner">{{ t("Created_By") }} {{ currentList?.owner }}</p>
-          <div>
-            <button class="share-button" :disabled="!isListOwner" @click.stop="shareBirdList(currentList?.id, currentList?.title)">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
-                <g fill="var(--color-background-dim)">
-                  <path d="M4.5 5H7v5a1 1 0 0 0 2 0V5h2.5a.5.5 0 0 0 .376-.829l-3.5-4a.514.514 0 0 0-.752 0l-3.5 4A.5.5 0 0 0 4.5 5Z" />
-                  <path d="M14 7h-3v2h3v5H2V9h3V7H2a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z" />
-                </g>
-              </svg>
-              {{ t("Share") }}
-            </button>
-            <span v-if="!isListOwner" class="share-info">
-              {{ t("Contact_The_List_Creator") }}
-            </span>
-            <slot name="subheader" />
-          </div>
-        </details>
-      </div>
-    </div>
-  </slot>
-
   <slot name="default">
     <nav class="user-nav" v-if="users?.length > 1">
       <transition-group name="list" appear>
         <button v-for="{ name, score, leader } in users" class="user-button" :class="name === selectedUser && 'user-button--active'" @click="changeUser(name)" :key="name">
-          <user-icon :user="name" :score="score" :leader="leader">
+          <user-initial :user="name" :score="score" :leader="leader">
             <span :class="name === props.user && 'me'">{{ name }}</span>
-          </user-icon>
+          </user-initial>
         </button>
       </transition-group>
     </nav>
@@ -252,34 +225,18 @@ watch(currentLeader, (newLeader) => {
     </div>
 
     <nav class="nav" v-if="props.observations.length">
-      <a href="#bydate" class="nav-link" :class="{ current: sort == 'bydate', }" @click.prevent="emitSort('bydate')"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 16 16">
-          <g transform="translate(0, 0)">
-            <path fill="currentColor"
-              d="M15.2,7.7L15.2,7.7c-0.8-1.1-2.9-3.9-3.7-5l0,0C11.1,2.3,10.6,2,10,2C8.9,2,8,2.9,8,4c0-1.1-0.9-2-2-2 C5.4,2,4.9,2.3,4.5,2.7l0,0c-0.8,1-2.9,3.8-3.7,5l0,0C0.3,8.3,0,9.1,0,10c0,2.2,1.8,4,4,4s4-1.8,4-4c0,2.2,1.8,4,4,4s4-1.8,4-4 C16,9.1,15.7,8.3,15.2,7.7z M4,12c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S5.1,12,4,12z M12,12c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2 S13.1,12,12,12z">
-            </path>
-          </g>
-        </svg>
+      <a href="#bydate" class="nav-link" :class="{ current: sort == 'bydate', }" @click.prevent="emitSort('bydate')">
+        <observations-icon />
         {{ t("Observations") }}
         <span class="nav-count">({{ observationsByUser.length }})</span>
       </a>
-      <a href="#byname" class="nav-link" :class="{ current: sort == 'byname', }" @click.prevent="emitSort('byname')"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 16 16">
-          <g transform="translate(0, 0)">
-            <path fill="currentColor"
-              d="M14.128,7.084c-.443-.946-.861-1.841-.878-3.483-.019-1.888-1.447-3.465-3.25-3.592-.568-.04-1.116,.054-1.633,.277-.233,.102-.5,.102-.734,0C7.116,.062,6.569-.03,6,.009c-1.803,.127-3.231,1.704-3.25,3.592-.017,1.643-.435,2.537-.878,3.483-.429,.916-.872,1.862-.872,3.416,0,3.032,2.467,5.5,5.5,5.5h3c3.033,0,5.5-2.468,5.5-5.501,0-1.553-.443-2.5-.872-3.415ZM5,3.5c.551,0,1,.448,1,1s-.449,1-1,1-1-.448-1-1,.449-1,1-1Zm6.972,9.211c-.047,.134-.149,.242-.28,.297l-1.197,.498c-.792,.329-1.644,.494-2.495,.494s-1.702-.165-2.495-.494l-1.197-.498c-.131-.055-.233-.163-.28-.297s-.034-.282,.034-.406l1.419-2.573,.558-2.578c.179-.927,1.005-1.607,1.961-1.607,.944,0,1.768,.67,1.959,1.594l.56,2.592,1.419,2.573c.068,.124,.081,.272,.034,.406Zm-.972-7.211c-.551,0-1-.448-1-1s.449-1,1-1,1,.448,1,1-.449,1-1,1Z">
-            </path>
-          </g>
-        </svg>
+      <a href="#byname" class="nav-link" :class="{ current: sort == 'byname', }" @click.prevent="emitSort('byname')">
+        <birds-icon />
         {{ t("Species") }}
         <span class="nav-count">({{ Object.keys(speciesByUser).length }})</span>
       </a>
-      <a v-if="props.comments" href="#comments" class="nav-link" :class="{ current: sort == 'comments', }" @click.prevent="emitSort('comments')"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 16 16">
-          <g fill="currentColor">
-            <path
-              d="M14.853,6.861c-.729,3.487-4.193,6.139-8.353,6.139-.102,0-.201-.016-.302-.019,1.035,.637,2.359,1.019,3.802,1.019,.51,0,1.003-.053,1.476-.143l2.724,2.043c.088,.066,.193,.1,.3,.1,.076,0,.153-.018,.224-.053,.169-.085,.276-.258,.276-.447v-3.515c.631-.712,1-1.566,1-2.485,0-.987-.429-1.897-1.147-2.639Z">
-            </path>
-            <path d="M6.5,0C2.91,0,0,2.462,0,5.5c0,1.075,.37,2.074,1,2.922v3.078c0,.189,.107,.362,.276,.447,.07,.035,.147,.053,.224,.053,.106,0,.212-.034,.3-.1l1.915-1.436c.845,.34,1.787,.536,2.785,.536,3.59,0,6.5-2.462,6.5-5.5S10.09,0,6.5,0Z"></path>
-          </g>
-        </svg>
+      <a v-if="props.comments" href="#comments" class="nav-link" :class="{ current: sort == 'comments', }" @click.prevent="emitSort('comments')">
+        <comments-icon />
         {{ t("Comments") }}
         <span class="nav-count">({{ noOfComments() }})</span>
       </a>
@@ -316,10 +273,6 @@ watch(currentLeader, (newLeader) => {
 </template>
 
 <style>
-.share-info {
-  margin-left: 0.5rem;
-}
-
 .empty-list {
   display: flex;
   height: 70%;

@@ -1,5 +1,5 @@
 <script setup>
-import UserIcon from "./icons/UserIcon.vue";
+import UserInitial from "./icons/UserInitial.vue";
 import LocationSpecifiedIcon from "./icons/LocationSpecifiedIcon.vue";
 import { formatDate } from "@/helpers";
 
@@ -20,10 +20,10 @@ function editObservation() {
     <span class="obs">
       <span class="name">✘ {{ props.obs.name }}</span>
 
-      <location-specified-icon v-if="props.obs.location"></location-specified-icon>
+      <location-specified-icon v-if="props.obs.location" />
       <span class="date">{{ formatDate(props.obs.date) }}</span>
       <span class="seen-by">
-        <user-icon :user="props.obs.owner"></user-icon>
+        <user-initial :user="props.obs.owner" />
       </span>
     </span>
     <button type="button" class="edit-button" @click.stop="editObservation">

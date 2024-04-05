@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from "vue";
 import { db } from "../db";
-import UserIcon from "./icons/UserIcon.vue";
+import UserInitial from "./icons/UserInitial.vue";
 import { formatDate } from "@/helpers";
 
 const props = defineProps(["comment", "user"]);
@@ -17,7 +17,7 @@ async function deleteComment(id) {
   <li>
     <div class="comment">
       <span class="meta">
-        <user-icon :user="props.comment.owner"></user-icon> @ {{ formatDate(props.comment.date) }}:
+        <user-initial :user="props.comment.owner" /> @ {{ formatDate(props.comment.date) }}:
       </span>
       <p>{{ props.comment.comment }}</p>
       <button v-if="isCommentAuthor" class="delete-button" @click="deleteComment(props.comment.id)">

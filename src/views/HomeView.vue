@@ -5,7 +5,7 @@ import { storeToRefs } from "pinia";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useObservationsStore } from "@/stores/observations.js";
 import MonthlyList from "@/views/lists/MonthlyList.vue";
-import EditDialog from "@/components/EditDialog.vue";
+import EditObservationDialog from "@/components/EditObservationDialog.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
 
 const settingsStore = useSettingsStore();
@@ -32,7 +32,7 @@ function openModal(obs) {
     </router-view>
   </div>
   <div class="footer">
-    <edit-dialog ref="modal" v-model="currentObservation" @delete="deleteObservation" />
+    <edit-observation-dialog ref="modal" v-model="currentObservation" @delete="deleteObservation" />
     <observation-input @add="addObservation" :lang="lang" />
   </div>
   <canvas id="canvas"></canvas>
@@ -87,8 +87,7 @@ function openModal(obs) {
 }
 
 .c-tabs__tab svg {
-  vertical-align: baseline;
-  margin-right: 0.3rem;
+  margin: 0 0.4rem 0.3rem 0;
 }
 
 .list-header {
@@ -149,8 +148,10 @@ function openModal(obs) {
 }
 
 .list a {
+  width: 100%;
   padding: 0.6rem 1em;
   color: inherit;
+  text-underline-offset: 0.25em;
 }
 
 .list .obs {

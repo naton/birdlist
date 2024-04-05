@@ -4,6 +4,8 @@ import { storeToRefs } from "pinia";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
 
+const listToEdit = ref();
+
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
 const { currentUser } = storeToRefs(settingsStore)
@@ -16,7 +18,7 @@ const title = ref('')
 const description = ref('')
 
 // TODO:
-watch (currentList, (list) => {
+watch(listToEdit, (list) => {
   if (!list) {
     return
   }
@@ -27,10 +29,20 @@ watch (currentList, (list) => {
 
 const listDialog = ref(null);
 
-const isListOwner = computed(() => currentUser.value?.name === currentList.value?.owner);
+const isListOwner = computed(() => currentUser.value?.name === listToEdit.value?.owner);
 
 function openModal() {
+  listToEdit.value = currentList.value;
   listDialog.value.showModal();
+}
+
+function saveList() {
+  updateList({
+    id: listToEdit.value.id,
+    title: title.value.trim(),
+    description: description.value.trim(),
+  });
+  closeModal();
 }
 
 function closeModal() {
@@ -48,8 +60,8 @@ defineExpose({
     <input class="margin-bottom" type="text" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
     <textarea class="margin-bottom" id="description" v-model="description" cols="30" rows="10" :placeholder="t('List_Rules_Etc')"></textarea>
     <div class="buttons">
-      <button v-if="isListOwner && currentList?.title" class="update-button" @click="updateList(currentList, closeModal)">{{ t("Save") }}</button>
-      <button v-if="isListOwner && currentList?.title" class="delete-button" @click="deleteList(currentList.id)">
+      <button v-if="isListOwner && listToEdit.title" class="update-button" @click="saveList">{{ t("Save") }}</button>
+      <button v-if="isListOwner && listToEdit.title" class="delete-button" @click="deleteList(listToEdit.id)">
         <svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
           <g fill="none" stroke="currentColor" stroke-miterlimit="10">
             <path stroke-linecap="square" d="M20 9v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9" />

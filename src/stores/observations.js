@@ -2,6 +2,7 @@ import { ref, computed } from "vue";
 import { defineStore, storeToRefs } from "pinia";
 import { db } from "../db";
 import { liveQuery } from "dexie";
+import { getTiedRealmId } from "dexie-cloud-addon";
 import { useSettingsStore } from "./settings.js";
 import { useListsStore } from "./lists.js";
 
@@ -84,6 +85,26 @@ export const useObservationsStore = defineStore("observation", () => {
     }
   }
 
+  async function saveObservation(obs) {
+    let payload = {
+      name: obs.name.trim(),
+      date: obs.date,
+      location: obs.location,
+    };
+    if (obs.listId) {
+      payload.listId = obs.listId;
+      payload.realmId = getTiedRealmId(obs.listId);
+    } else {
+      payload.realmId = undefined;
+    }
+    await db.transaction("rw", [db.lists, db.observations], async () => {
+      await db.observations.update(obs, payload);
+      await db.observations.where({ listId: payload.listId }).modify({ realmId: payload.realmId });
+      // Move list into the realm (if not already there):
+      await db.lists.update(payload.listId, { realmId: payload.realmId });
+    });
+  }
+
   async function deleteObservation(id) {
     await db.observations.delete(id);
   }
@@ -96,6 +117,7 @@ export const useObservationsStore = defineStore("observation", () => {
     allListObservations,
     getTotalPerMonth,
     addObservation,
+    saveObservation,
     deleteObservation,
   };
 });

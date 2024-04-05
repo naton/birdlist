@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import { RouterLink, RouterView } from 'vue-router';
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from "@/stores/lists.js";
+import ListsIcon from "@/components/icons/ListsIcon.vue";
 import NavTabs from "@/components/NavTabs.vue";
 import CreateList from "@/components/CreateList.vue";
 
@@ -15,16 +16,14 @@ const listsStore = useListsStore();
 const { createList } = listsStore;
 const { myLists, currentList } = storeToRefs(listsStore);
 
-const listDialog = ref(null);
-const selectedList = defineModel();
+const createListDialog = ref(null);
 
 function newList() {
-  listDialog.value.openModal();
+  createListDialog.value.openModal();
 }
 
 function selectList(list) {
   currentList.value = list;
-  selectedList.value = selectedList.value == list;
 }
 
 function emitEdit(obs) {
@@ -34,10 +33,8 @@ function emitEdit(obs) {
 
 <template>
   <nav-tabs></nav-tabs>
-
+  <create-list ref="createListDialog" />
   <div class="body-content">
-    <create-list ref="listDialog" />
-
     <router-view v-slot="{ Component, route }" @edit="emitEdit">
       <component :is="Component" :key="`${route.path}`"></component>
       <template v-if="!Component">
@@ -46,12 +43,12 @@ function emitEdit(obs) {
             {{ t("Create_New_List") }}
           </button>
         </div>
-
         <div class="lists">
           <div class="lists-content">
             <h1>{{ t("Lists") }}</h1>
             <ul class="list">
-              <li v-for="list in myLists" :key="list.id" :selectedList="selectedList == list" @click="selectList(list)">
+              <li v-for="list in myLists" :key="list.id" @click="selectList(list)">
+                <lists-icon />
                 <router-link :to="{ name: 'list', params: { id: list.id } }">{{ list.title }}</router-link>
               </li>
             </ul>

@@ -1,6 +1,7 @@
 <script setup>
 import { getCurrentYear, getMonthName } from "@/helpers";
 import { storeToRefs } from "pinia";
+import ListsIcon from "./icons/ListsIcon.vue";
 import { useSettingsStore } from "@/stores/settings.js";
 
 const settingsStore = useSettingsStore();
@@ -28,7 +29,7 @@ const { currentMonth, currentYear } = storeToRefs(settingsStore);
       </li>
       <li class="c-tabs__tab">
         <router-link :to="{ name: 'lists' }">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M.5 2.5h2m-2 4h2m-2 4h2m-2 4h2m3-12h10m-10 4h6m-6 4h10m-10 4h5"/></svg>
+          <lists-icon />
           {{ t("Lists") }}
         </router-link>
       </li>
