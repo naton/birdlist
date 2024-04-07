@@ -3,6 +3,7 @@ import { ref, defineExpose } from "vue";
 import { useRouter } from "vue-router";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
+import ListsIcon from "./icons/ListsIcon.vue";
 
 const router = useRouter()
 
@@ -38,8 +39,14 @@ defineExpose({
 
 <template>
   <dialog ref="listDialog" class="dialog">
-    <input class="margin-bottom" type="text" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
-    <textarea class="margin-bottom" id="description" v-model="description" cols="30" rows="10" :placeholder="t('List_Rules_Etc')"></textarea>
+    <div class="grid">
+      <lists-icon />
+      <h2>{{ t("Create_List") }}</h2>
+    </div>
+    <label for="title">{{ t("List_Name") }}:</label>
+    <input type="text" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
+    <label for="description">{{ t("Description") }}:</label>
+    <textarea id="description" v-model="description" cols="30" rows="10" :placeholder="t('List_Rules_Etc')"></textarea>
     <div class="buttons">
       <button class="create" @click="createListAndClose">{{ t("Create_List") }}</button>
       <button @click="closeModal">{{ t("Cancel") }}</button>
