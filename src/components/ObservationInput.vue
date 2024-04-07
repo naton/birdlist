@@ -74,7 +74,7 @@ onBeforeMount(() => {
       <location-found-icon v-else></location-found-icon>
     </button>
     <vue3-simple-typeahead ref="addObservationInput" :placeholder="route.params.id
-      ? t('Add_Bird_To') + ` this list…`
+      ? `${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`
       : t('Enter_The_Name_Of_The_Bird')" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => add(bird)">
     </vue3-simple-typeahead>
   </div>
