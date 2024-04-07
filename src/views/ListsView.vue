@@ -64,9 +64,9 @@ function emitEdit(obs) {
             <ul class="list">
               <li v-for="list in listInvites.filter(invite => invite.rejected)" :key="list.id">
                 <lists-icon />
-                {{ list.realm.name }}
+                <b>{{ list.realm.name }}</b>
                 <button @click="list.accept()">{{ t("Accept") }}</button>
-                <button @click="deleteInvite(list)">{{ t("Delete") }}</button>
+                <button class="secondary" @click="deleteInvite(list)">{{ t("Delete") }}</button>
               </li>
             </ul>
           </div>

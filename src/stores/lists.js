@@ -1,4 +1,4 @@
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { defineStore } from "pinia";
 import { db } from "../db";
@@ -80,6 +80,11 @@ export const useListsStore = defineStore("list", () => {
     }
   }
 
+  async function getListMembers(listId) {
+    const realmId = getTiedRealmId(listId);
+    return await db.members.where({ realmId }).toArray();
+  }
+
   async function shareBirdList(listId, listName, friends) {
     if (!listId) return;
   
@@ -122,6 +127,7 @@ export const useListsStore = defineStore("list", () => {
     currentListExpanded,
     currentSort,
     sortBy,
+    getListMembers,
     createList,
     updateList,
     deleteList,

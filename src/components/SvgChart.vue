@@ -13,7 +13,14 @@ function selectedClass(name) {
 <template>
   <div class="chart-wrapper">
     <svg :view-box.camel="viewbox" class="chart">
-      <svg-chart-line :d="dataset" :o="options" :svg="props.svg" :class="selectedClass(dataset.name)" v-for="dataset in datasets"></svg-chart-line>
+      <svg-chart-line :d="dataset" :o="options" :svg="props.svg" :class="selectedClass(dataset.name)" v-for="dataset in datasets" :key="dataset.name"></svg-chart-line>
     </svg>
   </div>
 </template>
+
+<style>
+.chart {
+  width: 100%;
+  height: 200px;
+}
+</style>

@@ -136,7 +136,7 @@ onBeforeMount(() => {
 .add-observation .simple-typeahead-list {
   bottom: 3rem;
   border-radius: var(--radius);
-  box-shadow: rgb(17 17 26 / 12%) 0 -6px 12px 0;
+  box-shadow: rgb(0 0 0 / 10%) 0 -6px 12px 0;
 }
 
 .add-observation .simple-typeahead-list-footer,

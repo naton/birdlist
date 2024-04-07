@@ -28,14 +28,7 @@ function openModal(obs) {
   <div class="body">
     <router-view v-slot="{ Component, route }" @edit="openModal">
       <template v-if="Component">
-        <KeepAlive>
-          <Suspense>
-            <component :is="Component" :key="`${route.path}`" />
-            <template #fallback>
-              Loading...
-            </template>
-          </Suspense>
-        </KeepAlive>
+        <component :is="Component" :key="`${route.path}`" />
       </template>
       <monthly-list v-else />
     </router-view>
@@ -108,6 +101,7 @@ function openModal(obs) {
 .list-description,
 .list-owner {
   margin: 0 0.5rem 1rem;
+  text-indent: 0;
 }
 
 .list-owner {
@@ -159,11 +153,20 @@ function openModal(obs) {
   background: var(--color-background);
 }
 
-.list a {
+.list a,
+.list b {
   width: 100%;
   padding: 0.6rem 1em;
+}
+
+.list a {
   color: inherit;
   text-underline-offset: 0.25em;
+}
+
+.list button {
+  flex-shrink: 0;
+  min-height: 1rem;
 }
 
 .list .obs {

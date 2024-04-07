@@ -26,7 +26,8 @@ export const useSettingsStore = defineStore("settings", () => {
     }
 
     function getThemeColor() {
-      return window.getComputedStyle(document.querySelector(".body-nav")).backgroundColor;
+      const elm = document.querySelector(".router-link-active");
+      return getComputedStyle(elm).backgroundColor;
     }
 
     function setThemeColor() {
@@ -66,7 +67,7 @@ export const useSettingsStore = defineStore("settings", () => {
 
     watch(hue, (newHue) => {
       document.documentElement.style = `--hue: ${newHue}`;
-      if (document.querySelector(".body-nav")) {
+      if (document.querySelector(".router-link-active")) {
         setThemeColor();
       }
     });

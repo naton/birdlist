@@ -18,8 +18,7 @@ function editObservation() {
 <template>
   <li tabindex="-1" :class="props.selected && 'selected'">
     <span class="obs">
-      <span class="name">✘ {{ props.obs.name }}</span>
-
+      <span class="name">{{ props.obs.name }}</span>
       <location-specified-icon v-if="props.obs.location" />
       <span class="date">{{ formatDate(props.obs.date) }}</span>
       <span class="seen-by">

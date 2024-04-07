@@ -34,15 +34,14 @@ const { getFriendlyName } = friendsStore;
 const species = computed(() => [...new Set(props.observations.map((item) => item.name))].sort());
 
 const svg = reactive({
-  w: 0,
-  h: 0,
+  w: 300,
+  h: 200,
 });
 
 function resize() {
   if (users.value.length > 1) {
     const chart = document.querySelector(".chart-wrapper");
-    svg.w = chart ? chart.offsetWidth : 300;
-    svg.h = 200;
+    svg.w = chart.offsetWidth;
   }
 }
 
@@ -146,11 +145,11 @@ function initGraph() {
   });
 
   datasets.value = graphData;
+  resize();
 }
 
 onMounted(() => {
   window.addEventListener("resize", resize);
-  resize();
 });
 
 const speciesByUser = computed(() => {
@@ -240,7 +239,7 @@ watch(currentLeader, (newLeader) => {
       </a>
       <a v-if="props.comments" href="#comments" class="nav-link" :class="{ current: sort == 'comments', }" @click.prevent="emitSort('comments')">
         <comments-icon />
-        {{ t("Comments") }}
+        {{ t("Chat") }}
         <span class="nav-count">({{ noOfComments() }})</span>
       </a>
     </nav>
@@ -289,11 +288,9 @@ watch(currentLeader, (newLeader) => {
 
 .name {
   margin-right: auto;
-}
-
-.name::first-letter {
-  color: var(--color-background-dim);
-  letter-spacing: 0.5ch;
+  padding-left: 20px;
+  background: url('/x.svg') no-repeat 0 50%;
+  background-size: 12px auto;
 }
 
 .user-nav {
@@ -305,7 +302,7 @@ watch(currentLeader, (newLeader) => {
   background: var(--color-background);
   overflow: auto;
   white-space: nowrap;
-  box-shadow: rgb(17 17 26 / 10%) 0 6px 8px 0;
+  box-shadow: rgb(0 0 0 / 10%) 0 6px 8px 0;
   z-index: 1;
 }
 
@@ -350,10 +347,13 @@ watch(currentLeader, (newLeader) => {
 .comment-input {
   margin: 1rem 0 1rem 1rem;
   padding: 0.5rem;
-  font-size: inherit;
   border: none;
+  border-top-left-radius: var(--radius);
+  border-bottom-left-radius: var(--radius);
   color: var(--color-text);
   background: var(--color-background-dim);
+  font-size: inherit;
+  font-family: inherit;
 }
 
 .comment-input::placeholder {

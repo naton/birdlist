@@ -59,7 +59,7 @@ const initial = computed(() => {
   border-radius: 50%;
   color: var(--color-background);
   background: var(--color-text);
-  box-shadow: 0 1px 1px 0 var(--co-grey-dark);
+  box-shadow: 0 1px 1px 0 var(--color-text);
 }
 
 .score.leader {
@@ -86,7 +86,7 @@ const initial = computed(() => {
   top: 5px;
   transform: rotate(10deg) skewX(30deg);
   z-index: -1;
-  box-shadow: 0 1px 0 0 var(--co-grey-dark);
+  box-shadow: 0 1px 0 0 var(--color-text);
 }
 
 .score.leader::after {

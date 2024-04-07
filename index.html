@@ -36,7 +36,7 @@
           newWorker.addEventListener('statechange', async () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
               newWorker.skipWaiting();
-              document.location.href = "https://birdlist.app/";
+              document.location.href.startsWith('https://birdlist.app/') ? document.location.reload() : document.location.href = 'https://birdlist.app/';
             }
           });
         }

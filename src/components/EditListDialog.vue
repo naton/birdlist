@@ -57,8 +57,10 @@ defineExpose({
 
 <template>
   <dialog ref="listDialog" class="dialog">
-    <input class="margin-bottom" type="text" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
-    <textarea class="margin-bottom" id="description" v-model="description" cols="30" rows="10" :placeholder="t('List_Rules_Etc')"></textarea>
+    <label for="list-title">{{ t("List_Name") }}:</label>
+    <input class="margin-top" type="text" id="list-title" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
+    <label for="list-description">{{ t("Description") }}:</label>
+    <textarea class="margin-bottom" id="list-description" v-model="description" cols="30" rows="10" :placeholder="t('List_Rules_Etc')"></textarea>
     <div class="buttons">
       <button v-if="isListOwner && listToEdit.title" class="update-button" @click="saveList">{{ t("Save") }}</button>
       <button v-if="isListOwner && listToEdit.title" class="delete-button" @click="deleteList(listToEdit.id)">

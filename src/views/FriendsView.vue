@@ -30,7 +30,7 @@ const newFriendEmail = ref()
         <tbody>
           <tr v-for="{ id, name, email } in allFriends" :key="email">
             <th scope="row">{{ name }}</th>
-            <td>{{ email }}</td>
+            <td class="crop">{{ email }}</td>
             <td><button @click="deleteFriend(id)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><g fill="currentColor"><path d="M15 15c3.309 0 6-2.691 6-6V6c0-3.309-2.691-6-6-6S9 2.691 9 6v3c0 3.309 2.691 6 6 6Zm11.673 10H23c-1.654 0-3-1.346-3-3s1.346-3 3-3h.845a6.934 6.934 0 0 0-3.762-1.691 42.267 42.267 0 0 0-10.166 0 6.96 6.96 0 0 0-5.885 5.107l-1.997 7.321a1 1 0 0 0 .8 1.249C6.843 31.658 10.936 32 15 32s8.157-.341 12.165-1.014c.279-.047.525-.209.678-.447.152-.238.196-.53.122-.802L26.673 25Z"/><path d="M31 23h-8a1 1 0 1 1 0-2h8a1 1 0 1 1 0 2Z" /></g></svg></button></td>
           </tr>
         </tbody>
@@ -52,13 +52,18 @@ const newFriendEmail = ref()
   gap: 0.25rem;
 }
 
-.friends-content form input[type] {
+.friends-content form input {
   width: 100%;
   flex: 4 1 auto;
   padding: 0.6em;
   border: 1px solid transparent;
   border-radius: var(--radius);
+  background: var(--color-background-dim);
   font: inherit;
+}
+
+.friends-content form input::placeholder {
+  color: var(--color-text);
 }
 
 .friends-content th:first-child {
@@ -70,5 +75,12 @@ const newFriendEmail = ref()
 .friends-content td:last-child {
   padding-right: 0;
   text-align: right;
+}
+
+td.crop {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 40vw;
 }
 </style>

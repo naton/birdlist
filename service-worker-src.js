@@ -1,5 +1,5 @@
 function main(workbox) {
-  const CACHE_VERSION = 1.8;
+  const CACHE_VERSION = 1.9;
   const {
     core: { clientsClaim, setCacheNameDetails },
     expiration: { ExpirationPlugin },

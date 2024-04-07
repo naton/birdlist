@@ -48,9 +48,9 @@ async function deleteComment(id) {
 }
 
 .comment .delete-button {
-  width: 32px;
+  min-height: 24px;
   position: absolute;
-  right: 1rem;
+  right: 0.6rem;
 }
 
 .meta {

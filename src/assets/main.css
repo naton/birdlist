@@ -53,6 +53,7 @@ body {
   color: var(--color-text);
   background: var(--color-background);
   transition: color 0.5s, background-color 0.5s;
+  overscroll-behavior: none;
 }
 
 ol,
@@ -60,8 +61,17 @@ ul {
   padding: 0;
 }
 
-a > svg {
+a > svg,
+a > img {
   vertical-align: bottom;
+}
+
+details p + p {
+  text-indent: 0.5em;
+}
+
+summary {
+  font-weight: 500;
 }
 
 .hidden-visually {
@@ -111,7 +121,7 @@ a > svg {
   min-height: 3rem;
   overflow: hidden;
   background: var(--color-background-dim);
-  box-shadow: inset rgb(17 17 26 / 10%) 0 -6px 8px 0;
+  box-shadow: inset rgb(0 0 0 / 10%) 0 -6px 8px 0;
 }
 
 .body-nav .logo {
@@ -132,7 +142,6 @@ a > svg {
 .body-content {
   grid-area: body-content;
   overflow: auto;
-  overscroll-behavior: none;
 }
 
 .body-content::-webkit-scrollbar {
@@ -142,8 +151,10 @@ a > svg {
 .footer {
   position: relative;
   grid-area: footer;
-  background: var(--color-background-dim);
-  box-shadow: rgb(17 17 26 / 10%) 0 -6px 8px 0;
+  border-radius: var(--radius) var(--radius) 0 0;
+  border-top: 2px solid var(--color-border);
+  background: linear-gradient(var(--color-background-dim), var(--color-background));
+  box-shadow: rgb(0 0 0 / 10%) 0 -6px 8px 0;
 }
 
 /* Navigation */
@@ -251,8 +262,16 @@ button.secondary {
   font-size: 1.4rem;
 }
 
+.margin-top {
+  margin-top: 0.5rem;
+}
+
 .margin-bottom {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.margin-left {
+  margin-left: 0.5rem;
 }
 
 /* Dialogs */
@@ -323,7 +342,7 @@ button.secondary {
   background-color: var(--color-background);
 }
 
-.dialog tr:has(:checked) td {
+.dialog tr:has(:enabled:checked) td {
   background-color: var(--color-background-dim);
 }
 
