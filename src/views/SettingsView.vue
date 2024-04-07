@@ -31,7 +31,7 @@ function logout() {
                 <label for="hue">{{ t("Theme_Color") }}</label>
                 <input id="hue" type="range" v-model="hue" min="0" max="360">
             </div>
-            <button type="button" class="button" @click="logout()">{{ t("Logout") }}</button>
+            <button v-if="currentUser.userId !== 'unauthorized'" type="button" class="button" @click="logout()">{{ t("Logout") }}</button>
         </div>
     </div>
 </template>
