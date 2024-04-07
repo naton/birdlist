@@ -1,6 +1,8 @@
 <script setup>
 import UserInitial from "./icons/UserInitial.vue";
 import LocationSpecifiedIcon from "./icons/LocationSpecifiedIcon.vue";
+import EditIcon from "./icons/EditIcon.vue";
+import ViewIcon from "./icons/ViewIcon.vue";
 import { formatDate } from "@/helpers";
 
 const props = defineProps(["obs", "user", "selected"]);
@@ -26,8 +28,8 @@ function editObservation() {
       </span>
     </span>
     <button type="button" class="edit-button" @click.stop="editObservation">
-      <span v-if="canEdit(props.obs.owner)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><title>Edit</title><path fill="currentColor" d="M8.1 3.5.3 11.3c-.2.2-.3.4-.3.7v3c0 .6.4 1 1 1h3c.3 0 .5-.1.7-.3l7.8-7.8-4.4-4.4zm7.6-.2-3-3c-.4-.4-1-.4-1.4 0L9.5 2.1l4.4 4.4 1.8-1.8c.4-.4.4-1 0-1.4z"/></svg></span>
-      <span v-else><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><title>View</title><path fill="currentColor" d="M8 14c3.6 0 6.4-3.1 7.6-4.9.5-.7.5-1.6 0-2.3C14.4 5.1 11.6 2 8 2 4.4 2 1.6 5.1.4 6.9c-.5.7-.5 1.6 0 2.2C1.6 10.9 4.4 14 8 14zm0-9c1.7 0 3 1.3 3 3s-1.3 3-3 3-3-1.3-3-3 1.3-3 3-3z"/></svg></span>
+      <span v-if="canEdit(props.obs.owner)"><edit-icon /></span>
+      <span v-else><view-icon /></span>
     </button>
   </li>
 </template>

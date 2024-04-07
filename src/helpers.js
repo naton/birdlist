@@ -98,6 +98,7 @@ async function setupConfetti() {
   const canvas = document.getElementById("canvas");
 
   if (typeof confetti !== "undefined" && canvas) {
+    /* eslint-disable-next-line */
     newLeaderConfetti = await confetti.create(canvas, {
       resize: true,
       useWorker: true,

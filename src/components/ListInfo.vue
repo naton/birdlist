@@ -3,7 +3,7 @@ import { ref, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
-import ShareListDialog from "./ShareListDialog.vue";
+import ShareDialog from "./ShareDialog.vue";
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
@@ -22,7 +22,7 @@ function openShareModal() {
 </script>
 
 <template>
-    <share-list-dialog ref="shareListDialog" />
+    <share-dialog ref="shareListDialog" />
     <div class="list-header">
         <div class="subtitle">
             <details :open="currentListExpanded">

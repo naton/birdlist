@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineExpose } from "vue";
+import { ref, defineExpose, defineModel } from "vue";
 import { storeToRefs } from 'pinia'
 import { formatDateAndTime, inputDate } from "@/helpers";
 import ObservationsIcon from "./icons/ObservationsIcon.vue";

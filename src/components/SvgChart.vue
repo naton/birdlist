@@ -7,7 +7,7 @@ const viewbox = computed(() => `0 0 ${props.svg.w} ${props.svg.h}`);
 
 function selectedClass(name) {
   return name === props.user ? "selected" : null;
-};
+}
 </script>
 
 <template>

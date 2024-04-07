@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, onMounted, watch } from "vue";
+import { ref, reactive, computed, onMounted, watch, defineModel } from "vue";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
@@ -81,9 +81,12 @@ const selectedUser = ref(null);
 const currentLeader = ref("");
 
 const observationsByUser = computed(() => {
-  return selectedUser.value === null
-    ? props.observations.sort((a, b) => b.date - a.date)
-    : props.observations.filter((obs) => obs.owner === selectedUser.value).sort((a, b) => b.date - a.date);
+  let obses = props.observations;
+  if (selectedUser.value === null) {
+    return obses.sort((a, b) => b.date - a.date);
+  } else {
+    return obses.filter((obs) => obs.owner === selectedUser.value).sort((a, b) => b.date - a.date);
+  }
 });
 
 const observationsByDate = computed(() => {
@@ -250,13 +253,22 @@ watch(currentLeader, (newLeader) => {
 
     <section id="bydate" v-if="props.observations.length && props.sort == 'bydate'">
       <transition-group tag="ul" name="list" class="list">
-        <observation-item v-for="obs in observationsByUser" :obs="obs" :key="obs.date" :user="currentUser.name" :selected="selectedObservation == obs" @click="selectObservation(obs)" @delete="emitDelete(id)" @edit="emitEdit"></observation-item>
+        <observation-item v-for="obs in observationsByUser"
+          :obs="obs"
+          :key="obs.date"
+          :user="currentUser.name"
+          :selected="selectedObservation == obs"
+          @click="selectObservation(obs)"
+          @delete="emitDelete(id)"
+          @edit="emitEdit"></observation-item>
       </transition-group>
     </section>
 
     <section id="byname" v-if="species.length && props.sort == 'byname'">
       <transition-group tag="ol" name="list" class="list">
-        <species-item v-for="obs in speciesByUser" :obs="obs" :key="obs[0].name"></species-item>
+        <species-item v-for="obs in speciesByUser"
+          :obs="obs"
+          :key="obs[0].name"></species-item>
       </transition-group>
     </section>
 

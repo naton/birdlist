@@ -15,7 +15,6 @@ const settingsStore = useSettingsStore()
 const { t } = settingsStore
 
 const listsStore = useListsStore();
-const { createList } = listsStore;
 const { allLists, currentList } = storeToRefs(listsStore);
 
 const createListDialog = ref(null);

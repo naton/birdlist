@@ -66,7 +66,7 @@ function line(pointA, pointB) {
     length: Math.sqrt(Math.pow(lengthX, 2) + Math.pow(lengthY, 2)),
     angle: Math.atan2(lengthY, lengthX)
   };
-};
+}
 
 function controlPoint(current, previous, next, reverse) {
   const p = previous || current;
@@ -79,20 +79,20 @@ function controlPoint(current, previous, next, reverse) {
   const x = current[0] + Math.cos(angle) * length;
   const y = current[1] + Math.sin(angle) * length;
   return [x, y];
-};
+}
 
 function bezierCommand(point, i, a) {
   const cps = controlPoint(a[i - 1], a[i - 2], point);
   const cpe = controlPoint(point, a[i - 1], a[i + 1], true);
   const close = i === a.length - 1 ? " z" : "";
   return `C ${cps[0]},${cps[1]} ${cpe[0]},${cpe[1]} ${point[0]},${point[1]}${close}`;
-};
+}
 </script>
 
 <template>
   <g>
     <path :style="styles.path" :d="pathD"></path>
-    <circle :cx="p[0]" :cy="p[1]" r="2" :style="styles.circles" v-for="p in pointsPositions" />
+    <circle :cx="p[0]" :cy="p[1]" r="2" :style="styles.circles" v-for="(p, index) in pointsPositions" :key="index" />
   </g>
 </template>
 

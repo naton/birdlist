@@ -1,11 +1,12 @@
 function main(workbox) {
+  /* eslint-disable-next-line */
   const CACHE_VERSION = 1.9;
   const {
     core: { clientsClaim, setCacheNameDetails },
     expiration: { ExpirationPlugin },
     precaching: { cleanupOutdatedCaches, precacheAndRoute },
     routing: { registerRoute },
-    strategies: { StaleWhileRevalidate },
+    strategies: { StaleWhileRevalidate, NetworkFirst },
   } = workbox;
 
   clientsClaim();
@@ -24,7 +25,7 @@ function main(workbox) {
   // runtime cache
   // 1. stylesheet
   registerRoute(
-    new RegExp('\.css$'),
+    new RegExp('.css$'),
     new StaleWhileRevalidate({
       cacheName: 'birdlist-cache-css',
       plugins: [
@@ -39,7 +40,7 @@ function main(workbox) {
 
   // 2. images
   registerRoute(
-    new RegExp('\.(png|svg|jpg|webp|avif)$'),
+    new RegExp('.(png|svg|jpg|webp|avif)$'),
     new StaleWhileRevalidate({
       cacheName: 'birdlist-cache-img',
       plugins: [
@@ -54,7 +55,7 @@ function main(workbox) {
 
   // 3. html
   registerRoute(
-    new RegExp('\.(html)$'),
+    new RegExp('.(html)$'),
     new StaleWhileRevalidate({
       cacheName: 'birdlist-cache-html',
       plugins: [
@@ -82,9 +83,12 @@ function main(workbox) {
 }
 
 if (typeof importScripts === "function") {
+  /* eslint-disable-next-line */
   importScripts("https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js");
-
+  
+  /* eslint-disable-next-line */
   if (workbox) {
+    /* eslint-disable-next-line */
     main(workbox);
   }
 }
