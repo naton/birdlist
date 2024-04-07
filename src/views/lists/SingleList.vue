@@ -9,6 +9,7 @@ import { useObservationsStore } from "@/stores/observations.js";
 import { useCommentsStore } from "@/stores/comments.js";
 import ListInfo from "@/components/ListInfo.vue";
 import EditListDialog from "@/components/EditListDialog.vue";
+const BirdstreakList = defineAsyncComponent(() => import("@/components/BirdstreakList.vue"));
 const ObservationList = defineAsyncComponent(() => import("@/components/ObservationList.vue"));
 
 const emit = defineEmits(["openDialog", "sort", "edit"]);
@@ -69,7 +70,11 @@ onBeforeUnmount(() => {
       </button>
     </template>
   </list-info>
-  <observation-list
+  <birdstreak-list v-if="currentList.type == 'birdstreak'"
+    :observations="allListObservations"
+    :comments="listComments"
+    @edit="edit"></birdstreak-list>
+  <observation-list v-else
     :observations="allListObservations"
     :sort="currentSort"
     :list="currentList"

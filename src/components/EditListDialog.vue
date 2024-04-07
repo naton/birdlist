@@ -16,6 +16,7 @@ const { currentList } = storeToRefs(listsStore)
 
 const title = ref('')
 const description = ref('')
+const type = ref('')
 
 // TODO:
 watch(listToEdit, (list) => {
@@ -25,6 +26,7 @@ watch(listToEdit, (list) => {
 
   title.value = list.title,
   description.value = list.description
+  type.value = list.type
 })
 
 const listDialog = ref(null);
@@ -61,6 +63,7 @@ defineExpose({
     <input class="margin-top" type="text" id="list-title" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
     <label for="list-description">{{ t("Description") }}:</label>
     <textarea class="margin-bottom" id="list-description" v-model="description" cols="30" rows="10" :placeholder="t('List_Rules_Etc')"></textarea>
+    <input type="hidden" id="list-type" v-model="type">
     <div class="buttons">
       <button v-if="isListOwner && listToEdit.title" class="update-button" @click="saveList">{{ t("Save") }}</button>
       <button v-if="isListOwner && listToEdit.title" class="delete-button" @click="deleteList(listToEdit.id)">

@@ -29,11 +29,12 @@ export const useListsStore = defineStore("list", () => {
     return (currentSort.value = val);
   }
 
-  async function createList(title, description) {
+  async function createList(title, description, type = "normal") {
     // Insert the list in the db with title and descripton
     const newId = await db.lists.add({
       title,
       description,
+      type
     });
     currentList.value = allLists.value.find((list) => list.id == newId);
     return newId;

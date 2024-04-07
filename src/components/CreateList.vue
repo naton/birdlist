@@ -15,6 +15,7 @@ const { createList } = listsStore
 
 const title = ref("");
 const description = ref("");
+const type = ref("normal");
 const listDialog = ref(null);
 
 function openModal() {
@@ -22,7 +23,7 @@ function openModal() {
 }
 
 async function createListAndClose() {
-  const listId = await createList(title.value, description.value);
+  const listId = await createList(title.value, description.value, type.value);
   router.push({ name: "list", params: { id: listId } });
   closeModal();
 }
@@ -45,6 +46,15 @@ defineExpose({
     </div>
     <label for="title">{{ t("List_Name") }}:</label>
     <input type="text" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
+    <label for="title">{{ t("Type_Of_List") }}:</label>
+    <div class="grid radio">
+      <input type="radio" id="normal" value="normal" v-model="type" />
+      <label for="normal">{{ t("Normal") }}</label>
+    </div>
+    <div class="grid radio">
+      <input type="radio" id="birdstreak" value="birdstreak" v-model="type" />
+      <label for="birdstreak">{{ t("Birdstreak") }}</label>
+    </div>
     <label for="description">{{ t("Description") }}:</label>
     <textarea id="description" v-model="description" cols="30" rows="10" :placeholder="t('List_Rules_Etc')"></textarea>
     <div class="buttons">
@@ -55,6 +65,10 @@ defineExpose({
 </template>
 
 <style>
+.radio label {
+  margin-top: 0;
+}
+
 .buttons {
   display: flex;
   align-items: center;
