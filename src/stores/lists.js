@@ -45,6 +45,7 @@ export const useListsStore = defineStore("list", () => {
       await db.lists.where({ id: list.id }).modify({
         title: list.title,
         description: list.description,
+        type: list.type,
       });
     });
     if (callback) {

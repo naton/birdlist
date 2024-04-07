@@ -43,6 +43,7 @@ function saveList() {
     id: listToEdit.value.id,
     title: title.value.trim(),
     description: description.value.trim(),
+    type: type.value,
   });
   closeModal();
 }
