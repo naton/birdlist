@@ -4,6 +4,7 @@ import { formatDate } from "@/helpers";
 import { useSettingsStore } from '@/stores/settings.js'
 import { useObservationsStore } from "@/stores/observations.js";
 import { groupBy } from "@/helpers";
+import UserNav from "./UserNav.vue";
 import LockIcon from "./icons/LockIcon.vue";
 
 const props = defineProps(["list", "comments", "lastLockedObservation", "observations"]);
@@ -70,6 +71,10 @@ const observationsByUser = computed(() => {
     }
 });
 
+function changeUser(user) {
+  selectedUser.value = user === selectedUser.value ? null : user;
+}
+
 function getAllListObservationsOnDates(dates) {
     return observationsByUser.value.filter(obs => {
         return dates.some(date => {
@@ -79,18 +84,14 @@ function getAllListObservationsOnDates(dates) {
 }
 
 function getLockedListObservationOnDate(date) {
-    return observationsByUser.value.find(obs => {
+    return observationsByUser.value.filter(obs => {
         return obs.date.toISOString().substring(0, 10) === date.toISOString().substring(0, 10) && obs.locked
     })
 }
 </script>
 
 <template>
-    <div class="birdstreak-list">
-        <nav>
-            <button v-for="user in users" :key="user.name" @click="selectedUser = selectedUser === user.name ? null : user.name" :class="selectedUser === user.name && 'active'">{{ user.name }}</button>
-        </nav>
-    </div>
+    <user-nav :users="users" :selectedUser="selectedUser" @changeUser="changeUser" />
 
     <div class="birdstreak-list">
         <table class="table">
@@ -103,13 +104,12 @@ function getLockedListObservationOnDate(date) {
                                 <option value="" disabled>{{ t("Select_Observation") }}</option>
                                 <option v-for="obs in getAllListObservationsOnDates(dateGroups)" :key="obs.date" :value="obs.id">{{ obs.name }}</option>
                             </select>
-                            <button type="submit"><lock-icon /> {{ t("Lock") }}</button>
+                            <button type="submit"><lock-icon />{{ t("Lock") }}</button>
                         </form>
                     </td>
                     <td v-else>
-                        <template v-if="getLockedListObservationOnDate(date)">
-                            <lock-icon />
-                            {{ getLockedListObservationOnDate(date).name }}
+                        <template v-if="getLockedListObservationOnDate(date).length">
+                            <lock-icon /><span v-for="obs in getLockedListObservationOnDate(date)" :key="obs.date">{{ obs.name }}</span>
                         </template>
                     </td>
                 </tr>
@@ -140,12 +140,20 @@ button.active {
     padding: 0.15em 0 0.25em;
 }
 
+.table td svg {
+    margin-right: 0.25em;
+}
+
+.table td span ~ span::before {
+    content: ', '; 
+}
+
 .table td:first-child {
     width: 10rem;
 }
 
 .date-group:not(:first-child) tr:first-child td {
-    border-top: 1px dashed var(--color-border);
+    border-top: 2px solid var(--color-background-dim);
 }
 
 .flex {
