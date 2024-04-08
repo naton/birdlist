@@ -15,7 +15,7 @@ const settingsStore = useSettingsStore()
 const { t } = settingsStore
 
 const listsStore = useListsStore();
-const { allLists, currentList } = storeToRefs(listsStore);
+const { allLists, currentList, lastUsedList } = storeToRefs(listsStore);
 
 const createListDialog = ref(null);
 
@@ -27,6 +27,7 @@ function newList() {
 
 function selectList(list) {
   currentList.value = list;
+  lastUsedList.value = list;
 }
 
 function deleteInvite(invite) {
@@ -53,6 +54,11 @@ function emitEdit(obs) {
         <div class="lists">
           <div class="lists-content">
             <h1>{{ t("Lists") }}</h1>
+            <router-link :to="{ name: 'list', params: { id: lastUsedList.id }}" v-if="lastUsedList" class="featured">
+              <i>Senast besökta lista:</i><br>
+              <h2>{{ lastUsedList.title }}</h2>
+              <p>{{ lastUsedList.description }}</p>
+            </router-link>
             <ul class="list">
               <li v-for="list in allLists" :key="list.id" @click="selectList(list)">
                 <lists-icon />
@@ -87,5 +93,18 @@ function emitEdit(obs) {
   padding: 1rem;
   overflow: auto;
   height: calc(100dvh - 8.5rem);
+}
+
+.featured {
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: inherit;
+  text-decoration: none;
+}
+
+.featured h2 {
+  text-decoration: underline;
+  text-underline-offset: 0.1em;
 }
 </style>

@@ -13,6 +13,7 @@ export const useListsStore = defineStore("list", () => {
   const currentSort = ref("bydate");
   const currentListExpanded = ref(true);
   const currentList = ref();
+  const lastUsedList = ref();
 
   /* Lists */
   liveQuery(async () => await db.lists.toArray()).subscribe(
@@ -129,6 +130,7 @@ export const useListsStore = defineStore("list", () => {
   return {
     allLists,
     currentList,
+    lastUsedList,
     currentListExpanded,
     currentSort,
     sortBy,
@@ -142,6 +144,6 @@ export const useListsStore = defineStore("list", () => {
 {
   persist: {
     key: "birdlist-lists",
-    paths: ["currentList", "currentSort", "currentListExpanded"],
+    paths: ["currentList", "lastUsedList", "currentSort", "currentListExpanded"],
   },
 });
