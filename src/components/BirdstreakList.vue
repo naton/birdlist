@@ -121,8 +121,6 @@ function getLockedListObservationOnDate(date) {
 <style>
 .birdstreak-list {
     margin: 1rem;
-    padding: 1rem;
-    border: 1px solid var(--color-border);
     border-radius: var(--radius);
 }
 
