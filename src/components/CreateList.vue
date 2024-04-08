@@ -1,5 +1,6 @@
 <script setup>
 import { ref, defineExpose } from "vue";
+import { inputDate } from "@/helpers";
 import { useRouter } from "vue-router";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
@@ -16,6 +17,10 @@ const { createList } = listsStore
 const title = ref("");
 const description = ref("");
 const type = ref("normal");
+const startDate = ref(new Date())
+const endDate = ref(null)
+const reportInterval = ref(2)
+
 const listDialog = ref(null);
 
 function openModal() {
@@ -46,6 +51,8 @@ defineExpose({
     </div>
     <label for="title">{{ t("List_Name") }}:</label>
     <input type="text" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
+    <label for="description">{{ t("Description") }}:</label>
+    <textarea id="description" v-model="description" cols="30" rows="5" :placeholder="t('List_Rules_Etc')"></textarea>
     <label for="title">{{ t("Type_Of_List") }}:</label>
     <div class="grid radio">
       <input type="radio" id="normal" value="normal" v-model="type" />
@@ -55,8 +62,18 @@ defineExpose({
       <input type="radio" id="birdstreak" value="birdstreak" v-model="type" />
       <label for="birdstreak">{{ t("Birdstreak") }}</label>
     </div>
-    <label for="description">{{ t("Description") }}:</label>
-    <textarea id="description" v-model="description" cols="30" rows="10" :placeholder="t('List_Rules_Etc')"></textarea>
+    <div v-if="type === 'birdstreak'">
+      <label for="start-date">{{ t("Start_Date") }}:</label>
+      <input type="date" @input="startDate = new Date($event.target.value)" :value="inputDate(startDate)" />
+      <label for="end-date">{{ t("End_Date") }}:</label>
+      <input type="date" @input="endDate = new Date($event.target.value)" :value="inputDate(endDate)" />
+      <label for="day-interval">{{ t("Day_Interval") }}:</label>
+      <select v-model.number="reportInterval">
+        <option value="1">Varje dag</option>
+        <option value="2">Varannan dag</option>
+        <option value="3">Var tredje dag</option>
+      </select>
+    </div>
     <div class="buttons">
       <button class="create" @click="createListAndClose">{{ t("Create_List") }}</button>
       <button @click="closeModal">{{ t("Cancel") }}</button>

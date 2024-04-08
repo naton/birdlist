@@ -53,6 +53,14 @@ function inputDate(date) {
     return;
   }
 
+  return new Date(new Date(date).getTime() - new Date(date).getTimezoneOffset() * 60000).toISOString().substring(0, 10);
+}
+
+function inputDateTime(date) {
+  if (!date) {
+    return;
+  }
+
   return new Date(new Date(date).getTime() - new Date(date).getTimezoneOffset() * 60000).toISOString().substring(0, 16);
 }
 
@@ -120,6 +128,7 @@ export {
   formatDate,
   formatDateAndTime,
   inputDate,
+  inputDateTime,
   celebrate,
   setupConfetti,
   destroyConfetti,

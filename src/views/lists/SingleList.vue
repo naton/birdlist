@@ -23,10 +23,10 @@ const { currentUser } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
 const { sortBy } = listsStore;
-const { allLists, currentSort, currentList } = storeToRefs(listsStore);
+const { allLists, currentSort, currentList, } = storeToRefs(listsStore);
 
 const observationsStore = useObservationsStore();
-const { allListObservations } = storeToRefs(observationsStore);
+const { allListObservations, lastLockedObservation } = storeToRefs(observationsStore);
 
 const commentsStore = useCommentsStore()
 const { allComments } = storeToRefs(commentsStore)
@@ -70,10 +70,11 @@ onBeforeUnmount(() => {
       </button>
     </template>
   </list-info>
-  <birdstreak-list v-if="currentList.type == 'birdstreak'"
+  <birdstreak-list v-if="currentList && currentList.type === 'birdstreak'"
     :observations="allListObservations"
-    :comments="listComments"
-    @edit="edit"></birdstreak-list>
+    :list="currentList"
+    :lastLockedObservation="lastLockedObservation"
+    :comments="listComments"></birdstreak-list>
   <observation-list v-else
     :observations="allListObservations"
     :sort="currentSort"

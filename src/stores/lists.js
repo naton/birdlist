@@ -46,6 +46,9 @@ export const useListsStore = defineStore("list", () => {
         title: list.title,
         description: list.description,
         type: list.type,
+        startDate: list.startDate,
+        endDate: list.endDate,
+        reportInterval: list.reportInterval,
       });
     });
     if (callback) {

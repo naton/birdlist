@@ -1,8 +1,10 @@
 <script setup>
 import { ref, computed, defineExpose, watch } from "vue";
+import { inputDate } from "@/helpers";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
+import ListsIcon from "./icons/ListsIcon.vue";
 
 const listToEdit = ref();
 
@@ -17,8 +19,10 @@ const { currentList } = storeToRefs(listsStore)
 const title = ref('')
 const description = ref('')
 const type = ref('')
+const startDate = ref(null)
+const endDate = ref(null)
+const reportInterval = ref(2)
 
-// TODO:
 watch(listToEdit, (list) => {
   if (!list) {
     return
@@ -27,6 +31,12 @@ watch(listToEdit, (list) => {
   title.value = list.title,
   description.value = list.description
   type.value = list.type
+
+  if (list.type === 'birdstreak') {
+    startDate.value = list.startDate || new Date().toISOString().substring(0, 10)
+    endDate.value = list.endDate || null
+    reportInterval.value = list.reportInterval
+  }
 })
 
 const listDialog = ref(null);
@@ -39,12 +49,18 @@ function openModal() {
 }
 
 function saveList() {
-  updateList({
+  let payload = {
     id: listToEdit.value.id,
     title: title.value.trim(),
     description: description.value.trim(),
     type: type.value,
-  });
+  }
+  if (type.value === 'birdstreak') {
+    payload.startDate = startDate.value
+    payload.endDate = endDate.value
+    payload.reportInterval = reportInterval.value
+  }
+  updateList(payload);
   closeModal();
 }
 
@@ -60,11 +76,27 @@ defineExpose({
 
 <template>
   <dialog ref="listDialog" class="dialog">
+    <div class="grid">
+      <lists-icon />
+      <h2>{{ t("Edit_List") }}</h2>
+    </div>
     <label for="list-title">{{ t("List_Name") }}:</label>
     <input class="margin-top" type="text" id="list-title" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
     <label for="list-description">{{ t("Description") }}:</label>
-    <textarea class="margin-bottom" id="list-description" v-model="description" cols="30" rows="10" :placeholder="t('List_Rules_Etc')"></textarea>
+    <textarea class="margin-bottom" id="list-description" v-model="description" cols="30" rows="5" :placeholder="t('List_Rules_Etc')"></textarea>
     <input type="hidden" id="list-type" v-model="type">
+    <div v-if="type === 'birdstreak'">
+      <label for="start-date">{{ t("Start_Date") }}:</label>
+      <input type="date" @input="startDate = new Date($event.target.value)" :value="inputDate(startDate)" />
+      <label for="end-date">{{ t("End_Date") }}:</label>
+      <input type="date" @input="endDate = new Date($event.target.value)" :value="inputDate(endDate)" />
+      <label for="day-interval">{{ t("Day_Interval") }}:</label>
+      <select v-model.number="reportInterval">
+        <option value="1">Varje dag</option>
+        <option value="2">Varannan dag</option>
+        <option value="3">Var tredje dag</option>
+      </select>
+    </div>
     <div class="buttons">
       <button v-if="isListOwner && listToEdit.title" class="update-button" @click="saveList">{{ t("Save") }}</button>
       <button v-if="isListOwner && listToEdit.title" class="delete-button" @click="deleteList(listToEdit.id)">
