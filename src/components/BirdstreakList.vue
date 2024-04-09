@@ -134,7 +134,7 @@ watch(currentLeader, (newLeader) => {
             <thead>
                 <tr>
                     <th>{{ t("Date") }}</th>
-                    <th>{{ t("Observations") }}</th>
+                    <th>{{ t("Species") }}</th>
                 </tr>
             </thead>
             <tbody v-for="(dateGroups, rangeIndex) in dateRange" :key="rangeIndex" class="date-group">
@@ -158,6 +158,7 @@ watch(currentLeader, (newLeader) => {
                         <template v-if="getLockedListObservationOnDate(date).length">
                             <lock-icon /><span v-for="obs in getLockedListObservationOnDate(date)" :key="obs.date">{{ obs.name }}</span>
                         </template>
+                        <template v-else>&nbsp;•</template>
                     </td>
                 </tr>
             </tbody>

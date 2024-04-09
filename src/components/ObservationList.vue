@@ -217,7 +217,7 @@ onMounted(() => {
 
     <svg-chart v-if="users?.length > 1" :datasets="datasets" :options="options" :svg="svg" :user="selectedUser"></svg-chart>
 
-    <nav class="nav" v-if="props.observations.length">
+    <nav class="nav margin-top margin-bottom" v-if="props.observations.length">
       <a href="#bydate" class="nav-link" :class="{ current: sort == 'bydate', }" @click.prevent="emitSort('bydate')">
         <observations-icon />
         {{ t("Observations") }}

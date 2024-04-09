@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { db } from "../db";
 import { useSettingsStore } from '../stores/settings.js'
+import UserIcon from "../components/icons/UserIcon.vue";
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
@@ -18,7 +19,7 @@ function logout() {
         <div class="body-content settings">
             <header>
                 <h1>{{ t("Settings") }}</h1>
-                <h2>{{ currentUser.userId }}</h2>
+                <h2><user-icon />{{ currentUser.userId }}</h2>
             </header>
             <div>
                 <label for="lang">{{ t("Language") }}</label>
@@ -44,8 +45,13 @@ function logout() {
 .body-content.settings {
     display: grid;
     align-self: start;
-    gap: 1rem;
+    gap: 1.5rem;
     padding: 1rem;
+}
+
+h2 svg {
+    margin-right: 0.5rem;
+    vertical-align: middle;
 }
 
 input[type="range"] {

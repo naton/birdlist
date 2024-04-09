@@ -140,11 +140,6 @@ function openModal(obs) {
   padding: 0;
 }
 
-.list {
-  position: relative;
-  margin: 0.5rem 0 0;
-}
-
 .list li {
   display: flex;
   align-items: center;

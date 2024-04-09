@@ -50,12 +50,12 @@ function emitEdit(obs) {
       <template v-if="!Component">
         <div class="lists">
           <div class="list-tools">
+            <h1>{{ t("Lists") }}</h1>
             <button class="add" @click="newList">
               {{ t("Create_New_List") }}
             </button>
           </div>
           <div class="lists-content">
-            <h1>{{ t("Lists") }}</h1>
             <router-link :to="{ name: 'list', params: { id: lastUsedList.id }}" v-if="lastUsedList" class="featured">
               <i>Senast besökta lista:</i><br>
               <h2>{{ lastUsedList.title }}</h2>
@@ -89,6 +89,8 @@ function emitEdit(obs) {
 .list-tools {
   position: sticky;
   top: 0;
+  display: flex;
+  justify-content: space-between;
   padding: 1rem 1rem 0.5rem;
   background-color: var(--color-background);
 }
@@ -96,7 +98,7 @@ function emitEdit(obs) {
 .lists-content {
   display: grid;
   align-content: start;
-  gap: 1rem;
+  gap: 1.5rem;
   padding: 0.5rem 1rem 1rem;
 }
 
@@ -118,8 +120,5 @@ function emitEdit(obs) {
   align-items: center;
   justify-content: space-between;
   margin-top: 1rem;
-}
-
-.buttons button {
 }
 </style>

@@ -56,6 +56,14 @@ body {
   overscroll-behavior: none;
 }
 
+h1 {
+  font-size: 2rem;
+}
+
+a {
+  color: var(--color-link);
+}
+
 ol,
 ul {
   padding: 0;
@@ -83,6 +91,10 @@ details.help p + p {
 
 summary {
   font-weight: 500;
+}
+
+label {
+  font-weight: bold;
 }
 
 .hidden-visually {
@@ -126,6 +138,7 @@ summary {
 }
 
 .body-nav {
+  position: relative;
   grid-area: body-nav;
   display: flex;
   max-width: 100vw;
@@ -306,6 +319,10 @@ button.secondary {
 }
 
 /* Dialogs */
+.dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
 .dialog h2 {
   font-weight: bold;
 }
@@ -324,7 +341,6 @@ button.secondary {
 .dialog label {
   display: block;
   margin: 0.75rem 0 0.25rem;
-  font-weight: bold;
 }
 
 .dialog select,
