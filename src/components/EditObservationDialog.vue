@@ -1,7 +1,7 @@
 <script setup>
 import { ref, defineExpose, defineModel } from "vue";
 import { storeToRefs } from 'pinia'
-import { formatDateAndTime, inputDate } from "@/helpers";
+import { formatDateAndTime, inputDateTime } from "@/helpers";
 import ObservationsIcon from "./icons/ObservationsIcon.vue";
 import BirdsIcon from "./icons/BirdsIcon.vue";
 import ListsIcon from "./icons/ListsIcon.vue";
@@ -70,13 +70,14 @@ defineExpose({
       <div v-else>
         <label for="obs-name">{{ t("Change_Name") }}</label>
         <input id="obs-name" type="text" v-model="currentObservation.name" />
+        <input id="obs-lock" type="checkbox" v-model="currentObservation.locked" />
       </div>
   
       <observations-icon />
       <h3 v-if="!isEditing">{{ formatDateAndTime(currentObservation?.date) }}</h3>
-      <div v-else>
+      <div v-else class="margin-bottom">
         <label for="obs-date">{{ t("Change_Date") }}</label>
-        <input id="obs-date" type="datetime-local" @input="currentObservation.date = new Date($event.target.value)" :value="inputDate(currentObservation.date)" />
+        <input id="obs-date" type="datetime-local" @input="currentObservation.date = new Date($event.target.value)" :value="inputDateTime(currentObservation.date)" />
       </div>
   
       <user-icon />
@@ -95,7 +96,7 @@ defineExpose({
       
       <lists-icon />
       <p v-if="!isEditing">{{ currentListName() }}</p>
-      <div v-else>
+      <div v-else class="margin-bottom">
         <label for="obs-list">{{ t("Change_List") }}</label>
         <select id="obs-list" v-model="currentObservation.listId">
           <option value="">{{ t("No_Special_List") }}</option>
@@ -116,14 +117,6 @@ defineExpose({
 </template>
 
 <style>
-.grid {
-  display: grid;
-  gap: 0.5rem 1rem;
-  grid-template-columns: 1rem 1fr;
-  grid-auto-rows: auto;
-  align-items: center;
-}
-
 button[disabled] {
   opacity: 0.4;
   filter: grayscale(1);

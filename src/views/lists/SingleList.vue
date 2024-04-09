@@ -9,6 +9,7 @@ import { useObservationsStore } from "@/stores/observations.js";
 import { useCommentsStore } from "@/stores/comments.js";
 import ListInfo from "@/components/ListInfo.vue";
 import EditListDialog from "@/components/EditListDialog.vue";
+const BirdstreakList = defineAsyncComponent(() => import("@/components/BirdstreakList.vue"));
 const ObservationList = defineAsyncComponent(() => import("@/components/ObservationList.vue"));
 
 const emit = defineEmits(["openDialog", "sort", "edit"]);
@@ -25,7 +26,7 @@ const { sortBy } = listsStore;
 const { allLists, currentSort, currentList } = storeToRefs(listsStore);
 
 const observationsStore = useObservationsStore();
-const { allListObservations } = storeToRefs(observationsStore);
+const { allListObservations, lastLockedObservation } = storeToRefs(observationsStore);
 
 const commentsStore = useCommentsStore()
 const { allComments } = storeToRefs(commentsStore)
@@ -64,12 +65,19 @@ onBeforeUnmount(() => {
   <edit-list-dialog ref="editDialog" />
   <list-info>
     <template v-slot:extra>
-      <button v-if="isListOwner" class="add" @click="updateList">
+      <button v-if="isListOwner" class="add secondary" @click="updateList">
         {{ t("Edit_List") }}
       </button>
     </template>
   </list-info>
-  <observation-list
+  <birdstreak-list v-if="currentList && currentList.type === 'birdstreak'"
+    :key="currentList"
+    :observations="allListObservations"
+    :list="currentList"
+    :lastLockedObservation="lastLockedObservation"
+    :comments="listComments"></birdstreak-list>
+  <observation-list v-else
+    :key="`${currentList}-${currentSort}`"
     :observations="allListObservations"
     :sort="currentSort"
     :list="currentList"

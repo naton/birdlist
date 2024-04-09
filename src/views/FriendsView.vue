@@ -19,25 +19,35 @@ const newFriendEmail = ref()
 
 <template>
   <div class="friends">
-    <div class="friends-content">
-      <h1 class="hidden-visually">{{ t("Friends")}}</h1>
-      <h2>{{ t("Add_Friend")}}</h2>
-      <form @submit.prevent="addFriend(newFriendName, newFriendEmail)">
-        <input type="text" required placeholder="Namn" v-model="newFriendName">
-        <input type="email" required placeholder="E-postadress" v-model="newFriendEmail">
-        <button type="submit"><add-friend-icon /></button>
-      </form>
-      <h2 v-if="allFriends.length">{{ t("Current_Friends")}}</h2>
-      <table>
-        <tbody>
-          <tr v-for="{ id, name, email } in allFriends" :key="email">
-            <th scope="row">{{ name }}</th>
-            <td class="crop">{{ email }}</td>
-            <td><button @click="deleteFriend(id)"><remove-friend-icon /></button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <article class="friends-content">
+      <section>
+        <h1>{{ t("Friends")}}</h1>
+        <details class="help margin-top margin-bottom">
+          <summary>{{ t("What_Is_This") }}</summary>
+          <p class="margin-left">{{ t("Friends_Help") }}</p>
+        </details>
+      </section>
+      <section>
+        <h2>{{ t("Add_Friend")}}</h2>
+        <form @submit.prevent="addFriend(newFriendName, newFriendEmail)" class="margin-top">
+          <input type="text" required placeholder="Namn" v-model="newFriendName">
+          <input type="email" required placeholder="E-postadress" v-model="newFriendEmail">
+          <button type="submit"><add-friend-icon /></button>
+        </form>
+      </section>
+      <section v-if="allFriends.length">
+        <h2>{{ t("Current_Friends")}}</h2>
+        <table>
+          <tbody>
+            <tr v-for="{ id, name, email } in allFriends" :key="email">
+              <th scope="row">{{ name }}</th>
+              <td class="crop">{{ email }}</td>
+              <td><button @click="deleteFriend(id)"><remove-friend-icon /></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </article>
   </div>
 </template>
 
@@ -45,7 +55,7 @@ const newFriendEmail = ref()
 .friends-content {
   display: grid;
   align-self: start;
-  gap: 1rem;
+  gap: 1.5rem;
   padding: 1rem;
 }
 
@@ -68,6 +78,12 @@ const newFriendEmail = ref()
   color: var(--color-text);
 }
 
+.friends-content table {
+  width: 100%;
+  border-collapse: collapse;
+  line-height: 3;
+}
+
 .friends-content th:first-child {
   padding-left: 0;
   text-align: left;
@@ -79,6 +95,7 @@ const newFriendEmail = ref()
   text-align: right;
 }
 
+.friends-content th:first-child,
 td.crop {
   white-space: nowrap;
   overflow: hidden;

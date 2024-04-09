@@ -71,7 +71,8 @@ function openModal(obs) {
 .c-tabs__tab > a {
   min-width: 5rem;
   display: block;
-  padding: 1rem 0.4rem 0.8rem 0.8rem;
+  border-top: 2px solid transparent;
+  padding: 1rem;
   color: inherit;
   font-size: 1.2rem;
   text-transform: capitalize;
@@ -81,26 +82,25 @@ function openModal(obs) {
 
 .c-tabs__tab > .router-link-active {
   margin-top: 2px;
-  padding: 0.7rem 1rem 0.9rem;
-  border-top: 2px solid;
+  border-top-color: var(--color-border);
   border-top-left-radius: var(--radius);
   border-top-right-radius: var(--radius);
   background: var(--color-background);
 }
 
 .c-tabs__tab svg {
-  margin: 0 0.4rem 0.3rem 0;
+  margin: 0 0.2rem 0.2rem 0;
 }
 
 .list-header {
   position: relative;
   overflow: hidden;
-  padding: 0.25rem 0;
+  padding: 0.5rem 0 0;
 }
 
 .list-description,
 .list-owner {
-  margin: 0 0.5rem 1rem;
+  margin-bottom: 1rem;
   text-indent: 0;
 }
 
@@ -138,11 +138,6 @@ function openModal(obs) {
   min-height: 2rem;
   margin: 2px;
   padding: 0;
-}
-
-.list {
-  position: relative;
-  margin: 0.5rem 0 0;
 }
 
 .list li {
@@ -188,18 +183,16 @@ function openModal(obs) {
   transition: 0.1s transform ease-out;
 }
 
+.list-header details[open] {
+  margin-bottom: 1rem;
+}
+
 .list-header button {
   min-height: 2.3rem;
 }
 
 .list-header .notify-button {
   margin-top: 0.3rem;
-}
-
-.list-header .share-button {
-  align-self: center;
-  margin-left: 0.5rem;
-  white-space: nowrap;
 }
 
 .notify-button svg {
@@ -209,7 +202,7 @@ function openModal(obs) {
 
 .share-button svg {
   width: 16px;
-  margin-right: 0.4rem;
+  margin-right: 0.25rem;
   vertical-align: text-top;
 }
 </style>

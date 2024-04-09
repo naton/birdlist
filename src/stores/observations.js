@@ -2,7 +2,6 @@ import { ref, computed } from "vue";
 import { defineStore, storeToRefs } from "pinia";
 import { db } from "../db";
 import { liveQuery } from "dexie";
-import { getTiedRealmId } from "dexie-cloud-addon";
 import { useSettingsStore } from "./settings.js";
 import { useListsStore } from "./lists.js";
 
@@ -14,6 +13,7 @@ export const useObservationsStore = defineStore("observation", () => {
   const { currentList } = storeToRefs(listsStore);
 
   const allObservations = ref([]);
+  const lastLockedObservation = ref("");
   
   liveQuery(async () => await db.observations.toArray()).subscribe(
     (observations) => {
@@ -90,12 +90,10 @@ export const useObservationsStore = defineStore("observation", () => {
       name: obs.name.trim(),
       date: obs.date,
       location: obs.location,
+      locked: obs.locked,
     };
     if (obs.listId) {
       payload.listId = obs.listId;
-      payload.realmId = getTiedRealmId(obs.listId);
-    } else {
-      payload.realmId = undefined;
     }
     await db.transaction("rw", [db.lists, db.observations], async () => {
       await db.observations.update(obs, payload);
@@ -103,6 +101,16 @@ export const useObservationsStore = defineStore("observation", () => {
       // Move list into the realm (if not already there):
       await db.lists.update(payload.listId, { realmId: payload.realmId });
     });
+  }
+
+  async function lockObservation(obsId, allObservationsInGroup) {
+    await db.observations.bulkUpdate(
+      [...allObservationsInGroup].map((obs) => ({
+        key: obs.id,
+        changes: { locked: obs.id === obsId ? true : false },
+      })),
+    );
+    lastLockedObservation.value = obsId;
   }
 
   async function deleteObservation(id) {
@@ -115,9 +123,17 @@ export const useObservationsStore = defineStore("observation", () => {
     allThisMonth,
     allMyObservations,
     allListObservations,
+    lastLockedObservation,
     getTotalPerMonth,
     addObservation,
     saveObservation,
+    lockObservation,
     deleteObservation,
   };
+},
+{
+  persist: {
+    key: "birdlist-observations",
+    paths: ["currentMonth", "lastLockedObservation"],
+  },
 });

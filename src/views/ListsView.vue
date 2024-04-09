@@ -7,6 +7,8 @@ import { useObservable } from "@vueuse/rxjs";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from "@/stores/lists.js";
 import ListsIcon from "@/components/icons/ListsIcon.vue";
+import StreakIcon from "@/components/icons/StreakIcon.vue";
+import NormalIcon from "@/components/icons/NormalIcon.vue";
 import NavTabs from "@/components/NavTabs.vue";
 import CreateList from "@/components/CreateList.vue";
 
@@ -15,7 +17,7 @@ const settingsStore = useSettingsStore()
 const { t } = settingsStore
 
 const listsStore = useListsStore();
-const { allLists, currentList } = storeToRefs(listsStore);
+const { allLists, currentList, lastUsedList } = storeToRefs(listsStore);
 
 const createListDialog = ref(null);
 
@@ -27,6 +29,7 @@ function newList() {
 
 function selectList(list) {
   currentList.value = list;
+  lastUsedList.value = list;
 }
 
 function deleteInvite(invite) {
@@ -45,18 +48,25 @@ function emitEdit(obs) {
     <router-view v-slot="{ Component, route }" @edit="emitEdit">
       <component :is="Component" :key="`${route.path}`"></component>
       <template v-if="!Component">
-        <div class="list-tools">
-          <button class="add" @click="newList">
-            {{ t("Create_New_List") }}
-          </button>
-        </div>
         <div class="lists">
-          <div class="lists-content">
+          <div class="list-tools">
             <h1>{{ t("Lists") }}</h1>
+            <button class="add" @click="newList">
+              {{ t("Create_New_List") }}
+            </button>
+          </div>
+          <div class="lists-content">
+            <router-link :to="{ name: 'list', params: { id: lastUsedList.id }}" v-if="lastUsedList" class="featured">
+              <i>Senast besökta lista:</i><br>
+              <h2>{{ lastUsedList.title }}</h2>
+              <p>{{ lastUsedList.description }}</p>
+            </router-link>
             <ul class="list">
               <li v-for="list in allLists" :key="list.id" @click="selectList(list)">
                 <lists-icon />
                 <router-link :to="{ name: 'list', params: { id: list.id } }">{{ list.title }}</router-link>
+                <streak-icon v-if="list.type === 'birdstreak'" />
+                <normal-icon v-else />
               </li>
             </ul>
             <h2 v-if="listInvites.length">{{ t("Invites") }}</h2>
@@ -77,15 +87,38 @@ function emitEdit(obs) {
 
 <style>
 .list-tools {
-  margin: 1rem;
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 1rem 0.5rem;
+  background-color: var(--color-background);
 }
 
 .lists-content {
   display: grid;
   align-content: start;
-  gap: 1rem;
+  gap: 1.5rem;
+  padding: 0.5rem 1rem 1rem;
+}
+
+.featured {
   padding: 1rem;
-  overflow: auto;
-  height: calc(100dvh - 8.5rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: inherit;
+  text-decoration: none;
+}
+
+.featured h2 {
+  text-decoration: underline;
+  text-underline-offset: 0.1em;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
 }
 </style>

@@ -1,10 +1,10 @@
 <script setup>
 import { ref, computed, defineExpose, watch } from "vue";
+import { inputDate } from "@/helpers";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
-
-const listToEdit = ref();
+import ListsIcon from "./icons/ListsIcon.vue";
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
@@ -14,17 +14,27 @@ const listsStore = useListsStore()
 const { updateList, deleteList } = listsStore
 const { currentList } = storeToRefs(listsStore)
 
+const listToEdit = ref();
 const title = ref('')
 const description = ref('')
+const type = ref('')
+const startDate = ref(new Date())
+const endDate = ref(new Date())
+const reportInterval = ref(2)
 
-// TODO:
 watch(listToEdit, (list) => {
   if (!list) {
     return
   }
-
   title.value = list.title,
   description.value = list.description
+  type.value = list.type
+  
+  if (list.type === 'birdstreak') {
+    startDate.value = list.startDate
+    endDate.value = list.endDate
+    reportInterval.value = list.reportInterval
+  }
 })
 
 const listDialog = ref(null);
@@ -37,11 +47,18 @@ function openModal() {
 }
 
 function saveList() {
-  updateList({
+  let payload = {
     id: listToEdit.value.id,
     title: title.value.trim(),
     description: description.value.trim(),
-  });
+    type: type.value,
+  }
+  if (type.value === 'birdstreak') {
+    payload.startDate = startDate.value
+    payload.endDate = endDate.value
+    payload.reportInterval = reportInterval.value
+  }
+  updateList(payload);
   closeModal();
 }
 
@@ -57,12 +74,36 @@ defineExpose({
 
 <template>
   <dialog ref="listDialog" class="dialog">
+    <div class="grid">
+      <lists-icon />
+      <h2>{{ t("Edit_List") }}</h2>
+    </div>
     <label for="list-title">{{ t("List_Name") }}:</label>
-    <input class="margin-top" type="text" id="list-title" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
+    <input type="text" id="list-title" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
     <label for="list-description">{{ t("Description") }}:</label>
-    <textarea class="margin-bottom" id="list-description" v-model="description" cols="30" rows="10" :placeholder="t('List_Rules_Etc')"></textarea>
+    <textarea id="list-description" v-model="description" cols="30" rows="5" :placeholder="t('List_Rules_Etc')"></textarea>
+    <input type="hidden" id="list-type" v-model="type">
+    <template v-if="type === 'birdstreak'">
+      <div class="flex">
+        <div class="half">
+          <label for="start-date">{{ t("Start_Date") }}:</label>
+          <input type="date" @input="startDate = new Date($event.target.value)" :value="inputDate(startDate)" />
+        </div>
+        <div class="half">
+          <label for="end-date">{{ t("End_Date") }}:</label>
+          <input type="date" @input="endDate = new Date($event.target.value)" :value="inputDate(endDate)" />
+        </div>
+      </div>
+      <label for="day-interval">{{ t("Report_Interval") }}:</label>
+      <select v-model.number="reportInterval">
+        <option value="1">{{ t("Every_Day") }}</option>
+        <option value="2">{{ t("Every_Other_Day") }}</option>
+        <option value="3">{{ t("Every_Third_Day") }}</option>
+        <option value="7">{{ t("Every_Week") }}</option>
+      </select>
+    </template>
     <div class="buttons">
-      <button v-if="isListOwner && listToEdit.title" class="update-button" @click="saveList">{{ t("Save") }}</button>
+      <button v-if="isListOwner" class="update-button" @click="saveList">{{ t("Save") }}</button>
       <button v-if="isListOwner && listToEdit.title" class="delete-button" @click="deleteList(listToEdit.id)">
         <svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
           <g fill="none" stroke="currentColor" stroke-miterlimit="10">
@@ -74,24 +115,7 @@ defineExpose({
         </svg>
         {{ t("Delete") }}
       </button>
-      <button @click="closeModal">{{ t("Cancel") }}</button>
+      <button @click="closeModal" class="secondary">{{ t("Cancel") }}</button>
     </div>
   </dialog>
 </template>
-
-<style>
-.list-tools {
-  margin: 1rem;
-}
-
-.buttons {
-  display: flex;
-  align-items: center;
-  margin-top: 1rem;
-}
-
-.buttons button {
-  display: inline-flex;
-  align-items: center;
-}
-</style>
