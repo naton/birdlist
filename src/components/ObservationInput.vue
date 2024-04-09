@@ -84,12 +84,12 @@ onBeforeMount(() => {
 .add-observation {
   display: flex;
   gap: 0.3rem;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1rem 0.4rem;
 }
 
 .add-observation input {
   width: 100%;
-  padding: 0.5rem 0.3rem 0.5rem 0.7rem;
+  padding: 0.5rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   box-sizing: border-box;

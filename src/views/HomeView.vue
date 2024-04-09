@@ -89,7 +89,7 @@ function openModal(obs) {
 }
 
 .c-tabs__tab svg {
-  margin: 0 0.4rem 0.3rem 0;
+  margin: 0 0.2rem 0.2rem 0;
 }
 
 .list-header {

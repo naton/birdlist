@@ -70,6 +70,7 @@ defineExpose({
       <div v-else>
         <label for="obs-name">{{ t("Change_Name") }}</label>
         <input id="obs-name" type="text" v-model="currentObservation.name" />
+        <input id="obs-lock" type="checkbox" v-model="currentObservation.locked" />
       </div>
   
       <observations-icon />

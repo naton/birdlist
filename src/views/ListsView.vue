@@ -7,6 +7,8 @@ import { useObservable } from "@vueuse/rxjs";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from "@/stores/lists.js";
 import ListsIcon from "@/components/icons/ListsIcon.vue";
+import StreakIcon from "@/components/icons/StreakIcon.vue";
+import NormalIcon from "@/components/icons/NormalIcon.vue";
 import NavTabs from "@/components/NavTabs.vue";
 import CreateList from "@/components/CreateList.vue";
 
@@ -63,6 +65,8 @@ function emitEdit(obs) {
               <li v-for="list in allLists" :key="list.id" @click="selectList(list)">
                 <lists-icon />
                 <router-link :to="{ name: 'list', params: { id: list.id } }">{{ list.title }}</router-link>
+                <streak-icon v-if="list.type === 'birdstreak'" />
+                <normal-icon v-else />
               </li>
             </ul>
             <h2 v-if="listInvites.length">{{ t("Invites") }}</h2>

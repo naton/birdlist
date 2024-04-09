@@ -83,22 +83,28 @@ defineExpose({
     <label for="list-title">{{ t("List_Name") }}:</label>
     <input type="text" id="list-title" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
     <label for="list-description">{{ t("Description") }}:</label>
-    <textarea class="margin-bottom" id="list-description" v-model="description" cols="30" rows="5" :placeholder="t('List_Rules_Etc')"></textarea>
+    <textarea id="list-description" v-model="description" cols="30" rows="5" :placeholder="t('List_Rules_Etc')"></textarea>
     <input type="hidden" id="list-type" v-model="type">
-    <div v-if="type === 'birdstreak'">
-      <label for="start-date">{{ t("Start_Date") }}:</label>
-      <input type="date" @input="startDate = new Date($event.target.value)" :value="inputDate(startDate)" />
-      <label for="end-date">{{ t("End_Date") }}:</label>
-      <input type="date" @input="endDate = new Date($event.target.value)" :value="inputDate(endDate)" />
+    <template v-if="type === 'birdstreak'">
+      <div class="flex">
+        <div class="half">
+          <label for="start-date">{{ t("Start_Date") }}:</label>
+          <input type="date" @input="startDate = new Date($event.target.value)" :value="inputDate(startDate)" />
+        </div>
+        <div class="half">
+          <label for="end-date">{{ t("End_Date") }}:</label>
+          <input type="date" @input="endDate = new Date($event.target.value)" :value="inputDate(endDate)" />
+        </div>
+      </div>
       <label for="day-interval">{{ t("Report_Interval") }}:</label>
       <select v-model.number="reportInterval">
         <option value="1">Varje dag</option>
         <option value="2">Varannan dag</option>
         <option value="3">Var tredje dag</option>
       </select>
-    </div>
+    </template>
     <div class="buttons">
-      <button v-if="isListOwner && listToEdit.title" class="update-button" @click="saveList">{{ t("Save") }}</button>
+      <button v-if="isListOwner" class="update-button" @click="saveList">{{ t("Save") }}</button>
       <button v-if="isListOwner && listToEdit.title" class="delete-button" @click="deleteList(listToEdit.id)">
         <svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
           <g fill="none" stroke="currentColor" stroke-miterlimit="10">
@@ -110,7 +116,7 @@ defineExpose({
         </svg>
         {{ t("Delete") }}
       </button>
-      <button @click="closeModal">{{ t("Cancel") }}</button>
+      <button @click="closeModal" class="secondary">{{ t("Cancel") }}</button>
     </div>
   </dialog>
 </template>

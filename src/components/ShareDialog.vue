@@ -55,7 +55,7 @@ defineExpose({
       <friends-icon />
       <h2>{{ t("Invite_Your_Friends") }}!</h2>
     </div>
-    <details class="margin-top margin-bottom">
+    <details class="help margin-top margin-bottom">
       <summary>{{ t("What_Is_This") }}</summary>
       <p class="margin-left">{{ t("Invite_Help_1") }}</p>
       <p class="margin-left">{{ t("Invite_Help_2") }}</p>
