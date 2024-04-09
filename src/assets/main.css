@@ -352,6 +352,10 @@ button.secondary {
 .dialog textarea {
   width: 100%;
   padding: 0.5rem;
+  border: none;
+  border-radius: var(--radius);
+  color: var(--color-text);
+  background: var(--color-background-dim);
   font-size: 1.2rem;
   font-family: inherit;
 }
@@ -444,6 +448,7 @@ button.secondary {
 }
 
 @media (prefers-color-scheme: dark) {
+  input::-webkit-calendar-picker-indicator,
   .logo {
     filter: invert(1);
   }

@@ -70,7 +70,6 @@ defineExpose({
       <div v-else>
         <label for="obs-name">{{ t("Change_Name") }}</label>
         <input id="obs-name" type="text" v-model="currentObservation.name" />
-        <input id="obs-lock" type="checkbox" v-model="currentObservation.locked" />
       </div>
   
       <observations-icon />
@@ -99,7 +98,7 @@ defineExpose({
       <div v-else class="margin-bottom">
         <label for="obs-list">{{ t("Change_List") }}</label>
         <select id="obs-list" v-model="currentObservation.listId">
-          <option value="">{{ t("No_Special_List") }}</option>
+          <option value="undefined">{{ t("No_Special_List") }}</option>
           <option v-for="{ id, title } in allLists" :value="id" :key="id" :selected="id === currentObservation?.listId && 'selected'">
             {{ title }}
           </option>
@@ -107,7 +106,7 @@ defineExpose({
       </div>
     </div>
 
-    <div>
+    <div class="buttons">
       <button v-if="isEditing" type="button" class="secondary" @click="saveAndClose">{{ t("Save") }} & {{ t("Close") }}</button>
       <button v-else type="button" class="secondary" :disabled="!canEdit(currentObservation?.owner)" @click="isEditing = true">{{ t("Edit") }}</button>
       <button v-if="isEditing" type="button" @click="deleteAndClose(currentObservation?.id)">{{ t("Delete") }}</button>

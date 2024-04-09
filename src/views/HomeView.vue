@@ -27,10 +27,7 @@ function openModal(obs) {
 <template>
   <div class="body">
     <router-view v-slot="{ Component, route }" @edit="openModal">
-      <template v-if="Component">
-        <component :is="Component" :key="`${route.path}`" />
-      </template>
-      <monthly-list v-else />
+      <component :is="Component || MonthlyList" :key="`${route.path}`" />
     </router-view>
   </div>
   <div class="footer">
