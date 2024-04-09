@@ -77,6 +77,7 @@ onBeforeUnmount(() => {
     :lastLockedObservation="lastLockedObservation"
     :comments="listComments"></birdstreak-list>
   <observation-list v-else
+    :key="`${currentList}-${currentSort}`"
     :observations="allListObservations"
     :sort="currentSort"
     :list="currentList"
