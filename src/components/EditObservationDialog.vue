@@ -116,14 +116,6 @@ defineExpose({
 </template>
 
 <style>
-.grid {
-  display: grid;
-  gap: 0.5rem 1rem;
-  grid-template-columns: 1rem 1fr;
-  grid-auto-rows: auto;
-  align-items: center;
-}
-
 button[disabled] {
   opacity: 0.4;
   filter: grayscale(1);

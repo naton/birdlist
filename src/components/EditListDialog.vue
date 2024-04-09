@@ -81,7 +81,7 @@ defineExpose({
       <h2>{{ t("Edit_List") }}</h2>
     </div>
     <label for="list-title">{{ t("List_Name") }}:</label>
-    <input class="margin-top" type="text" id="list-title" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
+    <input type="text" id="list-title" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
     <label for="list-description">{{ t("Description") }}:</label>
     <textarea class="margin-bottom" id="list-description" v-model="description" cols="30" rows="5" :placeholder="t('List_Rules_Etc')"></textarea>
     <input type="hidden" id="list-type" v-model="type">
@@ -90,7 +90,7 @@ defineExpose({
       <input type="date" @input="startDate = new Date($event.target.value)" :value="inputDate(startDate)" />
       <label for="end-date">{{ t("End_Date") }}:</label>
       <input type="date" @input="endDate = new Date($event.target.value)" :value="inputDate(endDate)" />
-      <label for="day-interval">{{ t("Day_Interval") }}:</label>
+      <label for="day-interval">{{ t("Report_Interval") }}:</label>
       <select v-model.number="reportInterval">
         <option value="1">Varje dag</option>
         <option value="2">Varannan dag</option>
@@ -114,20 +114,3 @@ defineExpose({
     </div>
   </dialog>
 </template>
-
-<style>
-.list-tools {
-  margin: 1rem;
-}
-
-.buttons {
-  display: flex;
-  align-items: center;
-  margin-top: 1rem;
-}
-
-.buttons button {
-  display: inline-flex;
-  align-items: center;
-}
-</style>

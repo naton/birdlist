@@ -72,7 +72,7 @@ defineExpose({
     <p v-else class="margin-bottom">
       Du behöver <router-link :to="{ name: 'friends' }">skapa en vän</router-link> först.
     </p>
-    <button :disabled="!allFriends.length" @click="shareAndClose">{{ t("Invite") }}</button>
+    <button :disabled="!allFriends.length || !selectedFriends.length" @click="shareAndClose">{{ t("Invite") }}</button>
     <button class="secondary" @click="closeModal">{{ t("Close") }}</button>
   </dialog>
 </template>

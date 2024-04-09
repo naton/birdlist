@@ -1,9 +1,13 @@
 import { ref } from "vue";
-import { defineStore } from "pinia";
+import { defineStore, storeToRefs } from "pinia";
 import { db } from "../db";
 import { liveQuery } from "dexie";
+import { useSettingsStore } from "./settings.js";
 
 export const useFriendsStore = defineStore("friend", () => {
+  const settingsStore = useSettingsStore();
+  const { t } = settingsStore;
+  const { currentUser } = storeToRefs(settingsStore);
   const allFriends = ref([]);
 
   /* Friends */
@@ -16,7 +20,14 @@ export const useFriendsStore = defineStore("friend", () => {
     }
   );
 
+  function isMe(email) {
+    return email === currentUser.value.email;
+  }
+
   function getFriendlyName(email) {
+    if (isMe(email)) {
+      return t("Me");
+    }
     return allFriends.value.find(f => f.email === email)?.name || email;
   }
 

@@ -44,6 +44,7 @@ const props = defineProps(["users", "selectedUser"]);
   background: none;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: left;
 }
 
 .user-button .user {
@@ -61,6 +62,6 @@ const props = defineProps(["users", "selectedUser"]);
 }
 
 .user-button--active .user {
-  box-shadow: inset 0 0 0 2px var(--color-text);
+  box-shadow: inset 0 0 0 3px var(--color-text);
 }
 </style>

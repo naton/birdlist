@@ -95,7 +95,7 @@ function openModal(obs) {
 .list-header {
   position: relative;
   overflow: hidden;
-  padding: 0.25rem 0;
+  padding: 0.5rem 0 0;
 }
 
 .list-description,
@@ -186,6 +186,10 @@ function openModal(obs) {
   padding: 0 1rem;
   background: var(--color-background);
   transition: 0.1s transform ease-out;
+}
+
+.list-header details[open] {
+  margin-bottom: 1rem;
 }
 
 .list-header button {

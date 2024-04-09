@@ -3,7 +3,6 @@ import { ref, computed } from 'vue'
 import { formatDate } from "@/helpers";
 import { useSettingsStore } from '@/stores/settings.js'
 import { useObservationsStore } from "@/stores/observations.js";
-import { groupBy } from "@/helpers";
 import UserNav from "./UserNav.vue";
 import LockIcon from "./icons/LockIcon.vue";
 
@@ -15,7 +14,7 @@ const observationsStore = useObservationsStore();
 const { lockObservation } = observationsStore;
 
 // startDate is the list's start date or the current date
-const startDate = props.list.startDate ? new Date(props.list.startDate) : new Date()
+const startDate = new Date(props.list.startDate)
 // endDate can't be later than the current date
 const endDate = Math.min(props.list.endDate ? new Date(props.list.endDate) : new Date(), new Date());
 const reportInterval = props.list.reportInterval || 2
@@ -36,27 +35,57 @@ const dateRange = computed(() => {
 const obsToLock = ref(props.lastLockedObservation)
 
 const selectedUser = ref(null);
+const currentLeader = ref("");
+
+// create a function that returns the longest unbroken period of observations from start date to current date
+function getLongestStreak(name) {
+    let streak = 0;
+    let longestStreak = 0;
+    const obsesByUser = props.observations.filter((obs) => obs.owner === name);
+
+    for (let date = startDate; date <= endDate; date.setDate(date.getDate() + reportInterval)) {
+        let dateGroup = []
+        for (let i = 0; i < reportInterval; i++) {
+            let dateCopy = new Date(date)
+            dateCopy.setDate(dateCopy.getDate() + i);
+            dateGroup.push(dateCopy)
+        }
+        if (dateGroup.some(date => {
+            return obsesByUser.some(obs => {
+                return obs.date.toISOString().substring(0, 10) === date.toISOString().substring(0, 10)
+            })})) {
+            streak++;
+        } else {
+            longestStreak = Math.max(streak, longestStreak);
+            streak = 0;
+        }
+    }
+
+    return Math.max(streak, longestStreak);
+}
 
 const users = computed(() => {
     const names = [...new Set(props.observations.map((obs) => obs.owner))].sort();
     let users = [];
     let highestScore = 0;
+    let score = 0;
+    let leader = false;
 
     names.forEach((name) => {
-        const score = Object.keys(
-            groupBy(props.observations.filter((obs) => obs.owner === name), "name")
-        ).length;
-
+        score = getLongestStreak(name);
+        highestScore = score > highestScore ? score : highestScore;
         users.push({
             name,
             score,
+            leader
         });
     });
 
     users.forEach((user) => {
         if (user.score === highestScore) {
             user.leader = true;
-        }
+            currentLeader.value = user.name;
+       }
     });
 
     return users.sort((a, b) => b.score - a.score);
@@ -92,7 +121,6 @@ function getLockedListObservationOnDate(date) {
 
 <template>
     <user-nav :users="users" :selectedUser="selectedUser" @changeUser="changeUser" />
-
     <div class="birdstreak-list">
         <table class="table">
             <tbody v-for="(dateGroups, rangeIndex) in dateRange" :key="rangeIndex" class="date-group">
@@ -152,12 +180,6 @@ button.active {
 
 .date-group:not(:first-child) tr:first-child td {
     border-top: 2px solid var(--color-background-dim);
-}
-
-.flex {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
 }
 
 .flex button {
