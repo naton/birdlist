@@ -4,10 +4,14 @@ import { defineStore } from "pinia";
 import { db } from "../db";
 import { liveQuery } from "dexie";
 import { getTiedRealmId } from "dexie-cloud-addon";
+import { useSettingsStore } from "./settings";
 
 export const useListsStore = defineStore("list", () => {
   const route = useRoute();
   const router = useRouter();
+
+  const settingsStore = useSettingsStore();
+  const { t } = settingsStore;
 
   const allLists = ref(null);
   const currentSort = ref("bydate");
@@ -30,13 +34,9 @@ export const useListsStore = defineStore("list", () => {
     return (currentSort.value = val);
   }
 
-  async function createList(title, description, type = "normal") {
+  async function createList(payload) {
     // Insert the list in the db with title and descripton
-    const newId = await db.lists.add({
-      title,
-      description,
-      type
-    });
+    const newId = await db.lists.add(payload);
     currentList.value = allLists.value.find((list) => list.id == newId);
     return newId;
   }
@@ -60,8 +60,8 @@ export const useListsStore = defineStore("list", () => {
   async function deleteList(listId) {
     let deleteRelatedObservations = false;
   
-    if (confirm("Är du säker på att du vill ta bort denna lista?")) {
-      deleteRelatedObservations = confirm("Radera även listans observationer?");
+    if (confirm(t("Are_You_Sure_You_Want_To_Delete_This_List"))) {
+      deleteRelatedObservations = confirm(t("Delete_The_Lists_Observations_As_Well"));
   
       await db
         .transaction("rw", [db.lists, db.observations, db.realms, db.members], () => {

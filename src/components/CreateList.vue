@@ -20,7 +20,7 @@ const title = ref("");
 const description = ref("");
 const type = ref("normal");
 const startDate = ref(new Date())
-const endDate = ref(null)
+const endDate = ref(new Date().setDate(startDate.value.getDate() + 30))
 const reportInterval = ref(2)
 
 const listDialog = ref(null);
@@ -30,7 +30,15 @@ function openModal() {
 }
 
 async function createListAndClose() {
-  const listId = await createList(title.value, description.value, type.value);
+  const payload = {
+    title: title.value.trim(),
+    description: description.value.trim(),
+    type: type.value === 'birdstreak' ? 'birdstreak' : 'normal',
+    startDate: type.value === 'birdstreak' ? startDate.value : null,
+    endDate: type.value === 'birdstreak' ? endDate.value : null,
+    reportInterval: type.value === 'birdstreak' ? reportInterval.value : null,
+  }
+  const listId = await createList(payload);
   router.push({ name: "list", params: { id: listId } });
   closeModal();
 }
@@ -80,10 +88,10 @@ defineExpose({
         </div>
         <label for="day-interval">{{ t("Report_Interval") }}:</label>
         <select v-model.number="reportInterval">
-          <option value="1">Varje dag</option>
-          <option value="2">Varannan dag</option>
-          <option value="3">Var tredje dag</option>
-          <option value="7">Varje vecka</option>
+          <option value="1">{{ t("Every_Day") }}</option>
+          <option value="2">{{ t("Every_Other_Day") }}</option>
+          <option value="3">{{ t("Every_Third_Day") }}</option>
+          <option value="7">{{ t("Every_Week") }}</option>
         </select>
       </div>
       <details class="help">

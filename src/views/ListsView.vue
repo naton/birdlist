@@ -48,12 +48,12 @@ function emitEdit(obs) {
     <router-view v-slot="{ Component, route }" @edit="emitEdit">
       <component :is="Component" :key="`${route.path}`"></component>
       <template v-if="!Component">
-        <div class="list-tools">
-          <button class="add" @click="newList">
-            {{ t("Create_New_List") }}
-          </button>
-        </div>
         <div class="lists">
+          <div class="list-tools">
+            <button class="add" @click="newList">
+              {{ t("Create_New_List") }}
+            </button>
+          </div>
           <div class="lists-content">
             <h1>{{ t("Lists") }}</h1>
             <router-link :to="{ name: 'list', params: { id: lastUsedList.id }}" v-if="lastUsedList" class="featured">
@@ -87,16 +87,17 @@ function emitEdit(obs) {
 
 <style>
 .list-tools {
-  padding: 1rem 1rem 0;
+  position: sticky;
+  top: 0;
+  padding: 1rem 1rem 0.5rem;
+  background-color: var(--color-background);
 }
 
 .lists-content {
   display: grid;
   align-content: start;
   gap: 1rem;
-  padding: 1rem;
-  overflow: auto;
-  height: calc(100dvh - 8.5rem);
+  padding: 0.5rem 1rem 1rem;
 }
 
 .featured {

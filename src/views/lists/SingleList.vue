@@ -23,7 +23,7 @@ const { currentUser } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
 const { sortBy } = listsStore;
-const { allLists, currentSort, currentList, } = storeToRefs(listsStore);
+const { allLists, currentSort, currentList } = storeToRefs(listsStore);
 
 const observationsStore = useObservationsStore();
 const { allListObservations, lastLockedObservation } = storeToRefs(observationsStore);
@@ -65,12 +65,13 @@ onBeforeUnmount(() => {
   <edit-list-dialog ref="editDialog" />
   <list-info>
     <template v-slot:extra>
-      <button v-if="isListOwner" class="add" @click="updateList">
+      <button v-if="isListOwner" class="add secondary" @click="updateList">
         {{ t("Edit_List") }}
       </button>
     </template>
   </list-info>
   <birdstreak-list v-if="currentList && currentList.type === 'birdstreak'"
+    :key="currentList"
     :observations="allListObservations"
     :list="currentList"
     :lastLockedObservation="lastLockedObservation"

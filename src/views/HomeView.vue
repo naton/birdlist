@@ -71,7 +71,8 @@ function openModal(obs) {
 .c-tabs__tab > a {
   min-width: 5rem;
   display: block;
-  padding: 1rem 0.4rem 0.8rem 0.8rem;
+  border-top: 2px solid transparent;
+  padding: 1rem;
   color: inherit;
   font-size: 1.2rem;
   text-transform: capitalize;
@@ -81,8 +82,7 @@ function openModal(obs) {
 
 .c-tabs__tab > .router-link-active {
   margin-top: 2px;
-  padding: 0.7rem 1rem 0.9rem;
-  border-top: 2px solid;
+  border-top-color: var(--color-border);
   border-top-left-radius: var(--radius);
   border-top-right-radius: var(--radius);
   background: var(--color-background);
@@ -100,7 +100,7 @@ function openModal(obs) {
 
 .list-description,
 .list-owner {
-  margin: 0 0.5rem 1rem;
+  margin-bottom: 1rem;
   text-indent: 0;
 }
 
@@ -200,12 +200,6 @@ function openModal(obs) {
   margin-top: 0.3rem;
 }
 
-.list-header .share-button {
-  align-self: center;
-  margin-left: 0.5rem;
-  white-space: nowrap;
-}
-
 .notify-button svg {
   width: 20px;
   vertical-align: middle;
@@ -213,7 +207,7 @@ function openModal(obs) {
 
 .share-button svg {
   width: 16px;
-  margin-right: 0.4rem;
+  margin-right: 0.25rem;
   vertical-align: text-top;
 }
 </style>

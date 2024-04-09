@@ -6,8 +6,6 @@ import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
 import ListsIcon from "./icons/ListsIcon.vue";
 
-const listToEdit = ref();
-
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
 const { currentUser } = storeToRefs(settingsStore)
@@ -16,25 +14,25 @@ const listsStore = useListsStore()
 const { updateList, deleteList } = listsStore
 const { currentList } = storeToRefs(listsStore)
 
+const listToEdit = ref();
 const title = ref('')
 const description = ref('')
 const type = ref('')
-const startDate = ref(null)
-const endDate = ref(null)
+const startDate = ref(new Date())
+const endDate = ref(new Date())
 const reportInterval = ref(2)
 
 watch(listToEdit, (list) => {
   if (!list) {
     return
   }
-
   title.value = list.title,
   description.value = list.description
   type.value = list.type
-
+  
   if (list.type === 'birdstreak') {
-    startDate.value = list.startDate || new Date().toISOString().substring(0, 10)
-    endDate.value = list.endDate || null
+    startDate.value = list.startDate
+    endDate.value = list.endDate
     reportInterval.value = list.reportInterval
   }
 })
@@ -98,9 +96,10 @@ defineExpose({
       </div>
       <label for="day-interval">{{ t("Report_Interval") }}:</label>
       <select v-model.number="reportInterval">
-        <option value="1">Varje dag</option>
-        <option value="2">Varannan dag</option>
-        <option value="3">Var tredje dag</option>
+        <option value="1">{{ t("Every_Day") }}</option>
+        <option value="2">{{ t("Every_Other_Day") }}</option>
+        <option value="3">{{ t("Every_Third_Day") }}</option>
+        <option value="7">{{ t("Every_Week") }}</option>
       </select>
     </template>
     <div class="buttons">

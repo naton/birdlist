@@ -16,8 +16,9 @@ const observationsStore = useObservationsStore();
 const { lockObservation } = observationsStore;
 
 const startDate = new Date(props.list?.startDate);
-const endDate = new Date(props.list?.endDate);
-const reportInterval = props.list.reportInterval || 2
+const endDate = new Date(props.list?.endDate) > new Date() ? new Date() : new Date(props.list.endDate);
+const reportInterval = props.list.reportInterval || 2;
+
 const dateRange = computed(() => {
     let currentDate = new Date(startDate); // Create a copy of startDate
     let currentEndDate = new Date(endDate); // Create a copy of endDate
@@ -44,18 +45,10 @@ const currentLeader = ref("");
 function getLongestStreak(name) {
     let streak = 0;
     let longestStreak = 0;
-    let currentDate = new Date(startDate); // Create a copy of startDate
-    let currentEndDate = new Date(endDate); // Create a copy of endDate
     const obsesByUser = props.observations.filter((obs) => obs.owner === name);
 
-    for (let date = currentDate; date <= currentEndDate; date.setDate(date.getDate() + reportInterval)) {
-        let dateGroup = []
-        for (let i = 0; i < reportInterval; i++) {
-            let dateCopy = new Date(date)
-            dateCopy.setDate(dateCopy.getDate() + i);
-            dateGroup.push(dateCopy)
-        }
-        if (dateGroup.some(date => {
+    dateRange.value.forEach(dateGroups => {
+        if (dateGroups.some(date => {
             return obsesByUser.some(obs => {
                 return obs.date.toISOString().substring(0, 10) === date.toISOString().substring(0, 10)
             })
@@ -65,7 +58,7 @@ function getLongestStreak(name) {
             longestStreak = Math.max(streak, longestStreak);
             streak = 0;
         }
-    }
+    })
 
     return Math.max(streak, longestStreak);
 }
@@ -137,7 +130,7 @@ watch(currentLeader, (newLeader) => {
     <user-nav :users="users" :selectedUser="selectedUser" @changeUser="changeUser" />
     <div class="birdstreak-list">
         <table class="table">
-            <caption><streak-icon />{{ formatDate(startDate) }} – {{ formatDate(endDate) }}</caption>
+            <caption><streak-icon />{{ formatDate(props.list.startDate) }} – {{ formatDate(props.list.endDate) }}</caption>
             <thead>
                 <tr>
                     <th>{{ t("Date") }}</th>
@@ -147,14 +140,19 @@ watch(currentLeader, (newLeader) => {
             <tbody v-for="(dateGroups, rangeIndex) in dateRange" :key="rangeIndex" class="date-group">
                 <tr v-for="(date, groupIndex) in dateGroups" :key="date">
                     <td>{{ formatDate(date) }}</td>
-                    <td v-if="rangeIndex === dateRange.length - 1 && selectedUser === currentUser.name" :rowspan="groupIndex === 0 ? reportInterval : null">
-                        <form v-if="groupIndex === 0" @submit.prevent="lockObservation(obsToLock, getAllListObservationsOnDates(dateGroups))" class="flex">
-                            <select v-model="obsToLock" required>
-                                <option value="" disabled>{{ t("Select_Observation") }}</option>
-                                <option v-for="obs in getAllListObservationsOnDates(dateGroups)" :key="obs.date" :value="obs.id">{{ obs.name }}</option>
-                            </select>
-                            <button type="submit"><lock-icon />{{ t("Lock") }}</button>
-                        </form>
+                    <td v-if="rangeIndex === dateRange.length - 1" :rowspan="groupIndex === 0 ? reportInterval : null">
+                        <template v-if="groupIndex === 0">
+                            <form v-if="getAllListObservationsOnDates(dateGroups).length" @submit.prevent="lockObservation(obsToLock, getAllListObservationsOnDates(dateGroups))" class="flex">
+                                <select v-model="obsToLock" required>
+                                    <option value="" disabled>{{ t("Select_Observation") }}</option>
+                                    <option v-for="obs in getAllListObservationsOnDates(dateGroups)" :key="obs.date" :value="obs.id">{{ obs.name }}</option>
+                                </select>
+                                <button type="submit"><lock-icon />{{ t("Lock") }}</button>
+                            </form>
+                            <div v-else>
+                                {{ t("No_Observations") }}
+                            </div>
+                        </template>
                     </td>
                     <td v-else>
                         <template v-if="getLockedListObservationOnDate(date).length">
