@@ -1,136 +1,134 @@
 <script setup>
-import { ref, computed } from "vue";
-import { getTiedRealmId } from "dexie-cloud-addon";
-import { db } from "../db";
+import { ref, defineExpose } from "vue";
+import { inputDate } from "@/helpers";
+import { useRouter } from "vue-router";
+import { useSettingsStore } from '../stores/settings.js'
+import { useListsStore } from '../stores/lists.js'
+import ListsIcon from "./icons/ListsIcon.vue";
+import StreakIcon from "@/components/icons/StreakIcon.vue";
+import NormalIcon from "@/components/icons/NormalIcon.vue";
 
-const props = defineProps(["list", "user"]);
-const emit = defineEmits(["activate"]);
+const router = useRouter()
 
-const showListDialog = ref(false);
+const settingsStore = useSettingsStore()
+const { t } = settingsStore
+
+const listsStore = useListsStore()
+const { createList } = listsStore
+
 const title = ref("");
 const description = ref("");
-const isListOwner = computed(() => props.user === props.list.owner);
+const type = ref("normal");
+const startDate = ref(new Date())
+const endDate = ref(new Date().setDate(startDate.value.getDate() + 30))
+const reportInterval = ref(2)
 
-function openModal(hasTitle) {
-  showListDialog.value = true;
+const listDialog = ref(null);
 
-  if (isListOwner.value && hasTitle) {
-    title.value = props.list.title;
-    description.value = props.list.description;
-  } else {
-    title.value = "";
-    description.value = "";
+function openModal() {
+  listDialog.value.showModal();
+}
+
+async function createListAndClose() {
+  const payload = {
+    title: title.value.trim(),
+    description: description.value.trim(),
+    type: type.value === 'birdstreak' ? 'birdstreak' : 'normal',
+    startDate: type.value === 'birdstreak' ? startDate.value : null,
+    endDate: type.value === 'birdstreak' ? endDate.value : null,
+    reportInterval: type.value === 'birdstreak' ? reportInterval.value : null,
   }
-
-  setTimeout(() => {
-    document.querySelector(".dialog input").focus();
-  }, 100);
+  const listId = await createList(payload);
+  router.push({ name: "list", params: { id: listId } });
+  closeModal();
 }
 
 function closeModal() {
-  showListDialog.value = false;
+  listDialog.value.close();
 }
 
-async function createList() {
-  // Insert the list in the db with title and descripton
-  const newId = await db.lists.add({
-    title: title.value,
-    description: description.value,
-  });
-  // Fetch the list to activate it
-  const list = await db.lists.get(newId);
-  emit("activate", list);
-  closeModal();
-}
-
-async function updateList(listId) {
-  await db.transaction("rw", [db.lists], async () => {
-    await db.lists.where({ id: listId }).modify({ title: title.value, description: description.value });
-  });
-  closeModal();
-}
-
-async function deleteList(listId) {
-  let deleteRelatedObservations = false;
-
-  if (confirm("Är du säker på att du vill ta bort denna lista?")) {
-    deleteRelatedObservations = confirm("Radera även listans observationer?");
-
-    await db
-      .transaction("rw", [db.lists, db.observations, db.realms, db.members], () => {
-        if (deleteRelatedObservations) {
-          // Delete possible observations:
-          db.observations.where({ listId: listId }).delete();
-        }
-        // Delete the list:
-        db.lists.delete(listId);
-        // Delete possible realm and its members in case list was shared:
-        const tiedRealmId = getTiedRealmId(listId);
-        // Empty out any tied realm from members:
-        db.members.where({ realmId: tiedRealmId }).delete();
-        // Delete the tied realm if it exists:
-        db.realms.delete(tiedRealmId);
-      })
-      .then(() => {
-        emit("activate", "monthly");
-        showListDialog.value = false;
-        document.location.hash = "";
-      });
-  }
-}
+defineExpose({
+  openModal,
+  closeModal
+})
 </script>
 
 <template>
-  <li class="c-tabs__tab last">
-    <button class="add" @click.stop="openModal(props.list.title)">
-      <span v-if="isListOwner && props.list.title">Uppdatera lista</span>
-      <span v-else>Ny lista…</span>
-    </button>
-    <div class="dialog create-list-dialog" v-if="showListDialog">
-      <input
-        class="margin-bottom"
-        type="text"
-        v-model="title"
-        @keyup.esc="closeModal"
-        placeholder="Skriv namn på listan…"
-      />
-      <textarea
-        class="margin-bottom"
-        id="description"
-        v-model="description"
-        cols="30"
-        rows="10"
-        placeholder="Ev tävlingsregler, syften med listan, etc"
-      ></textarea>
-      <div class="buttons">
-        <button v-if="isListOwner && props.list.title" class="update-button" @click="updateList(props.list.id)">Spara</button>
-        <button v-if="isListOwner && props.list.title" class="delete-button" @click="deleteList(props.list.id)">
-          <svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
-            <g fill="none" stroke="currentColor" stroke-miterlimit="10">
-              <path stroke-linecap="square" d="M20 9v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9"/>
-              <path stroke-linecap="square" d="M1 5h22"/>
-              <path stroke-linecap="square" d="M12 12v6m-4-6v6m8-6v6"/>
-              <path d="M8 5V1h8v4"/>
-            </g>
-          </svg>
-          Radera
-        </button>
-        <button v-else class="create" @click="createList(title)">Skapa lista</button>
-        <button @click="closeModal">Avbryt</button>
+  <dialog ref="listDialog" class="dialog">
+    <form @submit.prevent="createListAndClose">
+      <div class="grid">
+        <lists-icon />
+        <h2>{{ t("Create_List") }}</h2>
       </div>
-    </div>
-  </li>
+      <label for="title">{{ t("List_Name") }}:</label>
+      <input type="text" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus required />
+      <label for="description">{{ t("Description") }}:</label>
+      <textarea id="description" v-model="description" cols="30" rows="5" :placeholder="t('List_Rules_Etc')"></textarea>
+      <label for="title">{{ t("Type_Of_List") }}:</label>
+      <div class="flex">
+        <label class="radio half">
+          <normal-icon />
+          <input v-model="type" type="radio" value="normal" />{{ t("Normal") }}
+        </label>
+        <label class="radio half">
+          <streak-icon />
+          <input v-model="type" type="radio" value="birdstreak" />{{ t("Birdstreak") }}
+        </label>
+      </div>
+      <div v-if="type === 'birdstreak'" class="margin-bottom">
+        <div class="flex">
+          <div class="half">
+            <label for="start-date">{{ t("Start_Date") }}:</label>
+            <input type="date" @input="startDate = new Date($event.target.value)" :value="inputDate(startDate)" required />
+          </div>
+          <div class="half">
+            <label for="end-date">{{ t("End_Date") }}:</label>
+            <input type="date" @input="endDate = new Date($event.target.value)" :value="inputDate(endDate)" required />
+          </div>
+        </div>
+        <label for="day-interval">{{ t("Report_Interval") }}:</label>
+        <select v-model.number="reportInterval">
+          <option value="1">{{ t("Every_Day") }}</option>
+          <option value="2">{{ t("Every_Other_Day") }}</option>
+          <option value="3">{{ t("Every_Third_Day") }}</option>
+          <option value="7">{{ t("Every_Week") }}</option>
+        </select>
+      </div>
+      <details class="help">
+        <summary>{{ t("What_Is_This") }}</summary>
+        <p>{{ t("Create_List_Help") }}</p>
+      </details>
+      <div class="buttons">
+        <button type="submit">{{ t("Create_List") }}</button>
+        <button @click="closeModal" class="secondary">{{ t("Cancel") }}</button>
+      </div>
+    </form>
+  </dialog>
 </template>
 
 <style>
-.buttons {
-  display: flex;
-  align-items: center;
-  margin-top: 1rem;
+.flex > .half {
+  width: 50%;
 }
 
-.buttons button {
-  display: inline-flex;
-  align-items: center;
+label.radio {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 0;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-border);
+}
+
+label.radio input {
+  display: none;
+}
+
+label.radio:has(:checked) {
+  box-shadow: inset 0 0 0 2px var(--color-border);
+  color: var(--color-text);
+  background: var(--color-background-dim);
 }
 </style>

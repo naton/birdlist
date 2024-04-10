@@ -68,13 +68,13 @@ async function removePushManager(callback) {
   navigator.serviceWorker.ready.then((registration) => {
     registration.pushManager.getSubscription().then((subscription) => {
       // Send subscribe request
-      subscription.unsubscribe().then((successful) => {
+      subscription.unsubscribe().then(() => {
         // You've successfully unsubscribed
         if (typeof callback === "function") {
           callback();
         }
       })
-      .catch((e) => {
+      .catch(() => {
         // Unsubscribing failed
       });
     });
@@ -130,4 +130,102 @@ function formatDate(date) {
   }).format(date);
 }
 
-export { askNotificationPermission, removePushManager, pushNewBirdAlert, getMonthName, getCurrentYear, cssColor, formatDate };
+function formatDateAndTime(date) {
+  return new Intl.DateTimeFormat(false, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  }).format(date);
+}
+
+function inputDate(date) {
+  if (!date) {
+    return;
+  }
+
+  return new Date(new Date(date).getTime() - new Date(date).getTimezoneOffset() * 60000).toISOString().substring(0, 10);
+}
+
+function inputDateTime(date) {
+  if (!date) {
+    return;
+  }
+
+  return new Date(new Date(date).getTime() - new Date(date).getTimezoneOffset() * 60000).toISOString().substring(0, 16);
+}
+
+function groupBy(objectArray, property) {
+  return objectArray.reduce((acc, obj) => {
+    const key =
+      typeof obj[property] === "object"
+        ? new Date(obj[property]).toISOString().slice(0, 10)
+        : obj[property].toLowerCase();
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    // Add object to list for given key's value
+    acc[key].push(obj);
+    return sortObject(acc);
+  }, {});
+}
+
+function sortObject(o) {
+  return Object.keys(o)
+    .sort()
+    .reduce((r, k) => ((r[k] = o[k]), r), {});
+}
+
+let newLeaderConfetti;
+
+async function celebrate() {
+  function randomInRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  if (typeof newLeaderConfetti !== "undefined") {
+    await newLeaderConfetti({
+      angle: randomInRange(55, 105),
+      spread: randomInRange(50, 70),
+      particleCount: randomInRange(80, 120),
+      origin: { y: 0.4 },
+    });
+  }
+}
+
+async function setupConfetti() {
+  const canvas = document.getElementById("canvas");
+
+  if (typeof confetti !== "undefined" && canvas) {
+    /* eslint-disable-next-line */
+    newLeaderConfetti = await confetti.create(canvas, {
+      resize: true,
+      useWorker: true,
+    });
+  }
+}
+
+function destroyConfetti() {
+  if (typeof newLeaderConfetti !== "undefined") {
+    newLeaderConfetti.reset();
+  }
+}
+
+export {
+  askNotificationPermission,
+  removePushManager,
+  pushNewBirdAlert,
+  getMonthName,
+  getCurrentYear,
+  groupBy,
+  cssColor,
+  formatDate,
+  formatDateAndTime,
+  inputDate,
+  inputDateTime,
+  celebrate,
+  setupConfetti,
+  destroyConfetti,
+};

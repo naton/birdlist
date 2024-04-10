@@ -1,8 +1,26 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
+import { useRoute } from "vue-router";
+import { storeToRefs } from 'pinia'
+import AddLocationIcon from "./icons/AddLocationIcon.vue";
+import FetchingLocationIcon from "./icons/FetchingLocationIcon.vue";
+import LocationFoundIcon from "./icons/LocationFoundIcon.vue";
+import vue3SimpleTypeahead from "vue3-simple-typeahead";
+import { useSettingsStore } from '../stores/settings.js'
+import { useBirdsStore } from "@/stores/birds.js";
+import 'vue3-simple-typeahead/dist/vue3-simple-typeahead.css'; //Optional default CSS
 
-const props = defineProps(["list"]);
+const route = useRoute();
+
+const birdStore = useBirdsStore();
+const { loadAllBirds } = birdStore;
+const { birds } = storeToRefs(birdStore);
+
+const settingsStore = useSettingsStore()
+const { t } = settingsStore
+
 const emit = defineEmits(["add"]);
+const props = defineProps(["lang"]);
 
 const calculatingPosition = ref(false);
 const currentPosition = ref("");
@@ -35,78 +53,30 @@ function toggleCurrentLocation() {
     currentPosition.value = "";
   }
 }
+
+const addObservationInput = ref();
+
+function add(bird) {
+  emit('add', bird.name, currentPosition.value);
+  addObservationInput.value.clearInput();
+}
+
+onBeforeMount(() => {
+  loadAllBirds(props.lang);
+});
 </script>
 
 <template>
   <div class="add-observation">
-    <button
-      type="button"
-      @click="toggleCurrentLocation"
-      :class="{
-        'is-tracking': calculatingPosition,
-        'has-position': currentPosition,
-      }"
-    >
-      <svg
-        v-if="!currentPosition && !calculatingPosition"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 16 16"
-        title="Lägg till plats"
-      >
-        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 15.5S.5 10.5.5 6a5.5 5.5 0 0 1 10.909-1" />
-          <circle cx="6" cy="6" r="1.5" />
-          <circle cx="11.5" cy="11.5" r="4" />
-          <path d="M11.5 9.5v4m-2-2h4" />
-        </g>
-      </svg>
-      <svg
-        v-else-if="calculatingPosition"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        x="0px"
-        y="0px"
-        width="16px"
-        height="16px"
-        viewBox="0 0 16 16"
-        stroke-width="2"
-        title="Hämtar din plats…"
-      >
-        <g stroke-width="2" transform="translate(0, 0)">
-          <g class="nc-loop-ripple-16-icon-o" stroke-width="2">
-            <circle cx="8" cy="8" fill="none" r="9" stroke="currentColor" stroke-width="2"></circle>
-            <circle
-              data-color="color-2"
-              cx="8"
-              cy="8"
-              fill="none"
-              r="9"
-              stroke="currentColor"
-              stroke-width="2"
-            ></circle>
-          </g>
-        </g>
-      </svg>
-      <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" title="Plats hittad">
-        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M8 15.5s-5.5-5-5.5-9.5a5.5 5.5 0 0 1 11 0 6.883 6.883 0 0 1-.322 2" />
-          <circle cx="8" cy="6" r="1.5" />
-          <path d="m8.5 11.5 2 2 4-4" />
-        </g>
-      </svg>
+    <button type="button" @click="toggleCurrentLocation" :class="{ 'is-tracking': calculatingPosition, 'has-position': currentPosition, }">
+      <add-location-icon v-if="!currentPosition && !calculatingPosition"></add-location-icon>
+      <fetching-location-icon v-else-if="calculatingPosition"></fetching-location-icon>
+      <location-found-icon v-else></location-found-icon>
     </button>
-    <input
-      name="bird"
-      type="text"
-      list="birds"
-      @change="emit('add', $event, props.list, currentPosition)"
-      autocomplete="off"
-      :placeholder="
-        props.list.id && props.list.id.startsWith('lst')
-          ? `Lägg till 🐦 på ${list.title}…`
-          : 'Skriv namnet på 🐦 du sett…'
-      "
-    />
+    <vue3-simple-typeahead ref="addObservationInput" :placeholder="route.params.id
+      ? `${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`
+      : t('Enter_The_Name_Of_The_Bird')" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => add(bird)">
+    </vue3-simple-typeahead>
   </div>
 </template>
 
@@ -114,18 +84,18 @@ function toggleCurrentLocation() {
 .add-observation {
   display: flex;
   gap: 0.3rem;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1rem 0.4rem;
 }
 
 .add-observation input {
   width: 100%;
-  padding: 0.5rem 0.3rem 0.5rem 0.7rem;
+  padding: 0.5rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   box-sizing: border-box;
   color: var(--color-text);
   background: var(--color-background);
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   appearance: none;
 }
 
@@ -161,5 +131,21 @@ function toggleCurrentLocation() {
     opacity: 0;
     transform: scale(1);
   }
+}
+
+.add-observation .simple-typeahead-list {
+  bottom: 3rem;
+  border-radius: var(--radius);
+  box-shadow: rgb(0 0 0 / 10%) 0 -6px 12px 0;
+}
+
+.add-observation .simple-typeahead-list-footer,
+.add-observation .simple-typeahead-list-header,
+.add-observation .simple-typeahead-list-item {
+  background-color: var(--color-background) !important;
+}
+
+.add-observation .simple-typeahead-list-item-active {
+  background-color: var(--color-background-dim) !important;
 }
 </style>

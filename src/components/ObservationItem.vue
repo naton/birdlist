@@ -1,43 +1,35 @@
 <script setup>
-import UserIcon from "./UserIcon.vue";
-import { formatDate } from "../helpers";
+import UserInitial from "./icons/UserInitial.vue";
+import LocationSpecifiedIcon from "./icons/LocationSpecifiedIcon.vue";
+import EditIcon from "./icons/EditIcon.vue";
+import ViewIcon from "./icons/ViewIcon.vue";
+import { formatDate } from "@/helpers";
 
-const props = defineProps(["obs", "selected", "user"]);
-const emit = defineEmits(["select", "edit"]);
+const props = defineProps(["obs", "user", "selected"]);
+const emit = defineEmits(["edit"]);
 
 function canEdit(owner) {
   return owner === "unauthorized" || props.user === owner;
 }
+
+function editObservation() {
+  emit("edit", props.obs);
+}
 </script>
 
 <template>
-  <li @click="emit('select', obs)" :class="selected.id == obs.id && 'is-active'">
+  <li tabindex="-1" :class="props.selected && 'selected'">
     <span class="obs">
-      <span class="name">✘ {{ obs.name }}</span>
-
-      <svg
-        v-if="obs.location"
-        class="has-location"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 16 16"
-        width="24px"
-        height="16px"
-        title="Plats angiven"
-      >
-        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M8 15.5s-5.5-5-5.5-9.5a5.5 5.5 0 0 1 11 0 6.883 6.883 0 0 1-.322 2" />
-          <circle cx="8" cy="6" r="1.5" />
-          <path d="m8.5 11.5 2 2 4-4" />
-        </g>
-      </svg>
-      <span class="date">{{ formatDate(obs.date) }}</span>
+      <span class="name">{{ props.obs.name }}</span>
+      <location-specified-icon v-if="props.obs.location" />
+      <span class="date">{{ formatDate(props.obs.date) }}</span>
       <span class="seen-by">
-        <user-icon :user="obs.owner"></user-icon>
+        <user-initial :user="props.obs.owner" />
       </span>
     </span>
-    <button type="button" class="edit-button" @click.stop="emit('edit', obs)">
-      <span v-if="canEdit(obs.owner)">✏️</span>
-      <span v-else>👁</span>
+    <button type="button" class="edit-button" @click.stop="editObservation">
+      <span v-if="canEdit(props.obs.owner)"><edit-icon /></span>
+      <span v-else><view-icon /></span>
     </button>
   </li>
 </template>
@@ -47,23 +39,25 @@ function canEdit(owner) {
   margin-left: -3rem;
   transform: translateX(3.1rem);
   transition: 0.1s transform ease-out;
+  cursor: pointer;
 }
 
-li.is-active {
-  position: relative;
+.list li.selected {
   background: var(--color-background-dim);
 }
 
-li.is-active .obs {
+.list li.selected .obs {
   transform: translateX(-3rem);
 }
 
-li.is-active .date {
+.list li.selected .date {
   color: var(--color-text);
 }
 
-li.is-active .edit-button {
+.list li.selected .edit-button {
+  position: relative;
   transform: translateX(0rem);
+  z-index: 1;
 }
 
 .obs .has-location {

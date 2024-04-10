@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from "vue";
-import { cssColor } from "../helpers";
+import { cssColor } from "@/helpers";
 
 const props = defineProps(["user", "score", "leader"]);
 
@@ -10,13 +10,7 @@ const initial = computed(() => {
 </script>
 
 <template>
-  <span
-    class="user"
-    :style="{
-      color: cssColor(props.user),
-      backgroundColor: cssColor(props.user),
-    }"
-    ><span class="initial">{{ initial }}</span>
+  <span class="user" :style="{ color: cssColor(props.user), backgroundColor: cssColor(props.user), }"><span class="initial">{{ initial }}</span>
     <span v-if="props.score" class="score" :class="props.leader && 'leader'">{{ props.score }}</span>
   </span>
   <slot></slot>
@@ -65,7 +59,7 @@ const initial = computed(() => {
   border-radius: 50%;
   color: var(--color-background);
   background: var(--color-text);
-  box-shadow: 0 1px 1px 0 var(--co-grey-dark);
+  box-shadow: 0 1px 1px 0 var(--color-text);
 }
 
 .score.leader {
@@ -92,8 +86,9 @@ const initial = computed(() => {
   top: 5px;
   transform: rotate(10deg) skewX(30deg);
   z-index: -1;
-  box-shadow: 0 1px 0 0 var(--co-grey-dark);
+  box-shadow: 0 1px 0 0 var(--color-text);
 }
+
 .score.leader::after {
   transform: rotate(350deg) skewX(330deg);
 }

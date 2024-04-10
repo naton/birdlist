@@ -1,32 +1,34 @@
-/* color palette from <https://github.com/vuejs/theme> */
 :root {
-  --co-white: #ffffff;
-  --co-black: #000000;
-  --co-grey-light: #f0dab1;
-  --co-grey-dark: #6f6553;
-  --co-grey-darkest: #3d382d;
-
+  --hue: 45;
+  --co-base: hsl(var(--hue) 60% 60% / 1);
+  --co-white: hsl(0 0% 100% / 1);
+  --co-grey: hsl(0 0% 15% / 1);
+  --co-black: hsl(0 0% 0% / 1);
+  --co-theme-light: color-mix(in oklab, var(--co-base), var(--co-white));
+  --co-theme-dark: color-mix(in oklab, var(--co-base), var(--co-grey));
+  --co-theme-darkest: color-mix(in oklab, 60% var(--co-base), 100% var(--co-black));
   --radius: 5px;
+  accent-color: var(--co-base);
 }
 
 /* semantic color variables for this project */
 :root {
-  --color-border: var(--co-grey-dark);
-  --color-link: var(--co-grey-dark);
-  --color-text: var(--co-grey-darkest);
-  --color-text-dim: var(--co-grey-dark);
+  --color-border: var(--co-theme-dark);
+  --color-link: var(--co-theme-dark);
+  --color-text: var(--co-theme-darkest);
+  --color-text-dim: var(--co-theme-dark);
   --color-background: var(--co-white);
-  --color-background-dim: var(--co-grey-light);
+  --color-background-dim: var(--co-theme-light);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-border: var(--co-grey-light);
-    --color-link: var(--co-grey-light);
+    --color-border: var(--co-theme-light);
+    --color-link: var(--co-theme-light);
     --color-text: var(--co-white);
-    --color-text-dim: var(--co-grey-light);
-    --color-background: var(--co-grey-darkest);
-    --color-background-dim: var(--co-grey-dark);
+    --color-text-dim: var(--co-theme-light);
+    --color-background: var(--co-theme-darkest);
+    --color-background-dim: var(--co-theme-dark);
   }
 }
 
@@ -43,6 +45,7 @@ html {
     "Droid Sans", "Helvetica Neue", sans-serif;
   font-size: 16px;
   line-height: 1.6;
+  overflow: hidden;
 }
 
 body {
@@ -50,14 +53,57 @@ body {
   color: var(--color-text);
   background: var(--color-background);
   transition: color 0.5s, background-color 0.5s;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+a {
+  color: var(--color-link);
 }
 
 ol,
 ul {
   padding: 0;
+}
+
+a > svg,
+a > img {
+  vertical-align: bottom;
+}
+
+details.help {
+  border: 1px dashed;
+  border-radius: var(--radius);
+  padding: 0.5rem 0.75rem;
+  margin: 0.5rem 0;
+}
+
+details.help[open] summary {
+  margin-bottom: 0.5rem;
+}
+
+details.help p + p {
+  text-indent: 0.5em;
+}
+
+summary {
+  font-weight: 500;
+}
+
+label {
+  font-weight: bold;
+}
+
+.hidden-visually {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+  overflow: hidden;
+  width: 0;
+  height: 0;
+  margin: 0;
 }
 
 /* Layout */
@@ -91,11 +137,48 @@ ul {
   overflow: hidden;
 }
 
+.body-nav {
+  position: relative;
+  grid-area: body-nav;
+  display: flex;
+  max-width: 100vw;
+  min-height: 3rem;
+  overflow: hidden;
+  background: var(--color-background-dim);
+  box-shadow: inset rgb(0 0 0 / 10%) 0 -6px 8px 0;
+}
+
+.body-nav .logo {
+  position: absolute;
+  right: 10px;
+  top: 18px;
+}
+
+.body-nav h1 {
+  margin: auto auto auto 1rem;
+  font-size: 1rem;
+}
+
+.body-nav button {
+  margin: 0.5rem 1rem 0.5rem 0.8rem;
+}
+
+.body-content {
+  grid-area: body-content;
+  overflow: auto;
+}
+
+.body-content::-webkit-scrollbar {
+  display: none;
+}
+
 .footer {
   position: relative;
   grid-area: footer;
-  background: var(--color-background-dim);
-  box-shadow: rgb(17 17 26 / 10%) 0 -6px 8px 0;
+  border-radius: var(--radius) var(--radius) 0 0;
+  border-top: 2px solid var(--color-border);
+  background: linear-gradient(var(--color-background-dim), var(--color-background));
+  box-shadow: rgb(0 0 0 / 10%) 0 -6px 8px 0;
 }
 
 /* Navigation */
@@ -106,18 +189,19 @@ ul {
   display: flex;
   margin: 0 auto;
   text-align: center;
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 1rem;
   background: var(--color-background);
 }
 
 .nav-link {
   flex: 1;
   margin: 0 -1px 0 0;
-  padding: 0.25rem;
-  border-left: 1px solid var(--color-border);
-  color: var(--color-link);
-  text-decoration: none;
+  padding: 0.75rem 0.15rem;
   border: 1px solid;
+  color: var(--color-link);
+  font-size: 0.75rem;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 .nav-link:first-child {
@@ -132,7 +216,7 @@ ul {
 
 .nav-link.router-link-active,
 .nav-link.current {
-  border-width: 2px;
+  box-shadow: inset 0 0 0 1px var(--color-text);
   color: var(--color-text);
   background: var(--color-background-dim);
   font-weight: bold;
@@ -140,13 +224,53 @@ ul {
 
 .nav-count {
   font-weight: normal;
-  font-size: 0.9rem;
+}
+
+/* Selects */
+.body-content select {
+  all: unset;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.3em 0.7em;
+  border: 1px solid;
+  border-radius: var(--radius);
+  background-color: var(--color-background);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' viewBox='0 0 386.257 386.257'%3E%3Cpath fill='black' d='m0 96.879 193.129 192.5 193.128-192.5z'/%3E%3C/svg%3E");
+  background-position: calc(100% - 0.8em) 50%;
+  background-repeat: no-repeat;
+  background-size: auto 40%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .body-content select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' viewBox='0 0 386.257 386.257'%3E%3Cpath fill='white' d='m0 96.879 193.129 192.5 193.128-192.5z'/%3E%3C/svg%3E");
+  }
+}
+
+
+/* Layout */
+.flex {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.flex:has(input[type="date"]) {
+  width: calc(100% - 0.5rem);
+}
+
+.grid {
+  display: grid;
+  gap: 0.5rem 1rem;
+  grid-template-columns: 1rem 1fr;
+  grid-auto-rows: auto;
+  align-items: center;
 }
 
 /* Buttons */
 button {
   min-width: 3rem;
-  min-height: 2.8rem;
+  min-height: 2.7rem;
   padding: 0.4rem 0.8rem;
   border: none;
   border-radius: var(--radius);
@@ -182,20 +306,100 @@ button.secondary {
   font-size: 1.4rem;
 }
 
+.margin-top {
+  margin-top: 0.5rem;
+}
+
+.margin-bottom {
+  margin-bottom: 1rem;
+}
+
+.margin-left {
+  margin-left: 0.5rem;
+}
+
 /* Dialogs */
-.dialog {
-  position: fixed;
-  display: grid;
-  top: 2%;
-  right: 2%;
-  left: 2%;
-  bottom: 2%;
+.dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.dialog h2 {
+  font-weight: bold;
+}
+
+.dialog[open] {
+  width: 90%;
+  max-width: 700px;
+  margin: auto;
+  padding: 1rem;
   border: 2px solid;
+  border-radius: var(--radius);
+  color: inherit;
   background-color: var(--color-background);
-  padding: 1rem 1rem 30%;
-  place-content: center;
-  z-index: 3;
-  outline: 40px solid rgba(0, 0, 0, 0.5);
+}
+
+.dialog label {
+  display: block;
+  margin: 0.75rem 0 0.25rem;
+}
+
+.dialog select {
+  appearance: none;
+}
+
+.dialog select,
+.dialog input,
+.dialog textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  border-radius: var(--radius);
+  color: var(--color-text);
+  background: var(--color-background-dim);
+  font-size: 1.2rem;
+  font-family: inherit;
+}
+
+.dialog .poi {
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+.dialog .poi svg {
+  vertical-align: top;
+}
+
+.dialog table {
+  width: 100%;
+  border-spacing: 0 2px;
+  vertical-align: middle;
+}
+
+.dialog td:first-child {
+  width: 1rem;
+  border-top-left-radius: var(--radius);
+  border-bottom-left-radius: var(--radius);
+}
+
+.dialog td:last-child {
+  border-top-right-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
+
+.dialog td label {
+  margin: 0;
+  font-weight: bold;
+}
+
+.dialog input[type="checkbox"] {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0.3em;
+  background-color: var(--color-background);
+}
+
+.dialog tr:has(:enabled:checked) td {
+  background-color: var(--color-background-dim);
 }
 
 .user-nav:has(.list-enter-active) {
@@ -241,4 +445,11 @@ button.secondary {
 
 .list .list-leave-active {
   opacity: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  input::-webkit-calendar-picker-indicator,
+  .logo {
+    filter: invert(1);
+  }
 }
