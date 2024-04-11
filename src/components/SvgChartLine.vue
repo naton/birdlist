@@ -34,7 +34,9 @@ const styles = computed(() => {
 
 const pathD = computed(() => {
   return pointsPositions.value.reduce((acc, e, i, a) => i === 0
-    ? `M ${a[a.length - 1][0]},${props.svg.h} L ${e[0]},${props.svg.h} L ${e[0]},${e[1]}`
+    ? `M ${isNaN(a[a.length-1][0]) ? 1 : a[a.length-1][0]},${props.svg.h} 
+       L ${isNaN(e[0]) ? 1 : e[0]},${props.svg.h} 
+       L ${isNaN(e[0]) ? 1 : e[0]},${e[1]}`
     : `${acc} ${bezierCommand(e, i, a)}`
     , "");
 });
@@ -92,7 +94,7 @@ function bezierCommand(point, i, a) {
 <template>
   <g>
     <path :style="styles.path" :d="pathD"></path>
-    <circle :cx="p[0]" :cy="p[1]" r="2" :style="styles.circles" v-for="(p, index) in pointsPositions" :key="index" />
+    <circle :cx="isNaN(p[0]) ? 0 : p[0]" :cy="p[1]" r="2" :style="styles.circles" v-for="(p, index) in pointsPositions" :key="index" />
   </g>
 </template>
 

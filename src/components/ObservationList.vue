@@ -275,13 +275,6 @@ onMounted(() => {
 </template>
 
 <style>
-.empty-list {
-  display: flex;
-  height: 70%;
-  align-items: center;
-  justify-content: center;
-}
-
 .date {
   color: var(--color-text-dim);
 }

@@ -8,6 +8,7 @@ import { pushNewBirdAlert } from "../helpers"
 
 export const useObservationsStore = defineStore("observation", () => {
   const settingsStore = useSettingsStore();
+  const { t } = settingsStore;
   const { currentUser, currentYear, currentMonth } = storeToRefs(settingsStore);
 
   const listsStore = useListsStore();
@@ -79,8 +80,10 @@ export const useObservationsStore = defineStore("observation", () => {
 
       if (currentList.value) {
         pushNewBirdAlert({
-          title: "New bird spotted: " + bird.trim(),
-          body: currentList.value.id
+          title: t("New_Observation_Added") + ": " + bird.trim(),
+          icon: "https://birdlist.app/192x192.png",
+          body: t("List") + ": " + currentList.value.name,
+          listId: currentList.value.id,
         })
       }  
     }

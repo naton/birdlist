@@ -47,18 +47,18 @@
       }
     </style>
     <script>
-      if ("serviceWorker" in navigator && ["localhost"].indexOf(location.hostname) === -1) {
+      if ("serviceWorker" in navigator && navigator.serviceWorker.controller === null && navigator.onLine === true) {
         function onUpdateFound(registration) {
           const newWorker = registration.installing;
 
           newWorker.addEventListener('statechange', async () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              document.location.href.startsWith('https://birdlist.app/') ? document.location.reload() : document.location.href = 'https://birdlist.app/';
+              document.location.reload();
             }
           });
         }
 
-        navigator.serviceWorker.register("sw.js").then(registration => {
+        navigator.serviceWorker.register("/sw.js").then(registration => {
           registration.addEventListener('updatefound', () => onUpdateFound(registration));
         });
       }

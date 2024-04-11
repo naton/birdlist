@@ -19,7 +19,7 @@ function askNotificationPermission(callback) {
   }
 
   // function to actually ask the permissions
-  async function handlePermission(permission) {
+  function handlePermission(permission) {
     console.log("handlePermission…")
     if (permission === "granted") {
       console.log("granted…")
@@ -31,6 +31,8 @@ function askNotificationPermission(callback) {
            } catch (error) {
             console.error("Error subscribing for push notifications.", error);
           }
+        } else {
+          console.error("PushManager not available.");
         }
       });
 
@@ -64,18 +66,19 @@ function askNotificationPermission(callback) {
   }
 }
 
-async function removePushManager(callback) {
+function removePushManager(callback) {
   navigator.serviceWorker.ready.then((registration) => {
     registration.pushManager.getSubscription().then((subscription) => {
       // Send subscribe request
       subscription.unsubscribe().then(() => {
+        console.log("Unsubscribed from push notifications.");
         // You've successfully unsubscribed
         if (typeof callback === "function") {
           callback();
         }
       })
-      .catch(() => {
-        // Unsubscribing failed
+      .catch((e) => {
+        console.error("Error unsubscribing from push notifications.", e);
       });
     });
   });

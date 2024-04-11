@@ -56,7 +56,7 @@ const getDexieCloudAccessToken = async () => {
 async function getAccessHeader() {
   const header = "Bearer " + await getDexieCloudAccessToken();
   return header;
-};
+}
 
 // This utility function makes sure the request is valid, has a body and an endpoint property, 
 // otherwise it returns an error to the client (via https://flaviocopes.com/push-api/)
@@ -89,7 +89,7 @@ function saveSubscriptionToDatabase(subscription) {
   })
 }
 
-async function insertToDatabase(subscription, callback) {
+async function insertToDatabase(subscription) {
   console.log("insertToDatabase…")
   const apiCallPromise = await fetch("https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions", {
     method: "POST",
@@ -97,10 +97,10 @@ async function insertToDatabase(subscription, callback) {
       "Content-Type": "application/json",
       "Authorization": await getAccessHeader()
     },
-    body: JSON.stringify(subscription.body)
+    body: JSON.stringify(subscription)
   });
   const apiCallObj = await apiCallPromise;
-  console.log("insertToDatabase: ", apiCallObj)
+  console.log("insertToDatabase: ", apiCallObj.status)
 }
 
 async function deleteSubscriptionFromDatabase(id) {
@@ -108,7 +108,7 @@ async function deleteSubscriptionFromDatabase(id) {
   fetch(`https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions/${id}`, {
     method: "DELETE",
     headers: { "Authorization": await getAccessHeader() }
-  }).then(response => console.log("deleteSubscriptionFromDatabase: ", response));
+  }).then(response => console.log("deleteSubscriptionFromDatabase: ", response.status));
 }
 
 async function getSubscriptionsFromDatabase() {
@@ -125,8 +125,8 @@ function triggerPush(subscription, dataToSend) {
   console.log("triggerPush…")
   return webpush.sendNotification(subscription, dataToSend)
     .catch((err) => {
-      if (err.statusCode === 410) {
-        return deleteSubscriptionFromDatabase(subscription.id)
+      if (err.statusCode === 404 || err.statusCode === 410) {
+        return deleteSubscriptionFromDatabase(subscription._id)
       } else {
         console.log('Subscription is no longer valid: ', err)
       }
@@ -139,12 +139,12 @@ app.post('/api/subscription', (req, res) => {
     return;
   }
 
-  saveSubscriptionToDatabase(req, res.body)
-    .then((subscriptionId) => {
+  saveSubscriptionToDatabase(req.body)
+    .then(() => {
       res.setHeader('Content-Type', 'application/json')
       res.send(JSON.stringify({ data: { success: true } }))
     })
-    .catch((err) => {
+    .catch(() => {
       res.status(500)
       res.setHeader('Content-Type', 'application/json')
       res.send(JSON.stringify({
@@ -155,10 +155,12 @@ app.post('/api/subscription', (req, res) => {
       }));
     });
 
-  const subscription = req.body;
   res.status(201).json({});
-  const payload = JSON.stringify({ title: "Hello World", body: "This is your first push notification" });
-  webpush.sendNotification(subscription, payload).catch(console.log);
+  const payload = JSON.stringify({
+    title: "Hello from Birdlist!",
+    body: "You will now be notified when new observations gets added to your lists."
+  });
+  webpush.sendNotification(req.body, payload).catch(console.log);
 });
 
 app.post('/api/push', async (req, res) => {
@@ -168,7 +170,7 @@ app.post('/api/push', async (req, res) => {
       for (let i = 0; i < subscriptions.length; i++) {
         const subscription = subscriptions[i]
         promiseChain = promiseChain.then(() => {
-          let dataToSend = JSON.stringify(req.body); // { title: "New bird spotted:", body: '[listid]' }
+          let dataToSend = JSON.stringify(req.body);
           return triggerPush(subscription, dataToSend)
         })
       }

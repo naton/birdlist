@@ -18,6 +18,7 @@ export const useListsStore = defineStore("list", () => {
   const currentListExpanded = ref(true);
   const currentList = ref();
   const lastUsedList = ref();
+  const isSubscribedToNotifications = ref(false);
 
   /* Lists */
   liveQuery(async () => await db.lists.toArray()).subscribe(
@@ -81,7 +82,7 @@ export const useListsStore = defineStore("list", () => {
         .then(() => {
           document.location.hash = "";
         });
-
+      lastUsedList.value = null;
       router.push({ name: "lists" });
     }
   }
@@ -133,6 +134,7 @@ export const useListsStore = defineStore("list", () => {
     lastUsedList,
     currentListExpanded,
     currentSort,
+    isSubscribedToNotifications,
     sortBy,
     getListMembers,
     createList,
@@ -144,6 +146,6 @@ export const useListsStore = defineStore("list", () => {
 {
   persist: {
     key: "birdlist-lists",
-    paths: ["currentList", "lastUsedList", "currentSort", "currentListExpanded"],
+    paths: ["currentList", "lastUsedList", "isSubscribedToNotifications", "currentSort", "currentListExpanded"],
   },
 });

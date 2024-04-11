@@ -35,7 +35,7 @@ const newFriendEmail = ref()
           <button type="submit"><add-friend-icon /></button>
         </form>
       </section>
-      <section v-if="allFriends.length">
+      <section v-if="allFriends?.length">
         <h2>{{ t("Current_Friends")}}</h2>
         <table>
           <tbody>
@@ -47,11 +47,23 @@ const newFriendEmail = ref()
           </tbody>
         </table>
       </section>
+      <section v-else class="empty-list">
+        <p>{{ t("No_Friends") }}</p>
+      </section>
     </article>
   </div>
 </template>
 
 <style>
+.empty-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 50vh;
+  align-items: center;
+  justify-content: center;
+}
+
 .friends-content {
   display: grid;
   align-self: start;

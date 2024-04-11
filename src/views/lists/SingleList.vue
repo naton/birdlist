@@ -47,7 +47,7 @@ function edit(obs) {
 }
 
 watch(currentList, (list) => {
-  if (!allLists.value.find(l => l.id === list.id)) {
+  if (!list || !allLists.value.find(l => l.id === list.id)) {
     router.push({ name: "lists" });
   }
 });
