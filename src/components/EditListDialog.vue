@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, defineExpose, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import { inputDate } from "@/helpers";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from '../stores/settings.js'

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineExpose } from "vue";
+import { ref } from "vue";
 import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from '../stores/settings.js'

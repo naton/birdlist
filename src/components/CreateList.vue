@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineExpose } from "vue";
+import { ref } from "vue";
 import { inputDate } from "@/helpers";
 import { useRouter } from "vue-router";
 import { useSettingsStore } from '../stores/settings.js'
