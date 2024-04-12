@@ -5,7 +5,7 @@ function main(workbox) {
     core: { clientsClaim, setCacheNameDetails },
     expiration: { ExpirationPlugin },
     precaching: { cleanupOutdatedCaches, precacheAndRoute },
-    routing: { registerRoute },
+    routing: { setDefaultHandler, registerRoute },
     strategies: { NetworkFirst, StaleWhileRevalidate },
   } = workbox;
 
@@ -21,6 +21,9 @@ function main(workbox) {
     precache: 'precache',
     runtime: 'runtime',
   });
+
+  // Use a stale-while-revalidate strategy to handle requests by default.
+  setDefaultHandler(new StaleWhileRevalidate());
 
   // runtime cache
   // 1. stylesheet
