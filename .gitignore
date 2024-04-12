@@ -27,6 +27,7 @@ coverage
 *.sln
 *.sw?
 
+public/sw.js
 webPushSubscriptions.json
 dexie-cloud.json
 dexie-cloud.key
