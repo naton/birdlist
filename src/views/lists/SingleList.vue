@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, defineAsyncComponent, onMounted, onBeforeUnmount, watch } from "vue";
+import { ref, computed, defineAsyncComponent, onBeforeMount, onMounted, onBeforeUnmount, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { setupConfetti, destroyConfetti, celebrate } from "@/helpers";
@@ -52,6 +52,10 @@ watch(currentList, (list) => {
   }
 });
 
+onBeforeMount(() => {
+  currentList.value = allLists.value.find((list) => list.id == route.params.id);
+});
+
 onMounted(() => {
   setupConfetti();
 });
@@ -76,7 +80,7 @@ onBeforeUnmount(() => {
     :list="currentList"
     :lastLockedObservation="lastLockedObservation"
     :comments="listComments"></birdstreak-list>
-  <observation-list v-else
+  <observation-list v-else-if="currentList"
     :key="`${currentList}-${currentSort}`"
     :observations="allListObservations"
     :sort="currentSort"
