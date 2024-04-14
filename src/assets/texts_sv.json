@@ -15,6 +15,7 @@
     "Description": "Beskrivning",
     "Add_Bird_To": "Lägg till 🐦 på",
     "New_Observation_Added": "Ny observation tillagd",
+    "Observation_Removed": "Observation borttagen",
     "Observations": "Obsar",
     "Species": "Arter",
     "Location": "Plats",
@@ -65,6 +66,7 @@
     "Comments": "Kommentarer",
     "Lists": "Listor",
     "No_Lists": "Inga listor skapade ännu.",
+    "Show_Only_Mine": "Visa bara mina",
     "Last_Visited_List": "Senast besökta lista",
     "Friends": "Vänner",
     "No_Friends": "Inga vänner sparade ännu.",
@@ -85,5 +87,14 @@
     "Accept": "Tacka ja",
     "Deny": "Avstå",
     "By_Using_Birdlist_Info": "Genom att använda Birdlist godkänner du att din e-postadress lagras på din enhet samt på dina vänners enheter, om du delar dina listor med dem.",
-    "Theme_Color": "Tema-färg"
+    "Theme_Color": "Tema-färg",
+    "Login": "Logga in",
+    "Not_Logged_In": "Ej inloggad",
+    "Have_You_Logged_In_Before": "Har du loggat in förut men på en annan enhet?",
+    "Here_And_Now_To_Access_Your_Observations": "här och nu för att se dina tidigare observationer.",
+    "Account_Type": "Kontotyp",
+    "Account_Help": "<ul><li>Som <strong>ej inloggad</strong> kan du skapa listor men inte dela dem med vänner.</li><li>Med ett <strong>gratiskonto</strong> kan du skapa och dela listor (max 5) med dina vänner men med vissa begränsningar.</li><li>Med ett <strong>premiumkonto</strong> kan du skapa obegränsat antal listor – inklusive ”Birdstreak”-listor.</li></ul>",
+    "Free": "Gratis",
+    "Premium": "Premium",
+    "Upgrade_To_Premium": "Uppgradera till ett Premium-konto för att kunna skapa fler listor."
 }]

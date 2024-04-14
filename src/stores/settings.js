@@ -8,6 +8,8 @@ export const useSettingsStore = defineStore("settings", () => {
     const hue = ref("45");
     const texts = ref({});
     const currentUser = useObservable(db.cloud.currentUser);
+    const isUserLoggedIn = computed(() => currentUser.value.userId !== 'unauthorized');
+    const isPremiumUser = computed(() => currentUser.value.license?.type === 'prod');
     const currentYear = ref(new Date().getFullYear());
     const currentMonth = ref(new Date().getMonth());
 
@@ -26,7 +28,11 @@ export const useSettingsStore = defineStore("settings", () => {
     }
 
     function getThemeColor() {
-      const elm = document.querySelector(".router-link-active");
+      const elm = document.querySelector(".nav-link.router-link-active") || document.querySelector(".body-nav");
+      if (!elm) {
+        return 'transparent';
+      }
+
       return getComputedStyle(elm).backgroundColor;
     }
 
@@ -83,11 +89,14 @@ export const useSettingsStore = defineStore("settings", () => {
       hue,
       texts,
       currentUser,
+      isUserLoggedIn,
+      isPremiumUser,
       currentYear,
       currentMonth,
       currentMonthFormatted,
       t,
       loadTexts,
+      setThemeColor,
       prevMonth,
       nextMonth,
     };

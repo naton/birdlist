@@ -1,6 +1,6 @@
 <script setup>
-import { ref, computed, defineAsyncComponent, onBeforeMount, onMounted, onBeforeUnmount, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref, computed, defineAsyncComponent, onBeforeMount, onMounted, onBeforeUnmount } from "vue";
+import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { setupConfetti, destroyConfetti, celebrate } from "@/helpers";
 import { useSettingsStore } from '@/stores/settings.js'
@@ -15,7 +15,6 @@ const ObservationList = defineAsyncComponent(() => import("@/components/Observat
 const emit = defineEmits(["openDialog", "sort", "edit"]);
 
 const route = useRoute();
-const router = useRouter();
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
@@ -36,9 +35,9 @@ const listComments = computed(() => allComments.value?.filter((comment) => comme
 
 const editDialog = ref(null);
 
-const isListOwner = computed(() => currentUser.value?.name === currentList.value?.owner);
+const isListOwner = computed(() => currentUser.value?.userId === currentList.value?.owner);
 
-function updateList() {
+function openModal() {
   editDialog.value.openModal();
 }
 
@@ -46,14 +45,8 @@ function edit(obs) {
   emit("edit", obs)
 }
 
-watch(currentList, (list) => {
-  if (!list || !allLists.value.find(l => l.id === list.id)) {
-    router.push({ name: "lists" });
-  }
-});
-
-onBeforeMount(() => {
-  currentList.value = allLists.value.find((list) => list.id == route.params.id);
+onBeforeMount(async () => {
+  currentList.value = await allLists.value?.find((list) => list.id == route.params.id);
 });
 
 onMounted(() => {
@@ -69,7 +62,7 @@ onBeforeUnmount(() => {
   <edit-list-dialog ref="editDialog" />
   <list-info>
     <template v-slot:extra>
-      <button v-if="isListOwner" class="add secondary" @click="updateList">
+      <button v-if="isListOwner" class="add secondary" @click="openModal">
         {{ t("Edit_List") }}
       </button>
     </template>

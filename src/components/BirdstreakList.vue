@@ -142,13 +142,16 @@ watch(currentLeader, (newLeader) => {
                     <td>{{ formatDate(date) }}</td>
                     <td v-if="rangeIndex === dateRange.length - 1" :rowspan="groupIndex === 0 ? reportInterval : null">
                         <template v-if="groupIndex === 0">
-                            <form v-if="getAllListObservationsOnDates(dateGroups).length" @submit.prevent="lockObservation(obsToLock, getAllListObservationsOnDates(dateGroups))" class="flex">
+                            <form v-if="getAllListObservationsOnDates(dateGroups).length && !getLockedListObservationOnDate(date).length" @submit.prevent="lockObservation(obsToLock, getAllListObservationsOnDates(dateGroups))" class="flex">
                                 <select v-model="obsToLock" required>
                                     <option value="" disabled>{{ t("Select_Observation") }}</option>
                                     <option v-for="obs in getAllListObservationsOnDates(dateGroups)" :key="obs.date" :value="obs.id">{{ obs.name }}</option>
                                 </select>
                                 <button type="submit"><lock-icon />{{ t("Lock") }}</button>
                             </form>
+                            <div v-else-if="getLockedListObservationOnDate(date).length">
+                                <lock-icon /><span>{{ getAllListObservationsOnDates(dateGroups).find(obs => obs.locked).name }}</span>
+                            </div>
                             <div v-else>
                                 {{ t("No_Observations") }}
                             </div>

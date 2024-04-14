@@ -6,6 +6,8 @@ import ObservationsIcon from "./icons/ObservationsIcon.vue";
 import BirdsIcon from "./icons/BirdsIcon.vue";
 import ListsIcon from "./icons/ListsIcon.vue";
 import UserIcon from "./icons/UserIcon.vue";
+import EditIcon from "./icons/EditIcon.vue";
+import DeleteIcon from "./icons/DeleteIcon.vue";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
 import { useObservationsStore } from '../stores/observations.js'
@@ -108,8 +110,14 @@ defineExpose({
 
     <div class="buttons">
       <button v-if="isEditing" type="button" class="secondary" @click="saveAndClose">{{ t("Save") }} & {{ t("Close") }}</button>
-      <button v-else type="button" class="secondary" :disabled="!canEdit(currentObservation?.owner)" @click="isEditing = true">{{ t("Edit") }}</button>
-      <button v-if="isEditing" type="button" @click="deleteAndClose(currentObservation?.id)">{{ t("Delete") }}</button>
+      <button v-else type="button" class="secondary" :disabled="!canEdit(currentObservation?.owner)" @click="isEditing = true">
+        <edit-icon />
+        {{ t("Edit") }}
+      </button>
+      <button v-if="isEditing" type="button" @click="deleteAndClose(currentObservation?.id)">
+        <delete-icon />
+        {{ t("Delete") }}
+      </button>
       <button type="button" class="secondary" @click="closeModal()">{{ t("Cancel") }}</button>
     </div>
   </dialog>

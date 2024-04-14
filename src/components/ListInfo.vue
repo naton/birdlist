@@ -7,14 +7,14 @@ import ShareDialog from "./ShareDialog.vue";
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
-const { currentUser } = storeToRefs(settingsStore);
+const { currentUser, isUserLoggedIn } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
 const { currentList, currentListExpanded } = storeToRefs(listsStore);
 
 const shareListDialog = ref();
 
-const isListOwner = computed(() => currentUser.value?.name === currentList.value?.owner);
+const isListOwner = computed(() => currentUser.value?.userId === currentList.value?.owner);
 
 function openShareModal() {
     shareListDialog.value.openModal();
@@ -28,7 +28,7 @@ function openShareModal() {
             <details :open="currentListExpanded">
                 <summary class="heading" @click.prevent="currentListExpanded = !currentListExpanded">{{ currentList?.title }}</summary>
                 <p class="list-description">{{ currentList?.description }}</p>
-                <p class="list-owner">{{ t("Created_By") }} {{ currentList?.owner }}</p>
+                <p class="list-owner">{{ t("Created_By") }} {{ isUserLoggedIn ? currentList?.owner : t("Not_Logged_In") }}</p>
                 <div>
                     <button class="share-button" :disabled="!isListOwner" @click="openShareModal">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
@@ -39,7 +39,7 @@ function openShareModal() {
                         </svg>
                         {{ t("Share") }}
                     </button>
-                    <span v-if="!isListOwner" class="share-info">
+                    <span v-if="isUserLoggedIn && !isListOwner" class="share-info">
                         {{ t("Contact_The_List_Creator") }}
                     </span>
                     <slot name="extra" />

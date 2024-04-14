@@ -5,6 +5,7 @@ import { storeToRefs } from "pinia";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
 import ListsIcon from "./icons/ListsIcon.vue";
+import DeleteIcon from "./icons/DeleteIcon.vue";
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
@@ -39,7 +40,7 @@ watch(listToEdit, (list) => {
 
 const listDialog = ref(null);
 
-const isListOwner = computed(() => currentUser.value?.name === listToEdit.value?.owner);
+const isListOwner = computed(() => currentUser.value?.userId === listToEdit.value?.owner);
 
 function openModal() {
   listToEdit.value = currentList.value;
@@ -50,6 +51,7 @@ function saveList() {
   let payload = {
     id: listToEdit.value.id,
     title: title.value.trim(),
+    updated: new Date(),
     description: description.value.trim(),
     type: type.value,
   }
@@ -105,14 +107,7 @@ defineExpose({
     <div class="buttons">
       <button v-if="isListOwner" class="update-button" @click="saveList">{{ t("Save") }}</button>
       <button v-if="isListOwner && listToEdit.title" class="delete-button" @click="deleteList(listToEdit.id)">
-        <svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24">
-          <g fill="none" stroke="currentColor" stroke-miterlimit="10">
-            <path stroke-linecap="square" d="M20 9v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9" />
-            <path stroke-linecap="square" d="M1 5h22" />
-            <path stroke-linecap="square" d="M12 12v6m-4-6v6m8-6v6" />
-            <path d="M8 5V1h8v4" />
-          </g>
-        </svg>
+        <delete-icon />
         {{ t("Delete") }}
       </button>
       <button @click="closeModal" class="secondary">{{ t("Cancel") }}</button>

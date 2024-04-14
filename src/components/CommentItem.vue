@@ -36,6 +36,7 @@ async function deleteComment(id) {
 
 <style>
 .comment {
+  position: relative;
   display: flex;
   flex-flow: column nowrap;
   width: 100%;

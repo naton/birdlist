@@ -1,8 +1,9 @@
 <script setup>
-import { onBeforeMount } from 'vue'
+import { onBeforeMount, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { RouterLink, RouterView } from "vue-router";
 import { useSettingsStore } from './stores/settings.js'
+import AppMessages from './components/AppMessages.vue'
 import InvitesList from './components/InvitesList.vue'
 import HomeIcon from './components/icons/HomeIcon.vue'
 import FriendsIcon from './components/icons/FriendsIcon.vue'
@@ -10,17 +11,22 @@ import SettingsIcon from './components/icons/SettingsIcon.vue'
 import HelpIcon from './components/icons/HelpIcon.vue'
 
 const settingsStore = useSettingsStore()
-const { t, loadTexts } = settingsStore
+const { t, loadTexts, setThemeColor } = settingsStore
 const { lang, texts } = storeToRefs(settingsStore)
 
 onBeforeMount(() => {
   texts.value = loadTexts(lang.value)
   document.addEventListener('dblclick', () => false);
 })
+
+onMounted(() => {
+  setTimeout(() => setThemeColor(), 500)
+})
 </script>
 
 <template>
   <main class="main">
+    <app-messages />
     <invites-list />
     <router-view />
   </main>

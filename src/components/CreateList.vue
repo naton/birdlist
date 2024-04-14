@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import { storeToRefs } from "pinia";
 import { inputDate } from "@/helpers";
 import { useRouter } from "vue-router";
 import { useSettingsStore } from '../stores/settings.js'
@@ -12,6 +13,7 @@ const router = useRouter()
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
+const { isPremiumUser } = storeToRefs(settingsStore)
 
 const listsStore = useListsStore()
 const { createList } = listsStore
@@ -32,6 +34,7 @@ function openModal() {
 async function createListAndClose() {
   const payload = {
     title: title.value.trim(),
+    updated: new Date(),
     description: description.value.trim(),
     type: type.value === 'birdstreak' ? 'birdstreak' : 'normal',
     startDate: type.value === 'birdstreak' ? startDate.value : null,
@@ -73,6 +76,7 @@ defineExpose({
         <label class="radio half">
           <streak-icon />
           <input v-model="type" type="radio" value="birdstreak" />{{ t("Birdstreak") }}
+          <span class="pill">Premium</span>
         </label>
       </div>
       <div v-if="type === 'birdstreak'" class="margin-bottom">
@@ -99,7 +103,7 @@ defineExpose({
         <p>{{ t("Create_List_Help") }}</p>
       </details>
       <div class="buttons">
-        <button type="submit">{{ t("Create_List") }}</button>
+        <button type="submit" :disabled="type === 'birdstreak' && !isPremiumUser">{{ t("Create_List") }}</button>
         <button @click="closeModal" class="secondary">{{ t("Cancel") }}</button>
       </div>
     </form>
@@ -112,6 +116,7 @@ defineExpose({
 }
 
 label.radio {
+  position: relative;
   display: flex;
   gap: 0.5rem;
   justify-content: center;
@@ -130,5 +135,12 @@ label.radio:has(:checked) {
   box-shadow: inset 0 0 0 2px var(--color-border);
   color: var(--color-text);
   background: var(--color-background-dim);
+}
+
+label .pill {
+  position: absolute;
+  right: 0;
+  margin-top: -1.5rem;
+  font-size: 0.8rem;
 }
 </style>

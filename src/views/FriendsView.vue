@@ -21,7 +21,9 @@ const newFriendEmail = ref()
   <div class="friends">
     <article class="friends-content">
       <section>
-        <h1>{{ t("Friends")}}</h1>
+        <transition name="fade-in">
+          <h1>{{ t("Friends")}}</h1>
+        </transition>
         <details class="help margin-top margin-bottom">
           <summary>{{ t("What_Is_This") }}</summary>
           <p class="margin-left">{{ t("Friends_Help") }}</p>
@@ -84,10 +86,6 @@ const newFriendEmail = ref()
   border-radius: var(--radius);
   background: var(--color-background-dim);
   font: inherit;
-}
-
-.friends-content form input::placeholder {
-  color: var(--color-text);
 }
 
 .friends-content table {

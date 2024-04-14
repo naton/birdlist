@@ -1,6 +1,6 @@
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { defineStore } from "pinia";
+import { defineStore, storeToRefs } from "pinia";
 import { db } from "../db";
 import { liveQuery } from "dexie";
 import { getTiedRealmId } from "dexie-cloud-addon";
@@ -11,9 +11,11 @@ export const useListsStore = defineStore("list", () => {
   const router = useRouter();
 
   const settingsStore = useSettingsStore();
+  const { currentUser } = storeToRefs(settingsStore);
   const { t } = settingsStore;
 
   const allLists = ref(null);
+  const allMyLists = computed(() => allLists.value?.filter((list) => list.owner == currentUser.value?.name) || []);
   const currentSort = ref("bydate");
   const currentListExpanded = ref(true);
   const currentList = ref();
@@ -23,8 +25,13 @@ export const useListsStore = defineStore("list", () => {
   /* Lists */
   liveQuery(async () => await db.lists.toArray()).subscribe(
     (lists) => {
-      allLists.value = lists;
+      // sort all lists by id, latest first
+      allLists.value = lists.sort((a, b) => b.updated - a.updated);
       currentList.value = allLists.value.find((list) => list.id == route.params.id);
+      // If the current list is deleted, reset it
+      if (!currentList.value) {
+        lastUsedList.value = null;
+      }
     },
     (error) => {
       console.log(error);
@@ -42,16 +49,9 @@ export const useListsStore = defineStore("list", () => {
     return newId;
   }
 
-  async function updateList(list, callback) {
+  async function updateList(payload, callback) {
     await db.transaction("rw", [db.lists], async () => {
-      await db.lists.where({ id: list.id }).modify({
-        title: list.title,
-        description: list.description,
-        type: list.type,
-        startDate: list.startDate,
-        endDate: list.endDate,
-        reportInterval: list.reportInterval,
-      });
+      await db.lists.where({ id: payload.id }).modify(payload);
     });
     if (callback) {
       callback();
@@ -130,6 +130,7 @@ export const useListsStore = defineStore("list", () => {
 
   return {
     allLists,
+    allMyLists,
     currentList,
     lastUsedList,
     currentListExpanded,

@@ -15,6 +15,7 @@
     "Description": "Description",
     "Add_Bird_To": "Add 🐦 to",
     "New_Observation_Added": "New observation added",
+    "Observation_Removed": "Observation removed",
     "Observations": "Observations",
     "Species": "Species",
     "Location": "Location",
@@ -65,6 +66,7 @@
     "Comments": "Comments",
     "Lists": "Lists",
     "No_Lists": "No lists created yet.",
+    "Show_Only_Mine": "Show only mine",
     "Last_Visited_List": "Last visited list",
     "Friends": "Friends",
     "No_Friends": "No friends added yet.",
@@ -85,5 +87,14 @@
     "Accept": "Accept",
     "Deny": "Deny",
     "By_Using_Birdlist_Info": "By using Birdlist, you agree that your email address is stored on your device as well as on your friends' devices, in case you share your lists with them.",
-    "Theme_Color": "Theme color"
+    "Theme_Color": "Theme color",
+    "Login": "Login",
+    "Not_Logged_In": "Not logged in",
+    "Have_You_Logged_In_Before": "Have you logged in before but on another device?",
+    "Here_And_Now_To_Access_Your_Observations": "here and now to access your previous observations.",
+    "Account_Type": "Account type",
+    "Account_Help": "<ul><li>When <strong>not logged in</strong>, you can create lists but not share them with friends.</li><li>With a <strong>free</strong> account, you can create and share lists (max 5) with your friends but with some limitations.</li><li>With a <strong>premium</strong> account, you can create an unlimited number of lists – “Birdstreak” lists included.</li></ul>",
+    "Free": "Free",
+    "Premium": "Premium",
+    "Upgrade_To_Premium": "Upgrade to a Premium account to create more lists."
 }]

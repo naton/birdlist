@@ -1,6 +1,6 @@
 function main(workbox) {
   /* eslint-disable-next-line */
-  const CACHE_VERSION = "2.0";
+  const CACHE_VERSION = "2.0.2";
   const {
     core: { clientsClaim, setCacheNameDetails },
     expiration: { ExpirationPlugin },
@@ -169,7 +169,7 @@ function main(workbox) {
             if (client.url === "/" && "focus" in client) return client.focus();
           }
           /* eslint-disable-next-line */
-          if (clients.openWindow) return clients.openWindow("/");
+          if (clients.openWindow) return clients.openWindow("/lists/" + event.notification.data.listId);
         })
     );
 

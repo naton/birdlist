@@ -1,6 +1,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted, watch, defineModel } from "vue";
 import { storeToRefs } from "pinia";
+import { db } from "../db";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
 import { useCommentsStore } from "@/stores/comments.js";
@@ -19,7 +20,7 @@ const emit = defineEmits(["sort", "delete", "edit", "newLeader"]);
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
-const { currentUser } = storeToRefs(settingsStore);
+const { currentUser, isUserLoggedIn } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
 const { currentList } = storeToRefs(listsStore);
@@ -237,6 +238,10 @@ onMounted(() => {
 
     <section class="empty-list" v-if="currentUser.name && !props.observations.length">
       <h3 class="center">{{ t("No_Observations") }}</h3>
+      <div v-if="!isUserLoggedIn" class="center">
+        {{ t("Have_You_Logged_In_Before") }}<br>
+        <a href="/settings" @click.prevent="db.cloud.login()">{{ t("Login") }}</a> {{ t("Here_And_Now_To_Access_Your_Observations") }}
+      </div>
     </section>
 
     <section id="bydate" v-if="props.observations.length && props.sort == 'bydate'">
@@ -305,10 +310,6 @@ onMounted(() => {
   background: var(--color-background-dim);
   font-size: inherit;
   font-family: inherit;
-}
-
-.comment-input::placeholder {
-  color: var(--color-text-dim);
 }
 
 .comment-btn {

@@ -187,19 +187,4 @@ function openModal(obs) {
 .list-header button {
   min-height: 2.3rem;
 }
-
-.list-header .notify-button {
-  margin-top: 0.3rem;
-}
-
-.notify-button svg {
-  width: 20px;
-  vertical-align: middle;
-}
-
-.share-button svg {
-  width: 16px;
-  margin-right: 0.25rem;
-  vertical-align: text-top;
-}
 </style>

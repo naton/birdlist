@@ -99,10 +99,6 @@ onBeforeMount(() => {
   appearance: none;
 }
 
-.add-observation input::placeholder {
-  color: var(--color-text-dim);
-}
-
 .has-position {
   background: var(--color-background-dim);
   color: var(--color-text);

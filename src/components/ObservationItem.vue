@@ -37,7 +37,7 @@ function editObservation() {
 <style>
 .obs + .edit-button {
   margin-left: -3rem;
-  transform: translateX(3.1rem);
+  transform: translateX(3rem);
   transition: 0.1s transform ease-out;
   cursor: pointer;
 }
@@ -56,7 +56,7 @@ function editObservation() {
 
 .list li.selected .edit-button {
   position: relative;
-  transform: translateX(0rem);
+  transform: translateX(-0.25rem);
   z-index: 1;
 }
 

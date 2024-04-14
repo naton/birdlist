@@ -2,11 +2,15 @@ import { ref, computed } from "vue";
 import { defineStore, storeToRefs } from "pinia";
 import { db } from "../db";
 import { liveQuery } from "dexie";
+import { useMessagesStore } from "./messages.js";
 import { useSettingsStore } from "./settings.js";
 import { useListsStore } from "./lists.js";
 import { pushNewBirdAlert } from "../helpers"
 
 export const useObservationsStore = defineStore("observation", () => {
+  const messagesStore = useMessagesStore();
+  const { addMessage } = messagesStore;
+
   const settingsStore = useSettingsStore();
   const { t } = settingsStore;
   const { currentUser, currentYear, currentMonth } = storeToRefs(settingsStore);
@@ -69,23 +73,26 @@ export const useObservationsStore = defineStore("observation", () => {
       bird = bird.split(":")[1];
     }
   
-    async function add(bird) {
+    async function add(bird, list = currentList.value) {
       await db.observations.add({
         name: bird.trim(),
         date: date,
-        realmId: currentList.value ? currentList.value.realmId : undefined,
-        listId: currentList.value ? currentList.value.id : undefined, // Any ID other than defaults are valid here
+        realmId: list ? list.realmId : undefined,
+        listId: list ? list.id : undefined, // Any ID other than defaults are valid here
         location: location,
       });
 
-      if (currentList.value) {
+      // Push notification to all members of the list
+      if (list) {
         pushNewBirdAlert({
           title: t("New_Observation_Added") + ": " + bird.trim(),
           icon: "https://birdlist.app/192x192.png",
-          body: t("List") + ": " + currentList.value.name,
-          listId: currentList.value.id,
+          body: t("List") + ": " + list.name,
+          listId: list.id,
         })
-      }  
+      }
+
+      addMessage(t("New_Observation_Added") + ": " + bird.trim());
     }
   
     if (isBatchImport) {
@@ -93,6 +100,10 @@ export const useObservationsStore = defineStore("observation", () => {
       birds.forEach(async (bird) => add(bird));
     } else {
       add(bird);
+    }
+
+    if (currentList.value) {
+      await db.lists.where({ id: currentList.value.id }).modify({ updated: new Date() });
     }
   }
 
@@ -115,6 +126,11 @@ export const useObservationsStore = defineStore("observation", () => {
   }
 
   async function lockObservation(obsId, allObservationsInGroup) {
+    // check if this observation is already added to the current list and has been locked
+    if (allListObservations.value.find((obs) => obs.id === obsId && obs.locked)) {
+      return; // TODO: Present a message to the user that this observation is already locked
+    }
+
     await db.observations.bulkUpdate(
       [...allObservationsInGroup].map((obs) => ({
         key: obs.id,
@@ -126,6 +142,8 @@ export const useObservationsStore = defineStore("observation", () => {
 
   async function deleteObservation(id) {
     await db.observations.delete(id);
+
+    addMessage(t("Observation_Removed"));
   }
 
   return {

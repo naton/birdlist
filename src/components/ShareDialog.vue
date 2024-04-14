@@ -55,6 +55,9 @@ defineExpose({
       <friends-icon />
       <h2>{{ t("Invite_Your_Friends") }}!</h2>
     </div>
+    <article v-if="!allFriends.length" class="margin-top margin-bottom">
+      <p>{{ t("Create_Some_Friends_First") }} <router-link :to="{ name: 'friends' }">{{ t("Create_A_Friend").toLowerCase() }}</router-link>.</p>
+    </article>
     <details class="help margin-top margin-bottom">
       <summary>{{ t("What_Is_This") }}</summary>
       <p class="margin-left">{{ t("Invite_Help_1") }}</p>
@@ -69,10 +72,9 @@ defineExpose({
         </tr>
       </tbody>
     </table>
-    <article v-else class="margin-bottom">
-      <p>{{ t("Create_Some_Friends_First") }} <router-link :to="{ name: 'friends' }">{{ t("Create_A_Friend").toLowerCase() }}</router-link>.</p>
-    </article>
-    <button :disabled="!allFriends.length || !selectedFriends.length" @click="shareAndClose">{{ t("Invite") }}</button>
-    <button class="secondary" @click="closeModal">{{ t("Close") }}</button>
+    <div class="buttons">
+      <button :disabled="!allFriends.length || !selectedFriends.length" @click="shareAndClose">{{ t("Invite") }}</button>
+      <button class="secondary" @click="closeModal">{{ t("Close") }}</button>
+    </div>
   </dialog>
 </template>

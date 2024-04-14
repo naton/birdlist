@@ -37,7 +37,6 @@
 *::after {
   margin: 0;
   box-sizing: border-box;
-  font-weight: normal;
 }
 
 html {
@@ -74,6 +73,10 @@ a > img {
   vertical-align: bottom;
 }
 
+:is(h1, h2, h3, h4) {
+  font-weight: normal;
+}
+
 details.help {
   border: 1px dashed;
   border-radius: var(--radius);
@@ -82,19 +85,35 @@ details.help {
 }
 
 details.help[open] summary {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 details.help p + p {
   text-indent: 0.5em;
 }
 
+details.help ul {
+  padding-left: 1.5em;
+}
+
 summary {
-  font-weight: 500;
+  color: var(--color-text);
+  font-weight: 600;
 }
 
 label {
   font-weight: bold;
+}
+
+label:has(input[type="checkbox"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-dim);
 }
 
 .hidden-visually {
@@ -360,6 +379,15 @@ button.secondary {
   font-family: inherit;
 }
 
+input[type^="date"]::-webkit-datetime-edit-year-field,
+input[type^="date"]::-webkit-datetime-edit-month-field,
+input[type^="date"]::-webkit-datetime-edit-day-field,
+input[type^="date"]::-webkit-datetime-edit-hour-field,
+input[type^="date"]::-webkit-datetime-edit-minute-field,
+input[type^="date"]::-webkit-datetime-edit-text {
+  color: var(--color-text);
+}
+
 .dialog .poi {
   color: var(--color-link);
   text-decoration: none;
@@ -398,6 +426,10 @@ button.secondary {
   background-color: var(--color-background);
 }
 
+.dialog textarea {
+  resize: vertical;
+}
+
 .dialog tr:has(:enabled:checked) td {
   background-color: var(--color-background-dim);
 }
@@ -407,16 +439,50 @@ button.secondary {
 }
 
 /* Icons */
-.delete-button svg {
-  width: 16px;
-  vertical-align: text-top;
+button:has(svg) {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  vertical-align: bottom;
 }
 
 .delete-button:not(:only-child) {
   margin-right: 0.4rem;
 }
 
+.pill {
+  margin-inline: 0.25rem;
+  padding: 0.2em 0.8em;
+  border-radius: 1rem;
+  color: var(--color-text);
+  background-color: var(--color-background-dim);
+  font-weight: normal;
+  font-size: 1rem;
+  vertical-align: middle;
+}
+
 /* Animations */
+.fade-in-enter-active,
+.fade-in-leave-active {
+  transition: opacity 0.4s ease-out 0.1s;
+}
+
+.fade-in-enter-from {
+  transform: translateY(10px);
+}
+
+.fade-in-enter-from,
+.fade-in-leave-to {
+  opacity: 0;
+}
+
+.fade-in-enter-to,
+.fade-in-leave-from {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
 .list-move, /* apply transition to moving elements */
 .list-enter-active,
 .list-leave-active {
