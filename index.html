@@ -46,23 +46,6 @@
         background: url(logo.webp) no-repeat 50% 45% / 30vh auto;
       }
     </style>
-    <script>
-      if ("serviceWorker" in navigator && navigator.serviceWorker.controller === null && navigator.onLine === true) {
-        function onUpdateFound(registration) {
-          const newWorker = registration.installing;
-
-          newWorker.addEventListener('statechange', async () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              document.location.reload();
-            }
-          });
-        }
-
-        navigator.serviceWorker.register("/sw.js").then(registration => {
-          registration.addEventListener('updatefound', () => onUpdateFound(registration));
-        });
-      }
-    </script>
   </head>
 
   <body>

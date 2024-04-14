@@ -26,6 +26,23 @@ onBeforeMount(() => {
 onMounted(() => {
   setTimeout(() => setThemeColor(), 500)
 })
+
+function onUpdateFound(registration) {
+  const newWorker = registration.installing;
+
+  newWorker.addEventListener('statechange', async () => {
+    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+      addMessage(t("Update_Available_Reloading"))
+      setTimeout(() => document.location.reload(), 2000);
+    }
+  });
+}
+
+if ("serviceWorker" in navigator && navigator.serviceWorker.controller === null && navigator.onLine === true) {
+  navigator.serviceWorker.register("/sw.js").then(registration => {
+    registration.addEventListener('updatefound', () => onUpdateFound(registration));
+  });
+}
 </script>
 
 <template>
