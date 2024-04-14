@@ -9,7 +9,7 @@ import EditObservationDialog from "@/components/EditObservationDialog.vue";
 import ObservationInput from "@/components/ObservationInput.vue";
 
 const settingsStore = useSettingsStore();
-const { lang } = storeToRefs(settingsStore);
+const { locale } = storeToRefs(settingsStore);
 
 const observationsStore = useObservationsStore();
 const { addObservation, deleteObservation } = observationsStore;
@@ -32,7 +32,7 @@ function openModal(obs) {
   </div>
   <div class="footer">
     <edit-observation-dialog ref="modal" v-model="currentObservation" @delete="deleteObservation" />
-    <observation-input @add="addObservation" :lang="lang" />
+    <observation-input @add="addObservation" :locale="locale" />
   </div>
   <canvas id="canvas"></canvas>
 </template>

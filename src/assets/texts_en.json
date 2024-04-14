@@ -96,5 +96,8 @@
     "Account_Help": "<ul><li>When <strong>not logged in</strong>, you can create lists but not share them with friends.</li><li>With a <strong>free</strong> account, you can create and share lists (max 5) with your friends but with some limitations.</li><li>With a <strong>premium</strong> account, you can create an unlimited number of lists – “Birdstreak” lists included.</li></ul>",
     "Free": "Free",
     "Premium": "Premium",
-    "Upgrade_To_Premium": "Upgrade to a Premium account to create more lists."
+    "Upgrade_To_Premium": "Upgrade to a Premium account to create more lists.",
+    "Birds_Loaded": "Birds loaded!",
+    "Use_Bird_Suggestions_From": "Use bird name suggestions from",
+    "Update_Available_Reloading": "Updates available! Reloading app…"
 }]

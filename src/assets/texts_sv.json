@@ -96,5 +96,8 @@
     "Account_Help": "<ul><li>Som <strong>ej inloggad</strong> kan du skapa listor men inte dela dem med vänner.</li><li>Med ett <strong>gratiskonto</strong> kan du skapa och dela listor (max 5) med dina vänner men med vissa begränsningar.</li><li>Med ett <strong>premiumkonto</strong> kan du skapa obegränsat antal listor – inklusive ”Birdstreak”-listor.</li></ul>",
     "Free": "Gratis",
     "Premium": "Premium",
-    "Upgrade_To_Premium": "Uppgradera till ett Premium-konto för att kunna skapa fler listor."
+    "Upgrade_To_Premium": "Uppgradera till ett Premium-konto för att kunna skapa fler listor.",
+    "Birds_Loaded": "Fåglar inlästa!",
+    "Use_Bird_Suggestions_From": "Använd förslag på fågelnamn från",
+    "Update_Available_Reloading": "Uppdateringare tillgängliga! Laddar om appen…"
 }]

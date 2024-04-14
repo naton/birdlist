@@ -2,16 +2,32 @@
 import { storeToRefs } from 'pinia'
 import { db } from "../db";
 import { useSettingsStore } from '../stores/settings.js'
+import { useBirdsStore } from '../stores/birds.js'
+import { useMessagesStore } from '../stores/messages.js'
 import UserIcon from "../components/icons/UserIcon.vue";
 import VerifiedIcon from "../components/icons/VerifiedIcon.vue";
+import NorthAmericaMap from "../components/icons/NorthAmericaMap.vue";
+import EuropeMap from "../components/icons/EuropeMap.vue";
+import SwedenMap from "../components/icons/SwedenMap.vue";
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
-const { lang, hue, currentUser, isUserLoggedIn, isPremiumUser } = storeToRefs(settingsStore)
+const { locale, hue, currentUser, isUserLoggedIn, isPremiumUser } = storeToRefs(settingsStore)
+
+const birdsStore = useBirdsStore()
+const { loadAllBirds } = birdsStore
+
+const messagesStore = useMessagesStore()
+const { addMessage } = messagesStore
+
+function switchLocale(newLocale) {
+    locale.value = newLocale
+    loadAllBirds(newLocale, addMessage(t("Birds_Loaded")))
+}
 
 function logout() {
-  db.table('$logins').clear();
-  document.location.href = "/";
+    db.table('$logins').clear();
+    document.location.href = "/";
 }
 </script>
 
@@ -41,15 +57,28 @@ function logout() {
                 </details>
             </header>
             <div>
-                <label for="lang">{{ t("Language") }}</label>
-                <select id="lang" v-model="lang">
-                    <option value="sv">Svenska</option>
-                    <option value="en">English</option>
-                </select>
-            </div>
-            <div>
                 <label for="hue">{{ t("Theme_Color") }}</label>
                 <input id="hue" type="range" v-model="hue" min="0" max="360">
+            </div>
+            <div>
+                <label for="locale">{{ t("Language") }}</label>
+                <select id="locale" v-model="locale">
+                    <option value="sv-SE">Svenska</option>
+                    <option value="en-GB" v-if="locale !== 'en-US'">English</option>
+                    <option value="en-US" v-else>English</option>
+                </select>
+            </div>
+            <h3 class="center">{{ t("Use_Bird_Suggestions_From") }}:</h3>
+            <div class="flex map-buttons">
+                <button type="button" @click="switchLocale('en-US')" class="map-button" :class="locale === 'en-US' && 'selected'">
+                    <north-america-map />
+                </button>
+                <button type="button" @click="switchLocale('en-GB')" class="map-button" :class="locale === 'en-GB' && 'selected'">
+                    <europe-map />
+                </button>
+                <button type="button" @click="switchLocale('sv-SE')" class="map-button" :class="locale === 'sv-SE' && 'selected'">
+                    <sweden-map />
+                </button>
             </div>
         </div>
     </div>
@@ -71,6 +100,7 @@ function logout() {
     text-wrap: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 1.4rem;
 }
 
 .user-name svg {
@@ -94,6 +124,28 @@ input[type="range"] {
 .login,
 .logout {
     float: right;
-    min-height: 2.5rem;
+    min-height: 2.4rem;
+}
+
+.map-buttons {
+    justify-content: space-around;
+    gap: 1rem;
+}
+
+.map-button {
+    padding: 1rem;
+    border: none;
+    background: none;
+}
+
+.map-button.selected {
+    outline: 2px solid var(--color-border);
+    border-radius: var(--radius);
+}
+
+.map-button svg {
+    width: 100%;
+    height: auto;
+    max-height: 4rem;
 }
 </style>

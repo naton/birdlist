@@ -4,8 +4,11 @@ import { defineStore } from 'pinia'
 export const useBirdsStore = defineStore('bird', () => {
     const birds = ref([])
 
-    async function loadAllBirds(lang) {
-        birds.value = (await import(`@/assets/birds_${lang}.json`)).default
+    async function loadAllBirds(locale, callback) {
+        birds.value = (await import(`@/assets/birds_${locale}.json`)).default
+        if (callback) {
+            callback()
+        }
     }
 
     return {

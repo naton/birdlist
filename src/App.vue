@@ -3,6 +3,7 @@ import { onBeforeMount, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { RouterLink, RouterView } from "vue-router";
 import { useSettingsStore } from './stores/settings.js'
+import { useMessagesStore } from './stores/messages.js'
 import AppMessages from './components/AppMessages.vue'
 import InvitesList from './components/InvitesList.vue'
 import HomeIcon from './components/icons/HomeIcon.vue'
@@ -12,10 +13,13 @@ import HelpIcon from './components/icons/HelpIcon.vue'
 
 const settingsStore = useSettingsStore()
 const { t, loadTexts, setThemeColor } = settingsStore
-const { lang, texts } = storeToRefs(settingsStore)
+const { locale, texts } = storeToRefs(settingsStore)
+
+const messagesStore = useMessagesStore()
+const { addMessage } = messagesStore
 
 onBeforeMount(() => {
-  texts.value = loadTexts(lang.value)
+  texts.value = loadTexts(locale.value)
   document.addEventListener('dblclick', () => false);
 })
 

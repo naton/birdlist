@@ -4,7 +4,7 @@ import { useObservable } from "@vueuse/rxjs";
 import { db } from "../db";
 
 export const useSettingsStore = defineStore("settings", () => {
-    const lang = ref(navigator.language.substring(0, 2));
+    const locale = ref(navigator.language);
     const hue = ref("45");
     const texts = ref({});
     const currentUser = useObservable(db.cloud.currentUser);
@@ -23,7 +23,8 @@ export const useSettingsStore = defineStore("settings", () => {
       }
     }
 
-    async function loadTexts(lang) {
+    async function loadTexts(locale) {
+      const lang = locale.split("-")[0];
       texts.value = (await import(`@/assets/texts_${lang}.json`)).default[0];
     }
 
@@ -67,8 +68,8 @@ export const useSettingsStore = defineStore("settings", () => {
       }).format(date);
     });
 
-    watch(lang, (newLang) => {
-      loadTexts(newLang);
+    watch(locale, (newLocale) => {
+      loadTexts(newLocale);
     });
 
     watch(hue, (newHue) => {
@@ -85,7 +86,7 @@ export const useSettingsStore = defineStore("settings", () => {
     matchMediaLight.addEventListener("change", () => setThemeColor());
 
     return {
-      lang,
+      locale,
       hue,
       texts,
       currentUser,
@@ -104,7 +105,7 @@ export const useSettingsStore = defineStore("settings", () => {
   {
     persist: {
       key: "birdlist-settings",
-      paths: ["lang", "hue"],
+      paths: ["locale", "hue"],
     },
   }
 );
