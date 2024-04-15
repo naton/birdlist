@@ -2,19 +2,14 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 
 export const useMessagesStore = defineStore("messages", () => {
-    let id = 0;
     const messages = ref([]);
 
-    function addMessage(message) {
-        id++;
-        // default to an estimated reading speed of 25 letters per second, or minimum 1.5 sec.
-        const delay = Math.max(message.length / 25 * 1000, 1500);
-        let timer;
-        timer = setTimeout(() => {
-            clearTimeout(timer);
-            removeMessage(id);
-        }, delay);
-        messages.value.push({ id, message, timer });
+    function addMessage(text) {
+        messages.value.push({
+            id: Date.now(),
+            text: text,
+            timeout: true,
+        });
     }
 
     function removeMessage(id) {

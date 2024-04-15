@@ -19,7 +19,6 @@ export const useObservationsStore = defineStore("observation", () => {
   const { currentList } = storeToRefs(listsStore);
 
   const allObservations = ref([]);
-  const lastLockedObservation = ref("");
   
   liveQuery(async () => await db.observations.toArray()).subscribe(
     (observations) => {
@@ -64,14 +63,9 @@ export const useObservationsStore = defineStore("observation", () => {
 
   function isFirstObservationToday() {
     const today = new Date();
-    return (
-      allMyObservations.value.filter(
-        (obs) =>
-          obs.date.getFullYear() == today.getFullYear() &&
-          obs.date.getMonth() == today.getMonth() &&
-          obs.date.getDate() == today.getDate()
-      ).length === 0
-    );
+    return allMyObservations.value.filter(
+      (obs) => obs.date.toISOString().substring(0, 10) === today.toISOString().substring(0, 10)
+    ).length === 0;
   }
 
   async function addObservation(bird, location) {
@@ -86,6 +80,12 @@ export const useObservationsStore = defineStore("observation", () => {
     }
   
     async function add(bird, list = currentList.value) {
+      if (isFirstObservationToday()) {
+        addMessage(t("First_Observation_Today") + " – " + bird.trim());
+      } else {
+        addMessage(t("New_Observation_Added") + ": " + bird.trim());
+      }
+
       await db.observations.add({
         name: bird.trim(),
         date: date,
@@ -102,12 +102,6 @@ export const useObservationsStore = defineStore("observation", () => {
           body: t("List") + ": " + list.name,
           listId: list.id,
         })
-      }
-
-      if (isFirstObservationToday()) {
-        addMessage(t("First_Observation_Today") + " – " + bird.trim());
-      } else {
-        addMessage(t("New_Observation_Added") + ": " + bird.trim());
       }
     }
   
@@ -143,8 +137,9 @@ export const useObservationsStore = defineStore("observation", () => {
 
   async function lockObservation(obsId, allObservationsInGroup) {
     // check if this observation is already added to the current list and has been locked
-    if (allListObservations.value.find((obs) => obs.id === obsId && obs.locked)) {
-      return; // TODO: Present a message to the user that this observation is already locked
+    if (allListObservations.value.filter((obs) => obs.id === obsId && obs.locked).length > 0) {
+      addMessage(t("Observation_Already_Added"));
+      return;
     }
 
     await db.observations.bulkUpdate(
@@ -153,7 +148,8 @@ export const useObservationsStore = defineStore("observation", () => {
         changes: { locked: obs.id === obsId ? true : false },
       })),
     );
-    lastLockedObservation.value = obsId;
+
+    addMessage(t("Observation_Locked"));
   }
 
   async function deleteObservation(id) {
@@ -168,7 +164,6 @@ export const useObservationsStore = defineStore("observation", () => {
     allThisMonth,
     allMyObservations,
     allListObservations,
-    lastLockedObservation,
     getTotalPerMonth,
     addObservation,
     saveObservation,
@@ -179,6 +174,6 @@ export const useObservationsStore = defineStore("observation", () => {
 {
   persist: {
     key: "birdlist-observations",
-    paths: ["currentMonth", "lastLockedObservation"],
+    paths: ["currentMonth"],
   },
 });

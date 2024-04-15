@@ -111,9 +111,13 @@ function openModal(obs) {
 }
 
 .date-nav {
+  position: sticky;
+  top: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: var(--color-background);
+  z-index: 1;
 }
 
 .prev-date {

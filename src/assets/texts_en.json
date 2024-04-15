@@ -31,6 +31,8 @@
     "Create_List_Help": "Choose 'Normal' if you want to create a regular list, or 'Birdstreak' if you want to create a list where you 'lock in' a species every other day (or other interval) and try to keep as long an unbroken series as possible.",
     "Normal": "Normal",
     "Birdstreak": "Birdstreak",
+    "Observation_Already_Added": "Observation already added to this Birdstreak list",
+    "Observation_Locked": "Observation locked!",
     "Date": "Date",
     "Start_Date": "Start date",
     "End_Date": "End date",

@@ -25,7 +25,7 @@ const { sortBy } = listsStore;
 const { allLists, currentSort, currentList } = storeToRefs(listsStore);
 
 const observationsStore = useObservationsStore();
-const { allListObservations, lastLockedObservation } = storeToRefs(observationsStore);
+const { allListObservations } = storeToRefs(observationsStore);
 
 const commentsStore = useCommentsStore()
 const { allComments } = storeToRefs(commentsStore)
@@ -71,7 +71,6 @@ onBeforeUnmount(() => {
     :key="currentList"
     :observations="allListObservations"
     :list="currentList"
-    :lastLockedObservation="lastLockedObservation"
     :comments="listComments"></birdstreak-list>
   <observation-list v-else-if="currentList"
     :key="`${currentList}-${currentSort}`"

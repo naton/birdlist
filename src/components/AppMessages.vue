@@ -10,7 +10,7 @@ const { messages } = storeToRefs(messagesStore);
 <template>
     <div v-if="messages.length" class="app-messages">
         <transition-group name="fade-in" appear>
-            <app-message v-for="msg in messages" :key="msg.id" :message="msg" />
+            <app-message v-for="message in messages" :key="message.id" :message="message" />
         </transition-group>
     </div>
 </template>

@@ -8,7 +8,7 @@ import StreakIcon from "./icons/StreakIcon.vue";
 import LockIcon from "./icons/LockIcon.vue";
 
 const emit = defineEmits(["newLeader"]);
-const props = defineProps(["list", "comments", "lastLockedObservation", "observations"]);
+const props = defineProps(["list", "comments", "observations"]);
 const settingsStore = useSettingsStore();
 const { t, currentUser } = settingsStore;
 
@@ -37,7 +37,7 @@ const dateRange = computed(() => {
     return dates;
 });
 
-const obsToLock = ref(props.lastLockedObservation)
+const obsToLock = ref("")
 const selectedUser = ref(null);
 const currentLeader = ref("");
 
