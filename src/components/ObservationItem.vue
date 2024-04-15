@@ -23,7 +23,7 @@ function editObservation() {
       <span class="name">{{ props.obs.name }}</span>
       <location-specified-icon v-if="props.obs.location" />
       <span class="date">{{ formatDate(props.obs.date) }}</span>
-      <span class="seen-by">
+      <span v-if="props.obs.owner && props.obs.owner !== 'unauthorized'" class="seen-by">
         <user-initial :user="props.obs.owner" />
       </span>
     </span>

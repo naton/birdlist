@@ -20,9 +20,10 @@ const { loadAllBirds } = birdsStore
 const messagesStore = useMessagesStore()
 const { addMessage } = messagesStore
 
-function switchLocale(newLocale) {
+async function switchLocale(newLocale) {
     locale.value = newLocale
-    loadAllBirds(newLocale, addMessage(t("Birds_Loaded")))
+    await loadAllBirds(newLocale)
+    setTimeout(() => addMessage(t("Birds_Loaded")), 100)
 }
 
 function logout() {
@@ -35,9 +36,7 @@ function logout() {
     <div class="body">
         <div class="body-content settings">
             <header>
-                <transition name="fade-in">
-                    <h1>{{ t("Settings") }}</h1>
-                </transition>
+                <h1>{{ t("Settings") }}</h1>
                 <button v-if="isUserLoggedIn" type="button" class="secondary logout" @click="logout()">{{ t("Logout") }}</button>
                 <button v-else type="button" class="secondary login" @click="db.cloud.login()">{{ t("Login") }}</button>
                 <div class="grid">

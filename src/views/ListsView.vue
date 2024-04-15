@@ -68,9 +68,7 @@ function toggleNotificationIcon() {
       <template v-if="!Component">
         <div class="lists">
           <div class="list-tools">
-            <transition name="fade-in">
-              <h1>{{ t("Lists") }}</h1>
-            </transition>
+            <h1>{{ t("Lists") }}</h1>
             <div class="flex">
               <div v-if="isPremiumUser" class="notify-button">
                 <button type="button" @click="toggleSubscription">
@@ -138,15 +136,6 @@ function toggleNotificationIcon() {
 </template>
 
 <style>
-.empty-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  height: 50vh;
-  align-items: center;
-  justify-content: center;
-}
-
 .list-tools {
   position: sticky;
   top: 0;

@@ -53,7 +53,7 @@ function goToMonth(month) {
               />
             </svg>
           </button>
-          <h2 class="heading center">{{ currentYear }}</h2>
+          <h1 class="heading center">{{ currentYear }}</h1>
           <button class="next-date" @click.prevent="currentYear++">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12">
               <path

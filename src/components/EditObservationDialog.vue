@@ -126,6 +126,5 @@ defineExpose({
 <style>
 button[disabled] {
   opacity: 0.4;
-  filter: grayscale(1);
 }
 </style>

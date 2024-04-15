@@ -60,7 +60,19 @@ export const useObservationsStore = defineStore("observation", () => {
         obs.date.getFullYear() == currentYear.value &&
         obs.date.getMonth() == month
     ).length;
-  }  
+  }
+
+  function isFirstObservationToday() {
+    const today = new Date();
+    return (
+      allMyObservations.value.filter(
+        (obs) =>
+          obs.date.getFullYear() == today.getFullYear() &&
+          obs.date.getMonth() == today.getMonth() &&
+          obs.date.getDate() == today.getDate()
+      ).length === 0
+    );
+  }
 
   async function addObservation(bird, location) {
     let date = new Date();
@@ -92,7 +104,11 @@ export const useObservationsStore = defineStore("observation", () => {
         })
       }
 
-      addMessage(t("New_Observation_Added") + ": " + bird.trim());
+      if (isFirstObservationToday()) {
+        addMessage(t("First_Observation_Today") + " – " + bird.trim());
+      } else {
+        addMessage(t("New_Observation_Added") + ": " + bird.trim());
+      }
     }
   
     if (isBatchImport) {

@@ -21,9 +21,7 @@ const newFriendEmail = ref()
   <div class="friends">
     <article class="friends-content">
       <section>
-        <transition name="fade-in">
-          <h1>{{ t("Friends")}}</h1>
-        </transition>
+        <h1>{{ t("Friends")}}</h1>
         <details class="help margin-top margin-bottom">
           <summary>{{ t("What_Is_This") }}</summary>
           <p class="margin-left">{{ t("Friends_Help") }}</p>
@@ -57,15 +55,6 @@ const newFriendEmail = ref()
 </template>
 
 <style>
-.empty-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  height: 50vh;
-  align-items: center;
-  justify-content: center;
-}
-
 .friends-content {
   display: grid;
   align-self: start;

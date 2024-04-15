@@ -44,9 +44,7 @@ function edit(obs) {
               />
             </svg>
           </button>
-          <h2 class="heading center">
-            {{ currentMonthFormatted }}
-          </h2>
+          <h1 class="heading center">{{ currentMonthFormatted }}</h1>
           <button class="next-date" @click.prevent="nextMonth">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12">
               <path

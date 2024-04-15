@@ -1,18 +1,16 @@
 <script setup>
 import { storeToRefs } from "pinia";
 import { useMessagesStore } from "@/stores/messages.js";
+import AppMessage from "./AppMessage.vue";
 
 const messagesStore = useMessagesStore();
-const { removeMessage } = messagesStore;
 const { messages } = storeToRefs(messagesStore);
 </script>
 
 <template>
     <div v-if="messages.length" class="app-messages">
-        <transition-group name="fade-in">
-            <div v-for="{ id, message } in messages" :key="id" class="message" @click="removeMessage(id)">
-                <p>{{ message }}</p>
-            </div>
+        <transition-group name="fade-in" appear>
+            <app-message v-for="msg in messages" :key="msg.id" :message="msg" />
         </transition-group>
     </div>
 </template>
@@ -20,7 +18,7 @@ const { messages } = storeToRefs(messagesStore);
 <style>
 .app-messages {
     position: fixed;
-    top: 0;
+    top: 0.5rem;
     left: 0;
     right: 0;
     z-index: 1000;
@@ -33,11 +31,13 @@ const { messages } = storeToRefs(messagesStore);
 
 .app-messages .message {
     display: flex;
-    padding: 1rem;
+    padding: 1rem 1.5rem;
     border-radius: var(--radius);
+    border: 2px solid var(--color-border);
     color: var(--color-text);
     background-color: var(--color-background);
-    box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.25);
+    font-size: 1.4rem;
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
     cursor: pointer;
 }
 </style>

@@ -57,6 +57,18 @@ body {
 
 h1 {
   font-size: 2rem;
+  animation: fade-in 0.2s ease-out forwards;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 a {
@@ -438,6 +450,16 @@ input[type^="date"]::-webkit-datetime-edit-text {
   overflow: hidden;
 }
 
+.empty-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 50vh;
+  margin: 0 10%;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Icons */
 button:has(svg) {
   display: inline-flex;
@@ -465,22 +487,24 @@ button:has(svg) {
 /* Animations */
 .fade-in-enter-active,
 .fade-in-leave-active {
-  transition: opacity 0.4s ease-out 0.1s;
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 
 .fade-in-enter-from {
-  transform: translateY(10px);
-}
-
-.fade-in-enter-from,
-.fade-in-leave-to {
+  transform: translateY(-20px);
   opacity: 0;
 }
 
 .fade-in-enter-to,
 .fade-in-leave-from {
-  opacity: 1;
   transform: translateY(0px);
+  opacity: 1;
+}
+
+.fade-in-leave-to {
+  transform: translateY(-20px);
+  opacity: 0;
+  z-index: -1;
 }
 
 .list-move, /* apply transition to moving elements */
