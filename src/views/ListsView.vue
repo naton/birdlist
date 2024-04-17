@@ -8,6 +8,7 @@ import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from "@/stores/lists.js";
 import { askNotificationPermission, removePushManager } from "../helpers";
 import ListsIcon from "@/components/icons/ListsIcon.vue";
+import CheckIcon from "@/components/icons/CheckIcon.vue";
 import StreakIcon from "@/components/icons/StreakIcon.vue";
 import NormalIcon from "@/components/icons/NormalIcon.vue";
 import NavTabs from "@/components/NavTabs.vue";
@@ -109,7 +110,8 @@ function toggleNotificationIcon() {
               <li v-for="list in (showOnlyMine ? allMyLists : allLists)" :key="list.id" @click="selectList(list)">
                 <lists-icon />
                 <router-link :to="{ name: 'list', params: { id: list.id } }">{{ list.title }}</router-link>
-                <streak-icon v-if="list.type === 'birdstreak'" />
+                <check-icon v-if="list.type === 'checklist'" />
+                <streak-icon v-else-if="list.type === 'birdstreak'" />
                 <normal-icon v-else />
               </li>
             </ul>

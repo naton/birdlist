@@ -6,7 +6,7 @@ import { useObservationsStore } from "@/stores/observations.js";
 import { useListsStore } from "@/stores/lists.js";
 import { getMonthName } from "@/helpers";
 import NavTabs from "@/components/NavTabs.vue";
-import ObservationList from "@/components/ObservationList.vue";
+import NormalList from "@/components/NormalList.vue";
 
 const emit = defineEmits(["openDialog", "sort", "edit"]);
 
@@ -37,7 +37,7 @@ function goToMonth(month) {
   <nav-tabs></nav-tabs>
 
   <div class="body-content">
-    <observation-list
+    <normal-list
       :observations="allMyObservations"
       :sort="currentSort === 'comments' ? 'bydate' : currentSort"
       @sort="sortBy"
@@ -86,6 +86,6 @@ function goToMonth(month) {
           </table>
         </div>
       </template>
-    </observation-list>
+    </normal-list>
   </div>
 </template>

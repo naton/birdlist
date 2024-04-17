@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, defineAsyncComponent, onBeforeMount, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, defineAsyncComponent, onBeforeMount, onMounted, onBeforeUnmount, toRaw } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { setupConfetti, destroyConfetti, celebrate } from "@/helpers";
@@ -10,7 +10,8 @@ import { useCommentsStore } from "@/stores/comments.js";
 import ListInfo from "@/components/ListInfo.vue";
 import EditListDialog from "@/components/EditListDialog.vue";
 const BirdstreakList = defineAsyncComponent(() => import("@/components/BirdstreakList.vue"));
-const ObservationList = defineAsyncComponent(() => import("@/components/ObservationList.vue"));
+const CheckList = defineAsyncComponent(() => import("@/components/CheckList.vue"));
+const NormalList = defineAsyncComponent(() => import("@/components/NormalList.vue"));
 
 const emit = defineEmits(["openDialog", "sort", "edit"]);
 
@@ -21,7 +22,7 @@ const { t } = settingsStore;
 const { currentUser } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
-const { sortBy } = listsStore;
+const { sortBy, updateList } = listsStore;
 const { allLists, currentSort, currentList } = storeToRefs(listsStore);
 
 const observationsStore = useObservationsStore();
@@ -29,6 +30,8 @@ const { allListObservations } = storeToRefs(observationsStore);
 
 const commentsStore = useCommentsStore()
 const { allComments } = storeToRefs(commentsStore)
+
+const checkListEditMode = ref(false);
 
 /* Comments */
 const listComments = computed(() => allComments.value?.filter((comment) => comment.listId == route.params.id));
@@ -43,6 +46,13 @@ function openModal() {
 
 function edit(obs) {
   emit("edit", obs)
+}
+
+function saveCheckList(birds) {
+  birds = toRaw(birds);
+  const payload = Object.assign({}, currentList.value, { birds });
+  updateList(payload);
+  checkListEditMode.value = false;
 }
 
 onBeforeMount(async () => {
@@ -65,15 +75,26 @@ onBeforeUnmount(() => {
       <button v-if="isListOwner" class="add secondary" @click="openModal">
         {{ t("Edit_List") }}
       </button>
+      <button v-if="isListOwner && currentList.type === 'checklist'" class="secondary" @click="checkListEditMode = !checkListEditMode">
+        {{ !checkListEditMode ? t("Edit_Birds") : t("Cancel") }}
+      </button>
     </template>
   </list-info>
   <birdstreak-list v-if="currentList && currentList.type === 'birdstreak'"
-    :key="currentList"
+    :key="`${currentList}-birdstreak`"
     :observations="allListObservations"
     :list="currentList"
     :comments="listComments"></birdstreak-list>
-  <observation-list v-else-if="currentList"
-    :key="`${currentList}-${currentSort}`"
+  <check-list v-else-if="currentList && currentList.type === 'checklist'"
+    :key="`${currentList}-checklist`"
+    :observations="allListObservations"
+    :list="currentList"
+    :comments="listComments"
+    :edit="checkListEditMode"
+    @save="saveCheckList"
+    @newLeader="celebrate"></check-list>
+  <normal-list v-else-if="currentList"
+    :key="`${currentList}-normal`"
     :observations="allListObservations"
     :sort="currentSort"
     :list="currentList"
@@ -82,5 +103,5 @@ onBeforeUnmount(() => {
     @sort="sortBy"
     @edit="edit"
   >
-  </observation-list>
+  </normal-list>
 </template>

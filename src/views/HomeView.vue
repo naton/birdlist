@@ -93,6 +93,7 @@ function openModal(obs) {
   position: relative;
   overflow: hidden;
   padding: 0.5rem 0 0;
+  flex-shrink: 0;
 }
 
 .list-description,
@@ -114,6 +115,7 @@ function openModal(obs) {
   position: sticky;
   top: 0;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
   background: var(--color-background);
@@ -157,7 +159,6 @@ function openModal(obs) {
 
 .list a {
   color: inherit;
-  text-underline-offset: 0.25em;
 }
 
 .list button {
@@ -190,5 +191,23 @@ function openModal(obs) {
 
 .list-header button {
   min-height: 2.3rem;
+}
+
+.add-bird {
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.6rem 1rem 0.4rem;
+}
+
+.add-bird input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-sizing: border-box;
+  color: var(--color-text);
+  background: var(--color-background);
+  font-size: 1.4rem;
+  appearance: none;
 }
 </style>

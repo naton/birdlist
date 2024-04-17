@@ -33,8 +33,8 @@ function logout() {
 </script>
 
 <template>
-    <div class="body">
-        <div class="body-content settings">
+    <div class="settings">
+        <div class="settings-content">
             <header>
                 <h1>{{ t("Settings") }}</h1>
                 <button v-if="isUserLoggedIn" type="button" class="secondary logout" @click="logout()">{{ t("Logout") }}</button>
@@ -47,12 +47,14 @@ function logout() {
                     </h2>
                 </div>
                 <div v-if="isUserLoggedIn" class="flex margin-top margin-bottom">
-                    {{ t("Account_Type") }}: <span class="pill">{{ isPremiumUser ? t('Premium') : t('Free') }}</span>
-                    <a v-if="!isPremiumUser" href="https://ko-fi.com/birdlist" target="_blank" class="donate">Donate for Premium</a>
+                    {{ t("Account_Type") }}:
+                    <span class="pill account-type">{{ isPremiumUser ? t('Premium') : t('Trial') }}</span>
+                    <span v-if="!isPremiumUser" class="pill days-left">{{ currentUser.license.evalDaysLeft }} {{ t("Days_Left").toLowerCase() }}</span>
                 </div>
                 <details class="help" :open="!isUserLoggedIn">
                     <summary>{{ t("What_Is_This") }}</summary>
                     <p v-html="t('Account_Help')"></p>
+                    <a v-if="!isPremiumUser" href="https://ko-fi.com/birdlist" target="_blank" class="donate">Donate for Premium</a>
                 </details>
             </header>
             <div>
@@ -84,15 +86,15 @@ function logout() {
 </template>
 
 <style>
-.body label {
-    display: block;
-}
-
-.body-content.settings {
+.settings-content {
     display: grid;
     align-self: start;
     gap: 1.5rem;
     padding: 1rem;
+}
+
+.settings-content label {
+    display: block;
 }
 
 .user-name {
@@ -116,6 +118,8 @@ input[type="range"] {
 }
 
 .donate {
+    display: block;
+    margin: 0.5rem 1rem;
     padding: 0.2rem 0.8rem 0.2rem 2.4rem;
     background: url('https://ko-fi.com/favicon.png') no-repeat 0.5rem 0.25rem / 1.5rem auto;
 }
@@ -147,4 +151,17 @@ input[type="range"] {
     height: auto;
     max-height: 4rem;
 }
+
+.account-type {
+    position: relative;
+    z-index: 1;
+}
+
+.pill.days-left {
+    position: relative;
+    left: -2.25rem;
+    padding-left: 2rem;
+    color: var(--color-background);
+    background-color: var(--color-link);
+}   
 </style>

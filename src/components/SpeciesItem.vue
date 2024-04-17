@@ -1,7 +1,7 @@
 <script setup>
 import UserInitial from "./icons/UserInitial.vue";
 
-const props = defineProps(["obs", "bird"]);
+const props = defineProps(["obs"]);
 </script>
 
 <template>

@@ -73,6 +73,7 @@ const newFriendEmail = ref()
   padding: 0.6em;
   border: 1px solid transparent;
   border-radius: var(--radius);
+  color: var(--color-text);
   background: var(--color-background-dim);
   font: inherit;
 }

@@ -11,6 +11,14 @@
   accent-color: var(--co-base);
 }
 
+@supports not (color: color-mix(in oklab, red, white)) {
+  :root {
+    --co-theme-light: rgb(235, 218, 176);
+    --co-theme-dark: rgb(120, 105, 67);
+    --co-theme-darkest: rgb(54, 43, 17);
+  }
+}
+
 /* semantic color variables for this project */
 :root {
   --color-border: var(--co-theme-dark);
@@ -57,6 +65,10 @@ body {
 
 h1 {
   font-size: 2rem;
+}
+
+h1,
+summary.heading {
   animation: fade-in 0.2s ease-out forwards;
 }
 
@@ -78,6 +90,10 @@ a {
 ol,
 ul {
   padding: 0;
+}
+
+a {
+  text-underline-offset: 0.25em;
 }
 
 a > svg,
@@ -110,7 +126,6 @@ details.help ul {
 
 summary {
   color: var(--color-text);
-  font-weight: 600;
 }
 
 label {
@@ -195,6 +210,8 @@ textarea::placeholder {
 }
 
 .body-content {
+  display: flex;
+  flex-direction: column;
   grid-area: body-content;
   overflow: auto;
 }
@@ -258,7 +275,7 @@ textarea::placeholder {
 }
 
 /* Selects */
-.body-content select {
+select {
   all: unset;
   box-sizing: border-box;
   width: 100%;
@@ -273,7 +290,7 @@ textarea::placeholder {
 }
 
 @media (prefers-color-scheme: dark) {
-  .body-content select {
+  select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' viewBox='0 0 386.257 386.257'%3E%3Cpath fill='white' d='m0 96.879 193.129 192.5 193.128-192.5z'/%3E%3C/svg%3E");
   }
 }
@@ -300,6 +317,7 @@ textarea::placeholder {
 
 /* Buttons */
 button {
+  flex-shrink: 0;
   min-width: 3rem;
   min-height: 2.7rem;
   padding: 0.4rem 0.8rem;
@@ -359,7 +377,7 @@ button.secondary {
 }
 
 .dialog[open] {
-  width: 90%;
+  width: 95%;
   max-width: 700px;
   margin: auto;
   padding: 1rem;
@@ -372,10 +390,6 @@ button.secondary {
 .dialog label {
   display: block;
   margin: 0.75rem 0 0.25rem;
-}
-
-.dialog select {
-  appearance: none;
 }
 
 .dialog select,
@@ -460,6 +474,10 @@ input[type^="date"]::-webkit-datetime-edit-text {
   justify-content: center;
 }
 
+.empty-list a {
+  font-weight: bold;
+}
+
 /* Icons */
 button:has(svg) {
   display: inline-flex;
@@ -542,4 +560,21 @@ button:has(svg) {
   .logo {
     filter: invert(1);
   }
+}
+
+/* Vendor stuff */
+.add-bird .simple-typeahead-list {
+  bottom: 3rem;
+  border-radius: var(--radius);
+  box-shadow: rgb(0 0 0 / 10%) 0 -6px 12px 0;
+}
+
+.add-bird .simple-typeahead-list-footer,
+.add-bird .simple-typeahead-list-header,
+.add-bird .simple-typeahead-list-item {
+  background-color: var(--color-background) !important;
+}
+
+.add-bird .simple-typeahead-list-item-active {
+  background-color: var(--color-background-dim) !important;
 }

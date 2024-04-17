@@ -1,19 +1,18 @@
 <script setup>
 import { ref } from "vue";
-import { storeToRefs } from "pinia";
 import { inputDate } from "@/helpers";
 import { useRouter } from "vue-router";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
 import ListsIcon from "./icons/ListsIcon.vue";
-import StreakIcon from "@/components/icons/StreakIcon.vue";
 import NormalIcon from "@/components/icons/NormalIcon.vue";
+import ObservationsIcon from "@/components/icons/ObservationsIcon.vue";
+import StreakIcon from "@/components/icons/StreakIcon.vue";
 
 const router = useRouter()
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
-const { isPremiumUser } = storeToRefs(settingsStore)
 
 const listsStore = useListsStore()
 const { createList } = listsStore
@@ -36,7 +35,7 @@ async function createListAndClose() {
     title: title.value.trim(),
     updated: new Date(),
     description: description.value.trim(),
-    type: type.value === 'birdstreak' ? 'birdstreak' : 'normal',
+    type: type.value,
     startDate: type.value === 'birdstreak' ? startDate.value : null,
     endDate: type.value === 'birdstreak' ? endDate.value : null,
     reportInterval: type.value === 'birdstreak' ? reportInterval.value : null,
@@ -69,14 +68,17 @@ defineExpose({
       <textarea id="description" v-model="description" cols="30" rows="5" :placeholder="t('List_Rules_Etc')"></textarea>
       <label for="title">{{ t("Type_Of_List") }}:</label>
       <div class="flex">
-        <label class="radio half">
+        <label class="radio">
           <normal-icon />
           <input v-model="type" type="radio" value="normal" />{{ t("Normal") }}
         </label>
-        <label class="radio half">
+        <label class="radio">
+          <observations-icon />
+          <input v-model="type" type="radio" value="checklist" />{{ t("Checklist") }}
+        </label>
+        <label class="radio">
           <streak-icon />
           <input v-model="type" type="radio" value="birdstreak" />{{ t("Birdstreak") }}
-          <span class="pill">Premium</span>
         </label>
       </div>
       <div v-if="type === 'birdstreak'" class="margin-bottom">
@@ -100,10 +102,10 @@ defineExpose({
       </div>
       <details class="help">
         <summary>{{ t("What_Is_This") }}</summary>
-        <p>{{ t("Create_List_Help") }}</p>
+        <p v-html="t('Create_List_Help')"></p>
       </details>
       <div class="buttons">
-        <button type="submit" :disabled="type === 'birdstreak' && !isPremiumUser">{{ t("Create_List") }}</button>
+        <button type="submit">{{ t("Create_List") }}</button>
         <button @click="closeModal" class="secondary">{{ t("Cancel") }}</button>
       </div>
     </form>
@@ -115,16 +117,22 @@ defineExpose({
   width: 50%;
 }
 
+.flex:has(.radio) {
+  justify-content: space-between;
+}
+
 label.radio {
   position: relative;
   display: flex;
-  gap: 0.5rem;
+  gap: 0.25rem;
   justify-content: center;
+  align-items: center;
   margin-top: 0;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   color: var(--color-border);
+  font-weight: normal;
 }
 
 label.radio input {
@@ -137,10 +145,9 @@ label.radio:has(:checked) {
   background: var(--color-background-dim);
 }
 
-label .pill {
-  position: absolute;
-  right: 0;
-  margin-top: -1.5rem;
-  font-size: 0.8rem;
+@media screen and (max-width: 380px) {
+  label svg {
+    display: none;
+  }
 }
 </style>

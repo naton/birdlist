@@ -60,6 +60,8 @@ onBeforeUnmount(() => {
         <h3>{{ t("Personal_Data_Processing") }}</h3>
         <p>{{ t("By_Using_Birdlist_Info") }}</p>
       </div>
+
+      <p>Made by <a href="https://mastodon.social/@naton" target="_blank">Anton Andreasson Gistedt</a></p>
     </div>
   </div>
   <div ref="vantaRef" class="birds-anim"></div>

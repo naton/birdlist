@@ -4,7 +4,7 @@ import { useSettingsStore } from "@/stores/settings.js";
 import { useObservationsStore } from "@/stores/observations.js";
 import { useListsStore } from "@/stores/lists.js";
 import NavTabs from "@/components/NavTabs.vue";
-import ObservationList from "@/components/ObservationList.vue";
+import NormalList from "@/components/NormalList.vue";
 
 const emit = defineEmits(["sort", "edit"]);
 
@@ -28,7 +28,7 @@ function edit(obs) {
   <nav-tabs></nav-tabs>
 
   <div class="body-content">
-    <observation-list
+    <normal-list
       :observations="allThisMonth"
       :sort="currentSort === 'comments' ? 'bydate' : currentSort"
       @sort="sortBy"
@@ -55,6 +55,6 @@ function edit(obs) {
           </button>
         </div>
       </template>
-    </observation-list>
+    </normal-list>
   </div>
 </template>

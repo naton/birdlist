@@ -1,6 +1,6 @@
 function main(workbox) {
   /* eslint-disable-next-line */
-  const CACHE_VERSION = "2.0.4";
+  const CACHE_VERSION = "2.1.0";
   const {
     core: { clientsClaim, setCacheNameDetails },
     expiration: { ExpirationPlugin },
@@ -34,7 +34,7 @@ function main(workbox) {
       plugins: [
         new ExpirationPlugin({
           maxAgeSeconds: 60 * 60 * 24 * 7, // cache for one week
-          maxEntries: 20, // only cache 20 request
+          maxEntries: 30, // only cache 30 request
           purgeOnQuotaError: true
         })
       ]

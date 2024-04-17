@@ -67,7 +67,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="add-observation">
+  <div class="add-bird">
     <button type="button" @click="toggleCurrentLocation" :class="{ 'is-tracking': calculatingPosition, 'has-position': currentPosition, }">
       <add-location-icon v-if="!currentPosition && !calculatingPosition"></add-location-icon>
       <fetching-location-icon v-else-if="calculatingPosition"></fetching-location-icon>
@@ -81,24 +81,6 @@ onMounted(() => {
 </template>
 
 <style>
-.add-observation {
-  display: flex;
-  gap: 0.3rem;
-  padding: 0.6rem 1rem 0.4rem;
-}
-
-.add-observation input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  box-sizing: border-box;
-  color: var(--color-text);
-  background: var(--color-background);
-  font-size: 1.4rem;
-  appearance: none;
-}
-
 .has-position {
   background: var(--color-background-dim);
   color: var(--color-text);
@@ -127,21 +109,5 @@ onMounted(() => {
     opacity: 0;
     transform: scale(1);
   }
-}
-
-.add-observation .simple-typeahead-list {
-  bottom: 3rem;
-  border-radius: var(--radius);
-  box-shadow: rgb(0 0 0 / 10%) 0 -6px 12px 0;
-}
-
-.add-observation .simple-typeahead-list-footer,
-.add-observation .simple-typeahead-list-header,
-.add-observation .simple-typeahead-list-item {
-  background-color: var(--color-background) !important;
-}
-
-.add-observation .simple-typeahead-list-item-active {
-  background-color: var(--color-background-dim) !important;
 }
 </style>
