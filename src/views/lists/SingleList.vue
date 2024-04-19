@@ -75,7 +75,7 @@ onBeforeUnmount(() => {
       <button v-if="isListOwner" class="add secondary" @click="openModal">
         {{ t("Edit_List") }}
       </button>
-      <button v-if="isListOwner && currentList.type === 'checklist'" class="secondary" @click="checkListEditMode = !checkListEditMode">
+      <button v-if="isListOwner && (currentList.type === 'checklist' || currentList.type === 'bingo')" class="secondary" @click="checkListEditMode = !checkListEditMode">
         {{ !checkListEditMode ? t("Edit_Birds") : t("Cancel") }}
       </button>
     </template>
@@ -85,7 +85,7 @@ onBeforeUnmount(() => {
     :observations="allListObservations"
     :list="currentList"
     :comments="listComments"></birdstreak-list>
-  <check-list v-else-if="currentList && currentList.type === 'checklist'"
+  <check-list v-else-if="currentList && (currentList.type === 'checklist' || currentList.type === 'bingo')"
     :key="`${currentList}-checklist`"
     :observations="allListObservations"
     :list="currentList"

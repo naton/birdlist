@@ -33,6 +33,7 @@
     "Create_List_Help": "<ul><li><strong>Normal</strong> skapar en vanlig lista där du lägger till arter allteftersom du ser dem.</li><li><strong>Krysslista</strong> är en lista där du först anger vilka fåglar listan ska innehålla och sedan kryssar du för respektive rad när du ser arten.</li><li><strong>Birdstreak</strong> är en typ av lista där du väljer ett start- och slutdatum och 'låser in' en art varannan dag (eller annat valt intervall) och försöker hålla en så lång obruten serie som möjligt. Den ultimata utmaningen!</li></ul>",
     "Normal": "Normal",
     "Checklist": "Krysslista",
+    "Bingo": "Bingo",
     "Birdstreak": "Birdstreak",
     "Observation_Already_Added": "Observationen är redan tillagd på denna Birdstreak-lista",
     "Observation_Locked": "Observationen låst!",

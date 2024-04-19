@@ -9,6 +9,7 @@ import { cssColor, groupBy } from "@/helpers";
 import vue3SimpleTypeahead from "vue3-simple-typeahead";
 import UserNav from "./UserNav.vue";
 import BirdItem from "./BirdItem.vue";
+import BingoItem from "./BingoItem.vue";
 import 'vue3-simple-typeahead/dist/vue3-simple-typeahead.css'; //Optional default CSS
 
 const props = defineProps(["edit", "list", "comments", "observations"]);
@@ -42,6 +43,64 @@ const checkListBirds = computed(() => {
   });
 });
 
+const bingoColumns = 3;
+const bingoBirds = checkListBirds.value.slice(0, bingoColumns * bingoColumns);
+const checkListBingoBirds = computed(() => {
+  // create an array where the birds are grouped in sub arrays with [bingoColumns] birds in each
+  const bingoCombinations = bingoBirds.reduce((acc, bird, index) => {
+    const groupIndex = Math.floor(index / bingoColumns);
+    if (!acc[groupIndex]) {
+      acc[groupIndex] = [];
+    }
+    acc[groupIndex].push(bird);
+    return acc;
+  }, []);
+  
+  // add sub arrays with the first bird of each group
+  let verticalGroup = [];
+  bingoCombinations.forEach((group, index) => {
+    const columnBirds = bingoCombinations.map((group) => group[index]);
+    verticalGroup.push(columnBirds);
+  });
+  bingoCombinations.push(...verticalGroup);
+
+  // add sub arrays with the diagonal birds
+  let diagonalGroup = [];
+  bingoCombinations.forEach((group, index) => {
+    if (group[index]) {
+      diagonalGroup.push(group[index]);
+    }
+  });
+  bingoCombinations.push(diagonalGroup);
+
+  let reverseDiagonalGroup = [];
+  bingoCombinations.forEach((group, index) => {
+    if (group[index]) {
+      reverseDiagonalGroup.push(group[bingoColumns - 1 - index]);
+    }
+  });
+  bingoCombinations.push(reverseDiagonalGroup);
+
+  return bingoCombinations;
+});
+
+watch(checkListBingoBirds, (newGroup) => {
+  if (checkListBingoBirds.value.length > bingoColumns && isBingo(newGroup)) {
+    addMessage("BINGO!");
+    emit("newLeader");
+  }
+});
+
+function isGroupChecked(group) {
+  // check if all birds in a sub group are checked
+  return group.every((bird) => bird.checked);
+}
+
+// check if all birds in any of the sub groups are checked
+function isBingo(groups) {
+  return groups.some((group) => isGroupChecked(group));
+}
+
 function addListBird(bird) {
   // only add if not already in the list
   if (!birdsToCheck.value.includes(bird.name)) {
@@ -50,6 +109,7 @@ function addListBird(bird) {
     addMessage(t("Bird_Already_In_List"));
   }
   addListBirdInput.value.clearInput();
+  addListBirdInput.value.focusInput();
 }
 
 function saveCheckList() {
@@ -200,6 +260,14 @@ onMounted(() => {
 <template>
   <user-nav :users="users" :selectedUser="selectedUser" @changeUser="changeUser" />
   <div class="check-list">
+    <div v-if="props.list.type === 'bingo'" :class="'grid-' + bingoColumns">
+      <bingo-item v-for="bird in bingoBirds"
+        :key="bird.name"
+        :bird="bird.name"
+        :checked="bird.checked"
+        :edit="props.edit"
+        @check="checkBird"></bingo-item>
+    </div>
     <div v-if="checkListBirds">
       <div v-if="props.observations.length" class="center margin-bottom">
         <progress :value="props.observations.length" :max="birdsToCheck.length"></progress>
@@ -253,5 +321,24 @@ form.add-bird {
 
 .save-form {
   padding: 0.5rem 1rem;
-} 
+}
+
+.grid-3,
+.grid-4,
+.grid-5 {
+  --columns: 3;
+  display: grid;
+  grid-template-columns: repeat(var(--columns), 1fr);
+  grid-template-rows: repeat(var(--columns), 1fr);
+  gap: 0.5rem;
+  list-style: none;
+}
+
+.grid-4 {
+  --columns: 4;
+}
+
+.grid-5 {
+  --columns: 5;
+}
 </style>

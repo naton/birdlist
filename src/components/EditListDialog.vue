@@ -5,6 +5,10 @@ import { storeToRefs } from "pinia";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
 import ListsIcon from "./icons/ListsIcon.vue";
+import NormalIcon from "@/components/icons/NormalIcon.vue";
+import CheckIcon from "@/components/icons/CheckIcon.vue";
+import BingoIcon from "@/components/icons/BingoIcon.vue";
+import StreakIcon from "@/components/icons/StreakIcon.vue";
 import DeleteIcon from "./icons/DeleteIcon.vue";
 
 const settingsStore = useSettingsStore()
@@ -84,7 +88,25 @@ defineExpose({
     <input type="text" id="list-title" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
     <label for="list-description">{{ t("Description") }}:</label>
     <textarea id="list-description" v-model="description" cols="30" rows="5" :placeholder="t('List_Rules_Etc')"></textarea>
-    <input type="hidden" id="list-type" v-model="type">
+    <label for="title">{{ t("Type_Of_List") }}:</label>
+    <div class="flex">
+      <label class="radio">
+        <normal-icon />
+        <input v-model="type" type="radio" value="normal" />{{ t("Normal") }}
+      </label>
+      <label class="radio">
+        <check-icon />
+        <input v-model="type" type="radio" value="checklist" />{{ t("Checklist") }}
+      </label>
+      <label class="radio">
+        <bingo-icon />
+        <input v-model="type" type="radio" value="bingo" />{{ t("Bingo") }}
+      </label>
+      <label class="radio">
+        <streak-icon />
+        <input v-model="type" type="radio" value="birdstreak" />{{ t("Birdstreak") }}
+      </label>
+    </div>
     <template v-if="type === 'birdstreak'">
       <div class="flex">
         <div class="half">

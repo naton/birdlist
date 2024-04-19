@@ -6,7 +6,8 @@ import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
 import ListsIcon from "./icons/ListsIcon.vue";
 import NormalIcon from "@/components/icons/NormalIcon.vue";
-import ObservationsIcon from "@/components/icons/ObservationsIcon.vue";
+import CheckIcon from "@/components/icons/CheckIcon.vue";
+import BingoIcon from "@/components/icons/BingoIcon.vue";
 import StreakIcon from "@/components/icons/StreakIcon.vue";
 
 const router = useRouter()
@@ -73,8 +74,12 @@ defineExpose({
           <input v-model="type" type="radio" value="normal" />{{ t("Normal") }}
         </label>
         <label class="radio">
-          <observations-icon />
+          <check-icon />
           <input v-model="type" type="radio" value="checklist" />{{ t("Checklist") }}
+        </label>
+        <label class="radio">
+          <bingo-icon />
+          <input v-model="type" type="radio" value="bingo" />{{ t("Bingo") }}
         </label>
         <label class="radio">
           <streak-icon />
@@ -124,6 +129,7 @@ defineExpose({
 label.radio {
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   gap: 0.25rem;
   justify-content: center;
   align-items: center;
@@ -143,11 +149,5 @@ label.radio:has(:checked) {
   box-shadow: inset 0 0 0 2px var(--color-border);
   color: var(--color-text);
   background: var(--color-background-dim);
-}
-
-@media screen and (max-width: 380px) {
-  label svg {
-    display: none;
-  }
 }
 </style>
