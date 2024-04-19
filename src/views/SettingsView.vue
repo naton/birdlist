@@ -136,6 +136,7 @@ input[type="range"] {
 }
 
 .map-button {
+    flex-shrink: 1;
     padding: 1rem;
     border: none;
     background: none;
