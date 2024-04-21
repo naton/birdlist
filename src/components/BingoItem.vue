@@ -4,14 +4,11 @@ const props = defineProps(["bird", "edit", "checked"]);
 </script>
 
 <template>
-  <li class="bingo">
-    <button :disabled="props.edit" @click="emit('check', props.bird)" class="check-button">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32">
-        <polyline v-if="props.checked" fill="none" stroke="var(--color-text)" stroke-width="2" points=" 9,17 13,21 23,11 "></polyline>
-        <circle fill="none" stroke="var(--color-text)" stroke-width="2" cx="16" cy="16" r="15"></circle>
-      </svg>
+  <li class="bingo" :class="props.checked && 'checked'">
+    <button :disabled="props.edit" @click="emit('check', props.bird)" class="bingo-button">
+      <span class="name">{{ props.bird }}</span>
     </button>
-    <span class="name">{{ props.bird }}</span>
+    <button v-if="props.edit" @click="emit('remove', props.bird)">✕</button>
   </li>
 </template>
 
@@ -19,8 +16,13 @@ const props = defineProps(["bird", "edit", "checked"]);
 li.bingo {
   display: flex;
   flex-direction: column;
-  border: 1px solid;
+  border: 1px solid var(--color-border);
   align-items: center;
+  justify-content: center;
+}
+
+li.bingo.checked {
+  background: var(--color-background-dim);
 }
 
 li.bingo .name {
@@ -29,8 +31,11 @@ li.bingo .name {
   background: none;
 }
 
-.check-button {
+.bingo-button {
+  width: 100%;
+  height: auto;
   padding: 0;
+  color: inherit;
   background: none;
 }
 </style>

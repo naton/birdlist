@@ -26,6 +26,9 @@ const type = ref('')
 const startDate = ref(new Date())
 const endDate = ref(new Date())
 const reportInterval = ref(2)
+const bingoSize = ref(3)
+
+const isListOwner = computed(() => currentUser.value?.userId === listToEdit.value?.owner);
 
 watch(listToEdit, (list) => {
   if (!list) {
@@ -33,7 +36,7 @@ watch(listToEdit, (list) => {
   }
   title.value = list.title,
   description.value = list.description
-  type.value = list.type
+  type.value = list.type || 'normal'
   
   if (list.type === 'birdstreak') {
     startDate.value = list.startDate
@@ -43,8 +46,6 @@ watch(listToEdit, (list) => {
 })
 
 const listDialog = ref(null);
-
-const isListOwner = computed(() => currentUser.value?.userId === listToEdit.value?.owner);
 
 function openModal() {
   listToEdit.value = currentList.value;
@@ -57,9 +58,11 @@ function saveList() {
     title: title.value.trim(),
     updated: new Date(),
     description: description.value.trim(),
-    type: type.value,
+    type: type.value || 'normal',
   }
-  if (type.value === 'birdstreak') {
+  if (type.value === 'bingo') {
+    payload.bingoSize = bingoSize.value
+  } else if (type.value === 'birdstreak') {
     payload.startDate = startDate.value
     payload.endDate = endDate.value
     payload.reportInterval = reportInterval.value
@@ -107,6 +110,23 @@ defineExpose({
         <input v-model="type" type="radio" value="birdstreak" />{{ t("Birdstreak") }}
       </label>
     </div>
+    <template v-if="type === 'bingo'">
+      <fieldset class="flex">
+        <legend>{{ t("Size") }}</legend>
+        <label class="radio">
+          <bingo-icon />
+          <input type="radio" value="3" v-model="bingoSize" />3 ✕ 3
+        </label>
+        <label class="radio">
+          <bingo-icon />
+          <input type="radio" value="4" v-model="bingoSize" />4 ✕ 4
+        </label>
+        <label class="radio">
+          <bingo-icon />
+          <input type="radio" value="5" v-model="bingoSize" />5 ✕ 5
+        </label>
+      </fieldset>
+    </template>
     <template v-if="type === 'birdstreak'">
       <div class="flex">
         <div class="half">

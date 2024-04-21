@@ -1,6 +1,6 @@
 function main(workbox) {
   /* eslint-disable-next-line */
-  const CACHE_VERSION = "2.1.0";
+  const CACHE_VERSION = "2.1.1";
   const {
     core: { clientsClaim, setCacheNameDetails },
     expiration: { ExpirationPlugin },
@@ -23,18 +23,18 @@ function main(workbox) {
   });
 
   // Use a stale-while-revalidate strategy to handle requests by default.
-  setDefaultHandler(new StaleWhileRevalidate());
+  setDefaultHandler(new NetworkFirst());
 
   // runtime cache
   // 1. stylesheet
   registerRoute(
     new RegExp('.css$'),
-    new StaleWhileRevalidate({
+    new NetworkFirst({
       cacheName: 'birdlist-cache-css',
       plugins: [
         new ExpirationPlugin({
-          maxAgeSeconds: 60 * 60 * 24 * 7, // cache for one week
-          maxEntries: 30, // only cache 30 request
+          maxAgeSeconds: 60 * 60 * 24 * 1, // cache for one day
+          maxEntries: 30, // cache 30 request
           purgeOnQuotaError: true
         })
       ]
@@ -49,7 +49,7 @@ function main(workbox) {
       plugins: [
         new ExpirationPlugin({
           maxAgeSeconds: 60 * 60 * 24 * 7, // cache for one week
-          maxEntries: 20, // only cache 20 request
+          maxEntries: 20, // cache 20 request
           purgeOnQuotaError: true
         })
       ]
@@ -59,12 +59,12 @@ function main(workbox) {
   // 3. html
   registerRoute(
     new RegExp('.(html)$'),
-    new StaleWhileRevalidate({
+    new NetworkFirst({
       cacheName: 'birdlist-cache-html',
       plugins: [
         new ExpirationPlugin({
           maxAgeSeconds: 60 * 60 * 24 * 7, // cache for one week
-          maxEntries: 5, // only cache 5 request
+          maxEntries: 10, // cache 10 request
           purgeOnQuotaError: true
         })
       ]
@@ -77,7 +77,7 @@ function main(workbox) {
     new NetworkFirst({
       cacheName: 'birdlist-cache-content',
       cacheExpiration: {
-          maxAgeSeconds: 60 * 2 //cache the content for 2 minutes
+          maxAgeSeconds: 60 * 2 // cache the content for 2 minutes
       }
     })
   );

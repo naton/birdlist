@@ -20,6 +20,7 @@ export const useListsStore = defineStore("list", () => {
   const currentListExpanded = ref(true);
   const currentList = ref();
   const lastUsedList = ref();
+  const checkListEditMode = ref(false);
   const isSubscribedToNotifications = ref(false);
 
   /* Lists */
@@ -133,6 +134,7 @@ export const useListsStore = defineStore("list", () => {
     allMyLists,
     currentList,
     lastUsedList,
+    checkListEditMode,
     currentListExpanded,
     currentSort,
     isSubscribedToNotifications,

@@ -24,6 +24,7 @@ const type = ref("normal");
 const startDate = ref(new Date())
 const endDate = ref(new Date().setDate(startDate.value.getDate() + 30))
 const reportInterval = ref(2)
+const bingoSize = ref(3)
 
 const listDialog = ref(null);
 
@@ -32,15 +33,20 @@ function openModal() {
 }
 
 async function createListAndClose() {
-  const payload = {
+  let payload = {
     title: title.value.trim(),
     updated: new Date(),
     description: description.value.trim(),
     type: type.value,
-    startDate: type.value === 'birdstreak' ? startDate.value : null,
-    endDate: type.value === 'birdstreak' ? endDate.value : null,
-    reportInterval: type.value === 'birdstreak' ? reportInterval.value : null,
   }
+  if (type.value === 'bingo') {
+    payload.bingoSize = bingoSize.value
+  } else if (type.value === 'birdstreak') {
+    payload.startDate = startDate.value
+    payload.endDate = endDate.value
+    payload.reportInterval = reportInterval.value
+  }
+
   const listId = await createList(payload);
   router.push({ name: "list", params: { id: listId } });
   closeModal();
@@ -86,6 +92,23 @@ defineExpose({
           <input v-model="type" type="radio" value="birdstreak" />{{ t("Birdstreak") }}
         </label>
       </div>
+      <template v-if="type === 'bingo'">
+        <fieldset class="flex">
+          <legend>{{ t("Size") }}</legend>
+          <label class="radio">
+            <bingo-icon />
+            <input type="radio" value="3" v-model="bingoSize" />3 ✕ 3
+          </label>
+          <label class="radio">
+            <bingo-icon />
+            <input type="radio" value="4" v-model="bingoSize" />4 ✕ 4
+          </label>
+          <label class="radio">
+            <bingo-icon />
+            <input type="radio" value="5" v-model="bingoSize" />5 ✕ 5
+          </label>
+        </fieldset>
+      </template>
       <div v-if="type === 'birdstreak'" class="margin-bottom">
         <div class="flex">
           <div class="half">
