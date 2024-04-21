@@ -1,18 +1,26 @@
 <script setup>
+import { storeToRefs } from "pinia";
 import UserInitial from "./icons/UserInitial.vue";
 import { useFriendsStore } from "@/stores/friends.js";
+import { useSettingsStore } from "../stores/settings";
+
+const settingsStore = useSettingsStore();
+const { selectedUser } = storeToRefs(settingsStore);
 
 const friendsStore = useFriendsStore();
 const { getFriendlyName } = friendsStore;
 
-const emit = defineEmits(["changeUser"]);
-const props = defineProps(["users", "selectedUser"]);
+const props = defineProps(["users"]);
+
+function changeUser(user) {
+  selectedUser.value = user === selectedUser.value ? null : user;
+}
 </script>
 
 <template>
     <nav class="user-nav" v-if="users?.length > 1">
         <transition-group name="list" appear>
-            <button v-for="{ name, score, leader } in users" class="user-button" :class="name === selectedUser && 'user-button--active'" @click="emit('changeUser', name)" :key="name">
+            <button v-for="{ name, score, leader } in users" class="user-button" :class="name === selectedUser && 'user-button--active'" @click="changeUser(name)" :key="name">
                 <user-initial :user="name" :score="score" :leader="leader">
                     <span :class="name === props.user && 'me'">{{ getFriendlyName(name) }}</span>
                 </user-initial>
@@ -26,6 +34,7 @@ const props = defineProps(["users", "selectedUser"]);
   position: sticky;
   top: 0;
   display: flex;
+  flex-shrink: 0;
   margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
   background: var(--color-background);
@@ -36,8 +45,9 @@ const props = defineProps(["users", "selectedUser"]);
 }
 
 .user-button {
-  min-width: 7rem;
-  width: 25%;
+  flex-shrink: 1;
+  min-width: 6rem;
+  max-width: 33%;
   margin: 0;
   padding: 5px 0 0;
   color: inherit;

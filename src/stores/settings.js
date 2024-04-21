@@ -8,6 +8,7 @@ export const useSettingsStore = defineStore("settings", () => {
     const hue = ref("45");
     const texts = ref({});
     const currentUser = useObservable(db.cloud.currentUser);
+    const selectedUser = ref(null);
     const isUserLoggedIn = computed(() => currentUser.value.userId !== 'unauthorized');
     const isPremiumUser = computed(() => currentUser.value.license?.type === 'prod');
     const currentYear = ref(new Date().getFullYear());
@@ -90,6 +91,7 @@ export const useSettingsStore = defineStore("settings", () => {
       hue,
       texts,
       currentUser,
+      selectedUser,
       isUserLoggedIn,
       isPremiumUser,
       currentYear,

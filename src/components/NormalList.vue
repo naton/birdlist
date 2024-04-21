@@ -1,10 +1,11 @@
 <script setup>
-import { ref, reactive, computed, onMounted, watch, defineModel } from "vue";
+import { ref, computed, defineModel } from "vue";
 import { storeToRefs } from "pinia";
 import { db } from "../db";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
 import { useCommentsStore } from "@/stores/comments.js";
+import { groupBy } from "@/helpers";
 import ObservationItem from "./ObservationItem.vue";
 import ObservationsIcon from "./icons/ObservationsIcon.vue";
 import BirdsIcon from "./icons/BirdsIcon.vue";
@@ -13,35 +14,25 @@ import UserNav from "./UserNav.vue";
 import SpeciesItem from "./SpeciesItem.vue";
 import CommentItem from "./CommentItem.vue";
 import SvgChart from "./SvgChart.vue";
-import { cssColor, groupBy } from "@/helpers";
 
-const props = defineProps(["list", "comments", "sort", "observations"]);
-const emit = defineEmits(["sort", "delete", "edit", "newLeader"]);
+const emit = defineEmits(["delete", "edit", "newLeader"]);
+const props = defineProps(["list", "comments", "observations"]);
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
-const { currentUser, isUserLoggedIn } = storeToRefs(settingsStore);
+const { currentUser, isUserLoggedIn, selectedUser } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
-const { currentList } = storeToRefs(listsStore);
+const { sortBy } = listsStore;
+const { currentList, currentSort } = storeToRefs(listsStore);
 
 const commentsStore = useCommentsStore();
 const { addComment } = commentsStore;
 
 const species = computed(() => [...new Set(props.observations.map((item) => item.name))].sort());
+const selectedObservation = defineModel();
 
-const svg = reactive({
-  w: 300,
-  h: 200,
-});
-
-function resize() {
-  if (users.value.length > 1) {
-    const chart = document.querySelector(".chart-wrapper");
-    svg.w = chart.offsetWidth;
-  }
-}
-
+const currentLeader = ref("");
 const users = computed(() => {
   const names = [...new Set(props.observations.map((obs) => obs.owner))].sort();
   let users = [];
@@ -73,10 +64,6 @@ const users = computed(() => {
   return users.sort((a, b) => b.score - a.score);
 });
 
-const selectedObservation = defineModel();
-const selectedUser = ref(null);
-const currentLeader = ref("");
-
 const observationsByUser = computed(() => {
   let obses = props.observations;
   if (selectedUser.value === null) {
@@ -85,68 +72,6 @@ const observationsByUser = computed(() => {
     return obses.filter((obs) => obs.owner === selectedUser.value).sort((a, b) => b.date - a.date);
   }
 });
-
-const observationsByDate = computed(() => {
-  return groupBy(props.observations, "date");
-});
-
-let options = reactive({
-  xMin: 0,
-  xMax: window.screen.availWidth,
-  yMin: 0,
-  yMax: 10,
-  line: {
-    smoothing: 0.05,
-    flattening: 0.05,
-  },
-});
-
-const datasets = ref([]);
-
-function initGraph() {
-  if (!props.observations) {
-    return;
-  }
-
-  options.yMax = users.value[0].score;
-  const firstObsDate = new Date(props.observations[props.observations.length - 1].date);
-  const lastObsDate = new Date(props.observations[0].date);
-  const datesDiff = parseInt((lastObsDate - firstObsDate) / (1000 * 60 * 60 * 24), 10);
-  const graphWidthOfEachDay = Math.ceil(options.xMax / datesDiff);
-  const datesWithObservations = Object.keys(observationsByDate.value);
-  let graphData = [];
-
-  function createGraphData(owner) {
-    let values = [];
-    let currentValue = 0;
-    let day = new Date(firstObsDate);
-
-    for (let days = 0; days <= datesDiff; days++) {
-      const obsDate = day.toISOString().slice(0, 10);
-      if (datesWithObservations.includes(obsDate)) {
-        currentValue += observationsByDate.value[obsDate].filter((obs) => obs.owner === owner).length;
-        values.push([days * graphWidthOfEachDay, currentValue]);
-      }
-      day.setDate(day.getDate() + 1);
-    }
-
-    return values;
-  }
-
-  users.value.forEach((user) => {
-    graphData.push({
-      name: user.name,
-      colors: {
-        path: cssColor(user.name),
-        circles: "var(--color-text-dim)",
-      },
-      values: createGraphData(user.name),
-    });
-  });
-
-  datasets.value = graphData;
-  resize();
-}
 
 const speciesByUser = computed(() => {
   return selectedUser.value === null
@@ -157,20 +82,16 @@ const speciesByUser = computed(() => {
     );
 });
 
-function changeUser(user) {
-  selectedUser.value = user === selectedUser.value ? null : user;
-}
-
-function emitSort(value) {
-  emit("sort", value);
-}
-
 function emitDelete(id) {
   emit("delete", id);
 }
 
 function emitEdit(obs) {
   emit("edit", obs);
+}
+
+function emitNewLeader() {
+  emit("newLeader");
 }
 
 const comment = ref("");
@@ -197,39 +118,34 @@ function resetForm() {
 function noOfComments() {
   return props.comments ? Object.keys(props.comments).length : "0"
 }
-
-watch(currentLeader, (newLeader) => {
-  initGraph();
-  // Announce new leader only if you’re not alone
-  if (users.value.length > 1 && newLeader === currentUser.value?.name) {
-    emit("newLeader");
-  }
-});
-
-onMounted(() => {
-  window.addEventListener("resize", resize);
-});
 </script>
 
 <template>
-  <slot name="header" />
+  <slot name="header"></slot>
   <slot name="default">
-    <user-nav :users="users" :selectedUser="selectedUser" @changeUser="changeUser" />
+    <user-nav
+      :users="users"
+      :selectedUser="selectedUser" />
 
-    <svg-chart v-if="users?.length > 1" :datasets="datasets" :options="options" :svg="svg" :user="selectedUser"></svg-chart>
+    <svg-chart v-if="users?.length > 1"
+      :observations="props.observations"
+      :users="users"
+      :selectedUser="selectedUser"
+      :currentLeader="currentLeader"
+      @newLeader="emitNewLeader"></svg-chart>
 
     <nav class="nav margin-top margin-bottom" v-if="props.observations.length">
-      <a href="#bydate" class="nav-link" :class="{ current: sort == 'bydate', }" @click.prevent="emitSort('bydate')">
+      <a href="#bydate" class="nav-link" :class="{ current: currentSort === 'bydate', }" @click.prevent="sortBy('bydate')">
         <observations-icon />
         {{ t("Observations") }}
         <span class="nav-count">({{ observationsByUser.length }})</span>
       </a>
-      <a href="#byname" class="nav-link" :class="{ current: sort == 'byname', }" @click.prevent="emitSort('byname')">
+      <a href="#byname" class="nav-link" :class="{ current: currentSort === 'byname', }" @click.prevent="sortBy('byname')">
         <birds-icon />
         {{ t("Species") }}
         <span class="nav-count">({{ Object.keys(speciesByUser).length }})</span>
       </a>
-      <a v-if="props.comments" href="#comments" class="nav-link" :class="{ current: sort == 'comments', }" @click.prevent="emitSort('comments')">
+      <a v-if="props.comments" href="#comments" class="nav-link" :class="{ current: currentSort === 'comments', }" @click.prevent="sortBy('comments')">
         <comments-icon />
         {{ t("Chat") }}
         <span class="nav-count">({{ noOfComments() }})</span>
@@ -244,7 +160,7 @@ onMounted(() => {
       </div>
     </section>
 
-    <section id="bydate" v-if="props.observations.length && props.sort == 'bydate'">
+    <section id="bydate" v-if="props.observations.length && currentSort === 'bydate'">
       <transition-group tag="ul" name="list" class="list">
         <observation-item v-for="obs in observationsByUser"
           :obs="obs"
@@ -257,7 +173,7 @@ onMounted(() => {
       </transition-group>
     </section>
 
-    <section id="byname" v-if="species.length && props.sort == 'byname'">
+    <section id="byname" v-if="species.length && currentSort === 'byname'">
       <transition-group tag="ol" name="list" class="list">
         <species-item v-for="obs in speciesByUser"
           :obs="obs"
@@ -265,7 +181,7 @@ onMounted(() => {
       </transition-group>
     </section>
 
-    <section id="comments" v-if="props.observations.length && currentList && props.sort == 'comments'">
+    <section id="comments" v-if="props.observations.length && currentList && currentSort === 'comments'">
       <form>
         <div class="comment-form">
           <textarea v-model="comment" class="comment-input" :placeholder="t('Write_Something_To_The_Others')"></textarea>

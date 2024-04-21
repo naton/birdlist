@@ -6,7 +6,8 @@ import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
 import ListsIcon from "./icons/ListsIcon.vue";
 import NormalIcon from "@/components/icons/NormalIcon.vue";
-import ObservationsIcon from "@/components/icons/ObservationsIcon.vue";
+import CheckIcon from "@/components/icons/CheckIcon.vue";
+import BingoIcon from "@/components/icons/BingoIcon.vue";
 import StreakIcon from "@/components/icons/StreakIcon.vue";
 
 const router = useRouter()
@@ -23,6 +24,7 @@ const type = ref("normal");
 const startDate = ref(new Date())
 const endDate = ref(new Date().setDate(startDate.value.getDate() + 30))
 const reportInterval = ref(2)
+const bingoSize = ref(3)
 
 const listDialog = ref(null);
 
@@ -31,15 +33,20 @@ function openModal() {
 }
 
 async function createListAndClose() {
-  const payload = {
+  let payload = {
     title: title.value.trim(),
     updated: new Date(),
     description: description.value.trim(),
     type: type.value,
-    startDate: type.value === 'birdstreak' ? startDate.value : null,
-    endDate: type.value === 'birdstreak' ? endDate.value : null,
-    reportInterval: type.value === 'birdstreak' ? reportInterval.value : null,
   }
+  if (type.value === 'bingo') {
+    payload.bingoSize = bingoSize.value
+  } else if (type.value === 'birdstreak') {
+    payload.startDate = startDate.value
+    payload.endDate = endDate.value
+    payload.reportInterval = reportInterval.value
+  }
+
   const listId = await createList(payload);
   router.push({ name: "list", params: { id: listId } });
   closeModal();
@@ -73,14 +80,35 @@ defineExpose({
           <input v-model="type" type="radio" value="normal" />{{ t("Normal") }}
         </label>
         <label class="radio">
-          <observations-icon />
+          <check-icon />
           <input v-model="type" type="radio" value="checklist" />{{ t("Checklist") }}
+        </label>
+        <label class="radio">
+          <bingo-icon />
+          <input v-model="type" type="radio" value="bingo" />{{ t("Bingo") }}
         </label>
         <label class="radio">
           <streak-icon />
           <input v-model="type" type="radio" value="birdstreak" />{{ t("Birdstreak") }}
         </label>
       </div>
+      <template v-if="type === 'bingo'">
+        <fieldset class="flex">
+          <legend>{{ t("Size") }}</legend>
+          <label class="radio">
+            <bingo-icon />
+            <input type="radio" value="3" v-model="bingoSize" />3 ✕ 3
+          </label>
+          <label class="radio">
+            <bingo-icon />
+            <input type="radio" value="4" v-model="bingoSize" />4 ✕ 4
+          </label>
+          <label class="radio">
+            <bingo-icon />
+            <input type="radio" value="5" v-model="bingoSize" />5 ✕ 5
+          </label>
+        </fieldset>
+      </template>
       <div v-if="type === 'birdstreak'" class="margin-bottom">
         <div class="flex">
           <div class="half">
@@ -124,6 +152,7 @@ defineExpose({
 label.radio {
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   gap: 0.25rem;
   justify-content: center;
   align-items: center;
@@ -143,11 +172,5 @@ label.radio:has(:checked) {
   box-shadow: inset 0 0 0 2px var(--color-border);
   color: var(--color-text);
   background: var(--color-background-dim);
-}
-
-@media screen and (max-width: 380px) {
-  label svg {
-    display: none;
-  }
 }
 </style>

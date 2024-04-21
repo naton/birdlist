@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, defineAsyncComponent, onBeforeMount, onMounted, onBeforeUnmount, toRaw } from "vue";
+import { ref, computed, defineAsyncComponent, onBeforeMount, onMounted, onBeforeUnmount } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { setupConfetti, destroyConfetti, celebrate } from "@/helpers";
@@ -11,9 +11,10 @@ import ListInfo from "@/components/ListInfo.vue";
 import EditListDialog from "@/components/EditListDialog.vue";
 const BirdstreakList = defineAsyncComponent(() => import("@/components/BirdstreakList.vue"));
 const CheckList = defineAsyncComponent(() => import("@/components/CheckList.vue"));
+const BingoList = defineAsyncComponent(() => import("@/components/BingoList.vue"));
 const NormalList = defineAsyncComponent(() => import("@/components/NormalList.vue"));
 
-const emit = defineEmits(["openDialog", "sort", "edit"]);
+const emit = defineEmits(["openDialog", "edit"]);
 
 const route = useRoute();
 
@@ -22,16 +23,13 @@ const { t } = settingsStore;
 const { currentUser } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
-const { sortBy, updateList } = listsStore;
-const { allLists, currentSort, currentList } = storeToRefs(listsStore);
+const { allLists, currentList, checkListEditMode } = storeToRefs(listsStore);
 
 const observationsStore = useObservationsStore();
 const { allListObservations } = storeToRefs(observationsStore);
 
 const commentsStore = useCommentsStore()
 const { allComments } = storeToRefs(commentsStore)
-
-const checkListEditMode = ref(false);
 
 /* Comments */
 const listComments = computed(() => allComments.value?.filter((comment) => comment.listId == route.params.id));
@@ -46,13 +44,6 @@ function openModal() {
 
 function edit(obs) {
   emit("edit", obs)
-}
-
-function saveCheckList(birds) {
-  birds = toRaw(birds);
-  const payload = Object.assign({}, currentList.value, { birds });
-  updateList(payload);
-  checkListEditMode.value = false;
 }
 
 onBeforeMount(async () => {
@@ -75,33 +66,34 @@ onBeforeUnmount(() => {
       <button v-if="isListOwner" class="add secondary" @click="openModal">
         {{ t("Edit_List") }}
       </button>
-      <button v-if="isListOwner && currentList.type === 'checklist'" class="secondary" @click="checkListEditMode = !checkListEditMode">
+      <button v-if="isListOwner && (currentList.type === 'checklist' || currentList.type === 'bingo')" class="secondary" @click="checkListEditMode = !checkListEditMode">
         {{ !checkListEditMode ? t("Edit_Birds") : t("Cancel") }}
       </button>
     </template>
   </list-info>
   <birdstreak-list v-if="currentList && currentList.type === 'birdstreak'"
-    :key="`${currentList}-birdstreak`"
+    :key="`${currentList.id}-birdstreak`"
     :observations="allListObservations"
     :list="currentList"
     :comments="listComments"></birdstreak-list>
   <check-list v-else-if="currentList && currentList.type === 'checklist'"
-    :key="`${currentList}-checklist`"
+    :key="`${currentList.id}-checklist`"
     :observations="allListObservations"
     :list="currentList"
     :comments="listComments"
-    :edit="checkListEditMode"
-    @save="saveCheckList"
     @newLeader="celebrate"></check-list>
-  <normal-list v-else-if="currentList"
-    :key="`${currentList}-normal`"
+  <bingo-list v-else-if="currentList && currentList.type === 'bingo'"
+    :key="`${currentList.id}-${currentList.bingoSize}-bingo`"
     :observations="allListObservations"
-    :sort="currentSort"
+    :list="currentList"
+    :comments="listComments"
+    @newLeader="celebrate"></bingo-list>
+  <normal-list v-else-if="currentList"
+    :key="`${currentList.id}-normal`"
+    :observations="allListObservations"
     :list="currentList"
     :comments="listComments"
     @newLeader="celebrate"
-    @sort="sortBy"
-    @edit="edit"
-  >
+    @edit="edit">
   </normal-list>
 </template>

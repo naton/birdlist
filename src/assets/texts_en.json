@@ -33,6 +33,8 @@
     "Create_List_Help": "<ul><li><strong>Normal</strong> creates a regular list where you add species as you see them.</li><li><strong>Checklist</strong> is a list where you first specify which birds the list should contain and then you check each row when you see the species.</li><li><strong>Birdstreak</strong> is a type of list where you choose a start and end date and 'lock' a species every other day (or another interval of choice) and try to keep the streak as long as possible. The ultimate challenge!</li></ul>",
     "Normal": "Normal",
     "Checklist": "Checklist",
+    "Bingo": "Bingo",
+    "Size": "Size",
     "Birdstreak": "Birdstreak",
     "Observation_Already_Added": "Observation already added to this Birdstreak list",
     "Observation_Locked": "Observation locked!",

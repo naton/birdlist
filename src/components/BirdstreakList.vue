@@ -1,5 +1,6 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { formatDate } from "@/helpers";
 import { useSettingsStore } from '@/stores/settings.js'
 import { useObservationsStore } from "@/stores/observations.js";
@@ -7,10 +8,10 @@ import UserNav from "./UserNav.vue";
 import StreakIcon from "./icons/StreakIcon.vue";
 import LockIcon from "./icons/LockIcon.vue";
 
-const emit = defineEmits(["newLeader"]);
 const props = defineProps(["list", "comments", "observations"]);
 const settingsStore = useSettingsStore();
-const { t, currentUser } = settingsStore;
+const { t } = settingsStore;
+const { selectedUser } = storeToRefs(settingsStore);
 
 const observationsStore = useObservationsStore();
 const { lockObservation } = observationsStore;
@@ -18,6 +19,7 @@ const { lockObservation } = observationsStore;
 const startDate = new Date(props.list?.startDate);
 const endDate = new Date(props.list?.endDate) > new Date() ? new Date() : new Date(props.list.endDate);
 const reportInterval = props.list.reportInterval || 2;
+const obsToLock = ref("")
 
 const dateRange = computed(() => {
     let currentDate = new Date(startDate); // Create a copy of startDate
@@ -37,32 +39,7 @@ const dateRange = computed(() => {
     return dates;
 });
 
-const obsToLock = ref("")
-const selectedUser = ref(null);
 const currentLeader = ref("");
-
-// create a function that returns the longest unbroken period of observations from start date to current date
-function getLongestStreak(name) {
-    let streak = 0;
-    let longestStreak = 0;
-    const obsesByUser = props.observations.filter((obs) => obs.owner === name);
-
-    dateRange.value.forEach(dateGroups => {
-        if (dateGroups.some(date => {
-            return obsesByUser.some(obs => {
-                return obs.date.toISOString().substring(0, 10) === date.toISOString().substring(0, 10)
-            })
-        })) {
-            streak++;
-        } else {
-            longestStreak = Math.max(streak, longestStreak);
-            streak = 0;
-        }
-    })
-
-    return Math.max(streak, longestStreak);
-}
-
 const users = computed(() => {
     const names = [...new Set(props.observations.map((obs) => obs.owner))].sort();
     let users = [];
@@ -99,8 +76,26 @@ const observationsByUser = computed(() => {
     }
 });
 
-function changeUser(user) {
-    selectedUser.value = user === selectedUser.value ? null : user;
+// create a function that returns the longest unbroken period of observations from start date to current date
+function getLongestStreak(name) {
+    let streak = 0;
+    let longestStreak = 0;
+    const obsesByUser = props.observations.filter((obs) => obs.owner === name);
+
+    dateRange.value.forEach(dateGroups => {
+        if (dateGroups.some(date => {
+            return obsesByUser.some(obs => {
+                return obs.date.toISOString().substring(0, 10) === date.toISOString().substring(0, 10)
+            })
+        })) {
+            streak++;
+        } else {
+            longestStreak = Math.max(streak, longestStreak);
+            streak = 0;
+        }
+    })
+
+    return Math.max(streak, longestStreak);
 }
 
 function getAllListObservationsOnDates(dates) {
@@ -116,18 +111,13 @@ function getLockedListObservationOnDate(date) {
         return obs.date.toISOString().substring(0, 10) === date.toISOString().substring(0, 10) && obs.locked
     })
 }
-
-watch(currentLeader, (newLeader) => {
-  // Announce new leader only if you’re not alone
-  if (users.value.length > 1 && newLeader === currentUser.value?.name) {
-    emit("newLeader");
-  }
-});
-
 </script>
 
 <template>
-    <user-nav :users="users" :selectedUser="selectedUser" @changeUser="changeUser" />
+    <user-nav
+      :users="users" 
+      :selectedUser="selectedUser" />
+
     <div class="birdstreak-list">
         <table class="table">
             <caption><streak-icon />{{ formatDate(props.list.startDate) }} – {{ formatDate(props.list.endDate) }}</caption>
