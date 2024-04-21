@@ -1,6 +1,6 @@
 :root {
-  --hue: 45;
-  --co-base: hsl(var(--hue) 60% 60% / 1);
+  --hue: 38;
+  --co-base: hsl(var(--hue) 70% 60% / 1);
   --co-white: hsl(0 0% 100% / 1);
   --co-grey: hsl(0 0% 15% / 1);
   --co-black: hsl(0 0% 0% / 1);
@@ -337,12 +337,21 @@ button.secondary {
   background: var(--color-text-dim);
 }
 
-/* Headings */
 .center {
   text-align: center;
   justify-content: center;
 }
 
+.center img {
+  margin: -30px auto;
+}
+
+.right {
+  float: right;
+  text-align: right;
+}
+
+/* Headings */
 .subtitle {
   color: var(--color-text-dim);
 }
@@ -387,7 +396,7 @@ button.secondary {
   background-color: var(--color-background);
 }
 
-.dialog label {
+.dialog label:not(.radio) {
   display: block;
   margin: 0.75rem 0 0.25rem;
 }
@@ -468,7 +477,7 @@ input[type^="date"]::-webkit-datetime-edit-text {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  height: 50vh;
+  height: 30vh;
   margin: 0 10%;
   align-items: center;
   justify-content: center;

@@ -21,7 +21,10 @@ const newFriendEmail = ref()
   <div class="friends">
     <article class="friends-content">
       <section>
-        <h1>{{ t("Friends")}}</h1>
+        <div class="center">
+          <img src="../assets/img/birdwatching2.svg" width="250" height="250" alt="">
+        </div>
+        <h1 class="center margin-bottom">{{ t("Friends")}}</h1>
         <details class="help margin-top margin-bottom">
           <summary>{{ t("What_Is_This") }}</summary>
           <p class="margin-left">{{ t("Friends_Help") }}</p>
@@ -42,7 +45,7 @@ const newFriendEmail = ref()
             <tr v-for="{ id, name, email } in allFriends" :key="email">
               <th scope="row">{{ name }}</th>
               <td class="crop">{{ email }}</td>
-              <td><button @click="deleteFriend(id)"><remove-friend-icon /></button></td>
+              <td><button @click="deleteFriend(id)" class="secondary"><remove-friend-icon /></button></td>
             </tr>
           </tbody>
         </table>

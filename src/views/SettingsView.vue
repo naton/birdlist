@@ -1,4 +1,5 @@
 <script setup>
+import { watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { db } from "../db";
 import { useSettingsStore } from '../stores/settings.js'
@@ -11,8 +12,8 @@ import EuropeMap from "../components/icons/EuropeMap.vue";
 import SwedenMap from "../components/icons/SwedenMap.vue";
 
 const settingsStore = useSettingsStore()
-const { t } = settingsStore
-const { locale, hue, currentUser, isUserLoggedIn, isPremiumUser } = storeToRefs(settingsStore)
+const { t, loadTexts } = settingsStore
+const { locale, lang, hue, currentUser, isUserLoggedIn, isPremiumUser } = storeToRefs(settingsStore)
 
 const birdsStore = useBirdsStore()
 const { loadAllBirds } = birdsStore
@@ -22,9 +23,15 @@ const { addMessage } = messagesStore
 
 async function switchLocale(newLocale) {
     locale.value = newLocale
+    lang.value = newLocale.split('-')[0]
     await loadAllBirds(newLocale)
     setTimeout(() => addMessage(t("Birds_Loaded")), 100)
 }
+
+watch(lang, async (newLang) => {
+    document.documentElement.lang = newLang
+    await loadTexts(newLang)
+})
 
 function logout() {
     db.table('$logins').clear();
@@ -36,7 +43,10 @@ function logout() {
     <div class="settings">
         <div class="settings-content">
             <header>
-                <h1>{{ t("Settings") }}</h1>
+                <div class="center">
+                    <img src="../assets/img/birdwatching5.svg" width="250" height="250" alt="">
+                </div>
+                <h1 class="center margin-bottom">{{ t("Settings") }}</h1>
                 <button v-if="isUserLoggedIn" type="button" class="secondary logout" @click="logout()">{{ t("Logout") }}</button>
                 <button v-else type="button" class="secondary login" @click="db.cloud.login()">{{ t("Login") }}</button>
                 <div class="grid">
@@ -63,10 +73,9 @@ function logout() {
             </div>
             <div>
                 <label for="locale">{{ t("Language") }}</label>
-                <select id="locale" v-model="locale">
-                    <option value="sv-SE">Svenska</option>
-                    <option value="en-GB" v-if="locale !== 'en-US'">English</option>
-                    <option value="en-US" v-else>English</option>
+                <select id="locale" v-model="lang">
+                    <option value="sv">Svenska</option>
+                    <option value="en">English</option>
                 </select>
             </div>
             <h3 class="center">{{ t("Use_Bird_Suggestions_From") }}:</h3>

@@ -2,8 +2,10 @@
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useObservationsStore } from "@/stores/observations.js";
+import { useListsStore } from "@/stores/lists.js";
 import NavTabs from "@/components/NavTabs.vue";
 import NormalList from "@/components/NormalList.vue";
+import { onMounted } from "vue";
 
 const emit = defineEmits(["edit"]);
 
@@ -14,9 +16,16 @@ const { currentMonthFormatted } = storeToRefs(settingsStore);
 const observationsStore = useObservationsStore();
 const { allThisMonth } = storeToRefs(observationsStore);
 
+const listsStore = useListsStore();
+const { currentSort } = storeToRefs(listsStore);
+
 function edit(obs) {
   emit("edit", obs)
 }
+
+onMounted(() => {
+  currentSort.value = "bydate";
+});
 </script>
 
 <template>

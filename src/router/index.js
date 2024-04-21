@@ -1,7 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import MonthlyList from "../views/lists/MonthlyList.vue";
+import ListsView from "../views/ListsView.vue";
 import FriendsView from "../views/FriendsView.vue";
 import SettingsView from "../views/SettingsView.vue";
+import AboutView from "../views/AboutView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,7 +17,7 @@ const router = createRouter({
         {
           path: "/lists",
           name: "lists",
-          component: () => import("../views/ListsView.vue"),
+          component: ListsView,
           children: [
             {
               path: "/lists/:id",
@@ -27,7 +30,7 @@ const router = createRouter({
           alias: "/",
           path: "/monthly",
           name: "monthly",
-          component: () => import("../views/lists/MonthlyList.vue"),
+          component: MonthlyList,
         },
         {
           path: "/yearly",
@@ -49,7 +52,7 @@ const router = createRouter({
     {
       path: "/about",
       name: "about",
-      component: () => import("../views/AboutView.vue"),
+      component: AboutView,
     },
   ],
 });

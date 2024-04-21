@@ -67,9 +67,13 @@ function toggleNotificationIcon() {
     <router-view v-slot="{ Component, route }" @edit="emitEdit">
       <component :is="Component" :key="`${route.path}`"></component>
       <template v-if="!Component">
+        <div class="center">
+          <img src="../assets/img/birdwatching3.svg" width="250" height="250" alt="">
+        </div>
+
         <div class="lists">
           <div class="list-tools">
-            <h1>{{ t("Lists") }}</h1>
+            <h1 class="center">{{ t("Lists") }}</h1>
             <div class="flex">
               <div v-if="isPremiumUser" class="notify-button">
                 <button type="button" @click="toggleSubscription">
@@ -93,7 +97,7 @@ function toggleNotificationIcon() {
             {{ t("Upgrade_To_Premium") }}
           </div>
           <div class="lists-content">
-            <router-link :to="{ name: 'list', params: { id: lastUsedList.id } }" v-if="lastUsedList" class="featured">
+            <router-link v-if="lastUsedList" :to="{ name: 'list', params: { id: lastUsedList.id } }" class="featured">
               <i>{{ t("Last_Visited_List") }}:</i><br>
               <h2>{{ lastUsedList.title }}</h2>
               <p>{{ lastUsedList.description }}</p>

@@ -7,8 +7,9 @@ import { useListsStore } from "@/stores/lists.js";
 import { getMonthName } from "@/helpers";
 import NavTabs from "@/components/NavTabs.vue";
 import NormalList from "@/components/NormalList.vue";
+import { onMounted } from "vue";
 
-const emit = defineEmits(["openDialog", "sort", "edit"]);
+const emit = defineEmits(["edit"]);
 
 const router = useRouter();
 
@@ -20,7 +21,6 @@ const { allMyObservations } = storeToRefs(observationsStore);
 const { getTotalPerMonth } = observationsStore;
 
 const listsStore = useListsStore();
-const { sortBy } = listsStore;
 const { currentSort } = storeToRefs(listsStore);
 
 function edit(obs) {
@@ -31,6 +31,10 @@ function goToMonth(month) {
   currentMonth.value = month;
   router.push({ name: "monthly" });
 }
+
+onMounted(() => {
+  currentSort.value = "bydate";
+});
 </script>
 
 <template>
@@ -39,8 +43,6 @@ function goToMonth(month) {
   <div class="body-content">
     <normal-list
       :observations="allMyObservations"
-      :sort="currentSort === 'comments' ? 'bydate' : currentSort"
-      @sort="sortBy"
       @edit="edit"
     >
       <template v-slot:header>

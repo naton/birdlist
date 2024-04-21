@@ -32,6 +32,7 @@ function onUpdateFound(registration) {
 
   newWorker.addEventListener('statechange', async () => {
     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+      newWorker.skipWaiting();
       addMessage(t("Update_Available_Reloading"))
       setTimeout(() => document.location.reload(), 2000);
     }

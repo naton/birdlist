@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, defineAsyncComponent, onBeforeMount, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onBeforeMount, onMounted, onBeforeUnmount } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { setupConfetti, destroyConfetti, celebrate } from "@/helpers";
@@ -9,10 +9,10 @@ import { useObservationsStore } from "@/stores/observations.js";
 import { useCommentsStore } from "@/stores/comments.js";
 import ListInfo from "@/components/ListInfo.vue";
 import EditListDialog from "@/components/EditListDialog.vue";
-const BirdstreakList = defineAsyncComponent(() => import("@/components/BirdstreakList.vue"));
-const CheckList = defineAsyncComponent(() => import("@/components/CheckList.vue"));
-const BingoList = defineAsyncComponent(() => import("@/components/BingoList.vue"));
-const NormalList = defineAsyncComponent(() => import("@/components/NormalList.vue"));
+import BirdstreakList from "@/components/BirdstreakList.vue";
+import CheckList from "@/components/CheckList.vue";
+import BingoList from "@/components/BingoList.vue";
+import NormalList from "@/components/NormalList.vue";
 
 const emit = defineEmits(["openDialog", "edit"]);
 

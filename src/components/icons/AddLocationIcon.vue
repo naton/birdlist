@@ -6,7 +6,7 @@ const { t } = settingsStore;
 </script>
 
 <template>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="24px" height="16px" :title="t('Add_Location')">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16px" height="16px" :title="t('Add_Location')">
         <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 15.5S.5 10.5.5 6a5.5 5.5 0 0 1 10.909-1" />
             <circle cx="6" cy="6" r="1.5" />

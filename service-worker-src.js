@@ -1,6 +1,6 @@
 function main(workbox) {
   /* eslint-disable-next-line */
-  const CACHE_VERSION = "2.1.1";
+  const CACHE_VERSION = "2.1.3";
   const {
     core: { clientsClaim, setCacheNameDetails },
     expiration: { ExpirationPlugin },

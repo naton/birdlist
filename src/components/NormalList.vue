@@ -29,12 +29,12 @@ const { currentList, currentSort } = storeToRefs(listsStore);
 const commentsStore = useCommentsStore();
 const { addComment } = commentsStore;
 
-const species = computed(() => [...new Set(props.observations.map((item) => item.name))].sort());
+const species = computed(() => [...new Set(props.observations?.map((item) => item.name))].sort());
 const selectedObservation = defineModel();
 
 const currentLeader = ref("");
 const users = computed(() => {
-  const names = [...new Set(props.observations.map((obs) => obs.owner))].sort();
+  const names = [...new Set(props.observations?.map((obs) => obs.owner))].sort();
   let users = [];
   let highestScore = 0;
   let leader = false;
@@ -152,12 +152,16 @@ function noOfComments() {
       </a>
     </nav>
 
-    <section class="empty-list" v-if="currentUser.name && !props.observations.length">
-      <h3 class="center">{{ t("No_Observations") }}</h3>
-      <div v-if="!isUserLoggedIn" class="center">
-        {{ t("Have_You_Logged_In_Before") }}<br>
-        <a href="/settings" @click.prevent="db.cloud.login()">{{ t("Login") }}</a> {{ t("Here_And_Now_To_Access_Your_Observations") }}
+    <section class="empty-list" v-if="!props.observations.length">
+      <div class="center">
+        <img src="../assets/img/birdwatching1.svg" width="250" height="250" alt="">
       </div>
+
+      <h3 class="center">{{ t("No_Observations") }}</h3>
+      <details v-if="!isUserLoggedIn" class="help" open>
+        <summary>{{ t("Have_You_Been_Here_Before") }}</summary>
+        <p class="margin-top"><a href="/settings" @click.prevent="db.cloud.login()">{{ t("Login") }}</a> {{ t("To_Access_Your_Observations") }}</p>
+      </details>
     </section>
 
     <section id="bydate" v-if="props.observations.length && currentSort === 'bydate'">
