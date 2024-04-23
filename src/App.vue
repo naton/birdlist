@@ -23,7 +23,13 @@ onBeforeMount(() => {
   document.addEventListener('dblclick', () => false);
 })
 
-onMounted(() => {
+onMounted(async () => {
+  if ("serviceWorker" in navigator) {
+    const registration = await navigator.serviceWorker.register("/sw.js");
+    registration.addEventListener('updatefound', () => {
+      onUpdateFound(registration)
+    });
+  }
   setTimeout(() => setThemeColor(), 500)
 })
 
@@ -32,23 +38,16 @@ function onUpdateFound(registration) {
 
   newWorker.addEventListener('statechange', async () => {
     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-      newWorker.skipWaiting();
       addMessage(t("Update_Available_Reloading"))
       setTimeout(() => document.location.reload(), 2000);
     }
   });
 }
-
-if ("serviceWorker" in navigator && navigator.serviceWorker.controller === null && navigator.onLine === true) {
-  navigator.serviceWorker.register("/sw.js").then(registration => {
-    registration.addEventListener('updatefound', () => onUpdateFound(registration));
-  });
-}
 </script>
 
 <template>
+  <app-messages />
   <main class="main">
-    <app-messages />
     <invites-list />
     <router-view />
   </main>

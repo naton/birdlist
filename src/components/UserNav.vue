@@ -9,6 +9,7 @@ const { selectedUser } = storeToRefs(settingsStore);
 
 const friendsStore = useFriendsStore();
 const { getFriendlyName } = friendsStore;
+const { currentUser } = storeToRefs(friendsStore);
 
 const props = defineProps(["users"]);
 
@@ -18,11 +19,11 @@ function changeUser(user) {
 </script>
 
 <template>
-    <nav class="user-nav" v-if="users?.length > 1">
+    <nav class="user-nav" v-if="props.users?.length > 1">
         <transition-group name="list" appear>
-            <button v-for="{ name, score, leader } in users" class="user-button" :class="name === selectedUser && 'user-button--active'" @click="changeUser(name)" :key="name">
+            <button v-for="{ name, score, leader } in props.users" class="user-button" :class="name === selectedUser && 'user-button--active'" @click="changeUser(name)" :key="name">
                 <user-initial :user="name" :score="score" :leader="leader">
-                    <span :class="name === props.user && 'me'">{{ getFriendlyName(name) }}</span>
+                    <span :class="name === currentUser && 'me'">{{ getFriendlyName(name) }}</span>
                 </user-initial>
             </button>
         </transition-group>

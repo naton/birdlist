@@ -10,6 +10,7 @@ import VerifiedIcon from "../components/icons/VerifiedIcon.vue";
 import NorthAmericaMap from "../components/icons/NorthAmericaMap.vue";
 import EuropeMap from "../components/icons/EuropeMap.vue";
 import SwedenMap from "../components/icons/SwedenMap.vue";
+import SettingsIllustration from '../components/illustrations/SettingsIllustration.vue';
 
 const settingsStore = useSettingsStore()
 const { t, loadTexts } = settingsStore
@@ -44,7 +45,7 @@ function logout() {
         <div class="settings-content">
             <header>
                 <div class="center">
-                    <img src="../assets/img/birdwatching5.svg" width="250" height="250" alt="">
+                    <settings-illustration />
                 </div>
                 <h1 class="center margin-bottom">{{ t("Settings") }}</h1>
                 <button v-if="isUserLoggedIn" type="button" class="secondary logout" @click="logout()">{{ t("Logout") }}</button>

@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
+import { useFriendsStore } from "@/stores/friends.js";
 import ShareDialog from "./ShareDialog.vue";
 
 const settingsStore = useSettingsStore();
@@ -12,12 +13,19 @@ const { currentUser, isUserLoggedIn } = storeToRefs(settingsStore);
 const listsStore = useListsStore();
 const { currentList, currentListExpanded } = storeToRefs(listsStore);
 
+const friendsStore = useFriendsStore();
+const { getFriendlyName } = friendsStore;
+
 const shareListDialog = ref();
 
 const isListOwner = computed(() => currentUser.value?.userId === currentList.value?.owner);
 
 function openShareModal() {
     shareListDialog.value.openModal();
+}
+
+function getListOwnerAsFriendName() {
+    return isListOwner.value ? t("By_Me").toLowerCase() : getFriendlyName(currentList.value?.owner);
 }
 </script>
 
@@ -28,7 +36,7 @@ function openShareModal() {
             <details :open="currentListExpanded">
                 <summary class="heading" @click.prevent="currentListExpanded = !currentListExpanded">{{ currentList?.title }}</summary>
                 <p class="list-description">{{ currentList?.description }}</p>
-                <p class="list-owner">{{ t("Created_By") }} {{ isUserLoggedIn ? currentList?.owner : t("Not_Logged_In") }}</p>
+                <p class="list-owner">{{ t("Created_By") }} {{ getListOwnerAsFriendName() }}</p>
                 <div>
                     <button class="share-button" :disabled="!isListOwner" @click="openShareModal">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">

@@ -5,6 +5,7 @@ import { useSettingsStore } from '../stores/settings.js'
 import { useFriendsStore } from '../stores/friends.js'
 import AddFriendIcon from '../components/icons/AddFriendIcon.vue'
 import RemoveFriendIcon from '../components/icons/RemoveFriendIcon.vue'
+import FriendsIllustration from '../components/illustrations/FriendsIllustration.vue';
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
@@ -15,6 +16,12 @@ const { allFriends } = storeToRefs(friendsStore)
 
 const newFriendName = ref()
 const newFriendEmail = ref()
+
+function addFriendAndReset(name, email) {
+  addFriend(name, email)
+  newFriendName.value = ''
+  newFriendEmail.value = ''
+}
 </script>
 
 <template>
@@ -22,7 +29,7 @@ const newFriendEmail = ref()
     <article class="friends-content">
       <section>
         <div class="center">
-          <img src="../assets/img/birdwatching2.svg" width="250" height="250" alt="">
+          <friends-illustration />
         </div>
         <h1 class="center margin-bottom">{{ t("Friends")}}</h1>
         <details class="help margin-top margin-bottom">
@@ -32,7 +39,7 @@ const newFriendEmail = ref()
       </section>
       <section>
         <h2>{{ t("Add_Friend")}}</h2>
-        <form @submit.prevent="addFriend(newFriendName, newFriendEmail)" class="margin-top">
+        <form @submit.prevent="addFriendAndReset(newFriendName, newFriendEmail)" class="margin-top">
           <input type="text" required placeholder="Namn" v-model="newFriendName">
           <input type="email" required placeholder="E-postadress" v-model="newFriendEmail">
           <button type="submit"><add-friend-icon /></button>
@@ -45,7 +52,7 @@ const newFriendEmail = ref()
             <tr v-for="{ id, name, email } in allFriends" :key="email">
               <th scope="row">{{ name }}</th>
               <td class="crop">{{ email }}</td>
-              <td><button @click="deleteFriend(id)" class="secondary"><remove-friend-icon /></button></td>
+              <td><button type="button" @click="deleteFriend(name, id)" class="secondary"><remove-friend-icon /></button></td>
             </tr>
           </tbody>
         </table>

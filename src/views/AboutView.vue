@@ -1,5 +1,6 @@
 <script setup>
 import { useSettingsStore } from '../stores/settings.js'
+import AboutIllustration from '../components/illustrations/AboutIllustration.vue';
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
@@ -9,7 +10,7 @@ const { t } = settingsStore
   <div class="about">
     <div class="about-content">
       <div class="center">
-        <img src="../assets/img/birdwatching4.svg" width="250" height="250" alt="">
+        <about-illustration />
       </div>
 
       <h1 class="hidden-visually">{{ t("About")}} Birdlist</h1>

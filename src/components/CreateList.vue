@@ -93,7 +93,7 @@ defineExpose({
         </label>
       </div>
       <template v-if="type === 'bingo'">
-        <fieldset class="flex">
+        <fieldset class="flex margin-top">
           <legend>{{ t("Size") }}</legend>
           <label class="radio">
             <bingo-icon />

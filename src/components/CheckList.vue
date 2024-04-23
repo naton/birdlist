@@ -151,11 +151,12 @@ onBeforeMount(() => {
     <div v-else class="empty-list">
       {{ t("No_Birds_Added") }}
     </div>
-    <form v-if="checkListEditMode" class="add-bird">
-      <vue3-simple-typeahead ref="addListBirdInput" :placeholder="`${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => addListBird(bird)"></vue3-simple-typeahead>
-      <button type="button" @click="saveCheckList">{{ t("Save") }}</button>
-    </form>
   </div>
+
+  <form v-if="checkListEditMode" class="add-bird">
+    <vue3-simple-typeahead ref="addListBirdInput" :placeholder="`${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => addListBird(bird)"></vue3-simple-typeahead>
+    <button type="button" @click="saveCheckList">{{ t("Save") }}</button>
+  </form>
 </template>
 
 <style>
@@ -171,7 +172,7 @@ progress {
   height: 100%;
 }
 
-main:has(.check-list) .footer {
+main:has(.add-bird) .footer {
   display: none;
 }
 
@@ -186,24 +187,5 @@ form.add-bird {
 
 .save-form {
   padding: 0.5rem 1rem;
-}
-
-.grid-3,
-.grid-4,
-.grid-5 {
-  --columns: 3;
-  display: grid;
-  grid-template-columns: repeat(var(--columns), 1fr);
-  grid-template-rows: repeat(var(--columns), 1fr);
-  gap: 0.5rem;
-  list-style: none;
-}
-
-.grid-4 {
-  --columns: 4;
-}
-
-.grid-5 {
-  --columns: 5;
 }
 </style>

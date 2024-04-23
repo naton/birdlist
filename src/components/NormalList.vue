@@ -14,6 +14,7 @@ import UserNav from "./UserNav.vue";
 import SpeciesItem from "./SpeciesItem.vue";
 import CommentItem from "./CommentItem.vue";
 import SvgChart from "./SvgChart.vue";
+import HomeIllustration from '../components/illustrations/HomeIllustration.vue';
 
 const emit = defineEmits(["delete", "edit", "newLeader"]);
 const props = defineProps(["list", "comments", "observations"]);
@@ -154,7 +155,7 @@ function noOfComments() {
 
     <section class="empty-list" v-if="!props.observations.length">
       <div class="center">
-        <img src="../assets/img/birdwatching1.svg" width="250" height="250" alt="">
+        <home-illustration />
       </div>
 
       <h3 class="center">{{ t("No_Observations") }}</h3>

@@ -3,11 +3,16 @@ import { defineStore, storeToRefs } from "pinia";
 import { db } from "../db";
 import { liveQuery } from "dexie";
 import { useSettingsStore } from "./settings.js";
+import { useMessagesStore } from "./messages.js";
 
 export const useFriendsStore = defineStore("friend", () => {
   const settingsStore = useSettingsStore();
   const { t } = settingsStore;
   const { currentUser } = storeToRefs(settingsStore);
+
+  const messagesStore = useMessagesStore();
+  const { addMessage } = messagesStore;
+
   const allFriends = ref([]);
 
   /* Friends */
@@ -36,10 +41,12 @@ export const useFriendsStore = defineStore("friend", () => {
       name: name.trim(),
       email: email.trim(),
     });
+    addMessage(name + " " + t("Was_Added"));
   }
-
-  async function deleteFriend(id) {
+  
+  async function deleteFriend(name, id) {
     await db.friends.delete(id);
+    addMessage(name + " " + t("Was_Removed"));
   }
 
   return {

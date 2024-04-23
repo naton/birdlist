@@ -37,8 +37,10 @@ watch(listToEdit, (list) => {
   title.value = list.title,
   description.value = list.description
   type.value = list.type || 'normal'
-  
-  if (list.type === 'birdstreak') {
+
+  if (list.type === 'bingo') {
+    bingoSize.value = list.bingoSize
+  } else if (list.type === 'birdstreak') {
     startDate.value = list.startDate
     endDate.value = list.endDate
     reportInterval.value = list.reportInterval
@@ -111,7 +113,7 @@ defineExpose({
       </label>
     </div>
     <template v-if="type === 'bingo'">
-      <fieldset class="flex">
+      <fieldset class="flex margin-top">
         <legend>{{ t("Size") }}</legend>
         <label class="radio">
           <bingo-icon />

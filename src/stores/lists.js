@@ -29,8 +29,8 @@ export const useListsStore = defineStore("list", () => {
       // sort all lists by id, latest first
       allLists.value = lists.sort((a, b) => b.updated - a.updated);
       currentList.value = allLists.value.find((list) => list.id == route.params.id);
-      // If the current list is deleted, reset it
-      if (!currentList.value) {
+      // if last used list is deleted, reset it
+      if (lastUsedList.value && !allLists.value.find((list) => list.id == lastUsedList.value.id)) {
         lastUsedList.value = null;
       }
     },
@@ -46,7 +46,7 @@ export const useListsStore = defineStore("list", () => {
   async function createList(payload) {
     // Insert the list in the db with title and descripton
     const newId = await db.lists.add(payload);
-    currentList.value = allLists.value.find((list) => list.id == newId);
+    lastUsedList.value = currentList.value = allLists.value.find((list) => list.id == newId);
     return newId;
   }
 
@@ -88,10 +88,20 @@ export const useListsStore = defineStore("list", () => {
     }
   }
 
-  async function getListMembers(listId) {
+  async function getMembersByListId(listId) {
     const realmId = getTiedRealmId(listId);
     return await db.members.where({ realmId }).toArray();
   }
+
+  async function getListMembers(listId) {
+    const members = await getMembersByListId(listId);
+    // add myself
+    members.push({ email: currentUser.value.email, accepted: true });
+    // filter accepted members and remove duplicates
+    return members.filter((member, index, self) => 
+      self.findIndex(m => m.email === member.email && m.email) === index && member.accepted)
+      .sort((a, b) => a.email.localeCompare(b.email));
+  }  
 
   async function shareBirdList(listId, listName, friends) {
     if (!listId) return;

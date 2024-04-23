@@ -1,18 +1,21 @@
 <script setup>
 import { db } from "../db";
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { RouterLink, RouterView } from 'vue-router';
 import { useObservable } from "@vueuse/rxjs";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from "@/stores/lists.js";
 import { askNotificationPermission, removePushManager } from "../helpers";
+import UserInitial from "@/components/icons/UserInitial.vue";
 import ListsIcon from "@/components/icons/ListsIcon.vue";
 import CheckIcon from "@/components/icons/CheckIcon.vue";
+import BingoIcon from "@/components/icons/BingoIcon.vue";
 import StreakIcon from "@/components/icons/StreakIcon.vue";
 import NormalIcon from "@/components/icons/NormalIcon.vue";
 import NavTabs from "@/components/NavTabs.vue";
 import CreateList from "@/components/CreateList.vue";
+import ListsIllustration from '../components/illustrations/ListsIllustration.vue';
 
 const emit = defineEmits(["edit"]);
 const settingsStore = useSettingsStore()
@@ -20,6 +23,7 @@ const { t } = settingsStore
 const { isPremiumUser } = storeToRefs(settingsStore)
 
 const listsStore = useListsStore();
+const { getListMembers } = listsStore;
 const { allLists, allMyLists, currentList, lastUsedList, isSubscribedToNotifications } = storeToRefs(listsStore);
 
 const showOnlyMine = ref(false);
@@ -58,6 +62,17 @@ function toggleSubscription() {
 function toggleNotificationIcon() {
   isSubscribedToNotifications.value = !isSubscribedToNotifications.value;
 }
+
+const listMembersLoaded = ref(false);
+
+onMounted(async () => {
+  setTimeout(() => {
+    allLists.value.forEach(async list => {
+      list.members = await getListMembers(list.id);
+    })
+    listMembersLoaded.value = true;
+  }, 500)
+});
 </script>
 
 <template>
@@ -68,9 +83,8 @@ function toggleNotificationIcon() {
       <component :is="Component" :key="`${route.path}`"></component>
       <template v-if="!Component">
         <div class="center">
-          <img src="../assets/img/birdwatching3.svg" width="250" height="250" alt="">
+          <lists-illustration />
         </div>
-
         <div class="lists">
           <div class="list-tools">
             <h1 class="center">{{ t("Lists") }}</h1>
@@ -98,9 +112,12 @@ function toggleNotificationIcon() {
           </div>
           <div class="lists-content">
             <router-link v-if="lastUsedList" :to="{ name: 'list', params: { id: lastUsedList.id } }" class="featured">
-              <i>{{ t("Last_Visited_List") }}:</i><br>
+              <i>{{ t("Last_Viewed_List") }}:</i><br>
               <h2>{{ lastUsedList.title }}</h2>
               <p>{{ lastUsedList.description }}</p>
+              <p class="margin-top"><template v-for="member in lastUsedList.members" :key="member">
+                <user-initial :user="member.email" />
+              </template></p>
             </router-link>
 
             <div>
@@ -109,14 +126,23 @@ function toggleNotificationIcon() {
                 {{ t("Show_Only_Mine") }}
               </label>
             </div>
-
             <ul v-if="allLists?.length" class="list">
-              <li v-for="list in (showOnlyMine ? allMyLists : allLists)" :key="list.id" @click="selectList(list)">
+              <li v-for="list in (showOnlyMine ? allMyLists : allLists)" :key="list.id" class="list-item" @click="selectList(list)">
                 <lists-icon />
-                <router-link :to="{ name: 'list', params: { id: list.id } }">{{ list.title }}</router-link>
-                <check-icon v-if="list.type === 'checklist'" />
-                <streak-icon v-else-if="list.type === 'birdstreak'" />
-                <normal-icon v-else />
+                <router-link :to="{ name: 'list', params: { id: list.id } }" class="list-name">{{ list.title }}</router-link>
+                <div>
+                  <check-icon v-if="list.type === 'checklist'" />
+                  <bingo-icon v-if="list.type === 'bingo'" />
+                  <streak-icon v-else-if="list.type === 'birdstreak'" />
+                  <normal-icon v-else />
+                </div>
+                <transition name="fade-in">
+                <div v-if="listMembersLoaded" class="list-members">
+                  <template v-for="member in list.members" :key="member">
+                    <user-initial :user="member.email" />
+                  </template>
+                </div>
+                </transition>
               </li>
             </ul>
             <div v-else class="empty-list">
@@ -149,10 +175,28 @@ function toggleNotificationIcon() {
   justify-content: space-between;
   padding: 1rem 1rem 0.5rem;
   background-color: var(--color-background);
+  z-index: 1;
 }
 
 .list-tools .notify-button {
   margin-left: auto;
+}
+
+.list .list-item {
+  display: grid;
+  grid-template-columns: 20px 1fr 24px;
+  grid-template-rows: auto auto;
+}
+
+.list-name {
+  font-size: 1.2rem;
+}
+
+.list-members {
+  min-height: 2.2rem;
+  grid-row: 2;
+  grid-column: 2 / 4;
+  padding: 0 1em 0.6rem;
 }
 
 button .pill {
@@ -183,7 +227,7 @@ button:has(.pill) {
 
 .featured h2 {
   text-decoration: underline;
-  text-underline-offset: 0.1em;
+  text-underline-offset: 0.2em;
 }
 
 .buttons {

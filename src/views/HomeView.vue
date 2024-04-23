@@ -154,7 +154,7 @@ function openModal(obs) {
 .list a,
 .list b {
   width: 100%;
-  padding: 0.6rem 1em;
+  padding: 0.6rem 1rem;
 }
 
 .list a {

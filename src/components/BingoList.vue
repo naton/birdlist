@@ -157,10 +157,15 @@ const checkListBingoBirds = computed(() => {
   return bingoCombinations;
 });
 
+let bingoTimer;
+
 watch(checkListBingoBirds, (newGroup) => {
-  if ((checkListBingoBirds.value.length + 1 >= bingoSize.value * bingoSize.value) && isBingo(newGroup)) {
-    addMessage("BINGO!");
-    emitNewLeader();
+  if ((checkListBingoBirds.value.length + 1 >= (bingoSize.value * bingoSize.value)) && isBingo(newGroup)) {
+    clearTimeout(bingoTimer);
+    bingoTimer = setTimeout(() => {
+      addMessage("BINGO!");
+      emitNewLeader();
+    }, 500);
   }
 });
 
@@ -192,43 +197,30 @@ onBeforeMount(() => {
     :currentLeader="currentLeader"
     @newLeader="emitNewLeader"></svg-chart>
 
-  <div class="check-list">
-    <div v-if="checkListBirds.length" :class="'grid-' + bingoSize">
-      <bingo-item v-for="bird in checkListBirds"
-        :key="bird.name"
-        :bird="bird.name"
-        :checked="bird.checked"
-        :edit="checkListEditMode"
-        @check="checkBird"
-        @remove="removeBird"></bingo-item>
-    </div>
-    <div v-else class="empty-list">
-      {{ t("No_Birds_Added") }}
-    </div>
-    <form v-if="checkListEditMode" class="add-bird">
-      <vue3-simple-typeahead ref="addListBirdInput" :placeholder="`${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => addListBird(bird)"></vue3-simple-typeahead>
-      <button type="button" @click="saveCheckList" :disabled="checkListBirds.length < bingoSize * bingoSize">
-        <span v-if="checkListBirds.length < bingoSize * bingoSize">{{ checkListBirds.length }} / {{ bingoSize * bingoSize }}</span>
-        <span v-else>{{ t("Save") }}</span>
-      </button>
-    </form>
+  <div v-if="checkListBirds.length" :class="'grid-' + bingoSize">
+    <bingo-item v-for="bird in checkListBirds"
+    :key="bird.name"
+    :bird="bird.name"
+    :checked="bird.checked"
+    :edit="checkListEditMode"
+    @check="checkBird"
+    @remove="removeBird"></bingo-item>
   </div>
+  <div v-else class="empty-list">
+    {{ t("No_Birds_Added") }}
+  </div>
+
+  <form v-if="checkListEditMode" class="add-bird">
+    <vue3-simple-typeahead ref="addListBirdInput" :placeholder="`${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => addListBird(bird)"></vue3-simple-typeahead>
+    <button type="button" @click="saveCheckList" :disabled="checkListBirds.length < bingoSize * bingoSize">
+      <span v-if="checkListBirds.length < bingoSize * bingoSize">{{ checkListBirds.length }} / {{ bingoSize * bingoSize }}</span>
+      <span v-else>{{ t("Save") }}</span>
+    </button>
+  </form>
 </template>
 
 <style>
-progress {
-  width: calc(100% - 2rem);
-  margin: 0 1rem;
-}
-
-.check-list {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-main:has(.check-list) .footer {
+main:has(.add-bird) .footer {
   display: none;
 }
 
@@ -256,6 +248,7 @@ form.add-bird {
   border: 1px solid var(--color-border);
   list-style: none;
   aspect-ratio: 1 / 1;
+  width: calc(100% - 4px);
   max-height: 90vw;
   border-radius: var(--radius);
 }
