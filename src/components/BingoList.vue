@@ -42,7 +42,7 @@ const checkListBirds = computed(() => {
   return birdsToCheck.value.map((bird) => {
     return {
       name: bird,
-      checked: props.observations.some((obs) => obs.name === bird && obs.owner === currentUser.value.userId),
+      checked: props.observations.some((obs) => obs.name === bird && obs.owner === (selectedUser.value || currentUser.value.userId)),
     };
   });
 });
@@ -157,15 +157,13 @@ const checkListBingoBirds = computed(() => {
   return bingoCombinations;
 });
 
-let bingoTimer;
+let hasEmittedBingo = false;
 
 watch(checkListBingoBirds, (newGroup) => {
-  if ((checkListBingoBirds.value.length + 1 >= (bingoSize.value * bingoSize.value)) && isBingo(newGroup)) {
-    clearTimeout(bingoTimer);
-    bingoTimer = setTimeout(() => {
-      addMessage("BINGO!");
-      emitNewLeader();
-    }, 500);
+  if ((checkListBingoBirds.value.length + 1 >= bingoSize.value * bingoSize.value) && isBingo(newGroup) && !hasEmittedBingo) {
+    addMessage("BINGO!");
+    emitNewLeader();
+    hasEmittedBingo = true;
   }
 });
 
@@ -220,10 +218,6 @@ onBeforeMount(() => {
 </template>
 
 <style>
-main:has(.add-bird) .footer {
-  display: none;
-}
-
 form.add-bird {
   position: fixed;
   max-width: 820px;
@@ -231,10 +225,6 @@ form.add-bird {
   right: 0;
   bottom: 5rem;
   left: 0;
-}
-
-.save-form {
-  padding: 0.5rem 1rem;
 }
 
 .grid-3,
@@ -249,7 +239,7 @@ form.add-bird {
   list-style: none;
   aspect-ratio: 1 / 1;
   width: calc(100% - 4px);
-  max-height: 90vw;
+  flex-shrink: 0;
   border-radius: var(--radius);
 }
 

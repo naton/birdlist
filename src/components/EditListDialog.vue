@@ -97,19 +97,19 @@ defineExpose({
     <div class="flex">
       <label class="radio">
         <normal-icon />
-        <input v-model="type" type="radio" value="normal" />{{ t("Normal") }}
+        <input v-model="type" type="radio" disabled value="normal" />{{ t("Normal") }}
       </label>
       <label class="radio">
         <check-icon />
-        <input v-model="type" type="radio" value="checklist" />{{ t("Checklist") }}
+        <input v-model="type" type="radio" disabled value="checklist" />{{ t("Checklist") }}
       </label>
       <label class="radio">
         <bingo-icon />
-        <input v-model="type" type="radio" value="bingo" />{{ t("Bingo") }}
+        <input v-model="type" type="radio" disabled value="bingo" />{{ t("Bingo") }}
       </label>
       <label class="radio">
         <streak-icon />
-        <input v-model="type" type="radio" value="birdstreak" />{{ t("Birdstreak") }}
+        <input v-model="type" type="radio" disabled value="birdstreak" />{{ t("Birdstreak") }}
       </label>
     </div>
     <template v-if="type === 'bingo'">

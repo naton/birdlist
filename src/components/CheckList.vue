@@ -171,21 +171,4 @@ progress {
   flex-direction: column;
   height: 100%;
 }
-
-main:has(.add-bird) .footer {
-  display: none;
-}
-
-form.add-bird {
-  position: fixed;
-  max-width: 820px;
-  margin: auto;
-  right: 0;
-  bottom: 5rem;
-  left: 0;
-}
-
-.save-form {
-  padding: 0.5rem 1rem;
-}
 </style>

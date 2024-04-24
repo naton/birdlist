@@ -153,9 +153,10 @@ export const useObservationsStore = defineStore("observation", () => {
   }
 
   async function deleteObservation(id) {
+    // get the bird name of the observation to be deleted
+    const birdName = allMyObservations.value.filter((obs) => obs.id === id)[0].name;
     await db.observations.delete(id);
-
-    addMessage(t("Observation_Removed"));
+    addMessage(t("Observation_Removed") + ": " + birdName);
   }
 
   return {

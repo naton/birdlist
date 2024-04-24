@@ -132,7 +132,7 @@ onMounted(async () => {
                 <router-link :to="{ name: 'list', params: { id: list.id } }" class="list-name">{{ list.title }}</router-link>
                 <div>
                   <check-icon v-if="list.type === 'checklist'" />
-                  <bingo-icon v-if="list.type === 'bingo'" />
+                  <bingo-icon v-else-if="list.type === 'bingo'" />
                   <streak-icon v-else-if="list.type === 'birdstreak'" />
                   <normal-icon v-else />
                 </div>
