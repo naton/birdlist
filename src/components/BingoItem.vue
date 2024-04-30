@@ -23,6 +23,7 @@ li.bingo {
 
 li.bingo.checked {
   background: var(--color-background-dim);
+  box-shadow: inset 0 0 0 1px var(--color-border);
 }
 
 li.bingo .name {
@@ -33,9 +34,14 @@ li.bingo .name {
 
 .bingo-button {
   width: 100%;
-  height: auto;
+  height: 100%;
   padding: 0;
   color: inherit;
   background: none;
+}
+
+.bingo-button + button {
+  position: relative;
+  top: -30%;
 }
 </style>

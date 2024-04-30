@@ -7,6 +7,7 @@ import { useSettingsStore } from '@/stores/settings.js'
 import { useListsStore } from "@/stores/lists.js";
 import { useObservationsStore } from "@/stores/observations.js";
 import { useCommentsStore } from "@/stores/comments.js";
+import CheckIcon from "@/components/icons/CheckIcon.vue";
 import ListInfo from "@/components/ListInfo.vue";
 import EditListDialog from "@/components/EditListDialog.vue";
 import BirdstreakList from "@/components/BirdstreakList.vue";
@@ -23,6 +24,7 @@ const { t } = settingsStore;
 const { currentUser } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
+const { convertToChecklist } = listsStore;
 const { allLists, currentList, checkListEditMode } = storeToRefs(listsStore);
 
 const observationsStore = useObservationsStore();
@@ -46,6 +48,10 @@ function edit(obs) {
   emit("edit", obs)
 }
 
+function createChecklistFromCurrentList() {
+  convertToChecklist(currentList.value);
+}
+
 onBeforeMount(async () => {
   currentList.value = await allLists.value?.find((list) => list.id == route.params.id);
 });
@@ -65,6 +71,10 @@ onBeforeUnmount(() => {
     <template v-slot:extra>
       <button v-if="isListOwner" class="add secondary" @click="openModal">
         {{ t("Edit_List") }}
+      </button>
+      <button v-if="isListOwner && currentList.type === 'normal'" class="add secondary" @click="createChecklistFromCurrentList">
+        <check-icon />
+        {{ t("Save_As_Checklist") }}
       </button>
       <button v-if="isListOwner && (currentList.type === 'checklist' || currentList.type === 'bingo')" class="secondary" @click="checkListEditMode = !checkListEditMode">
         {{ !checkListEditMode ? t("Edit_Birds") : t("Cancel") }}

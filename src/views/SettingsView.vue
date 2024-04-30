@@ -1,43 +1,15 @@
 <script setup>
-import { watch } from 'vue'
-import { storeToRefs } from 'pinia'
-import { db } from "../db";
+import { ref } from 'vue'
 import { useSettingsStore } from '../stores/settings.js'
-import { useBirdsStore } from '../stores/birds.js'
-import { useMessagesStore } from '../stores/messages.js'
-import UserIcon from "../components/icons/UserIcon.vue";
-import VerifiedIcon from "../components/icons/VerifiedIcon.vue";
-import NorthAmericaMap from "../components/icons/NorthAmericaMap.vue";
-import EuropeMap from "../components/icons/EuropeMap.vue";
-import SwedenMap from "../components/icons/SwedenMap.vue";
+import SettingsIcon from '../components/icons/SettingsIcon.vue';
+import UserIcon from '../components/icons/UserIcon.vue';
 import SettingsIllustration from '../components/illustrations/SettingsIllustration.vue';
+import SettingsConfig from '../components/SettingsConfig.vue';
+import SettingsAccount from '../components/SettingsAccount.vue';
 
 const settingsStore = useSettingsStore()
-const { t, loadTexts } = settingsStore
-const { locale, lang, hue, currentUser, isUserLoggedIn, isPremiumUser } = storeToRefs(settingsStore)
-
-const birdsStore = useBirdsStore()
-const { loadAllBirds } = birdsStore
-
-const messagesStore = useMessagesStore()
-const { addMessage } = messagesStore
-
-async function switchLocale(newLocale) {
-    locale.value = newLocale
-    lang.value = newLocale.split('-')[0]
-    await loadAllBirds(newLocale)
-    setTimeout(() => addMessage(t("Birds_Loaded")), 100)
-}
-
-watch(lang, async (newLang) => {
-    document.documentElement.lang = newLang
-    await loadTexts(newLang)
-})
-
-function logout() {
-    db.table('$logins').clear();
-    document.location.href = "/";
-}
+const { t } = settingsStore
+const currentTab = ref('config')
 </script>
 
 <template>
@@ -47,50 +19,21 @@ function logout() {
                 <div class="center">
                     <settings-illustration />
                 </div>
-                <h1 class="center margin-bottom">{{ t("Settings") }}</h1>
-                <button v-if="isUserLoggedIn" type="button" class="secondary logout" @click="logout()">{{ t("Logout") }}</button>
-                <button v-else type="button" class="secondary login" @click="db.cloud.login()">{{ t("Login") }}</button>
-                <div class="grid">
-                    <user-icon :class="!isUserLoggedIn && 'dimmed'" />
-                    <h2 class="user-name">
-                        {{ isUserLoggedIn ? currentUser.userId : t("Not_Logged_In") }}
-                        <verified-icon v-if="currentUser.claims.email_verified" />
-                    </h2>
-                </div>
-                <div v-if="isUserLoggedIn" class="flex margin-top margin-bottom">
-                    {{ t("Account_Type") }}:
-                    <span class="pill account-type">{{ isPremiumUser ? t('Premium') : t('Trial') }}</span>
-                    <span v-if="!isPremiumUser" class="pill days-left">{{ currentUser.license.evalDaysLeft }} {{ t("Days_Left").toLowerCase() }}</span>
-                </div>
-                <details class="help" :open="!isUserLoggedIn">
-                    <summary>{{ t("What_Is_This") }}</summary>
-                    <p v-html="t('Account_Help')"></p>
-                    <a v-if="!isPremiumUser" href="https://ko-fi.com/birdlist" target="_blank" class="donate">Donate for Premium</a>
-                </details>
+                <h1 class="center">{{ t("Settings") }}</h1>
+                <nav class="nav margin-top margin-bottom">
+                    <button type="button" @click="currentTab = 'config'" class="nav-link" :class="currentTab === 'config' && 'current'">
+                        <settings-icon />
+                        {{ t("Settings") }}
+                    </button>
+                    <button type="button" @click="currentTab = 'account'" class="nav-link" :class="currentTab === 'account' && 'current'">
+                        <user-icon />
+                        {{ t("Account") }}
+                    </button>
+                </nav>
             </header>
-            <div>
-                <label for="hue">{{ t("Theme_Color") }}</label>
-                <input id="hue" type="range" v-model="hue" min="0" max="360">
-            </div>
-            <div>
-                <label for="locale">{{ t("Language") }}</label>
-                <select id="locale" v-model="lang">
-                    <option value="sv">Svenska</option>
-                    <option value="en">English</option>
-                </select>
-            </div>
-            <h3 class="center">{{ t("Use_Bird_Suggestions_From") }}:</h3>
-            <div class="flex map-buttons">
-                <button type="button" @click="switchLocale('en-US')" class="map-button" :class="locale === 'en-US' && 'selected'">
-                    <north-america-map />
-                </button>
-                <button type="button" @click="switchLocale('en-GB')" class="map-button" :class="locale === 'en-GB' && 'selected'">
-                    <europe-map />
-                </button>
-                <button type="button" @click="switchLocale('sv-SE')" class="map-button" :class="locale === 'sv-SE' && 'selected'">
-                    <sweden-map />
-                </button>
-            </div>
+
+            <settings-config v-if="currentTab === 'config'" />
+            <settings-account v-if="currentTab === 'account'" />
         </div>
     </div>
 </template>
@@ -99,7 +42,7 @@ function logout() {
 .settings-content {
     display: grid;
     align-self: start;
-    gap: 1.5rem;
+    gap: 0.5rem;
     padding: 1rem;
 }
 
@@ -107,37 +50,8 @@ function logout() {
     display: block;
 }
 
-.user-name {
-    text-wrap: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 1.4rem;
-}
-
-.user-name svg {
-    margin-right: 0.5rem;
-    vertical-align: middle;
-}
-
-.user-name svg.dimmed {
-    opacity: 0.4;
-}
-
 input[type="range"] {
     width: 100%;
-}
-
-.donate {
-    display: block;
-    margin: 0.5rem 1rem;
-    padding: 0.2rem 0.8rem 0.2rem 2.4rem;
-    background: url('https://ko-fi.com/favicon.png') no-repeat 0.5rem 0.25rem / 1.5rem auto;
-}
-
-.login,
-.logout {
-    float: right;
-    min-height: 2.4rem;
 }
 
 .map-buttons {
@@ -162,17 +76,4 @@ input[type="range"] {
     height: auto;
     max-height: 4rem;
 }
-
-.account-type {
-    position: relative;
-    z-index: 1;
-}
-
-.pill.days-left {
-    position: relative;
-    left: -2.25rem;
-    padding-left: 2rem;
-    color: var(--color-background);
-    background-color: var(--color-link);
-}   
 </style>

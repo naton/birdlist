@@ -5,8 +5,12 @@ import { db } from "../db";
 import { liveQuery } from "dexie";
 import { getTiedRealmId } from "dexie-cloud-addon";
 import { useSettingsStore } from "./settings";
+import { useMessagesStore } from "./messages";
 
 export const useListsStore = defineStore("list", () => {
+  const messagesStore = useMessagesStore();
+  const { addMessage } = messagesStore;
+
   const route = useRoute();
   const router = useRouter();
 
@@ -57,6 +61,17 @@ export const useListsStore = defineStore("list", () => {
     if (callback) {
       callback();
     }
+  }
+
+  async function convertToChecklist(list) {
+    let newList = { ...list };
+    delete newList.id;
+    newList.type = "checklist";
+    const listObservations = await db.observations.where({ listId: list.id }).toArray();
+    newList.birds = listObservations.map((obs) => obs.name);
+    const newId = await createList(newList);
+    router.push({ name: "list", params: { id: newId} });
+    addMessage(t("Checklist_Created") + ": <b>" + list.title + "</b>");
   }
 
   async function deleteList(listId) {
@@ -152,6 +167,7 @@ export const useListsStore = defineStore("list", () => {
     getListMembers,
     createList,
     updateList,
+    convertToChecklist,
     deleteList,
     shareBirdList,
   };

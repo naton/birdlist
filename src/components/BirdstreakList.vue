@@ -214,11 +214,6 @@ button.active {
     border-top: 2px solid var(--color-background-dim);
 }
 
-.flex button {
-    flex: 1 0 auto;
-    min-height: 2.4rem;
-}
-
 select:empty+button {
     opacity: 0.4;
     filter: grayscale(1);

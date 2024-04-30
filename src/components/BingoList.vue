@@ -10,7 +10,6 @@ import { useMessagesStore } from '@/stores/messages.js'
 import vue3SimpleTypeahead from "vue3-simple-typeahead";
 import UserNav from "./UserNav.vue";
 import BingoItem from "./BingoItem.vue";
-import SvgChart from "./SvgChart.vue";
 import 'vue3-simple-typeahead/dist/vue3-simple-typeahead.css'; //Optional default CSS
 
 const emit = defineEmits(["newLeader"]);
@@ -116,7 +115,7 @@ function saveCheckList() {
 }
 
 /* BINGO stuff */
-const bingoSize = ref(props.list?.bingoSize || 3);
+const bingoSize = ref(props.list.bingoSize || 3);
 const checkListBingoBirds = computed(() => {
   // create an array where the birds are grouped in sub arrays with [bingoSize] birds in each
   const bingoCombinations = 
@@ -160,7 +159,7 @@ const checkListBingoBirds = computed(() => {
 let hasEmittedBingo = false;
 
 watch(checkListBingoBirds, (newGroup) => {
-  if ((checkListBingoBirds.value.length + 1 >= bingoSize.value * bingoSize.value) && isBingo(newGroup) && !hasEmittedBingo) {
+  if (isBingo(newGroup) && !hasEmittedBingo) {
     addMessage("BINGO!");
     emitNewLeader();
     hasEmittedBingo = true;
@@ -187,13 +186,6 @@ onBeforeMount(() => {
   <user-nav
     :users="users"
     :selectedUser="selectedUser" />
-
-  <svg-chart v-if="users?.length > 1"
-    :observations="props.observations"
-    :users="users"
-    :selectedUser="selectedUser"
-    :currentLeader="currentLeader"
-    @newLeader="emitNewLeader"></svg-chart>
 
   <div v-if="checkListBirds.length" :class="'grid-' + bingoSize">
     <bingo-item v-for="bird in checkListBirds"

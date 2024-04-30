@@ -68,6 +68,12 @@ export const useObservationsStore = defineStore("observation", () => {
     ).length === 0;
   }
 
+  function observationIsANewSpeciesForThisList(bird) {
+    return allListObservations.value.filter((obs) => obs.name === bird).length === 0;
+  }
+
+  let pushTimer = null;
+
   async function addObservation(bird, location) {
     let date = new Date();
     const isBatchImport = bird.includes(","); // Probably multiple birds
@@ -81,9 +87,11 @@ export const useObservationsStore = defineStore("observation", () => {
   
     async function add(bird, list = currentList.value) {
       if (isFirstObservationToday()) {
-        addMessage(t("First_Observation_Today") + " – " + bird.trim());
+        addMessage(t("First_Observation_Today") + " – <b>" + bird.trim() + "</b>");
+      } else if (observationIsANewSpeciesForThisList(bird)) {
+        addMessage(t("New_Species_Added") + ": <b>" + bird.trim() + "</b>");
       } else {
-        addMessage(t("New_Observation_Added") + ": " + bird.trim());
+        addMessage(t("New_Observation_Added") + ": <b>" + bird.trim() + "</b>");
       }
 
       await db.observations.add({
@@ -96,12 +104,15 @@ export const useObservationsStore = defineStore("observation", () => {
 
       // Push notification to all members of the list
       if (list) {
-        pushNewBirdAlert({
-          title: t("New_Observation_Added") + ": " + bird.trim(),
-          icon: "https://birdlist.app/192x192.png",
-          body: t("List") + ": " + list.name,
-          listId: list.id,
-        })
+        clearTimeout(pushTimer);
+        pushTimer = setTimeout(() => {
+          pushNewBirdAlert({
+            title: t("New_Observation_Added") + ": " + bird.trim(),
+            icon: "https://birdlist.app/192x192.png",
+            body: t("List") + ": " + list.name,
+            listId: list.id,
+          })
+        }, 2000);
       }
     }
   
@@ -156,7 +167,7 @@ export const useObservationsStore = defineStore("observation", () => {
     // get the bird name of the observation to be deleted
     const birdName = allMyObservations.value.filter((obs) => obs.id === id)[0].name;
     await db.observations.delete(id);
-    addMessage(t("Observation_Removed") + ": " + birdName);
+    addMessage(t("Observation_Removed") + ": <b>" + birdName + "</b>");
   }
 
   return {

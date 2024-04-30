@@ -26,6 +26,6 @@ onMounted(() => {
 
 <template>
     <div class="message" @click="triggerClose(props.message.id)">
-        <p>{{ props.message.text }}</p>
+        <p v-html="props.message.text"></p>
     </div>
 </template>

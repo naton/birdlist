@@ -113,7 +113,9 @@ onMounted(async () => {
           <div class="lists-content">
             <router-link v-if="lastUsedList" :to="{ name: 'list', params: { id: lastUsedList.id } }" class="featured">
               <i>{{ t("Last_Viewed_List") }}:</i><br>
-              <h2>{{ lastUsedList.title }}</h2>
+              <h2 class="flex">
+                {{ lastUsedList.title }}
+              </h2>
               <p>{{ lastUsedList.description }}</p>
               <p class="margin-top"><template v-for="member in lastUsedList.members" :key="member">
                 <user-initial :user="member.email" />
@@ -127,22 +129,24 @@ onMounted(async () => {
               </label>
             </div>
             <ul v-if="allLists?.length" class="list">
-              <li v-for="list in (showOnlyMine ? allMyLists : allLists)" :key="list.id" class="list-item" @click="selectList(list)">
+              <li v-for="list in (showOnlyMine ? allMyLists : allLists)" :key="list.id" class="list-item">
                 <lists-icon />
-                <router-link :to="{ name: 'list', params: { id: list.id } }" class="list-name">{{ list.title }}</router-link>
+                <router-link :to="{ name: 'list', params: { id: list.id } }" @click="selectList(list)" class="list-name">{{ list.title }}</router-link>
                 <div>
                   <check-icon v-if="list.type === 'checklist'" />
                   <bingo-icon v-else-if="list.type === 'bingo'" />
                   <streak-icon v-else-if="list.type === 'birdstreak'" />
                   <normal-icon v-else />
                 </div>
-                <transition name="fade-in">
-                <div v-if="listMembersLoaded" class="list-members">
-                  <template v-for="member in list.members" :key="member">
-                    <user-initial :user="member.email" />
-                  </template>
+                <div class="list-members">
+                  <transition name="fade-in">
+                    <div v-if="listMembersLoaded">
+                      <template v-for="member in list.members" :key="member">
+                        <user-initial :user="member.email" />
+                      </template>
+                    </div>
+                  </transition>
                 </div>
-                </transition>
               </li>
             </ul>
             <div v-else class="empty-list">
@@ -193,7 +197,7 @@ onMounted(async () => {
 }
 
 .list-members {
-  min-height: 2.2rem;
+  min-height: 2.5rem;
   grid-row: 2;
   grid-column: 2 / 4;
   padding: 0 1em 0.6rem;

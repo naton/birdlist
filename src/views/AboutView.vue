@@ -18,11 +18,31 @@ const { t } = settingsStore
         <source srcset="/logo.webp" type="image/webp" />
         <img src="/logo.png" alt="Birdlist" width="460" height="170" class="logo" />
       </picture>
-      <h2>
+
+      <h2 class="margin-bottom">
         {{ t("Log_Your_Bird_Observations") }}.<br />
         {{ t("Make_Lists") }}.<br />
         {{ t("Share_With_Friends") }}.
       </h2>
+
+      <h3 class="center">{{ t("In_Brief") }}:</h3>
+      <details class="help">
+        <summary>{{ t("Lists") }}</summary>
+        <p v-html="t('Create_List_Help')"></p>
+      </details>
+      <details class="help">
+        <summary>{{ t("Friends") }}</summary>
+        <p class="margin-left">{{ t("Friends_Help") }}</p>
+      </details>
+      <details class="help">
+        <summary>{{ t("Share_With_Friends") }}</summary>
+        <p class="margin-left">{{ t("Invite_Help_1") }}</p>
+        <p class="margin-left">{{ t("Invite_Help_2") }}</p>
+      </details>
+      <details class="help">
+        <summary>{{ t("Account") }}</summary>
+        <p v-html="t('Account_Help')"></p>
+      </details>
 
       <div class="privacy-notes margin-bottom">
         <h3>{{ t("Personal_Data_Processing") }}</h3>
