@@ -187,7 +187,7 @@ onBeforeMount(() => {
     :users="users"
     :selectedUser="selectedUser" />
 
-  <div v-if="checkListBirds.length" :class="'grid-' + bingoSize">
+  <section v-if="checkListBirds.length" :class="'grid-' + bingoSize">
     <bingo-item v-for="bird in checkListBirds"
     :key="bird.name"
     :bird="bird.name"
@@ -195,7 +195,7 @@ onBeforeMount(() => {
     :edit="checkListEditMode"
     @check="checkBird"
     @remove="removeBird"></bingo-item>
-  </div>
+  </section>
   <div v-else class="empty-list">
     {{ t("No_Birds_Added") }}
   </div>

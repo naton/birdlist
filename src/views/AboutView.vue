@@ -7,19 +7,18 @@ const { t } = settingsStore
 </script>
 
 <template>
-  <div class="about">
-    <div class="about-content">
-      <div class="center">
-        <about-illustration />
-      </div>
-
+  <article class="about">
+    <figure class="center">
+      <about-illustration />
+    </figure>
+    <section class="about-content">
       <h1 class="hidden-visually">{{ t("About")}} Birdlist</h1>
       <picture>
         <source srcset="/logo.webp" type="image/webp" />
         <img src="/logo.png" alt="Birdlist" width="460" height="170" class="logo" />
       </picture>
 
-      <h2 class="margin-bottom">
+      <h2 class="tagline">
         {{ t("Log_Your_Bird_Observations") }}.<br />
         {{ t("Make_Lists") }}.<br />
         {{ t("Share_With_Friends") }}.
@@ -50,8 +49,8 @@ const { t } = settingsStore
       </div>
 
       <p>Made by <a href="https://mastodon.social/@naton" target="_blank">Anton Andreasson Gistedt</a></p>
-    </div>
-  </div>
+    </section>
+  </article>
 </template>
 
 <style>
@@ -69,9 +68,13 @@ const { t } = settingsStore
 
 .about .logo {
   display: flex;
-  max-width: 100%;
+  max-width: 80%;
   height: auto;
-  margin-bottom: 2rem;
+  margin: 0 auto;
+}
+
+.tagline {
+  margin: 3rem 0;
 }
 
 .privacy-notes {

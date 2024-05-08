@@ -20,7 +20,7 @@ const emit = defineEmits(["delete", "edit", "newLeader"]);
 const props = defineProps(["list", "comments", "observations"]);
 
 const settingsStore = useSettingsStore();
-const { t } = settingsStore;
+const { t, firstVisit } = settingsStore;
 const { currentUser, isUserLoggedIn, selectedUser } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
@@ -159,7 +159,13 @@ function noOfComments() {
       </div>
 
       <h3 class="center">{{ t("No_Observations") }}</h3>
-      <details v-if="!isUserLoggedIn" class="help" open>
+      <details v-if="firstVisit" class="help" open>
+        <summary>{{ t("First_Time_Here") }}</summary>
+        <p class="margin-top">
+          <span v-html="t('First_Time_Description')"></span>
+          <a href="/settings" @click.prevent="db.cloud.login()">{{ t("Enter_An_Email_Address").toLowerCase() }}</a>.</p>
+      </details>
+      <details v-else-if="!isUserLoggedIn" class="help" open>
         <summary>{{ t("Have_You_Been_Here_Before") }}</summary>
         <p class="margin-top"><a href="/settings" @click.prevent="db.cloud.login()">{{ t("Login") }}</a> {{ t("To_Access_Your_Observations") }}</p>
       </details>

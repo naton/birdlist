@@ -1,4 +1,8 @@
 [{
+    "Start": "Start",
+    "First_Time_Here": "Första gången här?",
+    "First_Time_Description": "Du behöver inte skapa konto om du inte vill – allt lagras då enbart på denna enhet. Men vill du <b>synka</b> med andra enheter, <b>dela egna</b> eller <b>delta i andras</b> listor behöver du ett konto, det vill säga du behöver ",
+    "Enter_An_Email_Address": "Ange en e-postadress",
     "Settings": "Inställningar",
     "Account": "Konto",
     "Language": "Språk",

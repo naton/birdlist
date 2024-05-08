@@ -132,7 +132,7 @@ onBeforeMount(() => {
     :currentLeader="currentLeader"
     @newLeader="emitNewLeader"></svg-chart>
 
-  <div class="check-list">
+  <section class="check-list">
     <div v-if="checkListBirds">
       <div v-if="props.observations.length" class="center margin-bottom">
         <progress :value="props.observations.length" :max="birdsToCheck.length"></progress>
@@ -151,7 +151,7 @@ onBeforeMount(() => {
     <div v-else class="empty-list">
       {{ t("No_Birds_Added") }}
     </div>
-  </div>
+  </section>
 
   <form v-if="checkListEditMode" class="add-bird">
     <vue3-simple-typeahead ref="addListBirdInput" :placeholder="`${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => addListBird(bird)"></vue3-simple-typeahead>

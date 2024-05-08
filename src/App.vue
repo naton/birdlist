@@ -7,6 +7,7 @@ import { useMessagesStore } from './stores/messages.js'
 import AppMessages from './components/AppMessages.vue'
 import InvitesList from './components/InvitesList.vue'
 import HomeIcon from './components/icons/HomeIcon.vue'
+import ListsIcon from './components/icons/ListsIcon.vue'
 import FriendsIcon from './components/icons/FriendsIcon.vue'
 import SettingsIcon from './components/icons/SettingsIcon.vue'
 import HelpIcon from './components/icons/HelpIcon.vue'
@@ -14,13 +15,13 @@ const InstallPrompt = defineAsyncComponent(() => import('./components/InstallPro
 
 const settingsStore = useSettingsStore()
 const { t, loadTexts, setThemeColor } = settingsStore
-const { locale, texts, isUserLoggedIn } = storeToRefs(settingsStore)
+const { lang, isUserLoggedIn } = storeToRefs(settingsStore)
 
 const messagesStore = useMessagesStore()
 const { addMessage } = messagesStore
 
 onBeforeMount(() => {
-  texts.value = loadTexts(locale.value)
+  loadTexts(lang.value)
   document.addEventListener('dblclick', () => false);
 })
 
@@ -55,7 +56,11 @@ function onUpdateFound(registration) {
   <nav class="nav main-nav">
     <router-link class="nav-link" to="/">
       <home-icon />
-      {{ t("Observations") }}
+      {{ t("Start") }}
+    </router-link>
+    <router-link class="nav-link" to="/lists">
+      <lists-icon />
+      {{ t("Lists") }}
     </router-link>
     <router-link class="nav-link" to="/friends">
       <friends-icon />
@@ -75,7 +80,7 @@ function onUpdateFound(registration) {
 
 <style>
 .nav.main-nav {
-  padding: 0.25rem;
+  padding: 0.25rem 0.25rem 0.5rem;
   box-shadow: 0 -4px 14px rgb(0 0 0 / 10%);
   z-index: 1;
 }

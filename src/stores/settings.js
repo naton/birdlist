@@ -11,6 +11,7 @@ export const useSettingsStore = defineStore("settings", () => {
     const currentUser = useObservable(db.cloud.currentUser);
     const selectedUser = ref(null);
     const isUserLoggedIn = computed(() => currentUser.value.userId !== 'unauthorized');
+    const firstVisit = !localStorage.getItem('birdlist-observations');
     const isPremiumUser = computed(() => currentUser.value.license?.type === 'prod');
     const currentYear = ref(new Date().getFullYear());
     const currentMonth = ref(new Date().getMonth());
@@ -25,8 +26,7 @@ export const useSettingsStore = defineStore("settings", () => {
       }
     }
 
-    async function loadTexts(locale) {
-      const lang = locale.split("-")[0];
+    async function loadTexts(lang) {
       texts.value = (await import(`@/assets/texts_${lang}.json`)).default[0];
     }
 
@@ -92,6 +92,7 @@ export const useSettingsStore = defineStore("settings", () => {
       lang,
       hue,
       texts,
+      firstVisit,
       currentUser,
       selectedUser,
       isUserLoggedIn,

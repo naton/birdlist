@@ -1,4 +1,8 @@
 [{
+    "Start": "Start",
+    "First_Time_Here": "First time here?",
+    "First_Time_Description": "You don‘t have to create an account if you don't want to – everything is then stored only on this device. But if you want to <b>sync</b> with other devices, <b>share your own</b> or <b>participate in other people’s</b> lists, you need an account, that is, you need to ",
+    "Enter_An_Email_Address": "Enter an email address",
     "Settings": "Settings",
     "Account": "Account",
     "Language": "Language",

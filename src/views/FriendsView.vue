@@ -27,11 +27,11 @@ function addFriendAndReset(name, email) {
 
 <template>
   <div class="friends">
+    <div class="center">
+      <friends-illustration />
+    </div>
     <article class="friends-content">
       <section>
-        <div class="center">
-          <friends-illustration />
-        </div>
         <h1 class="center margin-bottom">{{ t("Friends")}}</h1>
         <details class="help margin-top margin-bottom">
           <summary>{{ t("What_Is_This") }}</summary>

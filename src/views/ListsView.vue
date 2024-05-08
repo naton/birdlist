@@ -13,7 +13,6 @@ import CheckIcon from "@/components/icons/CheckIcon.vue";
 import BingoIcon from "@/components/icons/BingoIcon.vue";
 import StreakIcon from "@/components/icons/StreakIcon.vue";
 import NormalIcon from "@/components/icons/NormalIcon.vue";
-import NavTabs from "@/components/NavTabs.vue";
 import CreateList from "@/components/CreateList.vue";
 import ListsIllustration from '../components/illustrations/ListsIllustration.vue';
 
@@ -76,16 +75,15 @@ onMounted(async () => {
 </script>
 
 <template>
-  <nav-tabs></nav-tabs>
   <create-list ref="createListDialog" />
   <div class="body-content">
     <router-view v-slot="{ Component, route }" @edit="emitEdit">
       <component :is="Component" :key="`${route.path}`"></component>
       <template v-if="!Component">
-        <div class="center">
-          <lists-illustration />
-        </div>
-        <div class="lists">
+        <section class="lists">
+          <figure class="center">
+            <lists-illustration />
+          </figure>
           <div class="list-tools">
             <h1 class="center">{{ t("Lists") }}</h1>
             <div class="flex">
@@ -165,7 +163,7 @@ onMounted(async () => {
               </li>
             </ul>
           </div>
-        </div>
+        </section>
       </template>
     </router-view>
   </div>

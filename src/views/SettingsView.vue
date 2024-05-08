@@ -13,67 +13,67 @@ const currentTab = ref('config')
 </script>
 
 <template>
-    <div class="settings">
-        <div class="settings-content">
-            <header>
-                <div class="center">
-                    <settings-illustration />
-                </div>
-                <h1 class="center">{{ t("Settings") }}</h1>
-                <nav class="nav margin-top margin-bottom">
-                    <button type="button" @click="currentTab = 'config'" class="nav-link" :class="currentTab === 'config' && 'current'">
-                        <settings-icon />
-                        {{ t("Settings") }}
-                    </button>
-                    <button type="button" @click="currentTab = 'account'" class="nav-link" :class="currentTab === 'account' && 'current'">
-                        <user-icon />
-                        {{ t("Account") }}
-                    </button>
-                </nav>
-            </header>
+  <article class="settings">
+    <figure class="center">
+      <settings-illustration />
+    </figure>
+    <section class="settings-content">
+      <header>
+        <h1 class="center">{{ t("Settings") }}</h1>
+        <nav class="nav margin-top margin-bottom">
+          <button type="button" @click="currentTab = 'config'" class="nav-link" :class="currentTab === 'config' && 'current'">
+            <settings-icon />
+            {{ t("Settings") }}
+          </button>
+          <button type="button" @click="currentTab = 'account'" class="nav-link" :class="currentTab === 'account' && 'current'">
+            <user-icon />
+            {{ t("Account") }}
+          </button>
+        </nav>
+      </header>
 
-            <settings-config v-if="currentTab === 'config'" />
-            <settings-account v-if="currentTab === 'account'" />
-        </div>
-    </div>
+      <settings-config v-if="currentTab === 'config'" />
+      <settings-account v-if="currentTab === 'account'" />
+    </section>
+  </article>
 </template>
 
 <style>
 .settings-content {
-    display: grid;
-    align-self: start;
-    gap: 0.5rem;
-    padding: 1rem;
+  display: grid;
+  align-self: start;
+  gap: 0.5rem;
+  padding: 1rem;
 }
 
 .settings-content label {
-    display: block;
+  display: block;
 }
 
 input[type="range"] {
-    width: 100%;
+  width: 100%;
 }
 
 .map-buttons {
-    justify-content: space-around;
-    gap: 1rem;
+  justify-content: space-around;
+  gap: 1rem;
 }
 
 .map-button {
-    flex-shrink: 1;
-    padding: 1rem;
-    border: none;
-    background: none;
+  flex-shrink: 1;
+  padding: 1rem;
+  border: none;
+  background: none;
 }
 
 .map-button.selected {
-    outline: 2px solid var(--color-border);
-    border-radius: var(--radius);
+  outline: 2px solid var(--color-border);
+  border-radius: var(--radius);
 }
 
 .map-button svg {
-    width: 100%;
-    height: auto;
-    max-height: 4rem;
+  width: 100%;
+  height: auto;
+  max-height: 4rem;
 }
 </style>
