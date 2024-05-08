@@ -58,54 +58,56 @@ function logout() {
         <span v-if="!isPremiumUser && currentUser.license.evalDaysLeft" class="pill pill--extra">{{ currentUser.license.evalDaysLeft }} {{ t("Days_Left").toLowerCase() }}</span>
     </div>
 
-    <h2>{{ t("Profile_Status") }}</h2>
-    <ul class="profile-steps margin-bottom">
-        <li>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
-                <polyline v-if="hasAddedAnObservation" fill="none" stroke="var(--color-text)" stroke-width="2" points=" 9,17 13,21 23,11 "></polyline>
-                <circle fill="none" stroke="var(--color-text)" stroke-width="2" cx="16" cy="16" r="15"></circle>
-            </svg>
-            {{ t("HasAddedAnObservation") }}
-        </li>
-        <li>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
-                <polyline v-if="hasAddedAList" fill="none" stroke="var(--color-text)" stroke-width="2" points=" 9,17 13,21 23,11 "></polyline>
-                <circle fill="none" stroke="var(--color-text)" stroke-width="2" cx="16" cy="16" r="15"></circle>
-            </svg>
-            {{ t("HasAddedAList") }}
-        </li>
-        <li>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
-                <polyline v-if="hasAddedAFriend" fill="none" stroke="var(--color-text)" stroke-width="2" points=" 9,17 13,21 23,11 "></polyline>
-                <circle fill="none" stroke="var(--color-text)" stroke-width="2" cx="16" cy="16" r="15"></circle>
-            </svg>
-            {{ t("HasAddedAFriend") }}
-        </li>
-        <li>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
-                <polyline v-if="hasAddedMembersToAnyList" fill="none" stroke="var(--color-text)" stroke-width="2" points=" 9,17 13,21 23,11 "></polyline>
-                <circle fill="none" stroke="var(--color-text)" stroke-width="2" cx="16" cy="16" r="15"></circle>
-            </svg>
-            {{ t("HasAddedMembersToAnyList") }}
-        </li>
-        <li>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
-                <polyline v-if="hasAddedAComment" fill="none" stroke="var(--color-text)" stroke-width="2" points=" 9,17 13,21 23,11 "></polyline>
-                <circle fill="none" stroke="var(--color-text)" stroke-width="2" cx="16" cy="16" r="15"></circle>
-            </svg>
-            {{ t("HasAddedAComment") }}
-        </li>
-    </ul>
     <div>
-        <h2 v-if="isUserLoggedIn">{{ t("Logged_In_As") }}:</h2>
+        <h2 class="center">{{ t("Profile_Status") }}</h2>
+        <ul class="profile-steps margin-bottom">
+            <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
+                    <polyline v-if="hasAddedAnObservation" fill="none" stroke="var(--color-text)" stroke-width="2" points=" 9,17 13,21 23,11 "></polyline>
+                    <circle fill="none" stroke="var(--color-text)" stroke-width="2" cx="16" cy="16" r="15"></circle>
+                </svg>
+                {{ t("HasAddedAnObservation") }}
+            </li>
+            <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
+                    <polyline v-if="hasAddedAList" fill="none" stroke="var(--color-text)" stroke-width="2" points=" 9,17 13,21 23,11 "></polyline>
+                    <circle fill="none" stroke="var(--color-text)" stroke-width="2" cx="16" cy="16" r="15"></circle>
+                </svg>
+                {{ t("HasAddedAList") }}
+            </li>
+            <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
+                    <polyline v-if="hasAddedAFriend" fill="none" stroke="var(--color-text)" stroke-width="2" points=" 9,17 13,21 23,11 "></polyline>
+                    <circle fill="none" stroke="var(--color-text)" stroke-width="2" cx="16" cy="16" r="15"></circle>
+                </svg>
+                {{ t("HasAddedAFriend") }}
+            </li>
+            <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
+                    <polyline v-if="hasAddedMembersToAnyList" fill="none" stroke="var(--color-text)" stroke-width="2" points=" 9,17 13,21 23,11 "></polyline>
+                    <circle fill="none" stroke="var(--color-text)" stroke-width="2" cx="16" cy="16" r="15"></circle>
+                </svg>
+                {{ t("HasAddedMembersToAnyList") }}
+            </li>
+            <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
+                    <polyline v-if="hasAddedAComment" fill="none" stroke="var(--color-text)" stroke-width="2" points=" 9,17 13,21 23,11 "></polyline>
+                    <circle fill="none" stroke="var(--color-text)" stroke-width="2" cx="16" cy="16" r="15"></circle>
+                </svg>
+                {{ t("HasAddedAComment") }}
+            </li>
+        </ul>
+    </div>
+    <div>
+        <h2 class="center">{{ t("Logged_In_As") }}:</h2>
+        <button v-if="isUserLoggedIn" type="button" class="secondary logout" @click="logout()">{{ t("Logout") }}</button>
+        <button v-else type="button" class="secondary login" @click="db.cloud.login()">{{ t("Login") }}</button>
         <div class="grid margin-bottom">
             <user-icon :class="!isUserLoggedIn && 'dimmed'" />
             <p class="user-name">
                 {{ isUserLoggedIn ? currentUser.userId : t("Not_Logged_In") }}
             </p>
         </div>
-        <button v-if="isUserLoggedIn" type="button" class="secondary logout" @click="logout()">{{ t("Logout") }}</button>
-        <button v-else type="button" class="secondary login" @click="db.cloud.login()">{{ t("Login") }}</button>
     </div>
 </template>
 
@@ -139,6 +141,7 @@ function logout() {
 
 .login,
 .logout {
+    float: right;
     min-height: 2.4rem;
 }
 

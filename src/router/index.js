@@ -2,8 +2,6 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import MonthlyList from "../views/lists/MonthlyList.vue";
 import ListsView from "../views/ListsView.vue";
-import FriendsView from "../views/FriendsView.vue";
-import SettingsView from "../views/SettingsView.vue";
 import AboutView from "../views/AboutView.vue";
 
 const router = createRouter({
@@ -42,12 +40,12 @@ const router = createRouter({
     {
       path: "/friends",
       name: "friends",
-      component: FriendsView,
+      component: () => import("../views/FriendsView.vue"),
     },
     {
       path: "/settings",
       name: "settings",
-      component: SettingsView,
+      component: () => import("../views/SettingsView.vue"),
     },
     {
       path: "/about",

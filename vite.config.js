@@ -8,7 +8,13 @@ export default defineConfig({
   esbuild: {
     drop: ['console', 'debugger'],
   },
-  plugins: [vue()],
+  plugins: [vue({
+    template: {
+      compilerOptions: {
+        isCustomElement: (tag) => ['pwa-install'].includes(tag),
+      }
+    }
+  })],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

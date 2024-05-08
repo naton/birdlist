@@ -1,5 +1,5 @@
 <template>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="250" height="250">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="200" height="200">
 <path fill="#ffe6ba" d="M52 245s-29-40-22-73c7-30 29-101 63-112 51-16 139 8 157 37 51 86-6 148-6 148H52z" />
 <path fill="#fff" d="m79 106-4-2c0-3-3-6-6-6l-4 2-2-1c-3 0-5 2-5 5l-4 2-7 1h39l-7-1zm119 55-5-4c0-4-4-8-9-8l-6 2h-3c-4 0-7 3-8 6l-6 4-10 2h58l-11-2zm-43-72-4-2c0-4-3-7-7-7l-4 2h-2c-3 0-6 2-6 5l-5 2c-4 0-7 1-7 2h43l-8-2z">
 <animateTransform

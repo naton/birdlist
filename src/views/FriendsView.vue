@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '../stores/settings.js'
 import { useFriendsStore } from '../stores/friends.js'
 import AddFriendIcon from '../components/icons/AddFriendIcon.vue'
+import UserIcon from '../components/icons/UserIcon.vue'
 import RemoveFriendIcon from '../components/icons/RemoveFriendIcon.vue'
 import FriendsIllustration from '../components/illustrations/FriendsIllustration.vue';
 
@@ -38,7 +39,10 @@ function addFriendAndReset(name, email) {
         </details>
       </section>
       <section>
-        <h2>{{ t("Add_Friend")}}</h2>
+        <h2>
+          <user-icon />
+          {{ t("Add_Friend")}}…
+        </h2>
         <form @submit.prevent="addFriendAndReset(newFriendName, newFriendEmail)" class="margin-top">
           <input type="text" required placeholder="Namn" v-model="newFriendName">
           <input type="email" required placeholder="E-postadress" v-model="newFriendEmail">
@@ -46,11 +50,11 @@ function addFriendAndReset(name, email) {
         </form>
       </section>
       <section v-if="allFriends?.length">
-        <h2>{{ t("Current_Friends")}}</h2>
+        <h2 class="center">{{ t("Current_Friends")}}:</h2>
         <table>
           <tbody>
             <tr v-for="{ id, name, email } in allFriends" :key="email">
-              <th scope="row">{{ name }}</th>
+              <th scope="row"><user-icon />{{ name }}</th>
               <td class="crop">{{ email }}</td>
               <td><button type="button" @click="deleteFriend(name, id)" class="secondary"><remove-friend-icon /></button></td>
             </tr>
@@ -92,6 +96,16 @@ function addFriendAndReset(name, email) {
   width: 100%;
   border-collapse: collapse;
   line-height: 3;
+}
+
+.friends-content th svg {
+  margin-right: 0.5rem;
+  vertical-align: sub;
+}
+
+.friends-content h2 svg {
+  margin-right: 0.2rem;
+  vertical-align: baseline;
 }
 
 .friends-content th:first-child {

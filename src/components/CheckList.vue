@@ -42,7 +42,7 @@ const checkListBirds = computed(() => {
   return birdsToCheck.value.map((bird) => {
     return {
       name: bird,
-      checked: props.observations.some((obs) => obs.name === bird && obs.owner === currentUser.value.userId),
+      checked: props.observations.some((obs) => obs.name === bird && obs.owner === (selectedUser.value || currentUser.value.userId)),
     };
   });
 });

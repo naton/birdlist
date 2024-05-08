@@ -163,7 +163,7 @@ function openModal(obs) {
 
 .list button {
   flex-shrink: 0;
-  min-height: 1rem;
+  min-height: 2.2rem;
 }
 
 .list .obs {
@@ -206,7 +206,7 @@ function openModal(obs) {
   border-radius: var(--radius);
   box-sizing: border-box;
   color: var(--color-text);
-  background: var(--color-background);
+  background: var(--color-background-dim);
   font-size: 1.4rem;
   appearance: none;
 }

@@ -28,8 +28,8 @@ function editObservation() {
       </span>
     </span>
     <button type="button" class="edit-button" @click.stop="editObservation">
-      <span v-if="canEdit(props.obs.owner)"><edit-icon /></span>
-      <span v-else><view-icon /></span>
+      <template v-if="canEdit(props.obs.owner)"><edit-icon /></template>
+      <template v-else><view-icon /></template>
     </button>
   </li>
 </template>

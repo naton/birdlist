@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, onMounted } from 'vue'
+import { onBeforeMount, onMounted, defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia'
 import { RouterLink, RouterView } from "vue-router";
 import { useSettingsStore } from './stores/settings.js'
@@ -10,10 +10,11 @@ import HomeIcon from './components/icons/HomeIcon.vue'
 import FriendsIcon from './components/icons/FriendsIcon.vue'
 import SettingsIcon from './components/icons/SettingsIcon.vue'
 import HelpIcon from './components/icons/HelpIcon.vue'
+const InstallPrompt = defineAsyncComponent(() => import('./components/InstallPrompt.vue'))
 
 const settingsStore = useSettingsStore()
 const { t, loadTexts, setThemeColor } = settingsStore
-const { locale, texts } = storeToRefs(settingsStore)
+const { locale, texts, isUserLoggedIn } = storeToRefs(settingsStore)
 
 const messagesStore = useMessagesStore()
 const { addMessage } = messagesStore
@@ -69,15 +70,24 @@ function onUpdateFound(registration) {
       {{ t("About") }}
     </router-link>
   </nav>
+  <install-prompt v-if="isUserLoggedIn" />
 </template>
 
 <style>
-.main-nav a {
+.nav.main-nav {
+  padding: 0.25rem;
+  box-shadow: 0 -4px 14px rgb(0 0 0 / 10%);
+  z-index: 1;
+}
+
+.nav.main-nav a {
   display: flex;
   gap: 0.5rem 0;
   flex-direction: column;
+  border: 0;
+  border-radius: var(--radius);
+  box-shadow: none;
   align-items: center;
-  font-size: 0.75rem;
   line-height: 1;
 }
 </style>
