@@ -61,13 +61,18 @@ function add(bird) {
   addObservationInput.value.clearInput();
 }
 
+function addUnlistedBird() {
+  const newBird = { name: addObservationInput.value.getInput().value };
+  add(newBird);
+}
+
 onMounted(() => {
   loadAllBirds(props.locale);
 });
 </script>
 
 <template>
-  <div class="add-bird">
+  <form class="add-bird">
     <button type="button" @click="toggleCurrentLocation" :class="{ 'is-tracking': calculatingPosition, 'has-position': currentPosition, }">
       <add-location-icon v-if="!currentPosition && !calculatingPosition"></add-location-icon>
       <fetching-location-icon v-else-if="calculatingPosition"></fetching-location-icon>
@@ -75,9 +80,9 @@ onMounted(() => {
     </button>
     <vue3-simple-typeahead ref="addObservationInput" :placeholder="route.params.id
       ? `${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`
-      : t('Enter_The_Name_Of_The_Bird')" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => add(bird)">
+      : t('Enter_The_Name_Of_The_Bird')" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => add(bird)" @keyup.enter="addUnlistedBird">
     </vue3-simple-typeahead>
-  </div>
+  </form>
 </template>
 
 <style>

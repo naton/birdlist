@@ -153,7 +153,7 @@ onBeforeMount(() => {
     </div>
   </section>
 
-  <form v-if="checkListEditMode" class="add-bird">
+  <form v-if="checkListEditMode" class="add-bird fixed">
     <vue3-simple-typeahead ref="addListBirdInput" :placeholder="`${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => addListBird(bird)"></vue3-simple-typeahead>
     <button type="button" @click="saveCheckList">{{ t("Save") }}</button>
   </form>

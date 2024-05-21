@@ -200,7 +200,7 @@ onBeforeMount(() => {
     {{ t("No_Birds_Added") }}
   </div>
 
-  <form v-if="checkListEditMode" class="add-bird">
+  <form v-if="checkListEditMode" class="add-bird fixed">
     <vue3-simple-typeahead ref="addListBirdInput" :placeholder="`${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => addListBird(bird)"></vue3-simple-typeahead>
     <button type="button" @click="saveCheckList" :disabled="checkListBirds.length < bingoSize * bingoSize">
       <span v-if="checkListBirds.length < bingoSize * bingoSize">{{ checkListBirds.length }} / {{ bingoSize * bingoSize }}</span>
@@ -210,15 +210,6 @@ onBeforeMount(() => {
 </template>
 
 <style>
-form.add-bird {
-  position: fixed;
-  max-width: 820px;
-  margin: auto;
-  right: 0;
-  bottom: 5rem;
-  left: 0;
-}
-
 .grid-3,
 .grid-4,
 .grid-5 {

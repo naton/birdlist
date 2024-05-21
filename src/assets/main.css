@@ -236,11 +236,11 @@ textarea::placeholder {
 }
 
 /* Checklists and BINGO */ 
-main:has(form.add-bird) .footer {
+main:has(.add-bird.fixed) .footer {
   display: none;
 }
 
-form.add-bird {
+.add-bird.fixed {
   position: fixed;
   max-width: 820px;
   margin: auto;
