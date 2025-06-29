@@ -88,6 +88,7 @@ function handleClick() {
 
 .list li.selected {
   background: var(--color-background-dim);
+  outline: none;
 }
 
 .list li.selected .date {
