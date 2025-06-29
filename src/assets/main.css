@@ -485,7 +485,13 @@ input[type^="date"]::-webkit-datetime-edit-month-field,
 input[type^="date"]::-webkit-datetime-edit-day-field,
 input[type^="date"]::-webkit-datetime-edit-hour-field,
 input[type^="date"]::-webkit-datetime-edit-minute-field,
-input[type^="date"]::-webkit-datetime-edit-text {
+input[type^="date"]::-webkit-datetime-edit-text,
+input[type="datetime-local"]::-webkit-datetime-edit-year-field,
+input[type="datetime-local"]::-webkit-datetime-edit-month-field,
+input[type="datetime-local"]::-webkit-datetime-edit-day-field,
+input[type="datetime-local"]::-webkit-datetime-edit-hour-field,
+input[type="datetime-local"]::-webkit-datetime-edit-minute-field,
+input[type="datetime-local"]::-webkit-datetime-edit-text {
   color: var(--color-text);
 }
 
@@ -634,6 +640,20 @@ button:has(svg) {
   input::-webkit-calendar-picker-indicator,
   .logo {
     filter: invert(1);
+  }
+}
+
+/* iOS Specific Fixes */
+@supports (-webkit-touch-callout: none) {
+  /* Fix for all date/time inputs on iOS */
+  input[type^="date"],
+  input[type="datetime-local"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--color-background-dim);
+    color: var(--color-text);
+    font-size: 1.2rem;
+    width: 100%;
   }
 }
 
