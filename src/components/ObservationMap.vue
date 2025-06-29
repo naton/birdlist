@@ -1,5 +1,9 @@
 <template>
-  <div class="map-container" ref="mapContainer">
+  <div 
+    class="map-container" 
+    ref="mapContainer"
+    :class="{ 'editable': editable }"
+  >
     <div v-if="location" id="observation-map" :style="{ height: height + 'px', width: '100%' }"></div>
     <div v-else class="map-placeholder" :style="{ height: height + 'px' }">
       {{ t("No_Location_Data") }}
@@ -11,11 +15,10 @@
 import { ref, onMounted, onUnmounted, watch, shallowRef } from 'vue';
 import { useSettingsStore } from '@/stores/settings.js';
 
+// Use defineModel for two-way binding with location
+const location = defineModel('location');
+
 const props = defineProps({
-  location: {
-    type: String,
-    default: null
-  },
   height: {
     type: Number,
     default: 200
@@ -24,6 +27,11 @@ const props = defineProps({
   visible: {
     type: Boolean,
     default: true
+  },
+  // New prop to enable marker dragging in edit mode
+  editable: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -76,9 +84,9 @@ async function loadLeaflet() {
 // Initialize or update the map when the component is mounted or location changes
 async function initMap() {
   // Skip initialization if not visible or no location
-  if (!props.visible || !props.location) return;
+  if (!props.visible || !location.value) return;
   
-  const [lat, lon] = props.location.split(',').map(coord => parseFloat(coord.trim()));
+  const [lat, lon] = location.value.split(',').map(coord => parseFloat(coord.trim()));
   
   // If there's no valid coordinates, don't try to create a map
   if (isNaN(lat) || isNaN(lon)) return;
@@ -99,7 +107,7 @@ function createMap(lat, lon) {
     if (marker.value) {
       marker.value.setLatLng([lat, lon]);
     } else {
-      marker.value = window.L.marker([lat, lon]).addTo(map.value);
+      createMarker(lat, lon);
     }
     return;
   }
@@ -114,12 +122,50 @@ function createMap(lat, lon) {
   }).addTo(map.value);
   
   // Add a marker at the location
-  marker.value = window.L.marker([lat, lon]).addTo(map.value);
+  createMarker(lat, lon);
   
   // Ensure the map container is properly sized
   setTimeout(() => {
     if (map.value) map.value.invalidateSize();
   }, 100);
+}
+
+// Helper function to create and configure the marker
+function createMarker(lat, lon) {
+  // Remove existing marker if any
+  if (marker.value) {
+    marker.value.remove();
+  }
+  
+  // Create marker with draggable option based on editable prop
+  marker.value = window.L.marker([lat, lon], {
+    draggable: props.editable
+  }).addTo(map.value);
+  
+  // If editable, add drag events
+  if (props.editable) {
+    // Add instruction popup if in edit mode
+    map.value.openPopup(
+      window.L.popup()
+        .setLatLng([lat, lon])
+        .setContent(`<div>${t("Drag_Marker_To_Move")}</div>`)
+    );
+    
+    // Update coordinates when marker is dragged
+    marker.value.on('dragend', (event) => {
+      const newPos = event.target.getLatLng();
+      const newLocation = `${newPos.lat.toFixed(6)},${newPos.lng.toFixed(6)}`;
+      location.value = newLocation;
+    });
+    
+    // Also enable click-to-move anywhere on the map
+    map.value.on('click', (event) => {
+      const newPos = event.latlng;
+      marker.value.setLatLng(newPos);
+      const newLocation = `${newPos.lat.toFixed(6)},${newPos.lng.toFixed(6)}`;
+      location.value = newLocation;
+    });
+  }
 }
 
 // Clean up the map resources when the component is unmounted
@@ -142,7 +188,7 @@ onUnmounted(() => {
 });
 
 // Watch for changes in the location prop
-watch(() => props.location, () => {
+watch(() => location.value, () => {
   if (props.visible) {
     initMap();
   }
@@ -150,10 +196,22 @@ watch(() => props.location, () => {
 
 // Watch for changes in visibility
 watch(() => props.visible, (newVisible) => {
-  if (newVisible && props.location) {
+  if (newVisible && location.value) {
     initMap();
   } else if (!newVisible && map.value) {
     cleanupMap();
+  }
+});
+
+// Watch for changes in editable state
+watch(() => props.editable, () => {
+  if (map.value && marker.value && props.visible && location.value) {
+    // Get current position
+    const [lat, lon] = location.value.split(',').map(coord => parseFloat(coord.trim()));
+    if (!isNaN(lat) && !isNaN(lon)) {
+      // Recreate marker with new draggable state
+      createMarker(lat, lon);
+    }
   }
 });
 </script>
@@ -165,6 +223,11 @@ watch(() => props.visible, (newVisible) => {
   border: 1px solid var(--color-border);
   margin-bottom: 1rem;
   border-radius: var(--radius);
+  position: relative;
+}
+
+.map-container.editable #observation-map {
+  cursor: crosshair;
 }
 
 .map-placeholder {
