@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { inputDate } from "@/helpers";
 import { useRouter } from "vue-router";
+import AppDialog from "./AppDialog.vue";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
 import ListsIcon from "./icons/ListsIcon.vue";
@@ -26,10 +27,10 @@ const endDate = ref(new Date().setDate(startDate.value.getDate() + 30))
 const reportInterval = ref(2)
 const bingoSize = ref(3)
 
-const listDialog = ref(null);
+const isDialogOpen = ref(false);
 
 function openModal() {
-  listDialog.value.showModal();
+  isDialogOpen.value = true;
 }
 
 async function createListAndClose() {
@@ -53,7 +54,7 @@ async function createListAndClose() {
 }
 
 function closeModal() {
-  listDialog.value.close();
+  isDialogOpen.value = false;
 }
 
 defineExpose({
@@ -63,14 +64,14 @@ defineExpose({
 </script>
 
 <template>
-  <dialog ref="listDialog" class="dialog">
+  <app-dialog v-model="isDialogOpen" close-on-backdrop>
     <form @submit.prevent="createListAndClose">
       <div class="grid">
         <lists-icon />
         <h2>{{ t("Create_List") }}</h2>
       </div>
       <label for="title">{{ t("List_Name") }}:</label>
-      <input type="text" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus required />
+      <input type="text" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" required />
       <label for="description">{{ t("Description") }}:</label>
       <textarea id="description" v-model="description" cols="30" rows="5" :placeholder="t('List_Rules_Etc')"></textarea>
       <label for="title">{{ t("Type_Of_List") }}:</label>
@@ -137,7 +138,7 @@ defineExpose({
         <button @click="closeModal" class="secondary">{{ t("Cancel") }}</button>
       </div>
     </form>
-  </dialog>
+  </app-dialog>
 </template>
 
 <style>

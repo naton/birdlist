@@ -1,7 +1,8 @@
 <script setup>
-import { ref, defineModel } from "vue";
+import { ref } from "vue";
 import { storeToRefs } from 'pinia'
 import { formatDateAndTime, inputDateTime } from "@/helpers";
+import AppDialog from "./AppDialog.vue";
 import ObservationsIcon from "./icons/ObservationsIcon.vue";
 import BirdsIcon from "./icons/BirdsIcon.vue";
 import ListsIcon from "./icons/ListsIcon.vue";
@@ -25,9 +26,7 @@ const { saveObservation } = observationsStore
 const emit = defineEmits(["delete"]);
 
 const currentObservation = defineModel();
-
-const editObservationDialog = ref(null);
-
+const isDialogOpen = ref(false);
 const isEditing = ref(false);
 
 function currentListName() {
@@ -45,12 +44,12 @@ function deleteAndClose(id) {
 }
 
 function openModal() {
-  editObservationDialog.value.showModal();
+  isDialogOpen.value = true;
 }
 
 function closeModal() {
   isEditing.value = false;
-  editObservationDialog.value.close();
+  isDialogOpen.value = false;
 }
 
 function saveAndClose() {
@@ -65,7 +64,7 @@ defineExpose({
 </script>
 
 <template>
-  <dialog ref="editObservationDialog" class="dialog">
+  <app-dialog v-model="isDialogOpen">
     <div class="grid margin-bottom">
       <birds-icon />
       <h2 v-if="!isEditing">{{ currentObservation?.name }}</h2>
@@ -120,7 +119,7 @@ defineExpose({
       </button>
       <button type="button" class="secondary" @click="closeModal()">{{ t("Cancel") }}</button>
     </div>
-  </dialog>
+  </app-dialog>
 </template>
 
 <style>

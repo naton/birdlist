@@ -410,23 +410,56 @@ button.secondary {
 }
 
 /* Dialogs */
+dialog {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: inherit;
+}
+
 .dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.dialog[open]::backdrop {
+  opacity: 1;
 }
 
 .dialog h2 {
   font-weight: bold;
 }
 
-.dialog[open] {
+/* Vue Transition classes for dialog */
+.dialog-enter-active,
+.dialog-leave-active {
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.dialog-enter-from,
+.dialog-leave-to {
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+/* Standard dialog styling */
+.dialog {
   width: 95%;
   max-width: 700px;
-  margin: auto;
+  margin: auto auto 0;
   padding: 1rem;
-  border: 2px solid;
-  border-radius: var(--radius);
+  border: none;
+  border-radius: var(--radius) var(--radius) 0 0;
   color: inherit;
   background-color: var(--color-background);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .dialog label:not(.radio) {

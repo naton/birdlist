@@ -36,12 +36,17 @@ const { allComments } = storeToRefs(commentsStore)
 /* Comments */
 const listComments = computed(() => allComments.value?.filter((comment) => comment.listId == route.params.id));
 
+// Dialog state
 const editDialog = ref(null);
+const isEditDialogOpen = ref(false);
 
 const isListOwner = computed(() => currentUser.value?.userId === currentList.value?.owner);
 
 function openModal() {
-  editDialog.value.openModal();
+  if (editDialog.value) {
+    editDialog.value.openModal();
+  }
+  isEditDialogOpen.value = true;
 }
 
 function edit(obs) {
@@ -66,7 +71,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <edit-list-dialog ref="editDialog" v-model:list="currentList.value" />
+  <edit-list-dialog 
+    ref="editDialog" 
+    v-model="isEditDialogOpen"
+    v-model:list="currentList.value" 
+  />
   <list-info>
     <template v-slot:extra>
       <button v-if="isListOwner" class="add secondary" @click="openModal">

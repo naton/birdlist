@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
 import { db } from "../db";
+import AppDialog from "./AppDialog.vue";
 import { useSettingsStore } from '../stores/settings.js'
 import { useFriendsStore } from '../stores/friends.js'
 import { useListsStore } from '../stores/lists.js'
@@ -19,13 +20,13 @@ const listsStore = useListsStore()
 const { getListMembers, shareBirdList } = listsStore
 const { currentList } = storeToRefs(listsStore)
 
-const shareListDialog = ref(null);
+const isDialogOpen = ref(false);
 const selectedFriends = ref([]);
 const listMembers = ref([]);
 
 async function openModal() {
   listMembers.value = await getListMembers(currentList.value.id);
-  shareListDialog.value.showModal();
+  isDialogOpen.value = true;
 }
 
 function shareAndClose() {
@@ -42,7 +43,7 @@ function isMember(friend) {
 }
 
 function closeModal() {
-  shareListDialog.value.close();
+  isDialogOpen.value = false;
 }
 
 defineExpose({
@@ -52,7 +53,7 @@ defineExpose({
 </script>
 
 <template>
-  <dialog ref="shareListDialog" class="dialog">
+  <app-dialog v-model="isDialogOpen">
     <div class="grid">
       <friends-icon />
       <h2>{{ t("Invite_Your_Friends") }}!</h2>
@@ -82,5 +83,5 @@ defineExpose({
       <button v-else type="button" :disabled="!allFriends.length || !selectedFriends.length || !isUserLoggedIn" @click="shareAndClose">{{ t("Invite") }}</button>
       <button class="secondary" @click="closeModal">{{ t("Close") }}</button>
     </div>
-  </dialog>
+  </app-dialog>
 </template>

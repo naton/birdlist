@@ -2,6 +2,7 @@
 import { ref, computed, watch } from "vue";
 import { inputDate } from "@/helpers";
 import { storeToRefs } from "pinia";
+import AppDialog from "./AppDialog.vue";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
 import ListsIcon from "./icons/ListsIcon.vue";
@@ -18,7 +19,10 @@ const { currentUser } = storeToRefs(settingsStore)
 const listsStore = useListsStore()
 const { updateList, deleteList } = listsStore
 
+// Using defineModel for both the list data and the dialog open state
 const listToEdit = defineModel('list');
+const isDialogOpen = defineModel('modelValue', { default: false });
+
 const title = ref('')
 const description = ref('')
 const type = ref('')
@@ -46,10 +50,8 @@ watch(listToEdit, (list) => {
   }
 })
 
-const listDialog = ref(null);
-
 function openModal() {
-  listDialog.value.showModal();
+  isDialogOpen.value = true;
 }
 
 function saveList() {
@@ -72,9 +74,10 @@ function saveList() {
 }
 
 function closeModal() {
-  listDialog.value.close();
+  isDialogOpen.value = false;
 }
 
+// Expose these methods for direct calling via ref
 defineExpose({
   openModal,
   closeModal,
@@ -82,13 +85,13 @@ defineExpose({
 </script>
 
 <template>
-  <dialog ref="listDialog" class="dialog">
+  <app-dialog v-model="isDialogOpen">
     <div class="grid">
       <lists-icon />
       <h2>{{ t("Edit_List") }}</h2>
     </div>
     <label for="list-title">{{ t("List_Name") }}:</label>
-    <input type="text" id="list-title" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" autofocus />
+    <input type="text" id="list-title" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" />
     <label for="list-description">{{ t("Description") }}:</label>
     <textarea id="list-description" v-model="description" cols="30" rows="5" :placeholder="t('List_Rules_Etc')"></textarea>
     <label for="title">{{ t("Type_Of_List") }}:</label>
@@ -154,5 +157,5 @@ defineExpose({
       </button>
       <button @click="closeModal" class="secondary">{{ t("Cancel") }}</button>
     </div>
-  </dialog>
+  </app-dialog>
 </template>

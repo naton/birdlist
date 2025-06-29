@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, defineModel } from "vue";
+import { ref, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { db } from "../db";
 import { useSettingsStore } from "@/stores/settings.js";
