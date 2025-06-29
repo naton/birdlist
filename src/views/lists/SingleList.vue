@@ -66,7 +66,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <edit-list-dialog ref="editDialog" />
+  <edit-list-dialog ref="editDialog" v-model:list="currentList.value" />
   <list-info>
     <template v-slot:extra>
       <button v-if="isListOwner" class="add secondary" @click="openModal">

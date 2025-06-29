@@ -125,7 +125,7 @@ function noOfComments() {
   <slot name="default">
     <user-nav
       :users="users"
-      :selectedUser="selectedUser" />
+      v-model:selectedUser="selectedUser" />
 
     <svg-chart v-if="users?.length > 1"
       :observations="props.observations"

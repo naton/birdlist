@@ -2,10 +2,8 @@
 import { storeToRefs } from "pinia";
 import UserInitial from "./icons/UserInitial.vue";
 import { useFriendsStore } from "@/stores/friends.js";
-import { useSettingsStore } from "../stores/settings";
 
-const settingsStore = useSettingsStore();
-const { selectedUser } = storeToRefs(settingsStore);
+const selectedUser = defineModel('selectedUser');
 
 const friendsStore = useFriendsStore();
 const { getFriendlyName } = friendsStore;

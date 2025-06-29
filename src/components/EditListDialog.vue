@@ -17,9 +17,8 @@ const { currentUser } = storeToRefs(settingsStore)
 
 const listsStore = useListsStore()
 const { updateList, deleteList } = listsStore
-const { currentList } = storeToRefs(listsStore)
 
-const listToEdit = ref();
+const listToEdit = defineModel('list');
 const title = ref('')
 const description = ref('')
 const type = ref('')
@@ -50,7 +49,6 @@ watch(listToEdit, (list) => {
 const listDialog = ref(null);
 
 function openModal() {
-  listToEdit.value = currentList.value;
   listDialog.value.showModal();
 }
 
