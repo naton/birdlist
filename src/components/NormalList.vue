@@ -6,12 +6,11 @@ import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
 import { useCommentsStore } from "@/stores/comments.js";
 import { groupBy } from "@/helpers";
-import ObservationItem from "./ObservationItem.vue";
+import ItemComponent from "./ItemComponent.vue";
 import ObservationsIcon from "./icons/ObservationsIcon.vue";
 import BirdsIcon from "./icons/BirdsIcon.vue";
 import CommentsIcon from "./icons/CommentsIcon.vue";
 import UserNav from "./UserNav.vue";
-import SpeciesItem from "./SpeciesItem.vue";
 import CommentItem from "./CommentItem.vue";
 import SvgChart from "./SvgChart.vue";
 import HomeIllustration from '../components/illustrations/HomeIllustration.vue';
@@ -173,22 +172,28 @@ function noOfComments() {
 
     <section id="bydate" v-if="props.observations.length && currentSort === 'bydate'">
       <transition-group tag="ul" name="list" class="list">
-        <observation-item v-for="obs in observationsByUser"
+        <item-component v-for="obs in observationsByUser"
+          mode="observation"
           :obs="obs"
           :key="obs.date"
           :user="currentUser.name"
           :selected="selectedObservation == obs"
           @click="selectObservation(obs)"
           @delete="emitDelete(id)"
-          @edit="emitEdit"></observation-item>
+          @edit="emitEdit"></item-component>
       </transition-group>
     </section>
 
     <section id="byname" v-if="species.length && currentSort === 'byname'">
       <transition-group tag="ol" name="list" class="list">
-        <species-item v-for="obs in speciesByUser"
+        <item-component v-for="obs in speciesByUser"
+          mode="species"
           :obs="obs"
-          :key="obs[0].name"></species-item>
+          :key="obs[0].name"
+          :user="currentUser.name"
+          :selected="selectedObservation == obs[obs.length - 1]"
+          @click="selectObservation(obs[obs.length - 1])"
+          @edit="emitEdit"></item-component>
       </transition-group>
     </section>
 
