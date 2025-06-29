@@ -1,8 +1,6 @@
 <script setup>
 import UserInitial from "./icons/UserInitial.vue";
 import LocationSpecifiedIcon from "./icons/LocationSpecifiedIcon.vue";
-import EditIcon from "./icons/EditIcon.vue";
-import ViewIcon from "./icons/ViewIcon.vue";
 import { formatDate } from "@/helpers";
 
 const props = defineProps({
@@ -23,29 +21,16 @@ const props = defineProps({
 
 const emit = defineEmits(["edit", "click"]);
 
-function canEdit(owner) {
-  return owner === "unauthorized" || props.user === owner;
-}
-
-function handleEdit() {
-  if (props.mode === "observation") {
-    emit("edit", props.obs);
-  } else if (props.mode === "species") {
-    // For species mode, edit the last observation for this bird
-    const lastObservation = props.obs[props.obs.length - 1];
-    emit("edit", lastObservation);
-  }
-}
-
 function handleClick() {
   if (props.mode === "observation") {
-    // For observation mode, we want to emit a click event that the parent can use
-    // to toggle selection state
+    // Now handle both selection and editing in one click
     emit("click", props.obs);
+    emit("edit", props.obs);
   } else if (props.mode === "species") {
-    // For species mode, we also emit click but with the last observation
+    // For species mode, also handle both selection and editing
     const lastObservation = props.obs[props.obs.length - 1];
     emit("click", lastObservation);
+    emit("edit", lastObservation);
   }
 }
 </script>
@@ -70,19 +55,6 @@ function handleClick() {
         <user-initial v-for="user in [...new Set(props.obs.map((o) => o.owner))]" :key="user" :user="user" />
       </span>
     </span>
-    
-    <!-- Action Buttons (for all modes) -->
-    <button type="button" class="edit-button" @click.stop="handleEdit">
-      <template v-if="props.mode === 'observation' && !canEdit(props.obs.owner)">
-        <view-icon />
-      </template>
-      <template v-else-if="props.mode === 'species' && props.obs.length > 0 && !canEdit(props.obs[props.obs.length - 1].owner)">
-        <view-icon />
-      </template>
-      <template v-else>
-        <edit-icon />
-      </template>
-    </button>
   </li>
 </template>
 
@@ -113,30 +85,12 @@ function handleClick() {
   cursor: pointer;
 }
 
-.content-wrapper + .edit-button {
-  margin-left: -3rem;
-  transform: translateX(3rem);
-  transition: 0.1s transform ease-out;
-  cursor: pointer;
-  z-index: 1;
-}
-
 .list li.selected {
   background: var(--color-background-dim);
 }
 
-.list li.selected .content-wrapper {
-  transform: translateX(-3rem);
-}
-
 .list li.selected .date {
   color: var(--color-text);
-}
-
-.list li.selected .edit-button {
-  position: relative;
-  transform: translateX(-0.25rem);
-  z-index: 1;
 }
 
 .obs .has-location {
