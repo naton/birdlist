@@ -31,7 +31,7 @@ const createListDialog = ref(null);
 const listInvites = useObservable(db.cloud.invites);
 
 function newList() {
-  createListDialog.value.openModal();
+  createListDialog.value.showModal();
 }
 
 function selectList(list) {

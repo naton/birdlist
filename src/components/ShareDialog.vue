@@ -31,7 +31,7 @@ async function openModal() {
 
 function shareAndClose() {
   shareBirdList(currentList.value.id, currentList.value.title, selectedFriends.value);
-  closeModal();
+  close();
 }
 
 function isMember(friend) {
@@ -42,13 +42,13 @@ function isMember(friend) {
   return listMembers.value.some(member => member.email === friend.email && member.accepted);
 }
 
-function closeModal() {
+function close() {
   isDialogOpen.value = false;
 }
 
 defineExpose({
-  openModal,
-  closeModal,
+  showModal: openModal,
+  close,
 })
 </script>
 
@@ -79,9 +79,9 @@ defineExpose({
       </tbody>
     </table>
     <div class="buttons">
-      <button v-if="!isUserLoggedIn" type="button" @click="closeModal(); db.cloud.login()">{{ t("Login") }}</button>
+      <button v-if="!isUserLoggedIn" type="button" @click="close(); db.cloud.login()">{{ t("Login") }}</button>
       <button v-else type="button" :disabled="!allFriends.length || !selectedFriends.length || !isUserLoggedIn" @click="shareAndClose">{{ t("Invite") }}</button>
-      <button class="secondary" @click="closeModal">{{ t("Close") }}</button>
+      <button class="secondary" @click="close">{{ t("Close") }}</button>
     </div>
   </app-dialog>
 </template>

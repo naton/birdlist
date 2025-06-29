@@ -40,26 +40,26 @@ function canEdit(owner) {
 
 function deleteAndClose(id) {
   emit("delete", id);
-  closeModal();
+  close();
 }
 
 function openModal() {
   isDialogOpen.value = true;
 }
 
-function closeModal() {
+function close() {
   isEditing.value = false;
   isDialogOpen.value = false;
 }
 
 function saveAndClose() {
   saveObservation(currentObservation.value);
-  closeModal();
+  close();
 }
 
 defineExpose({
-  openModal,
-  closeModal,
+  showModal: openModal,
+  close,
 });
 </script>
 
@@ -117,7 +117,7 @@ defineExpose({
         <delete-icon />
         {{ t("Delete") }}
       </button>
-      <button type="button" class="secondary" @click="closeModal()">{{ t("Cancel") }}</button>
+      <button type="button" class="secondary" @click="close()">{{ t("Cancel") }}</button>
     </div>
   </app-dialog>
 </template>

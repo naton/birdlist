@@ -1,11 +1,12 @@
 <template>
     <transition name="dialog">
         <dialog 
-            v-if="modelValue || isOpenViaMethod" 
+            v-if="isOpen" 
             ref="dialogRef" 
             class="dialog" 
             closedby="any"
-            @cancel="emitClose"
+            @closerequest="handleCloseRequest"
+            @cancel="handleCloseRequest"
         >
             <slot></slot>
         </dialog>
@@ -15,36 +16,19 @@
 <script setup>
 import { ref, watch, onMounted, nextTick } from 'vue';
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false
-  }
-});
-
-const isOpenViaMethod = ref(false);
-const emit = defineEmits(['update:modelValue']);
+const isOpen = defineModel('modelValue', { default: false });
 const dialogRef = ref(null);
 
-// Watch for changes to modelValue
-watch(() => props.modelValue, (newVal) => {
+// Watch for changes to isOpen
+watch(() => isOpen.value, (newVal) => {
   if (newVal) {
-    nextTick(openModalInternal);
+    nextTick(showModalInternal);
   } else {
-    closeModalInternal();
+    closeInternal();
   }
 }, { immediate: true });
 
-// Watch for method-triggered changes
-watch(() => isOpenViaMethod.value, (newVal) => {
-  if (newVal) {
-    nextTick(openModalInternal);
-  } else {
-    closeModalInternal();
-  }
-}, { immediate: true });
-
-function openModalInternal() {
+function showModalInternal() {
   if (!dialogRef.value) return;
   
   // Only call showModal if the dialog is not already open
@@ -66,41 +50,46 @@ function openModalInternal() {
   }
 }
 
-function closeModalInternal() {
+function closeInternal() {
   if (!dialogRef.value) return;
   
   // Only close if it's actually open
   if (dialogRef.value.open) {
-    dialogRef.value.close();
+    // Store a reference to the dialog element
+    const dialog = dialogRef.value;
+    
+    // Wait for the animation to complete before actually closing
+    setTimeout(() => {
+      // Check if the dialog is still available and open before closing
+      if (dialog && dialog.open) {
+        dialog.close();
+      }
+    }, 300); // Match your CSS transition duration
   }
 }
 
-function emitClose() {
-  emit('update:modelValue', false);
-  isOpenViaMethod.value = false;
+function handleCloseRequest() {
+  // Update the model value when the dialog requests to be closed
+  // This handles both the modern 'closerequest' event and the legacy 'cancel' event
+  // (happens on Escape key or backdrop click when closedby="any")
+  isOpen.value = false;
 }
 
 onMounted(() => {
-  // If modelValue or isOpenViaMethod is true on mount, open the dialog
-  if (dialogRef.value && (props.modelValue || isOpenViaMethod.value)) {
-    nextTick(openModalInternal);
+  // If isOpen is true on mount, open the dialog
+  if (dialogRef.value && isOpen.value) {
+    nextTick(showModalInternal);
   }
 });
 
 // Expose methods for direct component manipulation
 defineExpose({
+  // Primary methods
   showModal: () => {
-    isOpenViaMethod.value = true;
+    isOpen.value = true;
   },
   close: () => {
-    isOpenViaMethod.value = false;
-  },
-  // Adding these aliases to support the existing API
-  openModal: () => {
-    isOpenViaMethod.value = true;
-  },
-  closeModal: () => {
-    isOpenViaMethod.value = false;
+    isOpen.value = false;
   }
 });
 </script>

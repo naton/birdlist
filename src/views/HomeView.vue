@@ -20,7 +20,7 @@ const currentObservation = ref(null);
 
 function openModal(obs) {
   currentObservation.value = obs;
-  modal.value?.openModal();
+  modal.value?.showModal();
 }
 </script>
 

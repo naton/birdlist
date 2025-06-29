@@ -70,17 +70,17 @@ function saveList() {
     payload.reportInterval = reportInterval.value
   }
   updateList(payload);
-  closeModal();
+  close();
 }
 
-function closeModal() {
+function close() {
   isDialogOpen.value = false;
 }
 
 // Expose these methods for direct calling via ref
 defineExpose({
-  openModal,
-  closeModal,
+  showModal: openModal,
+  close,
 })
 </script>
 
@@ -91,7 +91,7 @@ defineExpose({
       <h2>{{ t("Edit_List") }}</h2>
     </div>
     <label for="list-title">{{ t("List_Name") }}:</label>
-    <input type="text" id="list-title" v-model="title" @keyup.esc="closeModal" :placeholder="t('Enter_The_Name_Of_The_List')" />
+    <input type="text" id="list-title" v-model="title" @keyup.esc="close" :placeholder="t('Enter_The_Name_Of_The_List')" />
     <label for="list-description">{{ t("Description") }}:</label>
     <textarea id="list-description" v-model="description" cols="30" rows="5" :placeholder="t('List_Rules_Etc')"></textarea>
     <label for="title">{{ t("Type_Of_List") }}:</label>
@@ -155,7 +155,7 @@ defineExpose({
         <delete-icon />
         {{ t("Delete") }}
       </button>
-      <button @click="closeModal" class="secondary">{{ t("Cancel") }}</button>
+      <button @click="close" class="secondary">{{ t("Cancel") }}</button>
     </div>
   </app-dialog>
 </template>

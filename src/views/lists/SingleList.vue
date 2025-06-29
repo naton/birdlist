@@ -44,7 +44,7 @@ const isListOwner = computed(() => currentUser.value?.userId === currentList.val
 
 function openModal() {
   if (editDialog.value) {
-    editDialog.value.openModal();
+    editDialog.value.showModal();
   }
   isEditDialogOpen.value = true;
 }

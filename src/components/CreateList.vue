@@ -50,16 +50,16 @@ async function createListAndClose() {
 
   const listId = await createList(payload);
   router.push({ name: "list", params: { id: listId } });
-  closeModal();
+  close();
 }
 
-function closeModal() {
+function close() {
   isDialogOpen.value = false;
 }
 
 defineExpose({
-  openModal,
-  closeModal
+  showModal: openModal,
+  close
 })
 </script>
 
@@ -135,7 +135,7 @@ defineExpose({
       </details>
       <div class="buttons">
         <button type="submit">{{ t("Create_List") }}</button>
-        <button @click="closeModal" class="secondary">{{ t("Cancel") }}</button>
+        <button @click="close" class="secondary">{{ t("Cancel") }}</button>
       </div>
     </form>
   </app-dialog>
