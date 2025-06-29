@@ -131,5 +131,9 @@
     "Donate_For_Premium": "Donate any amount to get a Premium account (valid for 1 year)",
     "Birds_Loaded": "Birds loaded!",
     "Use_Bird_Suggestions_From": "Use bird name suggestions from",
-    "Update_Available_Reloading": "Updates available! Reloading app…"
+    "Update_Available_Reloading": "Updates available! Reloading app…",
+    "No_Location_Data": "No location data available",
+    "Open_In_Full_Map": "Open in full map",
+    "Drag_Marker_To_Move": "Drag marker to set new location",
+    "Move_Marker_To_Change_Location": "Click or drag the marker to change the location"
 }]

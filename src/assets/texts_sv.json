@@ -131,5 +131,9 @@
     "Donate_For_Premium": "Donera valfritt belopp för att få ett Premium-konto (giltigt i 1 år)",
     "Birds_Loaded": "Fåglar inlästa!",
     "Use_Bird_Suggestions_From": "Använd förslag på fågelnamn från",
-    "Update_Available_Reloading": "Uppdateringar tillgängliga! Laddar om appen…"
+    "Update_Available_Reloading": "Uppdateringar tillgängliga! Laddar om appen…",
+    "No_Location_Data": "Ingen platsdata tillgänglig",
+    "Open_In_Full_Map": "Öppna i fullstor karta",
+    "Drag_Marker_To_Move": "Dra markören för att ange ny plats",
+    "Move_Marker_To_Change_Location": "Klicka eller dra markören för att ändra platsen"
 }]
