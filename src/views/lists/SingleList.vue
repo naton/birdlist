@@ -74,7 +74,7 @@ onBeforeUnmount(() => {
   <edit-list-dialog 
     ref="editDialog" 
     v-model="isEditDialogOpen"
-    v-model:list="currentList.value" 
+    v-model:list="currentList" 
   />
   <list-info>
     <template v-slot:extra>
