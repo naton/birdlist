@@ -63,7 +63,9 @@ export const useSettingsStore = defineStore("settings", () => {
     }
 
     const currentMonthFormatted = computed(() => {
-      const date = new Date().setFullYear(currentYear.value, currentMonth.value);
+      // Create a new Date on the 1st day of the month to avoid rollover issues
+      // Always use day 1 to prevent issues with month rollovers (e.g., Feb 30 -> Mar 2)
+      const date = new Date(currentYear.value, currentMonth.value, 1);
       return new Intl.DateTimeFormat("sv", {
         year: "numeric",
         month: "long",
