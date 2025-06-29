@@ -3,9 +3,10 @@ import UserInitial from "./icons/UserInitial.vue";
 import LocationSpecifiedIcon from "./icons/LocationSpecifiedIcon.vue";
 import { formatDate } from "@/helpers";
 
+const selected = defineModel();
+
 const props = defineProps({
   // Common props
-  selected: Boolean,
   
   // Observation specific props
   obs: Object,
@@ -19,24 +20,24 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(["edit", "click"]);
+const emit = defineEmits(["edit"]);
 
 function handleClick() {
   if (props.mode === "observation") {
-    // Now handle both selection and editing in one click
-    emit("click", props.obs);
+    // Set the selected observation and emit edit
+    selected.value = props.obs;
     emit("edit", props.obs);
   } else if (props.mode === "species") {
-    // For species mode, also handle both selection and editing
+    // For species mode, get the last observation
     const lastObservation = props.obs[props.obs.length - 1];
-    emit("click", lastObservation);
+    selected.value = lastObservation;
     emit("edit", lastObservation);
   }
 }
 </script>
 
 <template>
-  <li tabindex="-1" :class="props.selected && 'selected'" @click="handleClick()">
+  <li tabindex="-1" :class="selected === props.obs && 'selected'" @click="handleClick()">
     <!-- Observation Mode Content -->
     <span v-if="props.mode === 'observation'" class="content-wrapper obs">
       <span class="name">{{ props.obs.name }}</span>

@@ -82,10 +82,6 @@ const speciesByUser = computed(() => {
     );
 });
 
-function emitDelete(id) {
-  emit("delete", id);
-}
-
 function emitEdit(obs) {
   emit("edit", obs);
 }
@@ -95,10 +91,6 @@ function emitNewLeader() {
 }
 
 const comment = ref("");
-
-function selectObservation(obs) {
-  selectedObservation.value = selectedObservation.value == obs ? null : obs;
-}
 
 function addNewComment() {
   if (comment.value) {
@@ -177,9 +169,7 @@ function noOfComments() {
           :obs="obs"
           :key="obs.date"
           :user="currentUser.name"
-          :selected="selectedObservation == obs"
-          @click="selectObservation(obs)"
-          @delete="emitDelete(id)"
+          v-model="selectedObservation"
           @edit="emitEdit"></item-component>
       </transition-group>
     </section>
@@ -191,8 +181,7 @@ function noOfComments() {
           :obs="obs"
           :key="obs[0].name"
           :user="currentUser.name"
-          :selected="selectedObservation == obs[obs.length - 1]"
-          @click="selectObservation(obs[obs.length - 1])"
+          v-model="selectedObservation"
           @edit="emitEdit"></item-component>
       </transition-group>
     </section>
