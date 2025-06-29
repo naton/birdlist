@@ -32,19 +32,8 @@ watch(lang, async (newLang) => {
 </script>
 
 <template>
-    <div>
-        <label for="hue">{{ t("Theme_Color") }}</label>
-        <input id="hue" type="range" v-model="hue" min="0" max="360">
-    </div>
-    <div class="margin-bottom">
-        <label for="locale">{{ t("Language") }}</label>
-        <select id="locale" v-model="lang">
-            <option value="sv">Svenska</option>
-            <option value="en">English</option>
-        </select>
-    </div>
     <h3 class="center">{{ t("Use_Bird_Suggestions_From") }}:</h3>
-    <div class="flex map-buttons">
+    <div class="flex map-buttons margin-bottom">
         <button type="button" @click="switchLocale('en-US')" class="map-button" :class="locale === 'en-US' && 'selected'">
             <north-america-map />
         </button>
@@ -54,5 +43,16 @@ watch(lang, async (newLang) => {
         <button type="button" @click="switchLocale('sv-SE')" class="map-button" :class="locale === 'sv-SE' && 'selected'">
             <sweden-map />
         </button>
+    </div>
+    <div class="margin-bottom">
+        <label for="locale">{{ t("Language") }}</label>
+        <select id="locale" v-model="lang">
+            <option value="sv">Svenska</option>
+            <option value="en">English</option>
+        </select>
+    </div>
+    <div class="margin-bottom">
+        <label for="hue">{{ t("Theme_Color") }}</label>
+        <input id="hue" type="range" v-model="hue" min="0" max="360">
     </div>
 </template>
