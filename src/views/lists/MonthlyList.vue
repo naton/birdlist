@@ -10,7 +10,7 @@ import { onMounted } from "vue";
 const emit = defineEmits(["edit"]);
 
 const settingsStore = useSettingsStore();
-const { prevMonth, nextMonth } = settingsStore;
+const { prevMonth, nextMonth, resetMonthToCurrentMonth } = settingsStore;
 const { currentMonthFormatted } = storeToRefs(settingsStore);
 
 const observationsStore = useObservationsStore();
@@ -24,6 +24,7 @@ function edit(obs) {
 }
 
 onMounted(() => {
+  resetMonthToCurrentMonth();
   currentSort.value = "bydate";
 });
 </script>

@@ -186,6 +186,6 @@ export const useObservationsStore = defineStore("observation", () => {
 {
   persist: {
     key: "birdlist-observations",
-    paths: ["currentMonth"],
+    paths: [],
   },
 });

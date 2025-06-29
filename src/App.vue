@@ -14,7 +14,7 @@ import HelpIcon from './components/icons/HelpIcon.vue'
 const InstallPrompt = defineAsyncComponent(() => import('./components/InstallPrompt.vue'))
 
 const settingsStore = useSettingsStore()
-const { t, loadTexts, setThemeColor } = settingsStore
+const { t, loadTexts, setThemeColor, resetMonthToCurrentMonth } = settingsStore
 const { lang, isUserLoggedIn } = storeToRefs(settingsStore)
 
 const messagesStore = useMessagesStore()
@@ -26,6 +26,9 @@ onBeforeMount(() => {
 })
 
 onMounted(async () => {
+  // Always reset to current month when app initializes
+  resetMonthToCurrentMonth();
+  
   if ("serviceWorker" in navigator) {
     const registration = await navigator.serviceWorker.register("/sw.js");
     registration.addEventListener('updatefound', () => {
