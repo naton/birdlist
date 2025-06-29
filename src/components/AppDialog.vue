@@ -1,30 +1,24 @@
 <template>
-  <div class="dialog-container">
     <transition name="dialog">
-      <dialog 
-        v-if="modelValue || isOpenViaMethod" 
-        ref="dialogRef" 
-        class="dialog" 
-        :closedby="closeOnBackdrop ? 'backdrop' : null"
-        @cancel="emitClose"
-      >
-        <slot></slot>
-      </dialog>
+        <dialog 
+            v-if="modelValue || isOpenViaMethod" 
+            ref="dialogRef" 
+            class="dialog" 
+            closedby="any"
+            @cancel="emitClose"
+        >
+            <slot></slot>
+        </dialog>
     </transition>
-  </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, watch, onMounted, nextTick } from 'vue';
 
 const props = defineProps({
   modelValue: {
     type: Boolean,
     default: false
-  },
-  closeOnBackdrop: {
-    type: Boolean,
-    default: true
   }
 });
 
@@ -81,37 +75,15 @@ function closeModalInternal() {
   }
 }
 
-// Handle backdrop clicks
-function handleBackdropClick(event) {
-  if (!dialogRef.value || !props.closeOnBackdrop) return;
-  
-  // Check if the click was directly on the dialog element (backdrop) and not on its children
-  if (event.target === dialogRef.value) {
-    // Native backdrop click behavior is handled by the closedby attribute
-    // This emitClose is for our custom state handling
-    emitClose();
-  }
-}
-
 function emitClose() {
   emit('update:modelValue', false);
   isOpenViaMethod.value = false;
 }
 
 onMounted(() => {
-  if (dialogRef.value) {
-    dialogRef.value.addEventListener('click', handleBackdropClick);
-    
-    // If modelValue or isOpenViaMethod is true on mount, open the dialog
-    if (props.modelValue || isOpenViaMethod.value) {
-      nextTick(openModalInternal);
-    }
-  }
-});
-
-onBeforeUnmount(() => {
-  if (dialogRef.value) {
-    dialogRef.value.removeEventListener('click', handleBackdropClick);
+  // If modelValue or isOpenViaMethod is true on mount, open the dialog
+  if (dialogRef.value && (props.modelValue || isOpenViaMethod.value)) {
+    nextTick(openModalInternal);
   }
 });
 
@@ -132,9 +104,3 @@ defineExpose({
   }
 });
 </script>
-
-<style scoped>
-.dialog-container {
-  position: relative;
-}
-</style>
