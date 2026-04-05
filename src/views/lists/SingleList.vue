@@ -87,10 +87,11 @@ async function toggleListNotificationSubscription() {
       : await subscribeToListNotifications(currentList.value.id);
 
     if (didSucceed) {
-      isSubscribedToNotifications.value = !isSubscribedToNotifications.value;
-    } else {
       await refreshNotificationSubscriptionState();
+      return;
     }
+
+    await refreshNotificationSubscriptionState();
   } finally {
     isNotificationToggleBusy.value = false;
   }

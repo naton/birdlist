@@ -17,6 +17,10 @@ function urlBase64ToUint8Array(base64String) {
   return outputArray;
 }
 
+function normalizeListId(listId) {
+  return String(listId ?? "").trim();
+}
+
 async function fetchWithTimeout(url, options = {}, timeoutMs = 12000) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -32,11 +36,7 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 12000) {
 }
 
 async function getPushRegistration() {
-  if (!("serviceWorker" in navigator)) {
-    return null;
-  }
-
-  if (!("PushManager" in window)) {
+  if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
     return null;
   }
 
@@ -58,18 +58,17 @@ async function getExistingPushSubscription() {
   if (!registration) {
     return null;
   }
+
   return registration.pushManager.getSubscription();
 }
 
 async function ensurePushSubscription() {
   if (!("Notification" in window)) {
-    console.log("This browser does not support notifications.");
     return null;
   }
 
   const registration = await getPushRegistration();
   if (!registration) {
-    console.log("This browser does not support push subscriptions.");
     return null;
   }
 
@@ -94,7 +93,8 @@ async function ensurePushSubscription() {
 }
 
 async function subscribeToListNotifications(listId) {
-  if (!listId) {
+  const normalizedListId = normalizeListId(listId);
+  if (!normalizedListId) {
     return false;
   }
 
@@ -106,20 +106,16 @@ async function subscribeToListNotifications(listId) {
 
     const response = await fetchWithTimeout(apiHost + "/api/subscription", {
       method: "POST",
-      body: JSON.stringify({
-        subscription,
-        listId,
-      }),
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        listId: normalizedListId,
+        subscription,
+      }),
     });
 
-    if (!response.ok) {
-      throw new Error(`Subscription request failed with ${response.status}`);
-    }
-
-    return true;
+    return response.ok;
   } catch (error) {
     console.error("Error subscribing to list notifications.", error);
     return false;
@@ -127,28 +123,30 @@ async function subscribeToListNotifications(listId) {
 }
 
 async function unsubscribeFromListNotifications(listId) {
-  if (!listId) {
+  const normalizedListId = normalizeListId(listId);
+  if (!normalizedListId) {
     return false;
   }
 
   try {
     const subscription = await getExistingPushSubscription();
-
     if (!subscription) {
       return true;
     }
 
     const response = await fetchWithTimeout(apiHost + "/api/unsubscription", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         endpoint: subscription.endpoint,
-        listId,
+        listId: normalizedListId,
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`Unsubscription request failed with ${response.status}`);
+      return false;
     }
 
     const payload = await response.json();
@@ -164,23 +162,25 @@ async function unsubscribeFromListNotifications(listId) {
 }
 
 async function isListNotificationsEnabled(listId) {
-  if (!listId) {
+  const normalizedListId = normalizeListId(listId);
+  if (!normalizedListId) {
     return false;
   }
 
   try {
     const subscription = await getExistingPushSubscription();
-
     if (!subscription) {
       return false;
     }
 
     const response = await fetchWithTimeout(apiHost + "/api/subscription-status", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         endpoint: subscription.endpoint,
-        listId,
+        listId: normalizedListId,
       }),
     });
 
@@ -194,42 +194,6 @@ async function isListNotificationsEnabled(listId) {
     console.error("Error reading list notification status.", error);
     return false;
   }
-}
-
-// Backward-compatible helper kept for legacy call sites.
-async function askNotificationPermission(callback) {
-  const subscription = await ensurePushSubscription();
-  if (subscription && typeof callback === "function") {
-    callback();
-  }
-}
-
-// Backward-compatible helper kept for legacy call sites.
-function removePushManager(callback) {
-  getExistingPushSubscription()
-    .then(async (subscription) => {
-      if (!subscription) {
-        if (typeof callback === "function") {
-          callback();
-        }
-        return;
-      }
-
-      await fetchWithTimeout(apiHost + "/api/unsubscription", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ endpoint: subscription.endpoint }),
-      }).catch(console.error);
-
-      await subscription.unsubscribe();
-
-      if (typeof callback === "function") {
-        callback();
-      }
-    })
-    .catch((error) => {
-      console.error("Error unsubscribing from push notifications.", error);
-    });
 }
 
 function pushNewBirdAlert(msg) {
@@ -367,8 +331,6 @@ export {
   subscribeToListNotifications,
   unsubscribeFromListNotifications,
   isListNotificationsEnabled,
-  askNotificationPermission,
-  removePushManager,
   pushNewBirdAlert,
   getMonthName,
   getCurrentYear,
@@ -382,4 +344,5 @@ export {
   setupConfetti,
   destroyConfetti,
 };
+
 
