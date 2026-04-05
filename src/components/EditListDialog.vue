@@ -73,7 +73,7 @@ function openModal() {
   isDialogOpen.value = true;
 }
 
-function saveList() {
+async function saveList() {
   if (!listDraft.value) return;
   
   // Ensure title and description are trimmed
@@ -87,7 +87,7 @@ function saveList() {
   Object.assign(listToEdit.value, listDraft.value);
   
   // Save to the store
-  updateList(listToEdit.value);
+  await updateList(listToEdit.value);
   close();
 }
 

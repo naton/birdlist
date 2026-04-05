@@ -69,8 +69,14 @@ export const useListsStore = defineStore("list", () => {
   }
 
   async function updateList(payload, callback) {
+    if (!payload?.id) {
+      return;
+    }
+
+    const { id, ...changes } = payload;
+
     await db.transaction("rw", [db.lists], async () => {
-      await db.lists.where({ id: payload.id }).modify(payload);
+      await db.lists.update(id, changes);
     });
     if (callback) {
       callback();

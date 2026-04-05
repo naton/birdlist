@@ -139,10 +139,11 @@ function emitNewLeader() {
   emit("newLeader");
 }
 
-function saveCheckList() {
+async function saveCheckList() {
   const birds = toRaw(birdsToCheck.value);
-  const payload = Object.assign({}, currentList.value, { birds });
-  updateList(payload);
+  const baseList = currentList.value || props.list;
+  const payload = Object.assign({}, baseList, { birds, updated: new Date() });
+  await updateList(payload);
   checkListEditMode.value = false;
 }
 
