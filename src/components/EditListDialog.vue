@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed, watch } from "vue";
 import { inputDate } from "@/helpers";
-import { storeToRefs } from "pinia";
 import AppDialog from "./AppDialog.vue";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
@@ -14,10 +13,9 @@ import DeleteIcon from "./icons/DeleteIcon.vue";
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
-const { currentUser } = storeToRefs(settingsStore)
 
 const listsStore = useListsStore()
-const { updateList, deleteList } = listsStore
+const { updateList, deleteList, isOwnedByCurrentUser } = listsStore
 
 // Using defineModel for both the list data and the dialog open state
 const listToEdit = defineModel('list');
@@ -26,7 +24,7 @@ const isDialogOpen = defineModel('modelValue', { default: false });
 // Create a draft object to hold all edits until they're saved
 const listDraft = ref(null);
 
-const isListOwner = computed(() => currentUser.value?.userId === listToEdit.value?.owner);
+const isListOwner = computed(() => isOwnedByCurrentUser(listToEdit.value));
 
 // Deep clone function (reused from EditObservationDialog)
 function deepClone(obj) {

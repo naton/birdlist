@@ -28,10 +28,10 @@ const route = useRoute();
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
-const { currentUser, isPremiumUser } = storeToRefs(settingsStore);
+const { isPremiumUser } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
-const { convertToChecklist } = listsStore;
+const { convertToChecklist, isOwnedByCurrentUser } = listsStore;
 const { allLists, currentList, checkListEditMode } = storeToRefs(listsStore);
 
 const observationsStore = useObservationsStore();
@@ -47,7 +47,7 @@ const listComments = computed(() => allComments.value?.filter((comment) => comme
 const editDialog = ref(null);
 const isEditDialogOpen = ref(false);
 
-const isListOwner = computed(() => currentUser.value?.userId === currentList.value?.owner);
+const isListOwner = computed(() => isOwnedByCurrentUser(currentList.value));
 const isSubscribedToNotifications = ref(false);
 const isNotificationToggleBusy = ref(false);
 

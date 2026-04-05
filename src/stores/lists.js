@@ -19,7 +19,22 @@ export const useListsStore = defineStore("list", () => {
   const { t } = settingsStore;
 
   const allLists = ref(null);
-  const allMyLists = computed(() => allLists.value?.filter((list) => list.owner == currentUser.value?.name) || []);
+  function getCurrentOwnerAliases() {
+    return [
+      currentUser.value?.userId,
+      currentUser.value?.name,
+      currentUser.value?.email,
+    ].filter(Boolean);
+  }
+
+  function isOwnedByCurrentUser(list) {
+    if (!list?.owner) {
+      return false;
+    }
+    return getCurrentOwnerAliases().includes(list.owner);
+  }
+
+  const allMyLists = computed(() => allLists.value?.filter((list) => isOwnedByCurrentUser(list)) || []);
   const currentSort = ref("bydate");
   const currentListExpanded = ref(true);
   const currentList = ref();
@@ -161,6 +176,7 @@ export const useListsStore = defineStore("list", () => {
     checkListEditMode,
     currentListExpanded,
     currentSort,
+    isOwnedByCurrentUser,
     sortBy,
     getListMembers,
     createList,

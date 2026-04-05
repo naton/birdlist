@@ -8,9 +8,10 @@ import ShareDialog from "./ShareDialog.vue";
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
-const { currentUser, isUserLoggedIn } = storeToRefs(settingsStore);
+const { isUserLoggedIn } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
+const { isOwnedByCurrentUser } = listsStore;
 const { currentList, currentListExpanded } = storeToRefs(listsStore);
 
 const friendsStore = useFriendsStore();
@@ -18,7 +19,7 @@ const { getFriendlyName } = friendsStore;
 
 const shareListDialog = ref();
 
-const isListOwner = computed(() => currentUser.value?.userId === currentList.value?.owner);
+const isListOwner = computed(() => isOwnedByCurrentUser(currentList.value));
 
 function openShareModal() {
     shareListDialog.value.openModal();
