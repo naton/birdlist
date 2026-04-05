@@ -60,6 +60,7 @@
     "Invite_Help_1": "When you invite a friend to a list, Birdlist will send an invitation by email and also display a message here in the app.",
     "Invite_Help_2": "If the invitation is accepted, both of you will be able to add observations and comments to the list, but only you will be able to edit or delete the list.",
     "Save": "Save",
+    "Saving": "Saving...",
     "Submit": "Submit",
     "Cancel": "Cancel",
     "Delete": "Delete",
@@ -138,5 +139,11 @@
     "No_Location_Data": "No location data available",
     "Open_In_Full_Map": "Open in full map",
     "Drag_Marker_To_Move": "Drag marker to set new location",
-    "Move_Marker_To_Change_Location": "Click or drag the marker to change the location"
+    "Move_Marker_To_Change_Location": "Click or drag the marker to change the location",
+    "Validation_Title_Required": "List name is required.",
+    "Validation_Bingo_Size": "Select a valid bingo size.",
+    "Validation_Start_Date_Invalid": "Start date is invalid.",
+    "Validation_End_Date_Invalid": "End date is invalid.",
+    "Validation_End_Before_Start": "End date must be on or after start date.",
+    "Validation_Report_Interval_Invalid": "Report interval is invalid."
 }]

@@ -96,9 +96,53 @@ function createEditableListDraft(list) {
   return draft;
 }
 
+function validateListDraft(listDraft) {
+  const errors = {};
+  const draft = listDraft || {};
+  const title = (draft.title || "").trim();
+  const type = draft.type || "normal";
+
+  if (!title) {
+    errors.title = "Validation_Title_Required";
+  }
+
+  if (type === "bingo") {
+    const bingoSize = Number(draft.bingoSize);
+    if (![3, 4, 5].includes(bingoSize)) {
+      errors.bingoSize = "Validation_Bingo_Size";
+    }
+  }
+
+  if (type === "birdstreak") {
+    const startDate = new Date(draft.startDate);
+    const endDate = new Date(draft.endDate);
+
+    if (Number.isNaN(startDate.getTime())) {
+      errors.startDate = "Validation_Start_Date_Invalid";
+    }
+    if (Number.isNaN(endDate.getTime())) {
+      errors.endDate = "Validation_End_Date_Invalid";
+    }
+    if (!errors.startDate && !errors.endDate && endDate < startDate) {
+      errors.endDate = "Validation_End_Before_Start";
+    }
+
+    const reportInterval = Number(draft.reportInterval);
+    if (![1, 2, 3, 7].includes(reportInterval)) {
+      errors.reportInterval = "Validation_Report_Interval_Invalid";
+    }
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors,
+  };
+}
+
 export {
   createDefaultListDraft,
   createEditableListDraft,
   normalizeListDraftForSave,
   buildCreateListPayload,
+  validateListDraft,
 };

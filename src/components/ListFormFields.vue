@@ -20,6 +20,10 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  errors: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
 const settingsStore = useSettingsStore();
@@ -50,6 +54,7 @@ function emitEsc(event) {
     @keyup.esc="emitEsc"
     :placeholder="t('Enter_The_Name_Of_The_List')"
     required />
+  <small v-if="errors.title" class="field-error">{{ t(errors.title) }}</small>
 
   <label for="list-description">{{ t("Description") }}:</label>
   <textarea
@@ -95,6 +100,7 @@ function emitEsc(event) {
         <input type="radio" value="5" v-model="draft.bingoSize" />5 x 5
       </label>
     </fieldset>
+    <small v-if="errors.bingoSize" class="field-error">{{ t(errors.bingoSize) }}</small>
   </template>
 
   <template v-if="showBirdstreakOptions">
@@ -108,6 +114,7 @@ function emitEsc(event) {
             @input="updateStartDate($event.target.value)"
             :value="inputDate(draft.startDate)"
             :required="requireDates" />
+          <small v-if="errors.startDate" class="field-error">{{ t(errors.startDate) }}</small>
         </div>
         <div class="half">
           <label for="end-date">{{ t("End_Date") }}:</label>
@@ -117,6 +124,7 @@ function emitEsc(event) {
             @input="updateEndDate($event.target.value)"
             :value="inputDate(draft.endDate)"
             :required="requireDates" />
+          <small v-if="errors.endDate" class="field-error">{{ t(errors.endDate) }}</small>
         </div>
       </div>
       <label for="day-interval">{{ t("Report_Interval") }}:</label>
@@ -126,6 +134,7 @@ function emitEsc(event) {
         <option value="3">{{ t("Every_Third_Day") }}</option>
         <option value="7">{{ t("Every_Week") }}</option>
       </select>
+      <small v-if="errors.reportInterval" class="field-error">{{ t(errors.reportInterval) }}</small>
     </div>
   </template>
 </template>
@@ -162,5 +171,11 @@ label.radio:has(:checked) {
   box-shadow: inset 0 0 0 2px var(--color-border);
   color: var(--color-text);
   background: var(--color-background-dim);
+}
+
+.field-error {
+  display: block;
+  color: #b42318;
+  margin-top: 0.25rem;
 }
 </style>
