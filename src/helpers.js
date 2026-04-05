@@ -196,6 +196,48 @@ async function isListNotificationsEnabled(listId) {
   }
 }
 
+async function setListVisibility(listId, makePublic) {
+  const normalizedListId = normalizeListId(listId);
+  if (!normalizedListId) {
+    return {
+      success: false,
+      message: "Missing list id.",
+    };
+  }
+
+  try {
+    const response = await fetchWithTimeout(apiHost + "/api/list-visibility", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        listId: normalizedListId,
+        makePublic: Boolean(makePublic),
+      }),
+    });
+
+    const payload = await response.json().catch(() => null);
+    if (!response.ok) {
+      return {
+        success: false,
+        message: payload?.error?.message || "Failed to update list visibility.",
+      };
+    }
+
+    return {
+      success: true,
+      data: payload?.data,
+    };
+  } catch (error) {
+    console.error("Error updating list visibility.", error);
+    return {
+      success: false,
+      message: "Network error while updating list visibility.",
+    };
+  }
+}
+
 function pushNewBirdAlert(msg) {
   return fetch(apiHost + "/api/push", {
     method: "POST",
@@ -331,6 +373,7 @@ export {
   subscribeToListNotifications,
   unsubscribeFromListNotifications,
   isListNotificationsEnabled,
+  setListVisibility,
   pushNewBirdAlert,
   getMonthName,
   getCurrentYear,

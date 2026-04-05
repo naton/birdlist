@@ -3,25 +3,33 @@ import { ref, computed, watch } from "vue";
 import AppDialog from "./AppDialog.vue";
 import { useSettingsStore } from "../stores/settings.js";
 import { useListsStore } from "../stores/lists.js";
+import { useMessagesStore } from "../stores/messages.js";
 import ListsIcon from "./icons/ListsIcon.vue";
 import DeleteIcon from "./icons/DeleteIcon.vue";
 import ListFormFields from "./ListFormFields.vue";
 import { createEditableListDraft, normalizeListDraftForSave, validateListDraft } from "@/composables/useListDraft";
+import { setListVisibility } from "@/helpers";
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
 
 const listsStore = useListsStore();
 const { updateList, deleteList, isOwnedByCurrentUser } = listsStore;
+const messagesStore = useMessagesStore();
+const { addMessage } = messagesStore;
 
 const listToEdit = defineModel("list");
 const isDialogOpen = defineModel("modelValue", { default: false });
 
 const listDraft = ref(null);
 const isSaving = ref(false);
+const isUpdatingVisibility = ref(false);
 const isListOwner = computed(() => isOwnedByCurrentUser(listToEdit.value));
 const validation = computed(() => validateListDraft(listDraft.value));
 const isFormValid = computed(() => validation.value.isValid);
+const isPublicList = computed(() => listToEdit.value?.realmId === "rlm-public");
+const visibilityButtonLabel = computed(() => (isPublicList.value ? t("Make_List_Private") : t("Make_List_Open")));
+const isBusy = computed(() => isSaving.value || isUpdatingVisibility.value);
 
 watch(
   [listToEdit, isDialogOpen],
@@ -40,7 +48,7 @@ function openModal() {
 }
 
 async function saveList() {
-  if (!listDraft.value || isSaving.value || !isFormValid.value) return;
+  if (!listDraft.value || isBusy.value || !isFormValid.value) return;
 
   isSaving.value = true;
   const normalizedDraft = normalizeListDraftForSave(listDraft.value);
@@ -53,8 +61,40 @@ async function saveList() {
   }
 }
 
+async function toggleListVisibility() {
+  if (isBusy.value || !isListOwner.value || !listToEdit.value?.id) {
+    return;
+  }
+
+  isUpdatingVisibility.value = true;
+  try {
+    const makePublic = !isPublicList.value;
+    const result = await setListVisibility(listToEdit.value.id, makePublic);
+
+    if (!result?.success || !result?.data?.targetRealmId) {
+      addMessage(result?.message || t("List_Visibility_Update_Failed"));
+      return;
+    }
+
+    await updateList({
+      id: listToEdit.value.id,
+      realmId: result.data.targetRealmId,
+      updated: new Date(),
+    });
+
+    listToEdit.value.realmId = result.data.targetRealmId;
+    if (listDraft.value) {
+      listDraft.value.realmId = result.data.targetRealmId;
+    }
+
+    addMessage(makePublic ? t("List_Is_Now_Open") : t("List_Is_Now_Private"));
+  } finally {
+    isUpdatingVisibility.value = false;
+  }
+}
+
 function close() {
-  if (isSaving.value) {
+  if (isBusy.value) {
     return;
   }
 
@@ -76,15 +116,19 @@ defineExpose({
     </div>
     <template v-if="listDraft">
       <list-form-fields v-model="listDraft" disable-type-selection :errors="validation.errors" @esc="close" />
+      <p class="pill">{{ isPublicList ? t("List_Is_Open") : t("List_Is_Private") }}</p>
       <div class="buttons">
-        <button v-if="isListOwner" class="update-button" @click="saveList" :disabled="isSaving || !isFormValid">
+        <button v-if="isListOwner" class="secondary" @click="toggleListVisibility" :disabled="isBusy">
+          {{ isUpdatingVisibility ? t("Saving") : visibilityButtonLabel }}
+        </button>
+        <button v-if="isListOwner" class="update-button" @click="saveList" :disabled="isBusy || !isFormValid">
           {{ isSaving ? t("Saving") : t("Save") }}
         </button>
-        <button v-if="isListOwner && listToEdit.title" class="delete-button" @click="deleteList(listToEdit.id)" :disabled="isSaving">
+        <button v-if="isListOwner && listToEdit.title" class="delete-button" @click="deleteList(listToEdit.id)" :disabled="isBusy">
           <delete-icon />
           {{ t("Delete") }}
         </button>
-        <button @click="close" class="secondary" :disabled="isSaving">{{ t("Cancel") }}</button>
+        <button @click="close" class="secondary" :disabled="isBusy">{{ t("Cancel") }}</button>
       </div>
     </template>
     <div v-if="!listDraft" class="loading">

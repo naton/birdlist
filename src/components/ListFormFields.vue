@@ -61,7 +61,7 @@ function emitEsc(event) {
     id="list-description"
     v-model="draft.description"
     cols="30"
-    rows="5"
+    rows="3"
     :placeholder="t('List_Rules_Etc')"></textarea>
 
   <label for="list-type">{{ t("Type_Of_List") }}:</label>

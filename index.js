@@ -15,7 +15,9 @@ const vapidSubject = process.env.VAPID_SUBJECT;
 const privateDexieCloudKey = process.env.DEXIE_CLOUD_CLIENTID;
 const privateDexieCloudSecret = process.env.DEXIE_CLOUD_CLIENTSECRET;
 
+const DEXIE_BASE_URL = 'https://zyh2ho4s6.dexie.cloud';
 const DEXIE_URL = 'https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions';
+const PUBLIC_REALM_ID = 'rlm-public';
 
 const app = express();
 
@@ -146,6 +148,173 @@ const getDexieCloudAccessToken = async () => {
 
 async function getAccessHeader() {
   return `Bearer ${await getDexieCloudAccessToken()}`;
+}
+
+async function dexieRequest(pathname, options = {}) {
+  const response = await fetch(`${DEXIE_BASE_URL}${pathname}`, {
+    ...options,
+    headers: {
+      Authorization: await getAccessHeader(),
+      ...(options.headers || {}),
+    },
+  });
+
+  return response;
+}
+
+function encodePrimaryKey(primaryKey) {
+  if (typeof primaryKey === 'string') {
+    return encodeURIComponent(primaryKey);
+  }
+
+  return encodeURIComponent(JSON.stringify(primaryKey));
+}
+
+function toQueryString(params = {}) {
+  const searchParams = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === null || value === '') {
+      continue;
+    }
+    searchParams.append(key, String(value));
+  }
+
+  const queryString = searchParams.toString();
+  return queryString ? `?${queryString}` : '';
+}
+
+async function dexieGetMany(table, query = {}) {
+  const response = await dexieRequest(`/all/${table}${toQueryString(query)}`, {
+    method: 'GET',
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(`GET /all/${table} failed (${response.status}): ${errorBody}`);
+  }
+
+  const payload = await response.json();
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload?.data)) return payload.data;
+  return [];
+}
+
+async function dexieGetById(table, primaryKey) {
+  const response = await dexieRequest(`/all/${table}/${encodePrimaryKey(primaryKey)}`, {
+    method: 'GET',
+  });
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(`GET /all/${table}/{id} failed (${response.status}): ${errorBody}`);
+  }
+
+  const payload = await response.json();
+  if (payload && typeof payload === 'object' && payload.data && typeof payload.data === 'object') {
+    return payload.data;
+  }
+
+  return payload;
+}
+
+async function dexieUpsertMany(table, objects) {
+  if (!Array.isArray(objects) || objects.length === 0) {
+    return;
+  }
+
+  const response = await dexieRequest(`/all/${table}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(objects),
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(`POST /all/${table} failed (${response.status}): ${errorBody}`);
+  }
+}
+
+async function dexieDeleteById(table, primaryKey) {
+  const response = await dexieRequest(`/all/${table}/${encodePrimaryKey(primaryKey)}`, {
+    method: 'DELETE',
+  });
+
+  if (response.status === 404) {
+    return;
+  }
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(`DELETE /all/${table}/{id} failed (${response.status}): ${errorBody}`);
+  }
+}
+
+async function setListRealmVisibility(listId, makePublic) {
+  const list = await dexieGetById('lists', listId);
+  if (!list) {
+    return null;
+  }
+
+  const sourceRealmId = String(list.realmId || '').trim();
+  const ownerRealmId = String(list.owner || '').trim();
+  const targetRealmId = makePublic ? PUBLIC_REALM_ID : ownerRealmId;
+
+  if (!targetRealmId) {
+    throw new Error('List has no owner realm to move back to private visibility.');
+  }
+
+  if (sourceRealmId === targetRealmId) {
+    return {
+      listId,
+      sourceRealmId,
+      targetRealmId,
+      movedObservations: 0,
+      movedComments: 0,
+    };
+  }
+
+  const [observations, comments] = await Promise.all([
+    dexieGetMany('observations', { listId }),
+    dexieGetMany('comments', { listId }),
+  ]);
+
+  await Promise.all([
+    dexieUpsertMany('lists', [{ ...list, realmId: targetRealmId }]),
+    dexieUpsertMany(
+      'observations',
+      observations.map((observation) => ({ ...observation, realmId: targetRealmId }))
+    ),
+    dexieUpsertMany(
+      'comments',
+      comments.map((comment) => ({ ...comment, realmId: targetRealmId }))
+    ),
+  ]);
+
+  const shouldCleanupSourceRealm =
+    sourceRealmId &&
+    sourceRealmId !== targetRealmId &&
+    sourceRealmId !== PUBLIC_REALM_ID &&
+    sourceRealmId !== ownerRealmId;
+
+  if (shouldCleanupSourceRealm) {
+    const members = await dexieGetMany('members', { realmId: sourceRealmId });
+    await Promise.all(members.filter((member) => member?.id).map((member) => dexieDeleteById('members', member.id)));
+    await dexieDeleteById('realms', sourceRealmId).catch(() => {});
+  }
+
+  return {
+    listId,
+    sourceRealmId,
+    targetRealmId,
+    movedObservations: observations.length,
+    movedComments: comments.length,
+  };
 }
 
 async function getSubscriptionsFromDatabase() {
@@ -421,6 +590,49 @@ app.post('/api/push', async (req, res) => {
       error: {
         id: 'unable-to-send-messages',
         message: `Failed to send the push: ${err.message}`,
+      },
+    });
+  }
+});
+
+app.post('/api/list-visibility', async (req, res) => {
+  const listId = normalizeListId(req.body?.listId);
+  const makePublic = Boolean(req.body?.makePublic);
+
+  if (!listId) {
+    res.status(400).json({
+      error: {
+        id: 'invalid-request',
+        message: 'Body must include { listId, makePublic }',
+      },
+    });
+    return;
+  }
+
+  try {
+    const result = await setListRealmVisibility(listId, makePublic);
+    if (!result) {
+      res.status(404).json({
+        error: {
+          id: 'list-not-found',
+          message: 'List not found.',
+        },
+      });
+      return;
+    }
+
+    res.status(200).json({
+      data: {
+        success: true,
+        ...result,
+        makePublic,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: {
+        id: 'unable-to-update-list-visibility',
+        message: `Failed to update list visibility: ${err.message}`,
       },
     });
   }
