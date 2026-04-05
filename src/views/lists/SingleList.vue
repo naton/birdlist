@@ -10,6 +10,7 @@ import {
   unsubscribeFromListNotifications,
   isListNotificationsEnabled,
 } from "@/helpers";
+import { db } from "@/db";
 import { useSettingsStore } from '@/stores/settings.js'
 import { useListsStore } from "@/stores/lists.js";
 import { useObservationsStore } from "@/stores/observations.js";
@@ -28,10 +29,10 @@ const route = useRoute();
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
-const { isPremiumUser } = storeToRefs(settingsStore);
+const { isPremiumUser, isUserLoggedIn } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
-const { convertToChecklist, isOwnedByCurrentUser } = listsStore;
+const { convertToChecklist, isOwnedByCurrentUser, isPublicList, isJoinedList, canWriteToList, joinPublicList, leavePublicList } = listsStore;
 const { allLists, currentList, checkListEditMode } = storeToRefs(listsStore);
 
 const observationsStore = useObservationsStore();
@@ -48,6 +49,12 @@ const editDialog = ref(null);
 const isEditDialogOpen = ref(false);
 
 const isListOwner = computed(() => isOwnedByCurrentUser(currentList.value));
+const isPublicCurrentList = computed(() => isPublicList(currentList.value));
+const isJoinedCurrentList = computed(() => isJoinedList(currentList.value?.id));
+const canWriteToCurrentList = computed(() => canWriteToList(currentList.value));
+const canJoinCurrentList = computed(() => isPublicCurrentList.value && !isListOwner.value && !isJoinedCurrentList.value && isUserLoggedIn.value);
+const canLeaveCurrentList = computed(() => isPublicCurrentList.value && !isListOwner.value && isJoinedCurrentList.value);
+const mustLoginToJoin = computed(() => isPublicCurrentList.value && !isListOwner.value && !isUserLoggedIn.value);
 const isSubscribedToNotifications = ref(false);
 const isNotificationToggleBusy = ref(false);
 
@@ -64,6 +71,20 @@ function edit(obs) {
 
 function createChecklistFromCurrentList() {
   convertToChecklist(currentList.value);
+}
+
+async function joinCurrentList() {
+  if (!currentList.value?.id) {
+    return;
+  }
+  await joinPublicList(currentList.value.id);
+}
+
+async function leaveCurrentList() {
+  if (!currentList.value?.id) {
+    return;
+  }
+  await leavePublicList(currentList.value.id);
 }
 
 async function refreshNotificationSubscriptionState() {
@@ -142,6 +163,18 @@ watch(
           <path fill="currentColor" d="M9.145 21.9a2.992 2.992 0 0 0 5.71 0c-.894.066-1.844.1-2.855.1s-1.961-.032-2.855-.1Z" />
         </svg>
       </button>
+      <button v-if="canJoinCurrentList" class="secondary" @click="joinCurrentList">
+        {{ t("Join_List") }}
+      </button>
+      <button v-if="canLeaveCurrentList" class="secondary" @click="leaveCurrentList">
+        {{ t("Leave_List") }}
+      </button>
+      <button v-if="mustLoginToJoin" class="secondary" @click="db.cloud.login()">
+        {{ t("Login_To_Join") }}
+      </button>
+      <span v-if="isPublicCurrentList && !canWriteToCurrentList" class="share-info">
+        {{ isUserLoggedIn ? t("Join_To_Contribute") : t("Open_List_Login_Required") }}
+      </span>
       <button v-if="isListOwner" class="add secondary" @click="openModal">
         {{ t("Edit_List") }}
       </button>
@@ -158,23 +191,27 @@ watch(
     :key="`${currentList.id}-birdstreak`"
     :observations="allListObservations"
     :list="currentList"
+    :read-only="!canWriteToCurrentList"
     :comments="listComments"></birdstreak-list>
   <check-list v-else-if="currentList && currentList.type === 'checklist'"
     :key="`${currentList.id}-checklist`"
     :observations="allListObservations"
     :list="currentList"
+    :read-only="!canWriteToCurrentList"
     :comments="listComments"
     @newLeader="celebrate"></check-list>
   <bingo-list v-else-if="currentList && currentList.type === 'bingo'"
     :key="`${currentList.id}-${currentList.bingoSize}-bingo`"
     :observations="allListObservations"
     :list="currentList"
+    :read-only="!canWriteToCurrentList"
     :comments="listComments"
     @newLeader="celebrate"></bingo-list>
   <normal-list v-else-if="currentList"
     :key="`${currentList.id}-normal`"
     :observations="allListObservations"
     :list="currentList"
+    :read-only="!canWriteToCurrentList"
     :comments="listComments"
     @newLeader="celebrate"
     @edit="edit">

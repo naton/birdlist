@@ -15,10 +15,11 @@ export const useListsStore = defineStore("list", () => {
   const router = useRouter();
 
   const settingsStore = useSettingsStore();
-  const { currentUser } = storeToRefs(settingsStore);
+  const { currentUser, isUserLoggedIn } = storeToRefs(settingsStore);
   const { t } = settingsStore;
 
-  const allLists = ref(null);
+  const allLists = ref([]);
+  const joinedListIds = ref([]);
   function getCurrentOwnerAliases() {
     return [
       currentUser.value?.userId,
@@ -38,9 +39,105 @@ export const useListsStore = defineStore("list", () => {
     return list?.realmId === "rlm-public";
   }
 
+  function isJoinedList(listId) {
+    return joinedListIds.value.includes(String(listId));
+  }
+
+  function canWriteToList(list) {
+    if (!list) {
+      return false;
+    }
+
+    if (!isPublicList(list)) {
+      return true;
+    }
+
+    if (isOwnedByCurrentUser(list)) {
+      return true;
+    }
+
+    return Boolean(isUserLoggedIn.value && isJoinedList(list.id));
+  }
+
+  async function joinPublicList(listId) {
+    const normalizedListId = String(listId ?? "").trim();
+    if (!normalizedListId) {
+      return false;
+    }
+
+    const list = allLists.value?.find((item) => String(item.id) === normalizedListId);
+    if (!list || !isPublicList(list) || isOwnedByCurrentUser(list)) {
+      return false;
+    }
+
+    if (!isUserLoggedIn.value) {
+      addMessage(t("You_Need_To_Login_First"));
+      return false;
+    }
+
+    const userId = currentUser.value?.userId;
+    if (!userId || userId === "unauthorized") {
+      addMessage(t("You_Need_To_Login_First"));
+      return false;
+    }
+
+    try {
+      await db.joinedLists.put({
+        userId,
+        listId: normalizedListId,
+        joinedAt: new Date(),
+        updated: new Date(),
+      });
+
+      addMessage(t("List_Joined"));
+      return true;
+    } catch (error) {
+      console.error("Failed to join list.", error);
+      addMessage(t("List_Join_Failed"));
+      return false;
+    }
+  }
+
+  async function leavePublicList(listId) {
+    const normalizedListId = String(listId ?? "").trim();
+    if (!normalizedListId) {
+      return false;
+    }
+
+    const list = allLists.value?.find((item) => String(item.id) === normalizedListId);
+    if (!list || !isPublicList(list) || isOwnedByCurrentUser(list)) {
+      return false;
+    }
+
+    const userId = currentUser.value?.userId;
+    if (!userId || userId === "unauthorized") {
+      return false;
+    }
+
+    try {
+      await db.joinedLists.delete([userId, normalizedListId]);
+      addMessage(t("List_Left"));
+      return true;
+    } catch (error) {
+      console.error("Failed to leave list.", error);
+      addMessage(t("List_Leave_Failed"));
+      return false;
+    }
+  }
+
   const allMyLists = computed(() => allLists.value?.filter((list) => isOwnedByCurrentUser(list)) || []);
-  const allRegularLists = computed(() => allLists.value?.filter((list) => !isPublicList(list)) || []);
-  const allPublicLists = computed(() => allLists.value?.filter((list) => isPublicList(list)) || []);
+  const allMineLists = computed(
+    () =>
+      allLists.value?.filter(
+        (list) => !isPublicList(list) || isOwnedByCurrentUser(list) || isJoinedList(list.id)
+      ) || []
+  );
+  const allPublicLists = computed(
+    () =>
+      allLists.value?.filter(
+        (list) => isPublicList(list) && !isOwnedByCurrentUser(list) && !isJoinedList(list.id)
+      ) || []
+  );
   const currentSort = ref("bydate");
   const currentListExpanded = ref(true);
   const currentList = ref();
@@ -57,6 +154,21 @@ export const useListsStore = defineStore("list", () => {
       if (lastUsedList.value && !allLists.value.find((list) => list.id == lastUsedList.value.id)) {
         lastUsedList.value = null;
       }
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+
+  liveQuery(async () => {
+    const userId = currentUser.value?.userId;
+    if (!userId || userId === "unauthorized") {
+      return [];
+    }
+    return db.joinedLists.where({ userId }).toArray();
+  }).subscribe(
+    (joinedLists) => {
+      joinedListIds.value = joinedLists.map((item) => String(item.listId));
     },
     (error) => {
       console.log(error);
@@ -107,13 +219,15 @@ export const useListsStore = defineStore("list", () => {
       deleteRelatedObservations = confirm(t("Delete_The_Lists_Observations_As_Well"));
   
       await db
-        .transaction("rw", [db.lists, db.observations, db.realms, db.members], () => {
+        .transaction("rw", [db.lists, db.observations, db.realms, db.members, db.joinedLists], () => {
           if (deleteRelatedObservations) {
             // Delete possible observations:
             db.observations.where({ listId: listId }).delete();
           }
           // Delete the list:
           db.lists.delete(listId);
+          // Remove joined references:
+          db.joinedLists.where({ listId }).delete();
           // Delete possible realm and its members in case list was shared:
           const tiedRealmId = getTiedRealmId(listId);
           // Empty out any tied realm from members:
@@ -183,14 +297,20 @@ export const useListsStore = defineStore("list", () => {
   return {
     allLists,
     allMyLists,
-    allRegularLists,
+    allMineLists,
     allPublicLists,
+    joinedListIds,
     currentList,
     lastUsedList,
     checkListEditMode,
     currentListExpanded,
     currentSort,
     isOwnedByCurrentUser,
+    isPublicList,
+    isJoinedList,
+    canWriteToList,
+    joinPublicList,
+    leavePublicList,
     sortBy,
     getListMembers,
     createList,

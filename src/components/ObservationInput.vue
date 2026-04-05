@@ -1,14 +1,14 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { storeToRefs } from 'pinia'
+import { storeToRefs } from "pinia";
 import AddLocationIcon from "./icons/AddLocationIcon.vue";
 import FetchingLocationIcon from "./icons/FetchingLocationIcon.vue";
 import LocationFoundIcon from "./icons/LocationFoundIcon.vue";
 import vue3SimpleTypeahead from "vue3-simple-typeahead";
-import { useSettingsStore } from '../stores/settings.js'
+import { useSettingsStore } from "../stores/settings.js";
 import { useBirdsStore } from "@/stores/birds.js";
-import 'vue3-simple-typeahead/dist/vue3-simple-typeahead.css'; //Optional default CSS
+import "vue3-simple-typeahead/dist/vue3-simple-typeahead.css"; // Optional default CSS
 
 const route = useRoute();
 
@@ -16,16 +16,26 @@ const birdStore = useBirdsStore();
 const { loadAllBirds } = birdStore;
 const { birds } = storeToRefs(birdStore);
 
-const settingsStore = useSettingsStore()
-const { t } = settingsStore
+const settingsStore = useSettingsStore();
+const { t } = settingsStore;
 
 const emit = defineEmits(["add"]);
-const props = defineProps(["locale"]);
+const props = defineProps({
+  locale: String,
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 const calculatingPosition = ref(false);
 const currentPosition = ref("");
 
 function toggleCurrentLocation() {
+  if (props.disabled) {
+    return;
+  }
+
   if (!currentPosition.value) {
     calculatingPosition.value = true;
 
@@ -57,11 +67,17 @@ function toggleCurrentLocation() {
 const addObservationInput = ref();
 
 function add(bird) {
-  emit('add', bird.name, currentPosition.value);
+  if (props.disabled) {
+    return;
+  }
+  emit("add", bird.name, currentPosition.value);
   addObservationInput.value.clearInput();
 }
 
 function addUnlistedBird() {
+  if (props.disabled) {
+    return;
+  }
   const newBird = { name: addObservationInput.value.getInput().value };
   add(newBird);
 }
@@ -73,14 +89,31 @@ onMounted(() => {
 
 <template>
   <form class="add-bird">
-    <button type="button" @click="toggleCurrentLocation" :class="{ 'is-tracking': calculatingPosition, 'has-position': currentPosition, }">
+    <button
+      type="button"
+      @click="toggleCurrentLocation"
+      :class="{ 'is-tracking': calculatingPosition, 'has-position': currentPosition }"
+      :disabled="props.disabled"
+    >
       <add-location-icon v-if="!currentPosition && !calculatingPosition"></add-location-icon>
       <fetching-location-icon v-else-if="calculatingPosition"></fetching-location-icon>
       <location-found-icon v-else></location-found-icon>
     </button>
-    <vue3-simple-typeahead ref="addObservationInput" :placeholder="route.params.id
-      ? `${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`
-      : t('Enter_The_Name_Of_The_Bird')" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => add(bird)" @keyup.enter="addUnlistedBird">
+    <vue3-simple-typeahead
+      ref="addObservationInput"
+      :placeholder="
+        route.params.id
+          ? props.disabled
+            ? t('Join_To_Contribute')
+            : `${t('Add_Bird_To')} ${t('This_List').toLowerCase()}...`
+          : t('Enter_The_Name_Of_The_Bird')
+      "
+      :items="birds"
+      :minInputLength="1"
+      :itemProjection="(bird) => bird.name"
+      @selectItem="(bird) => add(bird)"
+      @keyup.enter="addUnlistedBird"
+    >
     </vue3-simple-typeahead>
   </form>
 </template>

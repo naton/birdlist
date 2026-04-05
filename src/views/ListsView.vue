@@ -1,6 +1,6 @@
 <script setup>
 import { db } from "../db";
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { RouterLink, RouterView } from 'vue-router';
 import { useObservable } from "@vueuse/rxjs";
@@ -18,15 +18,15 @@ import ListsIllustration from '../components/illustrations/ListsIllustration.vue
 const emit = defineEmits(["edit"]);
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
-const { isPremiumUser } = storeToRefs(settingsStore)
+const { isPremiumUser, isUserLoggedIn } = storeToRefs(settingsStore)
 
 const listsStore = useListsStore();
-const { getListMembers } = listsStore;
-const { allLists, allMyLists, allRegularLists, allPublicLists, currentList, lastUsedList } = storeToRefs(listsStore);
+const { getListMembers, isOwnedByCurrentUser } = listsStore;
+const { allLists, allMyLists, allMineLists, allPublicLists, currentList, lastUsedList } = storeToRefs(listsStore);
 
-const activeTab = ref("mine");
+const activeTab = ref(isUserLoggedIn.value ? "mine" : "open");
 const createListDialog = ref(null);
-const visibleLists = computed(() => activeTab.value === "mine" ? allRegularLists.value : allPublicLists.value);
+const visibleLists = computed(() => activeTab.value === "mine" ? allMineLists.value : allPublicLists.value);
 const noListsMessage = computed(() => activeTab.value === "mine" ? t("No_Lists") : t("No_Open_Lists"));
 
 const listInvites = useObservable(db.cloud.invites);
@@ -52,15 +52,28 @@ function setActiveTab(tab) {
   activeTab.value = tab;
 }
 
+watch(isUserLoggedIn, (loggedIn) => {
+  if (!loggedIn && activeTab.value === "mine") {
+    activeTab.value = "open";
+  }
+});
+
 const listMembersLoaded = ref(false);
 
 onMounted(async () => {
-  setTimeout(() => {
-    allLists.value.forEach(async list => {
-      list.members = await getListMembers(list.id);
-    })
+  setTimeout(async () => {
+    const lists = allLists.value || [];
+    await Promise.all(
+      lists.map(async (list) => {
+        if (list.realmId === "rlm-public" && !isOwnedByCurrentUser(list)) {
+          list.members = [];
+          return;
+        }
+        list.members = await getListMembers(list.id);
+      })
+    );
     listMembersLoaded.value = true;
-  }, 500)
+  }, 500);
 });
 </script>
 
@@ -95,8 +108,11 @@ onMounted(async () => {
                 {{ t("Open_Lists") }}
               </button>
             </div>
+            <p v-if="activeTab === 'open'" class="center margin-bottom">
+              {{ t("Open_Lists_Read_Only_Help") }}
+            </p>
 
-            <router-link v-if="lastUsedList && activeTab === 'mine'" :to="{ name: 'list', params: { id: lastUsedList.id } }" class="featured">
+            <router-link v-if="lastUsedList && activeTab === 'mine' && allMineLists.some((list) => list.id === lastUsedList.id)" :to="{ name: 'list', params: { id: lastUsedList.id } }" class="featured">
               <i>{{ t("Last_Viewed_List") }}:</i><br>
               <h2 class="flex">
                 {{ lastUsedList.title }}

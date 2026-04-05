@@ -8,7 +8,18 @@ import UserNav from "./UserNav.vue";
 import StreakIcon from "./icons/StreakIcon.vue";
 import LockIcon from "./icons/LockIcon.vue";
 
-const props = defineProps(["list", "comments", "observations"]);
+const props = defineProps({
+  list: Object,
+  comments: Array,
+  observations: {
+    type: Array,
+    default: () => [],
+  },
+  readOnly: {
+    type: Boolean,
+    default: false,
+  },
+});
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
 const { selectedUser } = storeToRefs(settingsStore);
@@ -117,6 +128,7 @@ function getLockedListObservationOnDate(date) {
   <user-nav :users="users" v-model:selectedUser="selectedUser" />
 
   <section class="birdstreak-list">
+    <p v-if="props.readOnly" class="center margin-bottom">{{ t("List_Is_Read_Only_For_You") }}</p>
     <table class="table">
       <caption><streak-icon />{{ formatDate(props.list.startDate) }} – {{ formatDate(props.list.endDate) }}</caption>
       <thead>
@@ -130,7 +142,7 @@ function getLockedListObservationOnDate(date) {
           <td>{{ formatDate(date) }}</td>
           <td v-if="rangeIndex === dateRange.length - 1" :rowspan="groupIndex === 0 ? reportInterval : null">
             <template v-if="groupIndex === 0">
-              <form v-if="getAllListObservationsOnDates(dateGroups).length && !getLockedListObservationOnDate(date).length" @submit.prevent="lockObservation(obsToLock, getAllListObservationsOnDates(dateGroups))" class="flex">
+              <form v-if="!props.readOnly && getAllListObservationsOnDates(dateGroups).length && !getLockedListObservationOnDate(date).length" @submit.prevent="lockObservation(obsToLock, getAllListObservationsOnDates(dateGroups))" class="flex">
                 <select v-model="obsToLock" required>
                   <option value="" disabled>{{ t("Select_Observation") }}</option>
                   <option v-for="obs in getAllListObservationsOnDates(dateGroups)" :key="obs.date" :value="obs.id">{{ obs.name }}</option>

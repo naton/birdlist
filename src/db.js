@@ -17,6 +17,32 @@ db.version(10).stores({
   roles: "[realmId+name]",
 });
 
+db.version(11).stores({
+  // Application tables
+  lists: "@id",
+  observations: "@id, listId",
+  friends: "@id",
+  comments: "@id, listId",
+  joinedLists: "@id, userId, listId, [userId+listId]",
+  // Access Control tables
+  realms: "@realmId",
+  members: "@id, userId, [realmId+email]",
+  roles: "[realmId+name]",
+});
+
+db.version(12).stores({
+  // Application tables
+  lists: "@id",
+  observations: "@id, listId",
+  friends: "@id",
+  comments: "@id, listId",
+  joinedLists: "[userId+listId], userId, listId",
+  // Access Control tables
+  realms: "@realmId",
+  members: "@id, userId, [realmId+email]",
+  roles: "[realmId+name]",
+});
+
 db.cloud.configure({
   databaseUrl: "https://zyh2ho4s6.dexie.cloud",
   requireAuth: false,

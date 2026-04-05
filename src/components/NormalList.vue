@@ -5,6 +5,7 @@ import { db } from "../db";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
 import { useCommentsStore } from "@/stores/comments.js";
+import { useMessagesStore } from "@/stores/messages.js";
 import { groupBy } from "@/helpers";
 import ItemComponent from "./ItemComponent.vue";
 import ObservationsIcon from "./icons/ObservationsIcon.vue";
@@ -16,7 +17,18 @@ import SvgChart from "./SvgChart.vue";
 import HomeIllustration from '../components/illustrations/HomeIllustration.vue';
 
 const emit = defineEmits(["delete", "edit", "newLeader"]);
-const props = defineProps(["list", "comments", "observations"]);
+const props = defineProps({
+  list: Object,
+  comments: Array,
+  observations: {
+    type: Array,
+    default: () => [],
+  },
+  readOnly: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 const settingsStore = useSettingsStore();
 const { t, firstVisit } = settingsStore;
@@ -28,6 +40,8 @@ const { currentList, currentSort } = storeToRefs(listsStore);
 
 const commentsStore = useCommentsStore();
 const { addComment } = commentsStore;
+const messagesStore = useMessagesStore();
+const { addMessage } = messagesStore;
 
 const species = computed(() => [...new Set(props.observations?.map((item) => item.name))].sort());
 const selectedObservation = defineModel();
@@ -93,6 +107,11 @@ function emitNewLeader() {
 const comment = ref("");
 
 function addNewComment() {
+  if (props.readOnly) {
+    addMessage(t("List_Is_Read_Only_For_You"));
+    return;
+  }
+
   if (comment.value) {
     addComment({
       listId: currentList.value.id,
@@ -143,6 +162,7 @@ function noOfComments() {
         <span class="nav-count">({{ noOfComments() }})</span>
       </a>
     </nav>
+    <p v-if="props.readOnly" class="center margin-bottom">{{ t("List_Is_Read_Only_For_You") }}</p>
 
     <section class="empty-list" v-if="!props.observations.length">
       <div class="center">
@@ -189,8 +209,8 @@ function noOfComments() {
     <section id="comments" v-if="props.observations.length && currentList && currentSort === 'comments'">
       <form>
         <div class="comment-form">
-          <textarea v-model="comment" class="comment-input" :placeholder="t('Write_Something_To_The_Others')"></textarea>
-          <button class="comment-btn" @click.prevent="addNewComment">{{ t("Submit") }}</button>
+          <textarea v-model="comment" class="comment-input" :placeholder="props.readOnly ? t('Join_To_Contribute') : t('Write_Something_To_The_Others')" :disabled="props.readOnly"></textarea>
+          <button class="comment-btn" @click.prevent="addNewComment" :disabled="props.readOnly">{{ t("Submit") }}</button>
         </div>
       </form>
       <transition-group tag="ol" name="list" class="list">

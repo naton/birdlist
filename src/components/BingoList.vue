@@ -13,7 +13,18 @@ import BingoItem from "./BingoItem.vue";
 import 'vue3-simple-typeahead/dist/vue3-simple-typeahead.css'; //Optional default CSS
 
 const emit = defineEmits(["newLeader"]);
-const props = defineProps(["list", "comments", "observations"]);
+const props = defineProps({
+  list: Object,
+  comments: Array,
+  observations: {
+    type: Array,
+    default: () => [],
+  },
+  readOnly: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
@@ -88,6 +99,11 @@ function addListBird(bird) {
 }
 
 function checkBird(bird) {
+  if (props.readOnly) {
+    addMessage(t("List_Is_Read_Only_For_You"));
+    return;
+  }
+
   // delete observation if already checked
   const obs = props.observations.find((observation) => {
     return observation.name === bird && isCurrentUserOwner(observation.owner);
@@ -101,6 +117,9 @@ function checkBird(bird) {
 }
 
 function removeBird(bird) {
+  if (props.readOnly) {
+    return;
+  }
   birdsToCheck.value = birdsToCheck.value.filter((b) => b !== bird);
 }
 
@@ -247,8 +266,9 @@ onBeforeMount(() => {
   <div v-else class="empty-list">
     {{ t("No_Birds_Added") }}
   </div>
+  <p v-if="props.readOnly" class="center margin-bottom">{{ t("List_Is_Read_Only_For_You") }}</p>
 
-  <form v-if="checkListEditMode" class="add-bird fixed">
+  <form v-if="checkListEditMode && !props.readOnly" class="add-bird fixed">
     <vue3-simple-typeahead ref="addListBirdInput" :placeholder="`${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => addListBird(bird)"></vue3-simple-typeahead>
     <button type="button" @click="saveCheckList" :disabled="checkListBirds.length < bingoSize * bingoSize">
       <span v-if="checkListBirds.length < bingoSize * bingoSize">{{ checkListBirds.length }} / {{ bingoSize * bingoSize }}</span>
