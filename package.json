@@ -1,6 +1,6 @@
 {
   "name": "birdlist",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "scripts": {
     "dev": "vite && copy \"dist/sw.js\" \"public/sw.js\"",
     "build": "vite build && workbox injectManifest workbox-config.js",
