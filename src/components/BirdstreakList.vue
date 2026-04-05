@@ -114,7 +114,7 @@ function getLockedListObservationOnDate(date) {
 </script>
 
 <template>
-  <user-nav :users="users" :selectedUser="selectedUser" />
+  <user-nav :users="users" v-model:selectedUser="selectedUser" />
 
   <section class="birdstreak-list">
     <table class="table">

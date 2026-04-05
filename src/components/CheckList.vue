@@ -38,11 +38,41 @@ const currentLeader = ref("");
 const birdsToCheck = ref([]);
 const addListBirdInput = ref();
 
+function getCurrentOwnerAliases() {
+  const aliases = [
+    currentUser.value?.userId,
+    currentUser.value?.name,
+    currentUser.value?.email,
+  ].filter(Boolean);
+
+  if (currentUser.value?.userId === "unauthorized") {
+    aliases.push("unauthorized");
+  }
+
+  return aliases;
+}
+
+function isCurrentUserOwner(owner) {
+  return getCurrentOwnerAliases().includes(owner);
+}
+
 const checkListBirds = computed(() => {
+  const selectedOwner = selectedUser.value;
+
   return birdsToCheck.value.map((bird) => {
     return {
       name: bird,
-      checked: props.observations.some((obs) => obs.name === bird && obs.owner === (selectedUser.value || currentUser.value.userId)),
+      checked: props.observations.some((obs) => {
+        if (obs.name !== bird) {
+          return false;
+        }
+
+        if (selectedOwner) {
+          return obs.owner === selectedOwner;
+        }
+
+        return isCurrentUserOwner(obs.owner);
+      }),
     };
   });
 });
@@ -60,7 +90,9 @@ function addListBird(bird) {
 
 function checkBird(bird) {
   // delete observation if already checked
-  const obs = props.observations.find((obs) => obs.name === bird && obs.owner === currentUser.value.userId);
+  const obs = props.observations.find((observation) => {
+    return observation.name === bird && isCurrentUserOwner(observation.owner);
+  });
   if (obs) {
     deleteObservation(obs.id);
     return;
@@ -123,7 +155,7 @@ onBeforeMount(() => {
 <template>
   <user-nav
     :users="users"
-    :selectedUser="selectedUser" />
+    v-model:selectedUser="selectedUser" />
 
   <svg-chart v-if="users?.length > 1"
     :observations="props.observations"

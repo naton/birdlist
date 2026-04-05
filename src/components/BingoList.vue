@@ -37,11 +37,41 @@ const currentLeader = ref("");
 const birdsToCheck = ref([]);
 const addListBirdInput = ref();
 
+function getCurrentOwnerAliases() {
+  const aliases = [
+    currentUser.value?.userId,
+    currentUser.value?.name,
+    currentUser.value?.email,
+  ].filter(Boolean);
+
+  if (currentUser.value?.userId === "unauthorized") {
+    aliases.push("unauthorized");
+  }
+
+  return aliases;
+}
+
+function isCurrentUserOwner(owner) {
+  return getCurrentOwnerAliases().includes(owner);
+}
+
 const checkListBirds = computed(() => {
+  const selectedOwner = selectedUser.value;
+
   return birdsToCheck.value.map((bird) => {
     return {
       name: bird,
-      checked: props.observations.some((obs) => obs.name === bird && obs.owner === (selectedUser.value || currentUser.value.userId)),
+      checked: props.observations.some((obs) => {
+        if (obs.name !== bird) {
+          return false;
+        }
+
+        if (selectedOwner) {
+          return obs.owner === selectedOwner;
+        }
+
+        return isCurrentUserOwner(obs.owner);
+      }),
     };
   });
 });
@@ -59,7 +89,9 @@ function addListBird(bird) {
 
 function checkBird(bird) {
   // delete observation if already checked
-  const obs = props.observations.find((obs) => obs.name === bird && obs.owner === currentUser.value.userId);
+  const obs = props.observations.find((observation) => {
+    return observation.name === bird && isCurrentUserOwner(observation.owner);
+  });
   if (obs) {
     deleteObservation(obs.id);
     return;
@@ -115,12 +147,13 @@ function saveCheckList() {
 }
 
 /* BINGO stuff */
-const bingoSize = ref(props.list.bingoSize || 3);
+const bingoSize = ref(Number(props.list.bingoSize) || 3);
 const checkListBingoBirds = computed(() => {
+  const size = Number(bingoSize.value) || 3;
   // create an array where the birds are grouped in sub arrays with [bingoSize] birds in each
   const bingoCombinations = 
-    checkListBirds.value.slice(0, bingoSize.value * bingoSize.value).reduce((acc, bird, index) => {
-    const groupIndex = Math.floor(index / bingoSize.value);
+    checkListBirds.value.slice(0, size * size).reduce((acc, bird, index) => {
+    const groupIndex = Math.floor(index / size);
     if (!acc[groupIndex]) {
       acc[groupIndex] = [];
     }
@@ -148,7 +181,7 @@ const checkListBingoBirds = computed(() => {
   let reverseDiagonalGroup = [];
   bingoCombinations.forEach((group, index) => {
     if (group[index]) {
-      reverseDiagonalGroup.push(group[bingoSize.value - 1 - index]);
+      reverseDiagonalGroup.push(group[size - 1 - index]);
     }
   });
   bingoCombinations.push(reverseDiagonalGroup);
@@ -156,36 +189,50 @@ const checkListBingoBirds = computed(() => {
   return bingoCombinations;
 });
 
-let hasEmittedBingo = false;
+let previousIsBingo = null;
 
 watch(checkListBingoBirds, (newGroup) => {
-  if (isBingo(newGroup) && !hasEmittedBingo) {
+  const currentIsBingo = isBingo(newGroup);
+
+  // Initialize without emitting to avoid re-triggering on page load.
+  if (previousIsBingo === null) {
+    previousIsBingo = currentIsBingo;
+    return;
+  }
+
+  if (!previousIsBingo && currentIsBingo) {
     addMessage("BINGO!");
     emitNewLeader();
-    hasEmittedBingo = true;
   }
+
+  previousIsBingo = currentIsBingo;
 });
 
 function isGroupChecked(group) {
-  // check if all birds in a sub group are checked
-  return group.every((bird) => bird.checked);
+  const size = Number(bingoSize.value) || 3;
+  // Only full groups are valid for bingo.
+  return Array.isArray(group) && group.length === size && group.every((bird) => bird && bird.checked);
 }
 
 // check if all birds in any of the sub groups are checked
 function isBingo(groups) {
+  const size = Number(bingoSize.value) || 3;
+  if (checkListBirds.value.length < size * size) {
+    return false;
+  }
   return groups.some((group) => isGroupChecked(group));
 }
 
 onBeforeMount(() => {
   birdsToCheck.value = props.list?.birds || []
-  bingoSize.value = props.list?.bingoSize || []
+  bingoSize.value = Number(props.list?.bingoSize) || 3
 })
 </script>
 
 <template>
   <user-nav
     :users="users"
-    :selectedUser="selectedUser" />
+    v-model:selectedUser="selectedUser" />
 
   <section v-if="checkListBirds.length" :class="'grid-' + bingoSize">
     <bingo-item v-for="bird in checkListBirds"

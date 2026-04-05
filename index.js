@@ -1,11 +1,17 @@
-require('dotenv').config();
+const path = require('path');
+const dotenv = require('dotenv');
 const express = require('express');
 const webpush = require('web-push');
 const cors = require('cors');
 const fetch = require('node-fetch');
 
+// Load local secrets first, then fallback to .env.
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+dotenv.config();
+
 const publicVapidKey = process.env.VAPID_PUBLIC;
 const privateVapidKey = process.env.VAPID_PRIVATE;
+const vapidSubject = process.env.VAPID_SUBJECT;
 const privateDexieCloudKey = process.env.DEXIE_CLOUD_CLIENTID;
 const privateDexieCloudSecret = process.env.DEXIE_CLOUD_CLIENTSECRET;
 
@@ -36,10 +42,10 @@ app.use(express.json());
 
 // Setup the public and private VAPID keys to web-push library.
 if (!publicVapidKey || !privateVapidKey) {
-  console.error('Missing VAPID_PUBLIC or VAPID_PRIVATE environment variables.');
+  console.error('Missing VAPID_PUBLIC or VAPID_PRIVATE environment variables. Add them in .env.local or .env');
   process.exit(1);
 }
-webpush.setVapidDetails('mailto:anton@andreasson.org', publicVapidKey, privateVapidKey);
+webpush.setVapidDetails(vapidSubject, publicVapidKey, privateVapidKey);
 
 const getDexieCloudAccessToken = async () => {
   console.log('getDexieCloudAccessToken...');

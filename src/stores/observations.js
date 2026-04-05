@@ -19,6 +19,24 @@ export const useObservationsStore = defineStore("observation", () => {
   const { currentList } = storeToRefs(listsStore);
 
   const allObservations = ref([]);
+
+  function getCurrentOwnerAliases() {
+    const aliases = [
+      currentUser.value?.userId,
+      currentUser.value?.name,
+      currentUser.value?.email,
+    ].filter(Boolean);
+
+    if (currentUser.value?.userId === "unauthorized") {
+      aliases.push("unauthorized");
+    }
+
+    return aliases;
+  }
+
+  function isCurrentUsersObservation(obs) {
+    return getCurrentOwnerAliases().includes(obs.owner);
+  }
   
   liveQuery(async () => await db.observations.toArray()).subscribe(
     (observations) => {
@@ -31,7 +49,7 @@ export const useObservationsStore = defineStore("observation", () => {
 
   const allMyObservations = computed(() => {
     return allObservations.value
-      .filter((obs) => obs.owner == currentUser.value?.name || obs.owner == "unauthorized")
+      .filter((obs) => isCurrentUsersObservation(obs))
       .filter((obs) => obs.date.getFullYear() == currentYear.value)
       .sort((a, b) => a.date - b.date);
   });
@@ -40,7 +58,7 @@ export const useObservationsStore = defineStore("observation", () => {
     return allObservations.value
       .filter(
         (obs) =>
-          (obs.owner == currentUser.value?.name || obs.owner == "unauthorized") &&
+          isCurrentUsersObservation(obs) &&
           obs.date.getFullYear() == currentYear.value &&
           obs.date.getMonth() == currentMonth.value
       )
@@ -55,7 +73,7 @@ export const useObservationsStore = defineStore("observation", () => {
   function getTotalPerMonth(month) {
     return allObservations.value.filter(
       (obs) =>
-        (obs.owner == currentUser.value?.name || obs.owner == "unauthorized") &&
+        isCurrentUsersObservation(obs) &&
         obs.date.getFullYear() == currentYear.value &&
         obs.date.getMonth() == month
     ).length;
@@ -169,10 +187,14 @@ export const useObservationsStore = defineStore("observation", () => {
   }
 
   async function deleteObservation(id) {
-    // get the bird name of the observation to be deleted
-    const birdName = allMyObservations.value.filter((obs) => obs.id === id)[0].name;
+    const observation = allObservations.value.find((obs) => obs.id === id);
+    const birdName = observation?.name;
     await db.observations.delete(id);
-    addMessage(t("Observation_Removed") + ": <b>" + birdName + "</b>");
+    if (birdName) {
+      addMessage(t("Observation_Removed") + ": <b>" + birdName + "</b>");
+    } else {
+      addMessage(t("Observation_Removed"));
+    }
   }
 
   return {

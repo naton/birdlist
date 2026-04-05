@@ -16,6 +16,23 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 npm install
 ```
 
+## Local API Secrets (`npm start`)
+
+1. Copy `.env.example` to `.env.local`.
+2. Generate VAPID keys:
+```sh
+npm run keys:vapid
+```
+3. Put generated keys and your Dexie Cloud credentials in `.env.local`.
+4. Start API:
+```sh
+npm start
+```
+
+Notes:
+- `.env.local` is ignored by git.
+- Server loads `.env.local` first, then `.env`.
+
 ### Compile and Hot-Reload for Development
 
 ```sh
