@@ -25,7 +25,6 @@ export const useListsStore = defineStore("list", () => {
   const currentList = ref();
   const lastUsedList = ref();
   const checkListEditMode = ref(false);
-  const isSubscribedToNotifications = ref(false);
 
   /* Lists */
   liveQuery(async () => await db.lists.toArray()).subscribe(
@@ -162,7 +161,6 @@ export const useListsStore = defineStore("list", () => {
     checkListEditMode,
     currentListExpanded,
     currentSort,
-    isSubscribedToNotifications,
     sortBy,
     getListMembers,
     createList,
@@ -175,6 +173,6 @@ export const useListsStore = defineStore("list", () => {
 {
   persist: {
     key: "birdlist-lists",
-    paths: ["currentList", "lastUsedList", "isSubscribedToNotifications", "currentSort", "currentListExpanded"],
+    paths: ["currentList", "lastUsedList", "currentSort", "currentListExpanded"],
   },
 });

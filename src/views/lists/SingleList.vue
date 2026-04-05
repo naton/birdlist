@@ -1,8 +1,15 @@
 <script setup>
-import { ref, computed, onBeforeMount, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onBeforeMount, onMounted, onBeforeUnmount, watch } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
-import { setupConfetti, destroyConfetti, celebrate } from "@/helpers";
+import {
+  setupConfetti,
+  destroyConfetti,
+  celebrate,
+  subscribeToListNotifications,
+  unsubscribeFromListNotifications,
+  isListNotificationsEnabled,
+} from "@/helpers";
 import { useSettingsStore } from '@/stores/settings.js'
 import { useListsStore } from "@/stores/lists.js";
 import { useObservationsStore } from "@/stores/observations.js";
@@ -21,7 +28,7 @@ const route = useRoute();
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
-const { currentUser } = storeToRefs(settingsStore);
+const { currentUser, isPremiumUser } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
 const { convertToChecklist } = listsStore;
@@ -41,6 +48,8 @@ const editDialog = ref(null);
 const isEditDialogOpen = ref(false);
 
 const isListOwner = computed(() => currentUser.value?.userId === currentList.value?.owner);
+const isSubscribedToNotifications = ref(false);
+const isNotificationToggleBusy = ref(false);
 
 function openModal() {
   if (editDialog.value) {
@@ -57,6 +66,36 @@ function createChecklistFromCurrentList() {
   convertToChecklist(currentList.value);
 }
 
+async function refreshNotificationSubscriptionState() {
+  if (!currentList.value?.id || !isPremiumUser.value) {
+    isSubscribedToNotifications.value = false;
+    return;
+  }
+
+  isSubscribedToNotifications.value = await isListNotificationsEnabled(currentList.value.id);
+}
+
+async function toggleListNotificationSubscription() {
+  if (!currentList.value?.id || isNotificationToggleBusy.value) {
+    return;
+  }
+
+  isNotificationToggleBusy.value = true;
+  try {
+    const didSucceed = isSubscribedToNotifications.value
+      ? await unsubscribeFromListNotifications(currentList.value.id)
+      : await subscribeToListNotifications(currentList.value.id);
+
+    if (didSucceed) {
+      isSubscribedToNotifications.value = !isSubscribedToNotifications.value;
+    } else {
+      await refreshNotificationSubscriptionState();
+    }
+  } finally {
+    isNotificationToggleBusy.value = false;
+  }
+}
+
 onBeforeMount(async () => {
   currentList.value = await allLists.value?.find((list) => list.id == route.params.id);
 });
@@ -68,6 +107,14 @@ onMounted(() => {
 onBeforeUnmount(() => {
   destroyConfetti();
 });
+
+watch(
+  () => currentList.value?.id,
+  async () => {
+    await refreshNotificationSubscriptionState();
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -78,6 +125,22 @@ onBeforeUnmount(() => {
   />
   <list-info>
     <template v-slot:extra>
+      <button
+        v-if="isPremiumUser && currentList?.id"
+        type="button"
+        class="secondary"
+        :disabled="isNotificationToggleBusy"
+        @click="toggleListNotificationSubscription"
+      >
+        <svg v-if="!isSubscribedToNotifications" xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24" width="20" height="20">
+          <path fill="none" stroke="currentColor" stroke-linecap="square" stroke-miterlimit="10" d="M19 11V8A7 7 0 0 0 5 8v3c0 3.3-3 4.1-3 6 0 1.7 3.9 3 10 3s10-1.3 10-3c0-1.9-3-2.7-3-6Z" />
+          <path fill="currentColor" d="M12 22a38.81 38.81 0 0 1-2.855-.1 2.992 2.992 0 0 0 5.71 0c-.894.066-1.844.1-2.855.1Z" />
+        </svg>
+        <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+          <path fill="currentColor" d="M20 10V8A8 8 0 0 0 4 8v2a4.441 4.441 0 0 1-1.547 3.193A4.183 4.183 0 0 0 1 16c0 2.5 4.112 4 11 4s11-1.5 11-4a4.183 4.183 0 0 0-1.453-2.807A4.441 4.441 0 0 1 20 10Z" />
+          <path fill="currentColor" d="M9.145 21.9a2.992 2.992 0 0 0 5.71 0c-.894.066-1.844.1-2.855.1s-1.961-.032-2.855-.1Z" />
+        </svg>
+      </button>
       <button v-if="isListOwner" class="add secondary" @click="openModal">
         {{ t("Edit_List") }}
       </button>

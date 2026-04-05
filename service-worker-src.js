@@ -121,17 +121,33 @@ function main(workbox) {
     const eventText = event.data.text();
     // Specify default options
     let options = {};
-    let title = '';
+    let title = 'Birdlist';
 
     // Support both plain text notification and json
     if (eventText.substr(0, 1) === '{') {
-      const eventData = JSON.parse(eventText);
-      title = eventData.title;
+      let eventData = {};
+      try {
+        eventData = JSON.parse(eventText);
+      } catch (error) {
+        console.log('Push payload JSON parse failed', error);
+      }
+
+      title = eventData.title || title;
 
       // Set specific options
       // @link https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/showNotification#parameters
       if (eventData.options) {
         options = Object.assign(options, eventData.options);
+      } else {
+        // Backward compatibility with legacy payload shape:
+        // { title, body, icon, listId }
+        if (eventData.body) options.body = eventData.body;
+        if (eventData.icon) options.icon = eventData.icon;
+        if (eventData.badge) options.badge = eventData.badge;
+        if (eventData.tag) options.tag = eventData.tag;
+        if (eventData.listId) {
+          options.data = Object.assign(options.data || {}, { listId: eventData.listId });
+        }
       }
 
       // Check expiration if specified
@@ -156,6 +172,8 @@ function main(workbox) {
 
   self.addEventListener("notificationclick", (event) => {
     event.notification.close();
+    const listId = event.notification?.data?.listId;
+    const targetUrl = listId ? "/lists/" + listId : "/lists";
 
     // This looks to see if the current is already open and focuses if it is
     event.waitUntil(
@@ -163,18 +181,21 @@ function main(workbox) {
       clients
         .matchAll({
           type: "window",
+          includeUncontrolled: true,
         })
         .then((clientList) => {
           for (const client of clientList) {
-            if (client.url === "/" && "focus" in client) return client.focus();
+            if (client.url.startsWith(self.location.origin) && "focus" in client) {
+              if ("navigate" in client) {
+                client.navigate(targetUrl);
+              }
+              return client.focus();
+            }
           }
           /* eslint-disable-next-line */
-          if (clients.openWindow) return clients.openWindow("/lists/" + event.notification.data.listId);
+          if (clients.openWindow) return clients.openWindow(targetUrl);
         })
     );
-
-    /* eslint-disable-next-line */
-    clients.openWindow("/lists/" + event.notification.data.listId);
   });
 
   /* eslint-disable-next-line */

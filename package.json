@@ -1,8 +1,8 @@
 {
   "name": "birdlist",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "scripts": {
-    "dev": "vite && cp dist/sw.js public/sw.js",
+    "dev": "vite && copy \"dist/sw.js\" \"public/sw.js\"",
     "build": "vite build && workbox injectManifest workbox-config.js",
     "preview": "vite preview --port 4173",
     "test:unit": "vitest --environment jsdom",

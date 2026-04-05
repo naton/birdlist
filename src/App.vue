@@ -29,11 +29,15 @@ onMounted(async () => {
   // Always reset to current month when app initializes
   resetMonthToCurrentMonth();
   
-  if ("serviceWorker" in navigator) {
-    const registration = await navigator.serviceWorker.register("/sw.js");
-    registration.addEventListener('updatefound', () => {
-      onUpdateFound(registration)
-    });
+  if ("serviceWorker" in navigator && import.meta.env.PROD) {
+    try {
+      const registration = await navigator.serviceWorker.register("/sw.js");
+      registration.addEventListener('updatefound', () => {
+        onUpdateFound(registration)
+      });
+    } catch (error) {
+      console.log("Service worker registration failed.", error);
+    }
   }
   setTimeout(() => setThemeColor(), 500)
 })
