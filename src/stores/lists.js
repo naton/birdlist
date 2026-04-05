@@ -34,7 +34,13 @@ export const useListsStore = defineStore("list", () => {
     return getCurrentOwnerAliases().includes(list.owner);
   }
 
+  function isPublicList(list) {
+    return list?.realmId === "rlm-public";
+  }
+
   const allMyLists = computed(() => allLists.value?.filter((list) => isOwnedByCurrentUser(list)) || []);
+  const allRegularLists = computed(() => allLists.value?.filter((list) => !isPublicList(list)) || []);
+  const allPublicLists = computed(() => allLists.value?.filter((list) => isPublicList(list)) || []);
   const currentSort = ref("bydate");
   const currentListExpanded = ref(true);
   const currentList = ref();
@@ -177,6 +183,8 @@ export const useListsStore = defineStore("list", () => {
   return {
     allLists,
     allMyLists,
+    allRegularLists,
+    allPublicLists,
     currentList,
     lastUsedList,
     checkListEditMode,

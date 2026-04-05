@@ -1,6 +1,6 @@
 <script setup>
 import { db } from "../db";
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { RouterLink, RouterView } from 'vue-router';
 import { useObservable } from "@vueuse/rxjs";
@@ -22,10 +22,12 @@ const { isPremiumUser } = storeToRefs(settingsStore)
 
 const listsStore = useListsStore();
 const { getListMembers } = listsStore;
-const { allLists, allMyLists, currentList, lastUsedList } = storeToRefs(listsStore);
+const { allLists, allMyLists, allRegularLists, allPublicLists, currentList, lastUsedList } = storeToRefs(listsStore);
 
-const showOnlyMine = ref(false);
+const activeTab = ref("mine");
 const createListDialog = ref(null);
+const visibleLists = computed(() => activeTab.value === "mine" ? allRegularLists.value : allPublicLists.value);
+const noListsMessage = computed(() => activeTab.value === "mine" ? t("No_Lists") : t("No_Open_Lists"));
 
 const listInvites = useObservable(db.cloud.invites);
 
@@ -44,6 +46,10 @@ function deleteInvite(invite) {
 
 function emitEdit(obs) {
   emit("edit", obs);
+}
+
+function setActiveTab(tab) {
+  activeTab.value = tab;
 }
 
 const listMembersLoaded = ref(false);
@@ -71,7 +77,7 @@ onMounted(async () => {
           <div class="list-tools">
             <h1 class="center">{{ t("Lists") }}</h1>
             <div class="flex">
-              <button v-if="allMyLists?.length > 0" class="add" @click="newList" :disabled="!isPremiumUser && allMyLists?.length >= 5">
+              <button class="add" @click="newList" :disabled="!isPremiumUser && allMyLists?.length >= 5">
                 {{ t("Create_New_List") }}
                 <span class="pill">{{ allMyLists?.length }} / {{ isPremiumUser ? "∞" : "5" }}</span>
               </button>
@@ -81,7 +87,16 @@ onMounted(async () => {
             {{ t("Upgrade_To_Premium") }}
           </div>
           <div class="lists-content">
-            <router-link v-if="lastUsedList" :to="{ name: 'list', params: { id: lastUsedList.id } }" class="featured">
+            <div class="list-tabs">
+              <button type="button" :class="{ secondary: activeTab !== 'mine' }" @click="setActiveTab('mine')">
+                {{ t("My_Lists") }}
+              </button>
+              <button type="button" :class="{ secondary: activeTab !== 'open' }" @click="setActiveTab('open')">
+                {{ t("Open_Lists") }}
+              </button>
+            </div>
+
+            <router-link v-if="lastUsedList && activeTab === 'mine'" :to="{ name: 'list', params: { id: lastUsedList.id } }" class="featured">
               <i>{{ t("Last_Viewed_List") }}:</i><br>
               <h2 class="flex">
                 {{ lastUsedList.title }}
@@ -92,14 +107,8 @@ onMounted(async () => {
               </template></p>
             </router-link>
 
-            <div>
-              <label>
-                <input v-model="showOnlyMine" type="checkbox" switch>
-                {{ t("Show_Only_Mine") }}
-              </label>
-            </div>
-            <ul v-if="allLists?.length" class="list">
-              <li v-for="list in (showOnlyMine ? allMyLists : allLists)" :key="list.id" class="list-item">
+            <ul v-if="visibleLists?.length" class="list">
+              <li v-for="list in visibleLists" :key="list.id" class="list-item">
                 <lists-icon />
                 <router-link :to="{ name: 'list', params: { id: list.id } }" @click="selectList(list)" class="list-name">{{ list.title }}</router-link>
                 <div>
@@ -120,8 +129,8 @@ onMounted(async () => {
               </li>
             </ul>
             <div v-else class="empty-list">
-              <p>{{ t("No_Lists") }}</p>
-              <button class="add" @click="newList">
+              <p>{{ noListsMessage }}</p>
+              <button v-if="activeTab === 'mine'" class="add" @click="newList">
                 {{ t("Create_New_List") }}
               </button>
             </div>
@@ -185,6 +194,15 @@ button:has(.pill) {
   align-content: start;
   gap: 1.5rem;
   padding: 0.5rem 1rem 1rem;
+}
+
+.list-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.list-tabs button {
+  flex: 1;
 }
 
 .featured {
