@@ -141,10 +141,7 @@ export const useListsStore = defineStore("list", () => {
       ) || []
   );
   const allPublicLists = computed(
-    () =>
-      allLists.value?.filter(
-        (list) => isPublicList(list) && !isOwnedByCurrentUser(list) && !isJoinedList(list.id)
-      ) || []
+    () => allLists.value?.filter((list) => isPublicList(list)) || []
   );
   const currentSort = ref("bydate");
   const currentListExpanded = ref(true);
