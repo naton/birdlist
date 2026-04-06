@@ -1,7 +1,7 @@
 function main(workbox) {
   // Manual cache namespace bump.
   // Increase this when you want to force a hard runtime cache reset.
-  const CACHE_VERSION = "2026.04.05.1";
+  const CACHE_VERSION = "2026.04.05.2";
   const CACHE_PREFIX = `birdlist-cache-v${CACHE_VERSION}`;
   const CSS_CACHE = `${CACHE_PREFIX}-css`;
   const IMG_CACHE = `${CACHE_PREFIX}-img`;
