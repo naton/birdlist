@@ -86,6 +86,7 @@
     "List_Joined": "You joined this list.",
     "List_Leave_Failed": "Could not leave this list.",
     "List_Left": "You left this list.",
+    "List_Save_Failed": "Could not save this list.",
     "List_Name": "List name",
     "List_Rules_Etc": "Possible competition rules, purpose of the list, etc.",
     "List_Visibility_Update_Failed": "Could not update list visibility.",

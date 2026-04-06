@@ -164,11 +164,26 @@ function emitNewLeader() {
 }
 
 async function saveCheckList() {
+  const listId = currentList.value?.id || props.list?.id;
+  if (!listId) {
+    addMessage(t("List_Save_Failed"));
+    return;
+  }
+
   const birds = toRaw(birdsToCheck.value);
-  const baseList = currentList.value || props.list;
-  const payload = Object.assign({}, baseList, { birds, updated: new Date() });
-  await updateList(payload);
-  checkListEditMode.value = false;
+  const payload = {
+    id: listId,
+    birds,
+    updated: new Date(),
+  };
+
+  try {
+    await updateList(payload);
+    checkListEditMode.value = false;
+  } catch (error) {
+    console.error("Failed to save checklist birds.", error);
+    addMessage(t("List_Save_Failed"));
+  }
 }
 
 onBeforeMount(() => {

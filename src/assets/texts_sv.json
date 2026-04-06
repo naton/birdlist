@@ -86,6 +86,7 @@
     "List_Joined": "Du gick med i listan.",
     "List_Leave_Failed": "Kunde inte lämna listan.",
     "List_Left": "Du lämnade listan.",
+    "List_Save_Failed": "Kunde inte spara listan.",
     "List_Name": "Listans namn",
     "List_Rules_Etc": "Ev tävlingsregler, syften med listan, etc",
     "List_Visibility_Update_Failed": "Kunde inte uppdatera listans synlighet.",

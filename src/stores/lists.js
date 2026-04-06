@@ -82,12 +82,17 @@ export const useListsStore = defineStore("list", () => {
     }
 
     try {
-      await db.joinedLists.put({
-        userId,
-        listId: normalizedListId,
-        joinedAt: new Date(),
-        updated: new Date(),
-      });
+      const existing = await db.joinedLists.where("[userId+listId]").equals([userId, normalizedListId]).first();
+      if (existing?.id) {
+        await db.joinedLists.update(existing.id, { updated: new Date() });
+      } else {
+        await db.joinedLists.add({
+          userId,
+          listId: normalizedListId,
+          joinedAt: new Date(),
+          updated: new Date(),
+        });
+      }
 
       addMessage(t("List_Joined"));
       return true;
@@ -115,7 +120,10 @@ export const useListsStore = defineStore("list", () => {
     }
 
     try {
-      await db.joinedLists.delete([userId, normalizedListId]);
+      const existing = await db.joinedLists.where("[userId+listId]").equals([userId, normalizedListId]).toArray();
+      if (existing.length > 0) {
+        await db.joinedLists.bulkDelete(existing.map((item) => item.id).filter(Boolean));
+      }
       addMessage(t("List_Left"));
       return true;
     } catch (error) {

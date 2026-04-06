@@ -36,7 +36,7 @@ db.version(12).stores({
   observations: "@id, listId",
   friends: "@id",
   comments: "@id, listId",
-  joinedLists: "[userId+listId], userId, listId",
+  joinedLists: "@id, userId, listId, [userId+listId]",
   // Access Control tables
   realms: "@realmId",
   members: "@id, userId, [realmId+email]",
