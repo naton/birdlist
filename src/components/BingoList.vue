@@ -1,16 +1,10 @@
 <script setup>
-import { ref, computed, toRaw, watch, onBeforeMount } from 'vue'
-import { storeToRefs } from 'pinia'
-import { groupBy } from "@/helpers";
-import { useSettingsStore } from '@/stores/settings.js'
-import { useBirdsStore } from '@/stores/birds.js'
-import { useListsStore } from '@/stores/lists.js'
-import { useObservationsStore } from '@/stores/observations.js'
-import { useMessagesStore } from '@/stores/messages.js'
+import { ref, computed, watch, onBeforeMount } from "vue";
 import vue3SimpleTypeahead from "vue3-simple-typeahead";
 import UserNav from "./UserNav.vue";
 import BingoItem from "./BingoItem.vue";
-import 'vue3-simple-typeahead/dist/vue3-simple-typeahead.css'; //Optional default CSS
+import { useCheckableList } from "@/composables/useCheckableList";
+import "vue3-simple-typeahead/dist/vue3-simple-typeahead.css"; // Optional default CSS
 
 const emit = defineEmits(["newLeader"]);
 const props = defineProps({
@@ -26,159 +20,24 @@ const props = defineProps({
   },
 });
 
-const settingsStore = useSettingsStore();
-const { t } = settingsStore;
-const { currentUser, selectedUser } = storeToRefs(settingsStore);
-
-const birdStore = useBirdsStore();
-const { birds } = storeToRefs(birdStore);
-
-const listsStore = useListsStore();
-const { updateList } = listsStore;
-const { currentList, checkListEditMode } = storeToRefs(listsStore);
-
-const observationsStore = useObservationsStore();
-const { addObservation, deleteObservation } = observationsStore;
-
-const messageStore = useMessagesStore();
-const { addMessage } = messageStore;
-
-const currentLeader = ref("");
-
-const birdsToCheck = ref([]);
-const addListBirdInput = ref();
-
-function getCurrentOwnerAliases() {
-  const aliases = [
-    currentUser.value?.userId,
-    currentUser.value?.name,
-    currentUser.value?.email,
-  ].filter(Boolean);
-
-  if (currentUser.value?.userId === "unauthorized") {
-    aliases.push("unauthorized");
-  }
-
-  return aliases;
-}
-
-function isCurrentUserOwner(owner) {
-  return getCurrentOwnerAliases().includes(owner);
-}
-
-const checkListBirds = computed(() => {
-  const selectedOwner = selectedUser.value;
-
-  return birdsToCheck.value.map((bird) => {
-    return {
-      name: bird,
-      checked: props.observations.some((obs) => {
-        if (obs.name !== bird) {
-          return false;
-        }
-
-        if (selectedOwner) {
-          return obs.owner === selectedOwner;
-        }
-
-        return isCurrentUserOwner(obs.owner);
-      }),
-    };
-  });
-});
-
-function addListBird(bird) {
-  // only add if not already in the list
-  if (!birdsToCheck.value.includes(bird.name)) {
-    birdsToCheck.value.push(bird.name);
-  } else {
-    addMessage(t("Bird_Already_In_List"));
-  }
-  addListBirdInput.value.clearInput();
-  addListBirdInput.value.focusInput();
-}
-
-function checkBird(bird) {
-  if (props.readOnly) {
-    addMessage(t("List_Is_Read_Only_For_You"));
-    return;
-  }
-
-  // delete observation if already checked
-  const obs = props.observations.find((observation) => {
-    return observation.name === bird && isCurrentUserOwner(observation.owner);
-  });
-  if (obs) {
-    deleteObservation(obs.id);
-    return;
-  } else {
-    addObservation(bird);
-  }
-}
-
-function removeBird(bird) {
-  if (props.readOnly) {
-    return;
-  }
-  birdsToCheck.value = birdsToCheck.value.filter((b) => b !== bird);
-}
-
-const users = computed(() => {
-  const names = [...new Set(props.observations.map((obs) => obs.owner))].sort();
-  let users = [];
-  let highestScore = 0;
-  let leader = false;
-
-  names.forEach((name) => {
-    const score = Object.keys(
-      groupBy(
-        props.observations.filter((obs) => obs.owner === name),
-        "name"
-      )
-    ).length;
-    highestScore = score > highestScore ? score : highestScore;
-    users.push({
-      name,
-      score,
-      leader,
-    });
-  });
-
-  users.forEach((user) => {
-    if (user.score === highestScore) {
-      user.leader = true;
-      currentLeader.value = user.name;
-    }
-  });
-
-  return users.sort((a, b) => b.score - a.score);
-});
+const {
+  t,
+  addMessage,
+  birds,
+  selectedUser,
+  checkListEditMode,
+  addListBirdInput,
+  checkListBirds,
+  users,
+  addListBird,
+  checkBird,
+  removeBird,
+  saveCheckList,
+  initializeBirdsFromList,
+} = useCheckableList(props);
 
 function emitNewLeader() {
   emit("newLeader");
-}
-
-async function saveCheckList() {
-  const listId = currentList.value?.id || props.list?.id;
-  if (!listId) {
-    addMessage(t("List_Save_Failed"));
-    return;
-  }
-
-  const birds = toRaw(birdsToCheck.value);
-  const payload = {
-    id: listId,
-    birds,
-    updated: new Date(),
-  };
-
-  try {
-    await updateList(payload);
-    checkListEditMode.value = false;
-  } catch (error) {
-    console.error("Failed to save bingo list birds.", error);
-    addMessage(t("List_Save_Failed"));
-  }
 }
 
 /* BINGO stuff */
@@ -259,9 +118,9 @@ function isBingo(groups) {
 }
 
 onBeforeMount(() => {
-  birdsToCheck.value = props.list?.birds || []
-  bingoSize.value = Number(props.list?.bingoSize) || 3
-})
+  initializeBirdsFromList();
+  bingoSize.value = Number(props.list?.bingoSize) || 3;
+});
 </script>
 
 <template>

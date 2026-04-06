@@ -21,7 +21,7 @@ const { t } = settingsStore
 const { isPremiumUser, isUserLoggedIn } = storeToRefs(settingsStore)
 
 const listsStore = useListsStore();
-const { getListMembers, isOwnedByCurrentUser } = listsStore;
+const { getListMembers } = listsStore;
 const { allLists, allMyLists, allMineLists, allPublicLists, currentList, lastUsedList } = storeToRefs(listsStore);
 
 const activeTab = ref(isUserLoggedIn.value ? "mine" : "open");
@@ -60,21 +60,43 @@ watch(isUserLoggedIn, (loggedIn) => {
 
 const listMembersLoaded = ref(false);
 
-onMounted(async () => {
-  setTimeout(async () => {
-    const lists = allLists.value || [];
-    await Promise.all(
-      lists.map(async (list) => {
-        if (list.realmId === "rlm-public" && !isOwnedByCurrentUser(list)) {
-          list.members = [];
-          return;
-        }
-        list.members = await getListMembers(list.id);
-      })
-    );
+async function getPublicListMembers(listId) {
+  const observations = await db.observations.where({ listId }).toArray();
+  const owners = [...new Set(observations.map((observation) => observation.owner).filter(Boolean))].sort();
+  return owners.map((owner) => ({ email: owner, accepted: true }));
+}
+
+async function loadListMembers() {
+  const lists = allLists.value || [];
+  if (!lists.length) {
     listMembersLoaded.value = true;
-  }, 500);
+    return;
+  }
+
+  listMembersLoaded.value = false;
+  await Promise.all(
+    lists.map(async (list) => {
+      if (list.realmId === "rlm-public") {
+        list.members = await getPublicListMembers(list.id);
+        return;
+      }
+      list.members = await getListMembers(list.id);
+    })
+  );
+  listMembersLoaded.value = true;
+}
+
+onMounted(async () => {
+  setTimeout(loadListMembers, 250);
 });
+
+watch(
+  () => allLists.value?.map((list) => `${list.id}:${list.updated}`).join("|"),
+  () => {
+    setTimeout(loadListMembers, 100);
+  },
+  { immediate: false }
+);
 </script>
 
 <template>
@@ -118,7 +140,7 @@ onMounted(async () => {
                 {{ lastUsedList.title }}
               </h2>
               <p>{{ lastUsedList.description }}</p>
-              <p class="margin-top"><template v-for="member in lastUsedList.members" :key="member">
+              <p class="margin-top"><template v-for="member in lastUsedList.members" :key="member.email">
                 <user-initial :user="member.email" />
               </template></p>
             </router-link>
@@ -136,7 +158,7 @@ onMounted(async () => {
                 <div class="list-members">
                   <transition name="fade-in">
                     <div v-if="listMembersLoaded">
-                      <template v-for="member in list.members" :key="member">
+                      <template v-for="member in list.members" :key="member.email">
                         <user-initial :user="member.email" />
                       </template>
                     </div>

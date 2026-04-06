@@ -29,7 +29,7 @@ const route = useRoute();
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
-const { isPremiumUser, isUserLoggedIn } = storeToRefs(settingsStore);
+const { isPremiumUser, isUserLoggedIn, selectedUser } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
 const { convertToChecklist, isOwnedByCurrentUser, isPublicList, isJoinedList, canWriteToList, joinPublicList, leavePublicList } = listsStore;
@@ -133,6 +133,7 @@ onBeforeUnmount(() => {
 watch(
   () => currentList.value?.id,
   async () => {
+    selectedUser.value = null;
     await refreshNotificationSubscriptionState();
   },
   { immediate: true }

@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { defineStore, storeToRefs } from "pinia";
 import { db } from "../db";
@@ -20,6 +20,7 @@ export const useListsStore = defineStore("list", () => {
 
   const allLists = ref([]);
   const joinedListIds = ref([]);
+  let joinedListsSubscription = null;
   function getCurrentOwnerAliases() {
     return [
       currentUser.value?.userId,
@@ -94,6 +95,10 @@ export const useListsStore = defineStore("list", () => {
         });
       }
 
+      if (!joinedListIds.value.includes(normalizedListId)) {
+        joinedListIds.value.push(normalizedListId);
+      }
+
       addMessage(t("List_Joined"));
       return true;
     } catch (error) {
@@ -124,6 +129,7 @@ export const useListsStore = defineStore("list", () => {
       if (existing.length > 0) {
         await db.joinedLists.bulkDelete(existing.map((item) => item.id).filter(Boolean));
       }
+      joinedListIds.value = joinedListIds.value.filter((id) => id !== normalizedListId);
       addMessage(t("List_Left"));
       return true;
     } catch (error) {
@@ -165,19 +171,33 @@ export const useListsStore = defineStore("list", () => {
     }
   );
 
-  liveQuery(async () => {
-    const userId = currentUser.value?.userId;
+  function subscribeJoinedLists(userId) {
+    if (joinedListsSubscription) {
+      joinedListsSubscription.unsubscribe();
+      joinedListsSubscription = null;
+    }
+
     if (!userId || userId === "unauthorized") {
-      return [];
+      joinedListIds.value = [];
+      return;
     }
-    return db.joinedLists.where({ userId }).toArray();
-  }).subscribe(
-    (joinedLists) => {
-      joinedListIds.value = joinedLists.map((item) => String(item.listId));
+
+    joinedListsSubscription = liveQuery(async () => db.joinedLists.where({ userId }).toArray()).subscribe(
+      (joinedLists) => {
+        joinedListIds.value = joinedLists.map((item) => String(item.listId));
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
+
+  watch(
+    () => currentUser.value?.userId,
+    (userId) => {
+      subscribeJoinedLists(userId);
     },
-    (error) => {
-      console.log(error);
-    }
+    { immediate: true }
   );
 
   function sortBy(val) {
