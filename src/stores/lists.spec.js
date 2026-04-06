@@ -308,4 +308,35 @@ describe("lists store", () => {
     expect(ctx.state.lists.find((row) => row.id === "public-1")).toBeTruthy();
     expect(ctx.addMessageSpy).toHaveBeenCalledWith("boom");
   });
+
+  it("accept invite removes stale joined link for list that is no longer public", async () => {
+    const ctx = createMockContext();
+    ctx.state.lists = [
+      {
+        id: "list-1",
+        title: "Competition",
+        owner: "owner-1",
+        realmId: "realm-private-1",
+        updated: new Date("2026-01-03"),
+      },
+    ];
+    ctx.state.joinedLists = [
+      { id: "jn-1", userId: "user-1", listId: "list-1", joinedAt: new Date("2026-01-01") },
+    ];
+
+    const invite = {
+      realmId: "realm-private-1",
+      accept: vi.fn().mockResolvedValue(undefined),
+    };
+
+    const useListsStore = await loadStoreWithMocks(ctx);
+    const store = useListsStore();
+    await flushLiveQuery();
+
+    expect(store.joinedListIds).toContain("list-1");
+    await expect(store.acceptInvite(invite)).resolves.toBe(true);
+    expect(invite.accept).toHaveBeenCalledTimes(1);
+    expect(store.joinedListIds).not.toContain("list-1");
+    expect(ctx.state.joinedLists.find((row) => row.listId === "list-1")).toBeUndefined();
+  });
 });

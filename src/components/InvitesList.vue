@@ -3,16 +3,19 @@ import { db } from "../db";
 import { useObservable } from "@vueuse/rxjs";
 import { useRouter } from "vue-router";
 import { useSettingsStore } from '../stores/settings.js'
+import { useListsStore } from "@/stores/lists.js";
 
 const router = useRouter()
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
+const listsStore = useListsStore();
+const { acceptInvite } = listsStore;
 
 /* Invites */
 const listInvites = useObservable(db.cloud.invites);
 
-function acceptAndGoToLists(invite) {
-  invite.accept();
+async function acceptAndGoToLists(invite) {
+  await acceptInvite(invite);
   router.push({ name: "lists" });
 }
 </script>
@@ -36,7 +39,6 @@ function acceptAndGoToLists(invite) {
   box-shadow: 0 3px 12px rgb(0 0 0 / 15%);
   background: var(--color-background-dim);
   text-align: center;
-  z-index: 1;
 }
 
 .invites ul {

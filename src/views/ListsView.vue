@@ -21,7 +21,7 @@ const { t } = settingsStore
 const { isPremiumUser, isUserLoggedIn } = storeToRefs(settingsStore)
 
 const listsStore = useListsStore();
-const { getListMembers } = listsStore;
+const { getListMembers, acceptInvite } = listsStore;
 const { allLists, allMyLists, allMineLists, allPublicLists, currentList, lastUsedList } = storeToRefs(listsStore);
 
 const activeTab = ref(isUserLoggedIn.value ? "mine" : "open");
@@ -42,6 +42,10 @@ function selectList(list) {
 
 function deleteInvite(invite) {
   db.members.delete(invite.id)
+}
+
+async function acceptListInvite(invite) {
+  await acceptInvite(invite);
 }
 
 function emitEdit(obs) {
@@ -177,7 +181,7 @@ watch(
               <li v-for="list in listInvites.filter(invite => invite.rejected)" :key="list.id">
                 <lists-icon />
                 <b>{{ list.realm.name }}</b>
-                <button @click="list.accept()">{{ t("Accept") }}</button>
+                <button @click="acceptListInvite(list)">{{ t("Accept") }}</button>
                 <button class="secondary" @click="deleteInvite(list)">{{ t("Delete") }}</button>
               </li>
             </ul>

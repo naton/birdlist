@@ -140,6 +140,66 @@ export const useListsStore = defineStore("list", () => {
     }
   }
 
+  function getInviteRealmId(invite) {
+    return String(
+      invite?.realmId ||
+      invite?.realm?.realmId ||
+      invite?.realm?.id ||
+      ""
+    ).trim();
+  }
+
+  async function syncJoinedStateForInviteRealm(realmId) {
+    if (!realmId) {
+      return;
+    }
+
+    const userId = currentUser.value?.userId;
+    if (!userId || userId === "unauthorized") {
+      return;
+    }
+
+    const listsInRealm = (allLists.value || []).filter(
+      (list) => String(list?.realmId || "") === realmId
+    );
+
+    for (const list of listsInRealm) {
+      const listId = String(list?.id || "").trim();
+      if (!listId) {
+        continue;
+      }
+
+      const existingRows = await db.joinedLists
+        .where("[userId+listId]")
+        .equals([userId, listId])
+        .toArray();
+
+      // Joined rows are only needed for public lists. If an invited list is private now,
+      // remove stale joined rows from when it used to be public.
+      if (!isPublicList(list)) {
+        if (existingRows.length > 0) {
+          await db.joinedLists.bulkDelete(existingRows.map((row) => row.id).filter(Boolean));
+        }
+        joinedListIds.value = joinedListIds.value.filter((id) => id !== listId);
+      }
+    }
+  }
+
+  async function acceptInvite(invite) {
+    if (!invite || typeof invite.accept !== "function") {
+      return false;
+    }
+
+    try {
+      await invite.accept();
+      await syncJoinedStateForInviteRealm(getInviteRealmId(invite));
+      return true;
+    } catch (error) {
+      console.error("Failed to accept invite.", error);
+      return false;
+    }
+  }
+
   const allMyLists = computed(() => allLists.value?.filter((list) => isOwnedByCurrentUser(list)) || []);
   const allMineLists = computed(
     () =>
@@ -351,6 +411,7 @@ export const useListsStore = defineStore("list", () => {
     canWriteToList,
     joinPublicList,
     leavePublicList,
+    acceptInvite,
     sortBy,
     getListMembers,
     createList,

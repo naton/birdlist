@@ -22,7 +22,14 @@ const shareListDialog = ref();
 const isListOwner = computed(() => isOwnedByCurrentUser(currentList.value));
 
 function openShareModal() {
-    shareListDialog.value.openModal();
+    const dialog = shareListDialog.value;
+    if (typeof dialog?.showModal === "function") {
+        dialog.showModal();
+        return;
+    }
+    if (typeof dialog?.openModal === "function") {
+        dialog.openModal();
+    }
 }
 
 function getListOwnerAsFriendName() {
