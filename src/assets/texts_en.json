@@ -84,6 +84,7 @@
     "List_Is_Read_Only_For_You": "This list is read-only for you.",
     "List_Join_Failed": "Could not join this list.",
     "List_Joined": "You joined this list.",
+    "List_Delete_Failed": "Could not delete this list.",
     "List_Leave_Failed": "Could not leave this list.",
     "List_Left": "You left this list.",
     "List_Save_Failed": "Could not save this list.",

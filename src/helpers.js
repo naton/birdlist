@@ -238,6 +238,48 @@ async function setListVisibility(listId, makePublic) {
   }
 }
 
+async function deleteListRemotely(listId, deleteObservations) {
+  const normalizedListId = normalizeListId(listId);
+  if (!normalizedListId) {
+    return {
+      success: false,
+      message: "Missing list id.",
+    };
+  }
+
+  try {
+    const response = await fetchWithTimeout(apiHost + "/api/delete-list", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        listId: normalizedListId,
+        deleteObservations: Boolean(deleteObservations),
+      }),
+    });
+
+    const payload = await response.json().catch(() => null);
+    if (!response.ok) {
+      return {
+        success: false,
+        message: payload?.error?.message || "Failed to delete list.",
+      };
+    }
+
+    return {
+      success: true,
+      data: payload?.data,
+    };
+  } catch (error) {
+    console.error("Error deleting list.", error);
+    return {
+      success: false,
+      message: "Network error while deleting list.",
+    };
+  }
+}
+
 function pushNewBirdAlert(msg) {
   return fetch(apiHost + "/api/push", {
     method: "POST",
@@ -374,6 +416,7 @@ export {
   unsubscribeFromListNotifications,
   isListNotificationsEnabled,
   setListVisibility,
+  deleteListRemotely,
   pushNewBirdAlert,
   getMonthName,
   getCurrentYear,

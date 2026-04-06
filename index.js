@@ -317,6 +317,46 @@ async function setListRealmVisibility(listId, makePublic) {
   };
 }
 
+async function deleteListEverywhere(listId, deleteObservations = false) {
+  const list = await dexieGetById('lists', listId);
+  if (!list) {
+    return null;
+  }
+
+  const [observations, comments, joinedLinks] = await Promise.all([
+    deleteObservations ? dexieGetMany('observations', { listId }) : Promise.resolve([]),
+    dexieGetMany('comments', { listId }),
+    dexieGetMany('joinedLists', { listId }).catch(() => []),
+  ]);
+
+  await Promise.all([
+    dexieDeleteById('lists', listId),
+    ...observations.filter((observation) => observation?.id).map((observation) => dexieDeleteById('observations', observation.id)),
+    ...comments.filter((comment) => comment?.id).map((comment) => dexieDeleteById('comments', comment.id)),
+    ...joinedLinks.filter((row) => row?.id).map((row) => dexieDeleteById('joinedLists', row.id)),
+  ]);
+
+  const sourceRealmId = String(list.realmId || '').trim();
+  const ownerRealmId = String(list.owner || '').trim();
+  const shouldCleanupSourceRealm =
+    sourceRealmId &&
+    sourceRealmId !== PUBLIC_REALM_ID &&
+    sourceRealmId !== ownerRealmId;
+
+  if (shouldCleanupSourceRealm) {
+    const members = await dexieGetMany('members', { realmId: sourceRealmId });
+    await Promise.all(members.filter((member) => member?.id).map((member) => dexieDeleteById('members', member.id)));
+    await dexieDeleteById('realms', sourceRealmId).catch(() => {});
+  }
+
+  return {
+    listId,
+    deletedObservations: observations.length,
+    deletedComments: comments.length,
+    deletedJoinedLinks: joinedLinks.length,
+  };
+}
+
 async function getSubscriptionsFromDatabase() {
   const response = await fetch(DEXIE_URL, {
     method: 'GET',
@@ -633,6 +673,48 @@ app.post('/api/list-visibility', async (req, res) => {
       error: {
         id: 'unable-to-update-list-visibility',
         message: `Failed to update list visibility: ${err.message}`,
+      },
+    });
+  }
+});
+
+app.post('/api/delete-list', async (req, res) => {
+  const listId = normalizeListId(req.body?.listId);
+  const deleteObservations = Boolean(req.body?.deleteObservations);
+
+  if (!listId) {
+    res.status(400).json({
+      error: {
+        id: 'invalid-request',
+        message: 'Body must include { listId, deleteObservations }',
+      },
+    });
+    return;
+  }
+
+  try {
+    const result = await deleteListEverywhere(listId, deleteObservations);
+    if (!result) {
+      res.status(404).json({
+        error: {
+          id: 'list-not-found',
+          message: 'List not found.',
+        },
+      });
+      return;
+    }
+
+    res.status(200).json({
+      data: {
+        success: true,
+        ...result,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: {
+        id: 'unable-to-delete-list',
+        message: `Failed to delete list: ${err.message}`,
       },
     });
   }

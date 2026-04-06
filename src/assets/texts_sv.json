@@ -84,6 +84,7 @@
     "List_Is_Read_Only_For_You": "Den här listan är skrivskyddad för dig.",
     "List_Join_Failed": "Kunde inte gå med i listan.",
     "List_Joined": "Du gick med i listan.",
+    "List_Delete_Failed": "Kunde inte ta bort listan.",
     "List_Leave_Failed": "Kunde inte lämna listan.",
     "List_Left": "Du lämnade listan.",
     "List_Save_Failed": "Kunde inte spara listan.",

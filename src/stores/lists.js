@@ -4,6 +4,7 @@ import { defineStore, storeToRefs } from "pinia";
 import { db } from "../db";
 import { liveQuery } from "dexie";
 import { getTiedRealmId } from "dexie-cloud-addon";
+import { deleteListRemotely } from "../helpers";
 import { useSettingsStore } from "./settings";
 import { useMessagesStore } from "./messages";
 
@@ -239,26 +240,40 @@ export const useListsStore = defineStore("list", () => {
 
   async function deleteList(listId) {
     let deleteRelatedObservations = false;
+    const listToDelete = allLists.value?.find((list) => String(list.id) === String(listId));
+    const isPublicTargetList = isPublicList(listToDelete);
   
     if (confirm(t("Are_You_Sure_You_Want_To_Delete_This_List"))) {
       deleteRelatedObservations = confirm(t("Delete_The_Lists_Observations_As_Well"));
+
+      if (isPublicTargetList) {
+        const result = await deleteListRemotely(listId, deleteRelatedObservations);
+        if (!result?.success) {
+          addMessage(result?.message || t("List_Delete_Failed"));
+          return;
+        }
+      }
   
       await db
-        .transaction("rw", [db.lists, db.observations, db.realms, db.members, db.joinedLists], () => {
+        .transaction("rw", [db.lists, db.observations, db.comments, db.realms, db.members, db.joinedLists], () => {
           if (deleteRelatedObservations) {
             // Delete possible observations:
             db.observations.where({ listId: listId }).delete();
           }
+          // Delete comments tied to list:
+          db.comments.where({ listId: listId }).delete();
           // Delete the list:
           db.lists.delete(listId);
           // Remove joined references:
           db.joinedLists.where({ listId }).delete();
-          // Delete possible realm and its members in case list was shared:
-          const tiedRealmId = getTiedRealmId(listId);
-          // Empty out any tied realm from members:
-          db.members.where({ realmId: tiedRealmId }).delete();
-          // Delete the tied realm if it exists:
-          db.realms.delete(tiedRealmId);
+          if (!isPublicTargetList) {
+            // Delete possible realm and its members in case list was shared:
+            const tiedRealmId = getTiedRealmId(listId);
+            // Empty out any tied realm from members:
+            db.members.where({ realmId: tiedRealmId }).delete();
+            // Delete the tied realm if it exists:
+            db.realms.delete(tiedRealmId);
+          }
         })
         .then(() => {
           document.location.hash = "";
