@@ -1,11 +1,18 @@
 function main(workbox) {
-  /* eslint-disable-next-line */
-  const CACHE_VERSION = "3.2.1";
+  // Manual cache namespace bump.
+  // Increase this when you want to force a hard runtime cache reset.
+  const CACHE_VERSION = "2026.04.05.1";
+  const CACHE_PREFIX = `birdlist-cache-v${CACHE_VERSION}`;
+  const CSS_CACHE = `${CACHE_PREFIX}-css`;
+  const IMG_CACHE = `${CACHE_PREFIX}-img`;
+  const HTML_CACHE = `${CACHE_PREFIX}-html`;
+  const CONTENT_CACHE = `${CACHE_PREFIX}-content`;
+
   const {
     core: { clientsClaim, setCacheNameDetails },
     expiration: { ExpirationPlugin },
     precaching: { cleanupOutdatedCaches, precacheAndRoute },
-    routing: { setDefaultHandler, registerRoute },
+    routing: { registerRoute },
     strategies: { NetworkFirst, StaleWhileRevalidate },
   } = workbox;
 
@@ -17,20 +24,17 @@ function main(workbox) {
 
   // cache name
   setCacheNameDetails({
-    prefix: 'birdlist-cache',
+    prefix: CACHE_PREFIX,
     precache: 'precache',
     runtime: 'runtime',
   });
 
-  // Use a stale-while-revalidate strategy to handle requests by default.
-  setDefaultHandler(new NetworkFirst());
-
-  // runtime cache
-  // 1. stylesheet
+  // Runtime cache
+  // 1. Stylesheets
   registerRoute(
-    new RegExp('.css$'),
+    ({ request }) => request.destination === "style",
     new NetworkFirst({
-      cacheName: 'birdlist-cache-css',
+      cacheName: CSS_CACHE,
       plugins: [
         new ExpirationPlugin({
           maxAgeSeconds: 60 * 60 * 24 * 1, // cache for one day
@@ -41,26 +45,27 @@ function main(workbox) {
     })
   );
 
-  // 2. images
+  // 2. Images
   registerRoute(
-    new RegExp('.(png|svg|jpg|webp|avif)$'),
+    ({ request }) => request.destination === "image",
     new StaleWhileRevalidate({
-      cacheName: 'birdlist-cache-img',
+      cacheName: IMG_CACHE,
       plugins: [
         new ExpirationPlugin({
           maxAgeSeconds: 60 * 60 * 24 * 7, // cache for one week
-          maxEntries: 20, // cache 20 request
+          maxEntries: 80, // cache 80 requests
           purgeOnQuotaError: true
         })
       ]
     })
   );
 
-  // 3. html
+  // 3. Documents / navigation HTML
   registerRoute(
-    new RegExp('.(html)$'),
+    ({ request }) => request.destination === "document",
     new NetworkFirst({
-      cacheName: 'birdlist-cache-html',
+      cacheName: HTML_CACHE,
+      networkTimeoutSeconds: 4,
       plugins: [
         new ExpirationPlugin({
           maxAgeSeconds: 60 * 60 * 24 * 7, // cache for one week
@@ -70,21 +75,41 @@ function main(workbox) {
       ]
     })
   );
-  
-  // 4. cache Dexie Cloud result
+
+  // 4. Dexie Cloud API responses
   registerRoute(
-    new RegExp('https://zyh2ho4s6.dexie.cloud/'),
+    ({ url }) => url.origin === "https://zyh2ho4s6.dexie.cloud",
     new NetworkFirst({
-      cacheName: 'birdlist-cache-content',
-      cacheExpiration: {
-          maxAgeSeconds: 60 * 2 // cache the content for 2 minutes
-      }
+      cacheName: CONTENT_CACHE,
+      networkTimeoutSeconds: 3,
+      plugins: [
+        new ExpirationPlugin({
+          maxAgeSeconds: 60 * 2, // cache for 2 minutes
+          maxEntries: 80,
+          purgeOnQuotaError: true,
+        }),
+      ],
     })
   );
 
+  self.addEventListener("activate", (event) => {
+    const allowedCaches = [CSS_CACHE, IMG_CACHE, HTML_CACHE, CONTENT_CACHE];
+    event.waitUntil(
+      caches.keys().then((cacheNames) =>
+        Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName.startsWith("birdlist-cache-v") && !allowedCaches.includes(cacheName)) {
+              return caches.delete(cacheName);
+            }
+            return Promise.resolve(false);
+          })
+        )
+      )
+    );
+  });
+
   function isClientFocused() {
-    /* eslint-disable-next-line */
-    return clients
+    return self.clients
       .matchAll({
         type: 'window',
         includeUncontrolled: true,
@@ -110,52 +135,31 @@ function main(workbox) {
       console.log('This push event has no data.');
       return;
     }
-    if (!self.registration) {
-      console.log('Service worker does not control the page');
-      return;
-    }
-    if (!self.registration || !self.registration.pushManager) {
-      console.log('Push is not supported');
-      return;
-    }
-    const eventText = event.data.text();
-    // Specify default options
-    let options = {};
-    let title = 'Birdlist';
+    const eventText = event.data.text().trim();
 
-    // Support both plain text notification and json
-    if (eventText.substr(0, 1) === '{') {
-      let eventData = {};
+    let payload = null;
+    if (eventText.startsWith('{')) {
       try {
-        eventData = JSON.parse(eventText);
+        payload = JSON.parse(eventText);
       } catch (error) {
         console.log('Push payload JSON parse failed', error);
       }
+    }
 
-      title = eventData.title || title;
+    // Specify defaults
+    let title = 'Birdlist';
+    let options = {};
 
-      // Set specific options
-      // @link https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/showNotification#parameters
-      if (eventData.options) {
-        options = Object.assign(options, eventData.options);
-      } else {
-        // Backward compatibility with legacy payload shape:
-        // { title, body, icon, listId }
-        if (eventData.body) options.body = eventData.body;
-        if (eventData.icon) options.icon = eventData.icon;
-        if (eventData.badge) options.badge = eventData.badge;
-        if (eventData.tag) options.tag = eventData.tag;
-        if (eventData.listId) {
-          options.data = Object.assign(options.data || {}, { listId: eventData.listId });
-        }
-      }
+    if (payload) {
+      title = payload.title || title;
+      options = payload.options && typeof payload.options === 'object' ? payload.options : {};
 
-      // Check expiration if specified
-      if (eventData.expires && Date.now() > eventData.expires) {
+      // Skip expired notifications
+      if (payload.expires && Date.now() > payload.expires) {
         console.log('Push notification has expired');
         return;
       }
-    } else {
+    } else if (eventText) {
       title = eventText;
     }
 
@@ -173,12 +177,12 @@ function main(workbox) {
   self.addEventListener("notificationclick", (event) => {
     event.notification.close();
     const listId = event.notification?.data?.listId;
-    const targetUrl = listId ? "/lists/" + listId : "/lists";
+    const listPath = listId ? "lists/" + encodeURIComponent(listId) : "lists";
+    const targetUrl = new URL(listPath, self.registration.scope).href;
 
     // This looks to see if the current is already open and focuses if it is
     event.waitUntil(
-      /* eslint-disable-next-line */
-      clients
+      self.clients
         .matchAll({
           type: "window",
           includeUncontrolled: true,
@@ -192,8 +196,7 @@ function main(workbox) {
               return client.focus();
             }
           }
-          /* eslint-disable-next-line */
-          if (clients.openWindow) return clients.openWindow(targetUrl);
+          if (self.clients.openWindow) return self.clients.openWindow(targetUrl);
         })
     );
   });
