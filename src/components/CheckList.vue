@@ -3,11 +3,11 @@ import { onBeforeMount } from "vue";
 import vue3SimpleTypeahead from "vue3-simple-typeahead";
 import UserNav from "./UserNav.vue";
 import BirdItem from "./BirdItem.vue";
-import SvgChart from "./SvgChart.vue";
 import { useCheckableList } from "@/composables/useCheckableList";
 import "vue3-simple-typeahead/dist/vue3-simple-typeahead.css"; // Optional default CSS
 
-const emit = defineEmits(["newLeader"]);
+defineEmits(["newLeader"]);
+
 const props = defineProps({
   list: Object,
   comments: Array,
@@ -26,7 +26,6 @@ const {
   birds,
   selectedUser,
   checkListEditMode,
-  currentLeader,
   birdsToCheck,
   addListBirdInput,
   checkListBirds,
@@ -38,10 +37,6 @@ const {
   initializeBirdsFromList,
 } = useCheckableList(props);
 
-function emitNewLeader() {
-  emit("newLeader");
-}
-
 onBeforeMount(() => {
   initializeBirdsFromList();
 });
@@ -51,13 +46,6 @@ onBeforeMount(() => {
   <user-nav
     :users="users"
     v-model:selectedUser="selectedUser" />
-
-  <svg-chart v-if="users?.length > 1"
-    :observations="props.observations"
-    :users="users"
-    :selectedUser="selectedUser"
-    :currentLeader="currentLeader"
-    @newLeader="emitNewLeader"></svg-chart>
 
   <section class="check-list">
     <p v-if="props.readOnly" class="center margin-bottom">{{ t("List_Is_Read_Only_For_You") }}</p>
@@ -83,7 +71,12 @@ onBeforeMount(() => {
 
   <form v-if="checkListEditMode && !props.readOnly" class="add-bird fixed">
     <vue3-simple-typeahead ref="addListBirdInput" :placeholder="`${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => addListBird(bird)"></vue3-simple-typeahead>
-    <button type="button" @click="saveCheckList">{{ t("Save") }}</button>
+    <div class="buttons">
+      <button type="button" data-action="save-birds" @click="saveCheckList">{{ t("Save") }}</button>
+      <button type="button" class="secondary" data-action="cancel-edit-birds" @click="checkListEditMode = false">
+        {{ t("Cancel") }}
+      </button>
+    </div>
   </form>
 </template>
 

@@ -31,8 +31,9 @@ const noListsMessage = computed(() => activeTab.value === "mine" ? t("No_Lists")
 
 const listInvites = useObservable(db.cloud.invites);
 
-function newList() {
-  createListDialog.value.showModal();
+function newList(event) {
+  const anchorTarget = event?.currentTarget || event?.target || null;
+  createListDialog.value.showModal(anchorTarget);
 }
 
 function selectList(list) {
@@ -116,7 +117,7 @@ watch(
           <div class="list-tools">
             <h1 class="center">{{ t("Lists") }}</h1>
             <div class="flex">
-              <button class="add" @click="newList" :disabled="!isPremiumUser && allMyLists?.length >= 5">
+              <button class="add" @click="newList($event)" :disabled="!isPremiumUser && allMyLists?.length >= 5">
                 {{ t("Create_New_List") }}
                 <span class="pill">{{ allMyLists?.length }} / {{ isPremiumUser ? "∞" : "5" }}</span>
               </button>
@@ -172,7 +173,7 @@ watch(
             </ul>
             <div v-else class="empty-list">
               <p>{{ noListsMessage }}</p>
-              <button v-if="activeTab === 'mine'" class="add" @click="newList">
+              <button v-if="activeTab === 'mine'" class="add" @click="newList($event)">
                 {{ t("Create_New_List") }}
               </button>
             </div>

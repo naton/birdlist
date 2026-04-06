@@ -9,14 +9,16 @@ import {
   subscribeToListNotifications,
   unsubscribeFromListNotifications,
   isListNotificationsEnabled,
+  setListVisibility,
 } from "@/helpers";
 import { db } from "@/db";
 import { useSettingsStore } from '@/stores/settings.js'
 import { useListsStore } from "@/stores/lists.js";
 import { useObservationsStore } from "@/stores/observations.js";
 import { useCommentsStore } from "@/stores/comments.js";
-import CheckIcon from "@/components/icons/CheckIcon.vue";
+import { useMessagesStore } from "@/stores/messages.js";
 import ListInfo from "@/components/ListInfo.vue";
+import ListActionsMenu from "@/components/ListActionsMenu.vue";
 import EditListDialog from "@/components/EditListDialog.vue";
 import BirdstreakList from "@/components/BirdstreakList.vue";
 import CheckList from "@/components/CheckList.vue";
@@ -32,7 +34,17 @@ const { t } = settingsStore;
 const { isPremiumUser, isUserLoggedIn, selectedUser } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
-const { convertToChecklist, isOwnedByCurrentUser, isPublicList, isJoinedList, canWriteToList, joinPublicList, leavePublicList } = listsStore;
+const {
+  convertToChecklist,
+  isOwnedByCurrentUser,
+  isPublicList,
+  isJoinedList,
+  canWriteToList,
+  joinPublicList,
+  leavePublicList,
+  updateList,
+  deleteList,
+} = listsStore;
 const { allLists, currentList, checkListEditMode } = storeToRefs(listsStore);
 
 const observationsStore = useObservationsStore();
@@ -41,12 +53,16 @@ const { allListObservations } = storeToRefs(observationsStore);
 const commentsStore = useCommentsStore()
 const { allComments } = storeToRefs(commentsStore)
 
+const messagesStore = useMessagesStore();
+const { addMessage } = messagesStore;
+
 /* Comments */
 const listComments = computed(() => allComments.value?.filter((comment) => comment.listId == route.params.id));
 
 // Dialog state
 const editDialog = ref(null);
 const isEditDialogOpen = ref(false);
+const isUpdatingVisibility = ref(false);
 
 const isListOwner = computed(() => isOwnedByCurrentUser(currentList.value));
 const isPublicCurrentList = computed(() => isPublicList(currentList.value));
@@ -55,6 +71,9 @@ const canWriteToCurrentList = computed(() => canWriteToList(currentList.value));
 const canJoinCurrentList = computed(() => isPublicCurrentList.value && !isListOwner.value && !isJoinedCurrentList.value && isUserLoggedIn.value);
 const canLeaveCurrentList = computed(() => isPublicCurrentList.value && !isListOwner.value && isJoinedCurrentList.value);
 const mustLoginToJoin = computed(() => isPublicCurrentList.value && !isListOwner.value && !isUserLoggedIn.value);
+const canEditBirds = computed(() => isListOwner.value && (currentList.value?.type === "checklist" || currentList.value?.type === "bingo"));
+const canStartEditBirds = computed(() => canEditBirds.value && !checkListEditMode.value);
+const canMakeChecklist = computed(() => isListOwner.value && currentList.value?.type === "normal");
 const isSubscribedToNotifications = ref(false);
 const isNotificationToggleBusy = ref(false);
 
@@ -73,6 +92,10 @@ function createChecklistFromCurrentList() {
   convertToChecklist(currentList.value);
 }
 
+function toggleEditBirds() {
+  checkListEditMode.value = !checkListEditMode.value;
+}
+
 async function joinCurrentList() {
   if (!currentList.value?.id) {
     return;
@@ -85,6 +108,46 @@ async function leaveCurrentList() {
     return;
   }
   await leavePublicList(currentList.value.id);
+}
+
+function loginToJoin() {
+  db.cloud.login();
+}
+
+async function toggleCurrentListVisibility() {
+  if (isUpdatingVisibility.value || !isListOwner.value || !currentList.value?.id) {
+    return;
+  }
+
+  isUpdatingVisibility.value = true;
+  try {
+    const makePublic = !isPublicCurrentList.value;
+    const result = await setListVisibility(currentList.value.id, makePublic);
+
+    if (!result?.success || !result?.data?.targetRealmId) {
+      addMessage(result?.message || t("List_Visibility_Update_Failed"));
+      return;
+    }
+
+    await updateList({
+      id: currentList.value.id,
+      realmId: result.data.targetRealmId,
+      updated: new Date(),
+    });
+
+    currentList.value.realmId = result.data.targetRealmId;
+    addMessage(makePublic ? t("List_Is_Now_Open") : t("List_Is_Now_Private"));
+  } finally {
+    isUpdatingVisibility.value = false;
+  }
+}
+
+async function deleteCurrentList() {
+  if (!currentList.value?.id) {
+    return;
+  }
+
+  await deleteList(currentList.value.id);
 }
 
 async function refreshNotificationSubscriptionState() {
@@ -148,44 +211,31 @@ watch(
   />
   <list-info>
     <template v-slot:extra>
-      <button
-        v-if="isPremiumUser && currentList?.id"
-        type="button"
-        class="secondary"
-        :disabled="isNotificationToggleBusy"
-        @click="toggleListNotificationSubscription"
-      >
-        <svg v-if="!isSubscribedToNotifications" xmlns="http://www.w3.org/2000/svg" stroke-width="2" viewBox="0 0 24 24" width="20" height="20">
-          <path fill="none" stroke="currentColor" stroke-linecap="square" stroke-miterlimit="10" d="M19 11V8A7 7 0 0 0 5 8v3c0 3.3-3 4.1-3 6 0 1.7 3.9 3 10 3s10-1.3 10-3c0-1.9-3-2.7-3-6Z" />
-          <path fill="currentColor" d="M12 22a38.81 38.81 0 0 1-2.855-.1 2.992 2.992 0 0 0 5.71 0c-.894.066-1.844.1-2.855.1Z" />
-        </svg>
-        <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
-          <path fill="currentColor" d="M20 10V8A8 8 0 0 0 4 8v2a4.441 4.441 0 0 1-1.547 3.193A4.183 4.183 0 0 0 1 16c0 2.5 4.112 4 11 4s11-1.5 11-4a4.183 4.183 0 0 0-1.453-2.807A4.441 4.441 0 0 1 20 10Z" />
-          <path fill="currentColor" d="M9.145 21.9a2.992 2.992 0 0 0 5.71 0c-.894.066-1.844.1-2.855.1s-1.961-.032-2.855-.1Z" />
-        </svg>
-      </button>
-      <button v-if="canJoinCurrentList" class="secondary" @click="joinCurrentList">
-        {{ t("Join_List") }}
-      </button>
-      <button v-if="canLeaveCurrentList" class="secondary" @click="leaveCurrentList">
-        {{ t("Leave_List") }}
-      </button>
-      <button v-if="mustLoginToJoin" class="secondary" @click="db.cloud.login()">
-        {{ t("Login_To_Join") }}
-      </button>
-      <span v-if="isPublicCurrentList && !canWriteToCurrentList" class="share-info">
-        {{ isUserLoggedIn ? t("Join_To_Contribute") : t("Open_List_Login_Required") }}
-      </span>
-      <button v-if="isListOwner" class="add secondary" @click="openModal">
-        {{ t("Edit_List") }}
-      </button>
-      <button v-if="isListOwner && currentList.type === 'normal'" class="add secondary" @click="createChecklistFromCurrentList">
-        <check-icon />
-        {{ t("Save_As_Checklist") }}
-      </button>
-      <button v-if="isListOwner && (currentList.type === 'checklist' || currentList.type === 'bingo')" class="secondary" @click="checkListEditMode = !checkListEditMode">
-        {{ !checkListEditMode ? t("Edit_Birds") : t("Cancel") }}
-      </button>
+      <list-actions-menu
+        v-if="currentList"
+        :list="currentList"
+        :is-list-owner="isListOwner"
+        :is-public-current-list="isPublicCurrentList"
+        :can-write-to-current-list="canWriteToCurrentList"
+        :can-join-current-list="canJoinCurrentList"
+        :can-leave-current-list="canLeaveCurrentList"
+        :must-login-to-join="mustLoginToJoin"
+        :is-premium-user="isPremiumUser"
+        :is-subscribed-to-notifications="isSubscribedToNotifications"
+        :is-notification-toggle-busy="isNotificationToggleBusy"
+        :can-edit-birds="canStartEditBirds"
+        :can-make-checklist="canMakeChecklist"
+        :is-updating-visibility="isUpdatingVisibility"
+        @toggle-notifications="toggleListNotificationSubscription"
+        @join="joinCurrentList"
+        @leave="leaveCurrentList"
+        @login="loginToJoin"
+        @edit-list="openModal"
+        @toggle-edit-birds="toggleEditBirds"
+        @make-checklist="createChecklistFromCurrentList"
+        @toggle-visibility="toggleCurrentListVisibility"
+        @delete-list="deleteCurrentList"
+      />
     </template>
   </list-info>
   <birdstreak-list v-if="currentList && currentList.type === 'birdstreak'"
@@ -199,8 +249,7 @@ watch(
     :observations="allListObservations"
     :list="currentList"
     :read-only="!canWriteToCurrentList"
-    :comments="listComments"
-    @newLeader="celebrate"></check-list>
+    :comments="listComments"></check-list>
   <bingo-list v-else-if="currentList && currentList.type === 'bingo'"
     :key="`${currentList.id}-${currentList.bingoSize}-bingo`"
     :observations="allListObservations"

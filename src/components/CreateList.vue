@@ -19,11 +19,35 @@ const { createList } = listsStore;
 const listDraft = ref(createDefaultListDraft());
 const isDialogOpen = ref(false);
 const isSaving = ref(false);
+const anchorTarget = ref(null);
 const validation = computed(() => validateListDraft(listDraft.value));
 const isFormValid = computed(() => validation.value.isValid);
+const isAnchored = computed(() => Boolean(anchorTarget.value));
+const ANCHOR_CLASS = "create-list-anchor";
 
-function openModal() {
+function normalizeAnchorTarget(target) {
+  if (!target || typeof target !== "object") {
+    return null;
+  }
+  if (typeof target.classList?.add !== "function") {
+    return null;
+  }
+  return target;
+}
+
+function setAnchorTarget(nextTarget) {
+  if (anchorTarget.value) {
+    anchorTarget.value.classList.remove(ANCHOR_CLASS);
+  }
+  anchorTarget.value = normalizeAnchorTarget(nextTarget);
+  if (anchorTarget.value) {
+    anchorTarget.value.classList.add(ANCHOR_CLASS);
+  }
+}
+
+function openModal(anchorElement) {
   listDraft.value = createDefaultListDraft();
+  setAnchorTarget(anchorElement);
   isDialogOpen.value = true;
 }
 
@@ -51,6 +75,7 @@ function close(event) {
   if (event) {
     event.preventDefault();
   }
+  setAnchorTarget(null);
   isDialogOpen.value = false;
 }
 
@@ -61,7 +86,11 @@ defineExpose({
 </script>
 
 <template>
-  <app-dialog v-model="isDialogOpen" close-on-backdrop>
+  <app-dialog
+    v-model="isDialogOpen"
+    :dialog-class="isAnchored ? 'dialog--create-list-anchored' : ''"
+    close-on-backdrop
+  >
     <div>
       <div class="grid">
         <lists-icon />
@@ -81,3 +110,21 @@ defineExpose({
     </div>
   </app-dialog>
 </template>
+
+<style>
+.create-list-anchor {
+  anchor-name: --create-list-anchor;
+}
+
+.dialog--create-list-anchored {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  top: anchor(--create-list-anchor bottom);
+  left: anchor(--create-list-anchor right);
+  translate: -100% 0.5rem;
+  max-inline-size: min(36rem, calc(100vw - 1rem));
+  position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+  position-try-options: flip-block, flip-inline, flip-block flip-inline;
+}
+</style>

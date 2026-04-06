@@ -3,7 +3,7 @@
         <dialog 
             v-if="isOpen" 
             ref="dialogRef" 
-            class="dialog" 
+            :class="['dialog', props.dialogClass]"
             closedby="any"
             @closerequest="handleCloseRequest"
             @cancel="handleCloseRequest"
@@ -15,6 +15,13 @@
 
 <script setup>
 import { ref, watch, onMounted, nextTick } from 'vue';
+
+const props = defineProps({
+  dialogClass: {
+    type: [String, Array, Object],
+    default: "",
+  },
+});
 
 const isOpen = defineModel('modelValue', { default: false });
 const dialogRef = ref(null);

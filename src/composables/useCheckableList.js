@@ -48,23 +48,25 @@ export function useCheckableList(props) {
   }
 
   const checkListBirds = computed(() => {
-    const ownersInCurrentList = new Set(props.observations.map((obs) => obs.owner));
+    const ownersInCurrentList = new Set(props.observations.map((obs) => obs.owner).filter(Boolean));
     const selectedOwner = ownersInCurrentList.has(selectedUser.value) ? selectedUser.value : null;
 
     return birdsToCheck.value.map((bird) => {
+      const hasObservation = props.observations.some((obs) => {
+        if (obs.name !== bird) {
+          return false;
+        }
+
+        if (selectedOwner) {
+          return obs.owner === selectedOwner;
+        }
+
+        return isCurrentUserOwner(obs.owner);
+      });
+
       return {
         name: bird,
-        checked: props.observations.some((obs) => {
-          if (obs.name !== bird) {
-            return false;
-          }
-
-          if (selectedOwner) {
-            return obs.owner === selectedOwner;
-          }
-
-          return isCurrentUserOwner(obs.owner);
-        }),
+        checked: hasObservation,
       };
     });
   });
@@ -86,7 +88,7 @@ export function useCheckableList(props) {
     }
   }
 
-  function checkBird(bird) {
+  async function checkBird(bird) {
     if (props.readOnly) {
       addMessage(t("List_Is_Read_Only_For_You"));
       return;
@@ -97,10 +99,11 @@ export function useCheckableList(props) {
     });
 
     if (obs) {
-      deleteObservation(obs.id);
-    } else {
-      addObservation(bird);
+      await deleteObservation(obs.id);
+      return;
     }
+
+    await addObservation(bird);
   }
 
   function removeBird(bird) {
@@ -111,7 +114,7 @@ export function useCheckableList(props) {
   }
 
   const users = computed(() => {
-    const names = [...new Set(props.observations.map((obs) => obs.owner))].sort();
+    const names = [...new Set(props.observations.map((obs) => obs.owner).filter(Boolean))].sort();
     let highestScore = 0;
 
     const listUsers = names.map((name) => {

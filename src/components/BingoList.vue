@@ -126,6 +126,7 @@ onBeforeMount(() => {
 <template>
   <user-nav
     :users="users"
+    :show-for-single="true"
     v-model:selectedUser="selectedUser" />
 
   <section v-if="checkListBirds.length" :class="'grid-' + bingoSize">
@@ -144,10 +145,15 @@ onBeforeMount(() => {
 
   <form v-if="checkListEditMode && !props.readOnly" class="add-bird fixed">
     <vue3-simple-typeahead ref="addListBirdInput" :placeholder="`${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => addListBird(bird)"></vue3-simple-typeahead>
-    <button type="button" @click="saveCheckList" :disabled="checkListBirds.length < bingoSize * bingoSize">
-      <span v-if="checkListBirds.length < bingoSize * bingoSize">{{ checkListBirds.length }} / {{ bingoSize * bingoSize }}</span>
-      <span v-else>{{ t("Save") }}</span>
-    </button>
+    <div class="buttons">
+      <button type="button" data-action="save-birds" @click="saveCheckList" :disabled="checkListBirds.length < bingoSize * bingoSize">
+        <span v-if="checkListBirds.length < bingoSize * bingoSize">{{ checkListBirds.length }} / {{ bingoSize * bingoSize }}</span>
+        <span v-else>{{ t("Save") }}</span>
+      </button>
+      <button type="button" class="secondary" data-action="cancel-edit-birds" @click="checkListEditMode = false">
+        {{ t("Cancel") }}
+      </button>
+    </div>
   </form>
 </template>
 

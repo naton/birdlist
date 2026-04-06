@@ -1,27 +1,55 @@
 <script setup>
+import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import UserInitial from "./icons/UserInitial.vue";
 import { useFriendsStore } from "@/stores/friends.js";
+import { useSettingsStore } from "@/stores/settings.js";
 
 const selectedUser = defineModel('selectedUser');
 
 const friendsStore = useFriendsStore();
 const { getFriendlyName } = friendsStore;
-const { currentUser } = storeToRefs(friendsStore);
+const settingsStore = useSettingsStore();
+const { currentUser } = storeToRefs(settingsStore);
 
-const props = defineProps(["users"]);
+const props = defineProps({
+  users: {
+    type: Array,
+    default: () => [],
+  },
+  showForSingle: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const shouldShowUserNav = computed(() => {
+  const count = props.users?.length || 0;
+  return props.showForSingle ? count > 0 : count > 1;
+});
+const currentUserAliases = computed(() => {
+  return [
+    currentUser.value?.userId,
+    currentUser.value?.email,
+    currentUser.value?.name,
+  ].filter(Boolean);
+});
 
 function changeUser(user) {
   selectedUser.value = user === selectedUser.value ? null : user;
 }
+
+function isCurrentUser(user) {
+  return currentUserAliases.value.includes(user);
+}
 </script>
 
 <template>
-    <nav class="user-nav" v-if="props.users?.length > 1">
+    <nav class="user-nav" v-if="shouldShowUserNav">
         <transition-group name="list" appear>
             <button v-for="{ name, score, leader } in props.users" class="user-button" :class="name === selectedUser && 'user-button--active'" @click="changeUser(name)" :key="name">
                 <user-initial :user="name" :score="score" :leader="leader">
-                    <span :class="name === currentUser && 'me'">{{ getFriendlyName(name) }}</span>
+                    <span :class="isCurrentUser(name) && 'me'">{{ getFriendlyName(name) }}</span>
                 </user-initial>
             </button>
         </transition-group>

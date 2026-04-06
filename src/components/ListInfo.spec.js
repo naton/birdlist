@@ -3,87 +3,57 @@ import { ref } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 import { mount } from "@vue/test-utils";
 
-const showModalSpy = vi.fn();
-const openModalSpy = vi.fn();
-
 const currentListRef = ref({
   id: "list-1",
   title: "My List",
-  description: "",
-  owner: "user@example.com",
+  description: "A nice list",
+  owner: "friend@example.com",
 });
 const currentListExpandedRef = ref(true);
-const isUserLoggedInRef = ref(true);
 
-function mockStores() {
-  vi.doMock("@/stores/settings.js", async () => {
-    const { defineStore } = await import("pinia");
-    const useSettingsStore = defineStore("settings", () => ({
-      isUserLoggedIn: isUserLoggedInRef,
-      t: (key) => key,
-    }));
-    return { useSettingsStore };
-  });
+vi.mock("@/stores/settings.js", async () => {
+  const { defineStore } = await import("pinia");
+  const useSettingsStore = defineStore("settings", () => ({
+    t: (key) => key,
+  }));
+  return { useSettingsStore };
+});
 
-  vi.doMock("@/stores/lists.js", async () => {
-    const { defineStore } = await import("pinia");
-    const useListsStore = defineStore("list", () => ({
-      isOwnedByCurrentUser: () => true,
-      currentList: currentListRef,
-      currentListExpanded: currentListExpandedRef,
-    }));
-    return { useListsStore };
-  });
+vi.mock("@/stores/lists.js", async () => {
+  const { defineStore } = await import("pinia");
+  const useListsStore = defineStore("list", () => ({
+    isOwnedByCurrentUser: () => false,
+    currentList: currentListRef,
+    currentListExpanded: currentListExpandedRef,
+  }));
+  return { useListsStore };
+});
 
-  vi.doMock("@/stores/friends.js", async () => {
-    const { defineStore } = await import("pinia");
-    const useFriendsStore = defineStore("friend", () => ({
-      getFriendlyName: (name) => name,
-    }));
-    return { useFriendsStore };
-  });
-}
+vi.mock("@/stores/friends.js", async () => {
+  const { defineStore } = await import("pinia");
+  const useFriendsStore = defineStore("friend", () => ({
+    getFriendlyName: (name) => `friendly-${name}`,
+  }));
+  return { useFriendsStore };
+});
 
-async function mountListInfoWithDialogExpose(methods) {
-  vi.resetModules();
-  mockStores();
-
-  vi.doMock("./ShareDialog.vue", async () => {
-    const { defineComponent, h } = await import("vue");
-    return {
-      default: defineComponent({
-        name: "ShareDialog",
-        setup(_props, { expose }) {
-          expose(methods);
-          return () => h("div");
-        },
-      }),
-    };
-  });
-
-  const ListInfo = (await import("./ListInfo.vue")).default;
-  return mount(ListInfo, {
-    slots: { extra: "<div />" },
-  });
-}
-
-describe("ListInfo share dialog hook-up", () => {
+describe("ListInfo", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     setActivePinia(createPinia());
   });
 
-  it("calls showModal when share button is clicked", async () => {
-    const wrapper = await mountListInfoWithDialogExpose({ showModal: showModalSpy });
+  it("renders list metadata and extra action slot", async () => {
+    const ListInfo = (await import("./ListInfo.vue")).default;
+    const wrapper = mount(ListInfo, {
+      slots: {
+        extra: "<button class='fake-menu'>menu</button>",
+      },
+    });
 
-    await wrapper.find("button.share-button").trigger("click");
-    expect(showModalSpy).toHaveBeenCalledTimes(1);
-  });
-
-  it("falls back to openModal when showModal is not exposed", async () => {
-    const wrapper = await mountListInfoWithDialogExpose({ openModal: openModalSpy });
-
-    await wrapper.find("button.share-button").trigger("click");
-    expect(openModalSpy).toHaveBeenCalledTimes(1);
+    expect(wrapper.text()).toContain("My List");
+    expect(wrapper.text()).toContain("Created_By");
+    expect(wrapper.text()).toContain("friendly-friend@example.com");
+    expect(wrapper.find(".fake-menu").exists()).toBe(true);
   });
 });

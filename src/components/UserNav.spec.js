@@ -67,19 +67,61 @@ describe("UserNav", () => {
     };
   });
 
-  it("renders user nav when a single user exists", async () => {
+  it("does not render user nav with a single user by default", async () => {
     const { wrapper } = await mountUserNav([
       { name: "user@example.com", score: 1, leader: true },
     ]);
+
+    expect(wrapper.find("nav.user-nav").exists()).toBe(false);
+  });
+
+  it("renders user nav with a single user when showForSingle is enabled", async () => {
+    const UserNav = (await import("./UserNav.vue")).default;
+    const wrapper = mount(UserNav, {
+      props: {
+        users: [{ name: "user@example.com", score: 1, leader: true }],
+        showForSingle: true,
+        selectedUser: null,
+        "onUpdate:selectedUser": () => {},
+      },
+      global: {
+        stubs: {
+          UserInitial: {
+            props: ["user", "score", "leader"],
+            template: "<div class='user-initial'><slot /></div>",
+          },
+          TransitionGroup: {
+            template: "<div><slot /></div>",
+          },
+        },
+      },
+    });
 
     expect(wrapper.find("nav.user-nav").exists()).toBe(true);
     expect(wrapper.findAll("button.user-button")).toHaveLength(1);
   });
 
   it("marks current user via email alias", async () => {
-    const { wrapper } = await mountUserNav([
-      { name: "user@example.com", score: 1, leader: true },
-    ]);
+    const UserNav = (await import("./UserNav.vue")).default;
+    const wrapper = mount(UserNav, {
+      props: {
+        users: [{ name: "user@example.com", score: 1, leader: true }],
+        showForSingle: true,
+        selectedUser: null,
+        "onUpdate:selectedUser": () => {},
+      },
+      global: {
+        stubs: {
+          UserInitial: {
+            props: ["user", "score", "leader"],
+            template: "<div class='user-initial'><slot /></div>",
+          },
+          TransitionGroup: {
+            template: "<div><slot /></div>",
+          },
+        },
+      },
+    });
 
     expect(wrapper.find(".me").exists()).toBe(true);
   });
