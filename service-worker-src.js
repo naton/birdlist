@@ -1,7 +1,6 @@
 function main(workbox) {
-  // Manual cache namespace bump.
-  // Increase this when you want to force a hard runtime cache reset.
-  const CACHE_VERSION = "2026.04.06.2";
+  // Generated at build time by scripts/prepare-sw.cjs.
+  const CACHE_VERSION = "__SW_VERSION__";
   const CACHE_PREFIX = `birdlist-cache-v${CACHE_VERSION}`;
   const CSS_CACHE = `${CACHE_PREFIX}-css`;
   const IMG_CACHE = `${CACHE_PREFIX}-img`;

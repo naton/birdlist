@@ -3,7 +3,7 @@
   "version": "1.2.1",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && workbox injectManifest workbox-config.js && npm run copy:sw",
+    "build": "node scripts/prepare-sw.cjs && vite build && workbox injectManifest workbox-config.js && npm run copy:sw",
     "copy:sw": "node -e \"require('fs').copyFileSync('dist/sw.js','public/sw.js')\"",
     "preview": "vite preview --port 4173",
     "test:unit": "vitest --environment jsdom",
