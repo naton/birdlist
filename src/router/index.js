@@ -1,8 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import MonthlyList from "../views/lists/MonthlyList.vue";
-import ListsView from "../views/ListsView.vue";
-import AboutView from "../views/AboutView.vue";
+
+const loadListsView = () => import("../views/ListsView.vue");
+const loadSingleListView = () => import("../views/lists/SingleList.vue");
+const loadYearlyListView = () => import("../views/lists/YearlyList.vue");
+const loadFriendsView = () => import("../views/FriendsView.vue");
+const loadSettingsView = () => import("../views/SettingsView.vue");
+const loadAboutView = () => import("../views/AboutView.vue");
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,12 +20,12 @@ const router = createRouter({
         {
           path: "/lists",
           name: "lists",
-          component: ListsView,
+          component: loadListsView,
           children: [
             {
               path: "/lists/:id",
               name: "list",
-              component: () => import("../views/lists/SingleList.vue"),
+              component: loadSingleListView,
             },
           ],
         },
@@ -33,26 +38,36 @@ const router = createRouter({
         {
           path: "/yearly",
           name: "yearly",
-          component: () => import("../views/lists/YearlyList.vue"),
+          component: loadYearlyListView,
         },
       ],
     },
     {
       path: "/friends",
       name: "friends",
-      component: () => import("../views/FriendsView.vue"),
+      component: loadFriendsView,
     },
     {
       path: "/settings",
       name: "settings",
-      component: () => import("../views/SettingsView.vue"),
+      component: loadSettingsView,
     },
     {
       path: "/about",
       name: "about",
-      component: AboutView,
+      component: loadAboutView,
     },
   ],
 });
 
+const routePrefetchLoaders = [
+  loadListsView,
+  loadSingleListView,
+  loadYearlyListView,
+  loadFriendsView,
+  loadSettingsView,
+  loadAboutView,
+];
+
+export { routePrefetchLoaders };
 export default router;

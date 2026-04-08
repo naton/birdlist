@@ -3,7 +3,8 @@ import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 import App from "./App.vue";
-import router from "./router";
+import router, { routePrefetchLoaders } from "./router";
+import { scheduleRoutePrefetch } from "./router/prefetch";
 import "./assets/main.css";
 
 if (typeof window !== "undefined" && !("anchorName" in document.documentElement.style)) {
@@ -20,3 +21,7 @@ app.use(pinia);
 app.use(router);
 
 app.mount("#app");
+
+router.isReady().then(() => {
+  scheduleRoutePrefetch(routePrefetchLoaders);
+});

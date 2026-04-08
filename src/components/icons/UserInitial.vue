@@ -1,12 +1,14 @@
 <script setup>
 import { computed } from "vue";
-import { cssColor } from "@/helpers";
+import { cssColor, isEmailLike } from "@/helpers";
 
 const props = defineProps(["user", "score", "leader", "colorKey", "initialLabel"]);
 
 const initial = computed(() => {
-  const label = props.initialLabel || props.user;
-  return label ? label.substring(0, 1) : "";
+  const rawUser = String(props.user ?? "").trim();
+  const label = String(props.initialLabel || props.user || "").trim();
+  const source = isEmailLike(rawUser) ? rawUser : label;
+  return source ? source.substring(0, 1) : "";
 });
 
 const colorSource = computed(() => props.colorKey || props.user);
