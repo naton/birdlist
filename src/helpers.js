@@ -320,6 +320,45 @@ function cssColor(string) {
   return "#" + hashCode(string).substring(2, 8);
 }
 
+function isEmailLike(value) {
+  const raw = String(value ?? "").trim();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw);
+}
+
+function toPublicUserLabel(value) {
+  const raw = String(value ?? "").trim();
+  if (!raw) {
+    return "";
+  }
+
+  if (!isEmailLike(raw)) {
+    return raw;
+  }
+
+  let hash = 0;
+  for (let i = 0; i < raw.length; i++) {
+    hash = (hash * 31 + raw.charCodeAt(i)) >>> 0;
+  }
+
+  const suffix = hash.toString(16).toUpperCase().padStart(4, "0").slice(-4);
+  return `Birder ${suffix}`;
+}
+
+function toSafeUserLabel(user, preferredLabel = user) {
+  const raw = String(user ?? "").trim();
+  const label = String(preferredLabel ?? "").trim();
+
+  if (!raw) {
+    return "";
+  }
+
+  if (label && label !== raw) {
+    return label;
+  }
+
+  return toPublicUserLabel(raw);
+}
+
 function formatDate(date) {
   return new Intl.DateTimeFormat(false, {
     weekday: "long",
@@ -422,6 +461,9 @@ export {
   getCurrentYear,
   groupBy,
   cssColor,
+  isEmailLike,
+  toPublicUserLabel,
+  toSafeUserLabel,
   formatDate,
   formatDateAndTime,
   inputDate,

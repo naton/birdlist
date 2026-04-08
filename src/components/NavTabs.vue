@@ -10,8 +10,10 @@ const { currentMonth, currentYear } = storeToRefs(settingsStore);
 <template>
   <nav class="body-nav">
     <picture class="logo">
-      <source srcset="/logo.webp" type="image/webp" />
-      <img src="/logo.png" alt="Birdlist" width="65" height="24" />
+      <router-link to="/about">
+        <source srcset="/logo.webp" type="image/webp" />
+        <img src="/logo.png" alt="Birdlist" width="65" height="24" />
+      </router-link>
     </picture>
 
     <ul class="c-tabs">

@@ -42,6 +42,7 @@ function logout() {
     db.table('$logins').clear();
     document.location.href = "/";
 }
+
 </script>
 
 <template>

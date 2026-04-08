@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 import { mount } from "@vue/test-utils";
+import { toPublicUserLabel } from "@/helpers";
 
 const currentListRef = ref({
   id: "list-1",
@@ -32,7 +33,7 @@ vi.mock("@/stores/lists.js", async () => {
 vi.mock("@/stores/friends.js", async () => {
   const { defineStore } = await import("pinia");
   const useFriendsStore = defineStore("friend", () => ({
-    getFriendlyName: (name) => `friendly-${name}`,
+    getFriendlyName: (name) => name,
   }));
   return { useFriendsStore };
 });
@@ -53,7 +54,8 @@ describe("ListInfo", () => {
 
     expect(wrapper.text()).toContain("My List");
     expect(wrapper.text()).toContain("Created_By");
-    expect(wrapper.text()).toContain("friendly-friend@example.com");
+    expect(wrapper.text()).toContain(toPublicUserLabel("friend@example.com"));
+    expect(wrapper.text()).not.toContain("friend@example.com");
     expect(wrapper.find(".fake-menu").exists()).toBe(true);
   });
 });

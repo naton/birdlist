@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { db } from "../db";
 import UserInitial from "./icons/UserInitial.vue";
-import { formatDate } from "@/helpers";
+import { formatDate, toPublicUserLabel } from "@/helpers";
 
 const props = defineProps(["comment", "user"]);
 
@@ -11,13 +11,17 @@ const isCommentAuthor = computed(() => props.comment.owner == props.user);
 async function deleteComment(id) {
   db.comments.delete(id);
 }
+
+function getCommentOwnerLabel(owner) {
+  return toPublicUserLabel(owner);
+}
 </script>
 
 <template>
   <li>
     <div class="comment">
       <span class="meta">
-        <user-initial :user="props.comment.owner" /> @ {{ formatDate(props.comment.date) }}:
+        <user-initial :user="props.comment.owner" :initial-label="getCommentOwnerLabel(props.comment.owner)" :color-key="props.comment.owner" /> @ {{ formatDate(props.comment.date) }}:
       </span>
       <p>{{ props.comment.comment }}</p>
       <button v-if="isCommentAuthor" class="delete-button" @click="deleteComment(props.comment.id)">

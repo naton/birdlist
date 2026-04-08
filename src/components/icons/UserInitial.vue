@@ -2,15 +2,18 @@
 import { computed } from "vue";
 import { cssColor } from "@/helpers";
 
-const props = defineProps(["user", "score", "leader"]);
+const props = defineProps(["user", "score", "leader", "colorKey", "initialLabel"]);
 
 const initial = computed(() => {
-  return props.user ? props.user.substring(0, 1) : "";
+  const label = props.initialLabel || props.user;
+  return label ? label.substring(0, 1) : "";
 });
+
+const colorSource = computed(() => props.colorKey || props.user);
 </script>
 
 <template>
-  <span class="user" :style="{ color: cssColor(props.user), backgroundColor: cssColor(props.user), }"><span class="initial">{{ initial }}</span>
+  <span class="user" :style="{ color: cssColor(colorSource), backgroundColor: cssColor(colorSource), }"><span class="initial">{{ initial }}</span>
     <span v-if="props.score" class="score" :class="props.leader && 'leader'">{{ props.score }}</span>
   </span>
   <slot></slot>

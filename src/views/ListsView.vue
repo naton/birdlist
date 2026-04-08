@@ -14,6 +14,8 @@ import StreakIcon from "@/components/icons/StreakIcon.vue";
 import NormalIcon from "@/components/icons/NormalIcon.vue";
 import CreateList from "@/components/CreateList.vue";
 import ListsIllustration from '../components/illustrations/ListsIllustration.vue';
+import { toSafeUserLabel } from "@/helpers";
+import { useFriendsStore } from "@/stores/friends.js";
 
 const emit = defineEmits(["edit"]);
 const settingsStore = useSettingsStore()
@@ -23,6 +25,8 @@ const { isPremiumUser, isUserLoggedIn } = storeToRefs(settingsStore)
 const listsStore = useListsStore();
 const { getListMembers, acceptInvite } = listsStore;
 const { allLists, allMyLists, allMineLists, allPublicLists, currentList, lastUsedList } = storeToRefs(listsStore);
+const friendsStore = useFriendsStore();
+const { getFriendlyName } = friendsStore;
 
 const activeTab = ref(isUserLoggedIn.value ? "mine" : "open");
 const createListDialog = ref(null);
@@ -51,6 +55,10 @@ async function acceptListInvite(invite) {
 
 function emitEdit(obs) {
   emit("edit", obs);
+}
+
+function getMemberDisplayName(email) {
+  return toSafeUserLabel(email, getFriendlyName(email));
 }
 
 function setActiveTab(tab) {
@@ -146,7 +154,7 @@ watch(
               </h2>
               <p>{{ lastUsedList.description }}</p>
               <p class="margin-top"><template v-for="member in lastUsedList.members" :key="member.email">
-                <user-initial :user="member.email" />
+                <user-initial :user="member.email" :initial-label="getMemberDisplayName(member.email)" :color-key="member.email" />
               </template></p>
             </router-link>
 
@@ -164,7 +172,7 @@ watch(
                   <transition name="fade-in">
                     <div v-if="listMembersLoaded">
                       <template v-for="member in list.members" :key="member.email">
-                        <user-initial :user="member.email" />
+                        <user-initial :user="member.email" :initial-label="getMemberDisplayName(member.email)" :color-key="member.email" />
                       </template>
                     </div>
                   </transition>

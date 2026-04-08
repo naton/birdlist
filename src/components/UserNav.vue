@@ -4,6 +4,7 @@ import { storeToRefs } from "pinia";
 import UserInitial from "./icons/UserInitial.vue";
 import { useFriendsStore } from "@/stores/friends.js";
 import { useSettingsStore } from "@/stores/settings.js";
+import { toSafeUserLabel } from "@/helpers";
 
 const selectedUser = defineModel('selectedUser');
 
@@ -42,14 +43,18 @@ function changeUser(user) {
 function isCurrentUser(user) {
   return currentUserAliases.value.includes(user);
 }
+
+function getDisplayName(user) {
+  return toSafeUserLabel(user, getFriendlyName(user));
+}
 </script>
 
 <template>
     <nav class="user-nav" v-if="shouldShowUserNav">
         <transition-group name="list" appear>
             <button v-for="{ name, score, leader } in props.users" class="user-button" :class="name === selectedUser && 'user-button--active'" @click="changeUser(name)" :key="name">
-                <user-initial :user="name" :score="score" :leader="leader">
-                    <span :class="isCurrentUser(name) && 'me'">{{ getFriendlyName(name) }}</span>
+                <user-initial :user="name" :initial-label="getDisplayName(name)" :color-key="name" :score="score" :leader="leader">
+                    <span :class="isCurrentUser(name) && 'me'">{{ getDisplayName(name) }}</span>
                 </user-initial>
             </button>
         </transition-group>

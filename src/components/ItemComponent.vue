@@ -1,7 +1,7 @@
 <script setup>
 import UserInitial from "./icons/UserInitial.vue";
 import LocationSpecifiedIcon from "./icons/LocationSpecifiedIcon.vue";
-import { formatDate } from "@/helpers";
+import { formatDate, toPublicUserLabel } from "@/helpers";
 
 const selected = defineModel();
 
@@ -34,6 +34,10 @@ function handleClick() {
     emit("edit", lastObservation);
   }
 }
+
+function getOwnerLabel(owner) {
+  return toPublicUserLabel(owner);
+}
 </script>
 
 <template>
@@ -44,7 +48,7 @@ function handleClick() {
       <location-specified-icon v-if="props.obs.location" />
       <span class="date">{{ formatDate(props.obs.date) }}</span>
       <span v-if="props.obs.owner && props.obs.owner !== 'unauthorized'" class="seen-by">
-        <user-initial :user="props.obs.owner" />
+        <user-initial :user="props.obs.owner" :initial-label="getOwnerLabel(props.obs.owner)" :color-key="props.obs.owner" />
       </span>
     </span>
     
@@ -53,7 +57,7 @@ function handleClick() {
       <span class="name">{{ props.obs[0].name }}</span>
       <span class="date" v-if="props.obs.length > 0">{{ formatDate(props.obs[props.obs.length - 1].date) }}</span>
       <span v-if="props.obs.length > 0" class="seen-by">
-        <user-initial v-for="user in [...new Set(props.obs.map((o) => o.owner))]" :key="user" :user="user" />
+        <user-initial v-for="user in [...new Set(props.obs.map((o) => o.owner))]" :key="user" :user="user" :initial-label="getOwnerLabel(user)" :color-key="user" />
       </span>
     </span>
   </li>

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 import { mount } from "@vue/test-utils";
+import { toPublicUserLabel } from "@/helpers";
 
 const currentUserRef = ref({
   userId: "user-1",
@@ -27,6 +28,11 @@ vi.mock("@/stores/friends.js", async () => {
   return { useFriendsStore };
 });
 
+const userInitialStub = {
+  props: ["user", "score", "leader", "colorKey", "initialLabel"],
+  template: "<div class='user-initial' :data-user='user' :data-color-key='colorKey' :data-initial-label='initialLabel'><slot /></div>",
+};
+
 async function mountUserNav(users, selectedUser = null) {
   const UserNav = (await import("./UserNav.vue")).default;
   let selected = selectedUser;
@@ -42,10 +48,7 @@ async function mountUserNav(users, selectedUser = null) {
     },
     global: {
       stubs: {
-        UserInitial: {
-          props: ["user", "score", "leader"],
-          template: "<div class='user-initial'><slot /></div>",
-        },
+        UserInitial: userInitialStub,
         TransitionGroup: {
           template: "<div><slot /></div>",
         },
@@ -86,10 +89,7 @@ describe("UserNav", () => {
       },
       global: {
         stubs: {
-          UserInitial: {
-            props: ["user", "score", "leader"],
-            template: "<div class='user-initial'><slot /></div>",
-          },
+          UserInitial: userInitialStub,
           TransitionGroup: {
             template: "<div><slot /></div>",
           },
@@ -112,10 +112,7 @@ describe("UserNav", () => {
       },
       global: {
         stubs: {
-          UserInitial: {
-            props: ["user", "score", "leader"],
-            template: "<div class='user-initial'><slot /></div>",
-          },
+          UserInitial: userInitialStub,
           TransitionGroup: {
             template: "<div><slot /></div>",
           },
@@ -124,6 +121,33 @@ describe("UserNav", () => {
     });
 
     expect(wrapper.find(".me").exists()).toBe(true);
+  });
+
+  it("masks raw email when no friendly alias exists but keeps color keyed by raw identity", async () => {
+    getFriendlyNameMock.mockImplementationOnce((name) => name);
+
+    const UserNav = (await import("./UserNav.vue")).default;
+    const wrapper = mount(UserNav, {
+      props: {
+        users: [{ name: "stranger@example.com", score: 1, leader: true }],
+        showForSingle: true,
+        selectedUser: null,
+        "onUpdate:selectedUser": () => {},
+      },
+      global: {
+        stubs: {
+          UserInitial: userInitialStub,
+          TransitionGroup: {
+            template: "<div><slot /></div>",
+          },
+        },
+      },
+    });
+
+    expect(wrapper.text()).toContain(toPublicUserLabel("stranger@example.com"));
+    expect(wrapper.text()).not.toContain("stranger@example.com");
+    expect(wrapper.find(".user-initial").attributes("data-color-key")).toBe("stranger@example.com");
+    expect(wrapper.find(".user-initial").attributes("data-initial-label")).toBe(toPublicUserLabel("stranger@example.com"));
   });
 
   it("toggles selected user on click", async () => {

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, defineAsyncComponent, computed } from "vue";
 import { storeToRefs } from 'pinia'
-import { formatDateAndTime, inputDateTime } from "@/helpers";
+import { formatDateAndTime, inputDateTime, toPublicUserLabel } from "@/helpers";
 import AppDialog from "./AppDialog.vue";
 import ObservationsIcon from "./icons/ObservationsIcon.vue";
 import LocationFoundIcon from "./icons/LocationFoundIcon.vue";
@@ -57,6 +57,10 @@ function currentListName() {
 
 function canEdit(owner) {
   return owner === "unauthorized" || currentUser?.value.name === owner;
+}
+
+function getOwnerLabel(owner) {
+  return toPublicUserLabel(owner);
 }
 
 function deleteAndClose(id) {
@@ -149,7 +153,7 @@ defineExpose({
       </div>
   
       <user-icon />
-      <p>{{ activeObservation?.owner }}</p>
+      <p>{{ getOwnerLabel(activeObservation?.owner) }}</p>
 
       <lists-icon />
       <p v-if="!isEditing">{{ currentListName() }}</p>

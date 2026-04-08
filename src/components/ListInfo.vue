@@ -4,6 +4,7 @@ import { storeToRefs } from "pinia";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
 import { useFriendsStore } from "@/stores/friends.js";
+import { toSafeUserLabel } from "@/helpers";
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
@@ -18,7 +19,9 @@ const { getFriendlyName } = friendsStore;
 const isListOwner = computed(() => isOwnedByCurrentUser(currentList.value));
 
 function getListOwnerAsFriendName() {
-    return isListOwner.value ? t("By_Me").toLowerCase() : getFriendlyName(currentList.value?.owner);
+    return isListOwner.value
+      ? t("By_Me").toLowerCase()
+      : toSafeUserLabel(currentList.value?.owner, getFriendlyName(currentList.value?.owner));
 }
 </script>
 
