@@ -77,10 +77,6 @@ function onUpdateFound(registration) {
       <settings-icon />
       {{ t("Settings") }}
     </router-link>
-    <router-link class="nav-link" to="/about">
-      <help-icon />
-      {{ t("About") }}
-    </router-link>
   </nav>
   <install-prompt v-if="isUserLoggedIn" />
 </template>

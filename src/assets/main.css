@@ -170,8 +170,6 @@ textarea::placeholder {
     "footer";
   grid-area: main;
   margin: 0 auto;
-  border-top-right-radius: var(--radius);
-  border-top-left-radius: var(--radius);
   background: var(--color-background);
   overflow: auto;
 }
@@ -200,9 +198,8 @@ textarea::placeholder {
 }
 
 .body-nav .logo {
-  position: absolute;
-  right: 1.25rem;
-  top: 1.25rem;
+  margin: auto 1em auto auto;
+  order: 1;
 }
 
 .body-nav h1 {
