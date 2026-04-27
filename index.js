@@ -39,11 +39,12 @@ app.use(
 
 app.use(express.json());
 
-if (!publicVapidKey || !privateVapidKey) {
-  console.error('Missing VAPID_PUBLIC or VAPID_PRIVATE environment variables. Add them in .env.local or .env');
-  process.exit(1);
+const isPushConfigured = Boolean(publicVapidKey && privateVapidKey);
+if (!isPushConfigured) {
+  console.warn('Missing VAPID_PUBLIC or VAPID_PRIVATE environment variables. Push notifications are disabled.');
+} else {
+  webpush.setVapidDetails(vapidSubject, publicVapidKey, privateVapidKey);
 }
-webpush.setVapidDetails(vapidSubject, publicVapidKey, privateVapidKey);
 
 function normalizeListId(listId) {
   return String(listId ?? '').trim();
@@ -481,6 +482,10 @@ async function deleteListSubscription(endpoint, listId) {
 }
 
 async function triggerPush(subscription, dataToSend) {
+  if (!isPushConfigured) {
+    return { sent: false, removed: false };
+  }
+
   try {
     await webpush.sendNotification(subscription, dataToSend);
     return { sent: true, removed: false };
@@ -512,7 +517,7 @@ app.post('/api/subscription', async (req, res) => {
   try {
     const result = await upsertListSubscription(subscription, listId);
 
-    if (result.created) {
+    if (result.created && isPushConfigured) {
       const welcomePayload = JSON.stringify({
         title: 'Hello from Birdlist!',
         options: {
