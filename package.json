@@ -2,7 +2,9 @@
   "name": "birdlist",
   "version": "1.2.1",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/dev.cjs",
+    "dev:client": "vite",
+    "dev:api": "node index.js",
     "build": "node scripts/prepare-sw.cjs && vite build && workbox injectManifest workbox-config.js && npm run copy:sw",
     "copy:sw": "node -e \"require('fs').copyFileSync('dist/sw.js','public/sw.js')\"",
     "preview": "vite preview --port 4173",
