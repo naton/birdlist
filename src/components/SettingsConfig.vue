@@ -20,14 +20,14 @@ const { addMessage } = messagesStore
 
 async function switchLocale(newLocale) {
     locale.value = newLocale
-    lang.value = newLocale.split('-')[0]
-    await loadAllBirds(newLocale)
+    await loadAllBirds(newLocale, lang.value)
     setTimeout(() => addMessage(t("Birds_Loaded")), 100)
 }
 
 watch(lang, async (newLang) => {
     document.documentElement.lang = newLang
     await loadTexts(newLang)
+    await loadAllBirds(locale.value, newLang)
 })
 </script>
 

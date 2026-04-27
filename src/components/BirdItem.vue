@@ -1,6 +1,14 @@
 <script setup>
+import { computed } from "vue";
+import { getBirdDisplayName } from "@/birdNames.js";
+import { useSettingsStore } from "@/stores/settings.js";
+import { storeToRefs } from "pinia";
+
 const emit = defineEmits(["check", "remove"]);
 const props = defineProps(["bird", "edit", "checked"]);
+const settingsStore = useSettingsStore();
+const { lang } = storeToRefs(settingsStore);
+const birdName = computed(() => getBirdDisplayName(props.bird, lang?.value || "en"));
 </script>
 
 <template>
@@ -11,7 +19,7 @@ const props = defineProps(["bird", "edit", "checked"]);
         <circle fill="none" stroke="var(--color-text)" stroke-width="2" cx="16" cy="16" r="15"></circle>
       </svg>
     </button>
-    <span class="name">{{ props.bird }}</span>
+    <span class="name">{{ birdName }}</span>
     <button v-if="props.edit" @click="emit('remove', props.bird)">✕</button>
   </li>
 </template>

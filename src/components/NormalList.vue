@@ -7,6 +7,7 @@ import { useListsStore } from "@/stores/lists.js";
 import { useCommentsStore } from "@/stores/comments.js";
 import { useMessagesStore } from "@/stores/messages.js";
 import { groupBy } from "@/helpers";
+import { getBirdKey } from "@/birdNames.js";
 import ItemComponent from "./ItemComponent.vue";
 import ObservationsIcon from "./icons/ObservationsIcon.vue";
 import BirdsIcon from "./icons/BirdsIcon.vue";
@@ -43,7 +44,7 @@ const { addComment } = commentsStore;
 const messagesStore = useMessagesStore();
 const { addMessage } = messagesStore;
 
-const species = computed(() => [...new Set(props.observations?.map((item) => item.name))].sort());
+const species = computed(() => [...new Set(props.observations?.map((item) => getBirdKey(item)))].sort());
 const selectedObservation = defineModel();
 
 const currentLeader = ref("");
@@ -57,7 +58,7 @@ const users = computed(() => {
     const score = Object.keys(
       groupBy(
         props.observations.filter((obs) => obs.owner === name),
-        "name"
+        (obs) => getBirdKey(obs)
       )
     ).length;
     highestScore = score > highestScore ? score : highestScore;
@@ -89,10 +90,10 @@ const observationsByUser = computed(() => {
 
 const speciesByUser = computed(() => {
   return selectedUser.value === null
-    ? groupBy(props.observations, "name")
+    ? groupBy(props.observations, (obs) => getBirdKey(obs))
     : groupBy(
       props.observations.filter((obs) => obs.owner === selectedUser.value),
-      "name"
+      (obs) => getBirdKey(obs)
     );
 });
 

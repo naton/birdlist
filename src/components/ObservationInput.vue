@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import AddLocationIcon from "./icons/AddLocationIcon.vue";
@@ -18,6 +18,7 @@ const { birds } = storeToRefs(birdStore);
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
+const { lang } = storeToRefs(settingsStore);
 
 const emit = defineEmits(["add"]);
 const props = defineProps({
@@ -70,7 +71,7 @@ function add(bird) {
   if (props.disabled) {
     return;
   }
-  emit("add", bird.name, currentPosition.value);
+  emit("add", bird, currentPosition.value);
   addObservationInput.value.clearInput();
 }
 
@@ -83,8 +84,15 @@ function addUnlistedBird() {
 }
 
 onMounted(() => {
-  loadAllBirds(props.locale);
+  loadAllBirds(props.locale, lang?.value || "en");
 });
+
+watch(
+  [() => props.locale, lang],
+  ([newLocale, newLang]) => {
+    loadAllBirds(newLocale, newLang);
+  }
+);
 </script>
 
 <template>

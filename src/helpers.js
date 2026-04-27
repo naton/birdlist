@@ -396,10 +396,11 @@ function inputDateTime(date) {
 
 function groupBy(objectArray, property) {
   return objectArray.reduce((acc, obj) => {
+    const value = typeof property === "function" ? property(obj) : obj[property];
     const key =
-      typeof obj[property] === "object"
-        ? new Date(obj[property]).toISOString().slice(0, 10)
-        : obj[property].toLowerCase();
+      typeof value === "object"
+        ? new Date(value).toISOString().slice(0, 10)
+        : String(value || "").toLowerCase();
     if (!acc[key]) {
       acc[key] = [];
     }

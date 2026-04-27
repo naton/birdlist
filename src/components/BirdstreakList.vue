@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { formatDate } from "@/helpers";
+import { getBirdDisplayName } from "@/birdNames.js";
 import { useSettingsStore } from '@/stores/settings.js'
 import { useObservationsStore } from "@/stores/observations.js";
 import UserNav from "./UserNav.vue";
@@ -22,7 +23,7 @@ const props = defineProps({
 });
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
-const { selectedUser } = storeToRefs(settingsStore);
+const { selectedUser, lang } = storeToRefs(settingsStore);
 
 const observationsStore = useObservationsStore();
 const { lockObservation } = observationsStore;
@@ -122,6 +123,10 @@ function getLockedListObservationOnDate(date) {
     return obs.date.toISOString().substring(0, 10) === date.toISOString().substring(0, 10) && obs.locked
   })
 }
+
+function birdName(obs) {
+  return getBirdDisplayName(obs, lang?.value || "en");
+}
 </script>
 
 <template>
@@ -145,12 +150,12 @@ function getLockedListObservationOnDate(date) {
               <form v-if="!props.readOnly && getAllListObservationsOnDates(dateGroups).length && !getLockedListObservationOnDate(date).length" @submit.prevent="lockObservation(obsToLock, getAllListObservationsOnDates(dateGroups))" class="flex">
                 <select v-model="obsToLock" required>
                   <option value="" disabled>{{ t("Select_Observation") }}</option>
-                  <option v-for="obs in getAllListObservationsOnDates(dateGroups)" :key="obs.date" :value="obs.id">{{ obs.name }}</option>
+                  <option v-for="obs in getAllListObservationsOnDates(dateGroups)" :key="obs.date" :value="obs.id">{{ birdName(obs) }}</option>
                 </select>
                 <button type="submit"><lock-icon />{{ t("Lock") }}</button>
               </form>
               <div v-else-if="getLockedListObservationOnDate(date).length">
-                <lock-icon /><span>{{ getAllListObservationsOnDates(dateGroups).find(obs => obs.locked).name }}</span>
+                <lock-icon /><span>{{ birdName(getAllListObservationsOnDates(dateGroups).find(obs => obs.locked)) }}</span>
               </div>
               <div v-else>
                 {{ t("No_Observations") }}
@@ -159,7 +164,7 @@ function getLockedListObservationOnDate(date) {
           </td>
           <td v-else>
             <template v-if="getLockedListObservationOnDate(date).length">
-              <lock-icon /><span v-for="obs in getLockedListObservationOnDate(date)" :key="obs.date">{{ obs.name }}</span>
+              <lock-icon /><span v-for="obs in getLockedListObservationOnDate(date)" :key="obs.date">{{ birdName(obs) }}</span>
             </template>
             <template v-else>&nbsp;•</template>
           </td>

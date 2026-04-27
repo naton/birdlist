@@ -2,6 +2,7 @@
 import { ref, defineAsyncComponent, computed } from "vue";
 import { storeToRefs } from 'pinia'
 import { formatDateAndTime, inputDateTime, toPublicUserLabel } from "@/helpers";
+import { getBirdDisplayName, getBirdLatinName } from "@/birdNames.js";
 import AppDialog from "./AppDialog.vue";
 import ObservationsIcon from "./icons/ObservationsIcon.vue";
 import LocationFoundIcon from "./icons/LocationFoundIcon.vue";
@@ -18,7 +19,7 @@ import { useObservationsStore } from '../stores/observations.js'
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
-const { currentUser } = storeToRefs(settingsStore)
+const { currentUser, lang } = storeToRefs(settingsStore)
 
 const listsStore = useListsStore()
 const { allLists } = storeToRefs(listsStore)
@@ -61,6 +62,10 @@ function canEdit(owner) {
 
 function getOwnerLabel(owner) {
   return toPublicUserLabel(owner);
+}
+
+function birdName(observation) {
+  return getBirdDisplayName(observation, lang?.value || "en");
 }
 
 function deleteAndClose(id) {
@@ -118,6 +123,10 @@ function saveAndClose() {
   // Only apply changes when explicitly saving
   if (editDraft.value) {
     // Update the current observation with all changes from editDraft
+    const latinName = getBirdLatinName(editDraft.value);
+    if (latinName) {
+      editDraft.value.latinName = latinName;
+    }
     Object.assign(currentObservation.value, editDraft.value);
     // Save to the store
     saveObservation(currentObservation.value);
@@ -137,7 +146,7 @@ defineExpose({
   <app-dialog v-model="isDialogOpen">
     <div class="grid margin-bottom">
       <birds-icon />
-      <h2 v-if="!isEditing">{{ activeObservation?.name }}</h2>
+      <h2 v-if="!isEditing">{{ birdName(activeObservation) }}</h2>
       <div v-else>
         <label for="obs-name">{{ t("Change_Name") }}</label>
         <input id="obs-name" type="text" v-model="editDraft.name" />

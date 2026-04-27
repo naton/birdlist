@@ -6,6 +6,7 @@ import { useMessagesStore } from "./messages.js";
 import { useSettingsStore } from "./settings.js";
 import { useListsStore } from "./lists.js";
 import { pushNewBirdAlert } from "../helpers";
+import { getBirdDisplayName, getBirdKey, getBirdLatinName, getBirdStorageName, normalizeBirdName } from "@/birdNames.js";
 
 export const useObservationsStore = defineStore(
   "observation",
@@ -15,7 +16,7 @@ export const useObservationsStore = defineStore(
 
     const settingsStore = useSettingsStore();
     const { t } = settingsStore;
-    const { currentUser, currentYear, currentMonth } = storeToRefs(settingsStore);
+    const { currentUser, currentYear, currentMonth, lang } = storeToRefs(settingsStore);
 
     const listsStore = useListsStore();
     const { canWriteToList } = listsStore;
@@ -92,24 +93,26 @@ export const useObservationsStore = defineStore(
     }
 
     function observationIsANewSpeciesForThisList(bird) {
-      return allListObservations.value.filter((obs) => obs.name === bird).length === 0;
+      const birdKey = getBirdKey(bird);
+      return allListObservations.value.filter((obs) => getBirdKey(obs) === birdKey).length === 0;
     }
 
     let pushTimer = null;
 
     async function addObservation(bird, location) {
-      if (!bird || typeof bird !== "string") {
+      if (!bird || (typeof bird === "object" && !bird.name && !bird.latinName)) {
         return false;
       }
 
       let date = new Date();
-      const isBatchImport = bird.includes(","); // Probably multiple birds
-      const hasCustomDate = bird.startsWith("20") && bird.includes(":"); // Probably a date
+      const rawBirdName = typeof bird === "string" ? bird : bird.name;
+      const isBatchImport = typeof bird === "string" && bird.includes(","); // Probably multiple birds
+      const hasCustomDate = typeof bird === "string" && bird.startsWith("20") && bird.includes(":"); // Probably a date
 
       if (hasCustomDate) {
-        const customDate = new Date(bird.split(":")[0]);
+        const customDate = new Date(rawBirdName.split(":")[0]);
         date = isNaN(customDate) ? new Date() : customDate;
-        bird = bird.split(":")[1];
+        bird = rawBirdName.split(":")[1];
       }
 
       const list = currentList.value;
@@ -118,30 +121,37 @@ export const useObservationsStore = defineStore(
         return false;
       }
 
-      async function addSingleObservation(birdName) {
-        const normalizedBirdName = birdName.trim();
-        if (!normalizedBirdName) {
+      async function addSingleObservation(birdInput) {
+        const storageName = getBirdStorageName(birdInput, lang?.value || "en");
+        const latinName = getBirdLatinName(birdInput);
+        if (!storageName) {
           return false;
         }
 
         const firstToday = isFirstObservationToday();
-        const isNewSpecies = observationIsANewSpeciesForThisList(normalizedBirdName);
+        const isNewSpecies = observationIsANewSpeciesForThisList(latinName ? { latinName } : storageName);
 
         try {
-          await db.observations.add({
-            name: normalizedBirdName,
+          const observation = {
+            name: storageName,
             date,
             realmId: list ? list.realmId : undefined,
             listId: list ? list.id : undefined, // Any ID other than defaults are valid here
             location,
-          });
+          };
+
+          if (latinName) {
+            observation.latinName = latinName;
+          }
+
+          await db.observations.add(observation);
 
           if (firstToday) {
-            addMessage(t("First_Observation_Today") + " - <b>" + normalizedBirdName + "</b>");
+            addMessage(t("First_Observation_Today") + " - <b>" + storageName + "</b>");
           } else if (isNewSpecies) {
-            addMessage(t("New_Species_Added") + ": <b>" + normalizedBirdName + "</b>");
+            addMessage(t("New_Species_Added") + ": <b>" + storageName + "</b>");
           } else {
-            addMessage(t("New_Observation_Added") + ": <b>" + normalizedBirdName + "</b>");
+            addMessage(t("New_Observation_Added") + ": <b>" + storageName + "</b>");
           }
 
           // Push notification to all members of the list
@@ -149,7 +159,7 @@ export const useObservationsStore = defineStore(
             clearTimeout(pushTimer);
             pushTimer = setTimeout(() => {
               pushNewBirdAlert({
-                title: t("New_Observation_Added") + ": " + normalizedBirdName,
+                title: t("New_Observation_Added") + ": " + storageName,
                 options: {
                   icon: "https://birdlist.app/192x192.png",
                   body: t("List") + ": " + (list.title || list.name || ""),
@@ -172,7 +182,7 @@ export const useObservationsStore = defineStore(
 
       let hasSavedAtLeastOne = false;
       if (isBatchImport) {
-        const birds = bird.split(",");
+        const birds = rawBirdName.split(",");
         for (const birdName of birds) {
           const didSave = await addSingleObservation(birdName);
           hasSavedAtLeastOne = hasSavedAtLeastOne || didSave;
@@ -190,11 +200,17 @@ export const useObservationsStore = defineStore(
 
     async function saveObservation(obs) {
       let payload = {
-        name: obs.name.trim(),
+        name: getBirdDisplayName(obs, lang?.value || "en").trim(),
         date: obs.date,
         location: obs.location,
         locked: obs.locked,
       };
+      const latinName = obs.latinName || getBirdLatinName(obs.name);
+      if (latinName) {
+        payload.latinName = latinName;
+      } else if (obs.name) {
+        payload.name = normalizeBirdName(obs.name) ? obs.name.trim() : payload.name;
+      }
       if (obs.listId) {
         payload.listId = obs.listId;
       }

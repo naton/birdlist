@@ -131,8 +131,8 @@ onBeforeMount(() => {
 
   <section v-if="checkListBirds.length" :class="'grid-' + bingoSize">
     <bingo-item v-for="bird in checkListBirds"
-    :key="bird.name"
-    :bird="bird.name"
+    :key="bird.key"
+    :bird="bird"
     :checked="bird.checked"
     :edit="checkListEditMode"
     @check="checkBird"

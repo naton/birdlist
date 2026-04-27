@@ -5,6 +5,7 @@ import { db } from "../db";
 import { liveQuery } from "dexie";
 import { getTiedRealmId } from "dexie-cloud-addon";
 import { deleteListRemotely, setListVisibility } from "../helpers";
+import { getBirdLatinName, getBirdStorageName } from "@/birdNames.js";
 import { useSettingsStore } from "./settings";
 import { useMessagesStore } from "./messages";
 
@@ -345,7 +346,10 @@ export const useListsStore = defineStore("list", () => {
     delete newList.id;
     newList.type = "checklist";
     const listObservations = await db.observations.where({ listId: list.id }).toArray();
-    newList.birds = listObservations.map((obs) => obs.name);
+    newList.birds = listObservations.map((obs) => {
+      const latinName = obs.latinName || getBirdLatinName(obs.name);
+      return latinName ? { latinName, name: getBirdStorageName(obs) } : obs.name;
+    });
     const newId = await createList(newList);
     router.push({ name: "list", params: { id: newId} });
     addMessage(t("Checklist_Created") + ": <b>" + list.title + "</b>");

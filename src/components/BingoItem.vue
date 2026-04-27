@@ -1,12 +1,20 @@
 <script setup>
+import { computed } from "vue";
+import { getBirdDisplayName } from "@/birdNames.js";
+import { useSettingsStore } from "@/stores/settings.js";
+import { storeToRefs } from "pinia";
+
 const emit = defineEmits(["check", "remove"]);
 const props = defineProps(["bird", "edit", "checked"]);
+const settingsStore = useSettingsStore();
+const { lang } = storeToRefs(settingsStore);
+const birdName = computed(() => getBirdDisplayName(props.bird, lang?.value || "en"));
 </script>
 
 <template>
   <li class="bingo" :class="props.checked && 'checked'">
     <button :disabled="props.edit" @click="emit('check', props.bird)" class="bingo-button">
-      <span class="name">{{ props.bird }}</span>
+      <span class="name">{{ birdName }}</span>
     </button>
     <button v-if="props.edit" @click="emit('remove', props.bird)">✕</button>
   </li>

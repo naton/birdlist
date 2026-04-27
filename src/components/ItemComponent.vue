@@ -2,6 +2,12 @@
 import UserInitial from "./icons/UserInitial.vue";
 import LocationSpecifiedIcon from "./icons/LocationSpecifiedIcon.vue";
 import { formatDate, toPublicUserLabel } from "@/helpers";
+import { getBirdDisplayName } from "@/birdNames.js";
+import { useSettingsStore } from "@/stores/settings.js";
+import { storeToRefs } from "pinia";
+
+const settingsStore = useSettingsStore();
+const { lang } = storeToRefs(settingsStore);
 
 const selected = defineModel();
 
@@ -38,13 +44,17 @@ function handleClick() {
 function getOwnerLabel(owner) {
   return toPublicUserLabel(owner);
 }
+
+function birdName(bird) {
+  return getBirdDisplayName(bird, lang?.value || "en");
+}
 </script>
 
 <template>
   <li tabindex="-1" :class="selected === props.obs && 'selected'" @click="handleClick()">
     <!-- Observation Mode Content -->
     <span v-if="props.mode === 'observation'" class="content-wrapper obs">
-      <span class="name">{{ props.obs.name }}</span>
+      <span class="name">{{ birdName(props.obs) }}</span>
       <location-specified-icon v-if="props.obs.location" />
       <span class="date">{{ formatDate(props.obs.date) }}</span>
       <span v-if="props.obs.owner && props.obs.owner !== 'unauthorized'" class="seen-by">
@@ -54,7 +64,7 @@ function getOwnerLabel(owner) {
     
     <!-- Species Mode Content -->
     <span v-else class="content-wrapper obs">
-      <span class="name">{{ props.obs[0].name }}</span>
+      <span class="name">{{ birdName(props.obs[0]) }}</span>
       <span class="date" v-if="props.obs.length > 0">{{ formatDate(props.obs[props.obs.length - 1].date) }}</span>
       <span v-if="props.obs.length > 0" class="seen-by">
         <user-initial v-for="user in [...new Set(props.obs.map((o) => o.owner))]" :key="user" :user="user" :initial-label="getOwnerLabel(user)" :color-key="user" />

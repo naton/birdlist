@@ -1,6 +1,7 @@
 import { ref, computed, toRaw } from "vue";
 import { storeToRefs } from "pinia";
 import { groupBy } from "@/helpers";
+import { getBirdDisplayName, getBirdKey, getBirdLatinName, getBirdStorageName } from "@/birdNames.js";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useBirdsStore } from "@/stores/birds.js";
 import { useListsStore } from "@/stores/lists.js";
@@ -10,7 +11,7 @@ import { useMessagesStore } from "@/stores/messages.js";
 export function useCheckableList(props) {
   const settingsStore = useSettingsStore();
   const { t } = settingsStore;
-  const { currentUser, selectedUser } = storeToRefs(settingsStore);
+  const { currentUser, selectedUser, lang } = storeToRefs(settingsStore);
 
   const birdStore = useBirdsStore();
   const { birds } = storeToRefs(birdStore);
@@ -52,8 +53,9 @@ export function useCheckableList(props) {
     const selectedOwner = ownersInCurrentList.has(selectedUser.value) ? selectedUser.value : null;
 
     return birdsToCheck.value.map((bird) => {
+      const birdKey = getBirdKey(bird);
       const hasObservation = props.observations.some((obs) => {
-        if (obs.name !== bird) {
+        if (getBirdKey(obs) !== birdKey) {
           return false;
         }
 
@@ -65,7 +67,9 @@ export function useCheckableList(props) {
       });
 
       return {
-        name: bird,
+        name: getBirdDisplayName(bird, lang?.value || "en"),
+        latinName: getBirdLatinName(bird),
+        key: birdKey,
         checked: hasObservation,
       };
     });
@@ -76,8 +80,10 @@ export function useCheckableList(props) {
       return;
     }
 
-    if (!birdsToCheck.value.includes(bird.name)) {
-      birdsToCheck.value.push(bird.name);
+    const birdKey = getBirdKey(bird);
+    if (!birdsToCheck.value.some((item) => getBirdKey(item) === birdKey)) {
+      const latinName = getBirdLatinName(bird);
+      birdsToCheck.value.push(latinName ? { latinName, name: getBirdStorageName(bird, lang?.value || "en") } : bird.name);
     } else {
       addMessage(t("Bird_Already_In_List"));
     }
@@ -94,8 +100,9 @@ export function useCheckableList(props) {
       return;
     }
 
+    const birdKey = getBirdKey(bird);
     const obs = props.observations.find((observation) => {
-      return observation.name === bird && isCurrentUserOwner(observation.owner);
+      return getBirdKey(observation) === birdKey && isCurrentUserOwner(observation.owner);
     });
 
     if (obs) {
@@ -110,7 +117,8 @@ export function useCheckableList(props) {
     if (props.readOnly) {
       return;
     }
-    birdsToCheck.value = birdsToCheck.value.filter((name) => name !== bird);
+    const birdKey = getBirdKey(bird);
+    birdsToCheck.value = birdsToCheck.value.filter((item) => getBirdKey(item) !== birdKey);
   }
 
   const users = computed(() => {
@@ -118,7 +126,7 @@ export function useCheckableList(props) {
     let highestScore = 0;
 
     const listUsers = names.map((name) => {
-      const score = Object.keys(groupBy(props.observations.filter((obs) => obs.owner === name), "name")).length;
+      const score = Object.keys(groupBy(props.observations.filter((obs) => obs.owner === name), (obs) => getBirdKey(obs))).length;
       highestScore = Math.max(score, highestScore);
       return {
         name,
