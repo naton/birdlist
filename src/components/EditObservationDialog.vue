@@ -1,9 +1,11 @@
 <script setup>
-import { ref, defineAsyncComponent, computed } from "vue";
+import { ref, defineAsyncComponent, computed, watch } from "vue";
 import { storeToRefs } from 'pinia'
 import { formatDateAndTime, inputDateTime, toPublicUserLabel } from "@/helpers";
-import { getBirdDisplayName, getBirdLatinName } from "@/birdNames.js";
+import { getBirdDisplayName, getBirdLatinName, getBirdStorageName } from "@/birdNames.js";
 import AppDialog from "./AppDialog.vue";
+import vue3SimpleTypeahead from "vue3-simple-typeahead";
+import "vue3-simple-typeahead/dist/vue3-simple-typeahead.css";
 import ObservationsIcon from "./icons/ObservationsIcon.vue";
 import LocationFoundIcon from "./icons/LocationFoundIcon.vue";
 import BirdsIcon from "./icons/BirdsIcon.vue";
@@ -16,16 +18,20 @@ const ObservationMap = defineAsyncComponent(() => import("./ObservationMap.vue")
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
 import { useObservationsStore } from '../stores/observations.js'
+import { useBirdsStore } from "@/stores/birds.js";
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
-const { currentUser, lang } = storeToRefs(settingsStore)
+const { currentUser, lang, locale } = storeToRefs(settingsStore)
 
 const listsStore = useListsStore()
 const { allLists } = storeToRefs(listsStore)
 
 const observationsStore = useObservationsStore()
 const { saveObservation } = observationsStore
+const birdsStore = useBirdsStore();
+const { loadAllBirds } = birdsStore;
+const { birds } = storeToRefs(birdsStore);
 
 const emit = defineEmits(["delete"]);
 
@@ -35,6 +41,7 @@ const isEditing = ref(false);
 
 // Create a working copy for edits
 const editDraft = ref(null);
+const selectedBird = ref(null);
 
 // Computed property to handle the active observation (draft when editing, current otherwise)
 const activeObservation = computed(() => 
@@ -67,6 +74,14 @@ function getOwnerLabel(owner) {
 function birdName(observation) {
   return getBirdDisplayName(observation, lang?.value || "en");
 }
+
+const canSave = computed(() => {
+  if (!editDraft.value) {
+    return false;
+  }
+
+  return !selectedBird.value || Boolean(selectedBird.value.latinName);
+});
 
 function deleteAndClose(id) {
   emit("delete", id);
@@ -108,6 +123,8 @@ function startEditing() {
   // Create a deep copy of the observation for editing
   // This ensures all changes are isolated until explicitly saved
   editDraft.value = deepClone(currentObservation.value);
+  selectedBird.value = null;
+  loadAllBirds(locale?.value || "en-US", lang?.value || "en");
   isEditing.value = true;
 }
 
@@ -115,26 +132,48 @@ function close() {
   // Discard any changes by abandoning the editDraft
   // This ensures no changes are applied to the original observation
   editDraft.value = null;
+  selectedBird.value = null;
   isEditing.value = false;
   isDialogOpen.value = false;
 }
 
+function selectBird(bird) {
+  if (!bird?.latinName || !editDraft.value) {
+    return;
+  }
+
+  selectedBird.value = bird;
+  editDraft.value.latinName = bird.latinName;
+  editDraft.value.name = getBirdStorageName(bird, lang?.value || "en");
+}
+
 function saveAndClose() {
   // Only apply changes when explicitly saving
-  if (editDraft.value) {
+  if (editDraft.value && canSave.value) {
     // Update the current observation with all changes from editDraft
-    const latinName = getBirdLatinName(editDraft.value);
+    const latinName = editDraft.value.latinName || getBirdLatinName(editDraft.value);
     if (latinName) {
       editDraft.value.latinName = latinName;
+      editDraft.value.name = getBirdStorageName(editDraft.value, lang?.value || "en");
     }
     Object.assign(currentObservation.value, editDraft.value);
     // Save to the store
     saveObservation(currentObservation.value);
   }
   editDraft.value = null;
+  selectedBird.value = null;
   isEditing.value = false;
   isDialogOpen.value = false;
 }
+
+watch(
+  [locale, lang],
+  ([newLocale, newLang]) => {
+    if (isEditing.value) {
+      loadAllBirds(newLocale || "en-US", newLang || "en");
+    }
+  }
+);
 
 defineExpose({
   showModal: openModal,
@@ -149,7 +188,15 @@ defineExpose({
       <h2 v-if="!isEditing">{{ birdName(activeObservation) }}</h2>
       <div v-else>
         <label for="obs-name">{{ t("Change_Name") }}</label>
-        <input id="obs-name" type="text" v-model="editDraft.name" />
+        <p class="current-species">{{ birdName(editDraft) }}</p>
+        <vue3-simple-typeahead
+          id="obs-name"
+          :placeholder="t('Select_Bird')"
+          :items="birds.filter((bird) => bird.latinName)"
+          :minInputLength="1"
+          :itemProjection="(bird) => bird.name"
+          @selectItem="selectBird"
+        />
       </div>
   
       <observations-icon />
@@ -213,7 +260,7 @@ defineExpose({
     </div>
 
     <div class="buttons">
-      <button v-if="isEditing" type="button" class="secondary" @click="saveAndClose">{{ t("Save") }} & {{ t("Close") }}</button>
+      <button v-if="isEditing" type="button" class="secondary" :disabled="!canSave" @click="saveAndClose">{{ t("Save") }} & {{ t("Close") }}</button>
       <button v-else type="button" class="secondary" :disabled="!canEdit(currentObservation?.owner)" @click="startEditing">
         <edit-icon />
         {{ t("Edit") }}
@@ -254,6 +301,11 @@ button[disabled] {
   font-size: 0.8rem;
   margin-top: 0;
   font-style: italic;
+  color: var(--color-text-dim);
+}
+
+.current-species {
+  margin: 0 0 0.5rem;
   color: var(--color-text-dim);
 }
 </style>

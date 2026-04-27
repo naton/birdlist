@@ -653,16 +653,19 @@ button:has(svg) {
 /* Vendor stuff */
 .add-bird .simple-typeahead-list {
   bottom: 3rem;
+}
+
+.simple-typeahead-list {
   border-radius: var(--radius);
   box-shadow: rgb(0 0 0 / 10%) 0 -6px 12px 0;
 }
 
-.add-bird .simple-typeahead-list-footer,
-.add-bird .simple-typeahead-list-header,
-.add-bird .simple-typeahead-list-item {
+.simple-typeahead-list-footer,
+.simple-typeahead-list-header,
+.simple-typeahead-list-item {
   background-color: var(--color-background) !important;
 }
 
-.add-bird .simple-typeahead-list-item-active {
+.simple-typeahead-list-item-active {
   background-color: var(--color-background-dim) !important;
 }
