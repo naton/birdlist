@@ -1,430 +1,1648 @@
 [
-{ "name": "Aftonfalk" },
-{ "name": "Alfågel" },
-{ "name": "Alförrädare" },
-{ "name": "Alkekung" },
-{ "name": "Alpjärnsparv" },
-{ "name": "Alpkaja" },
-{ "name": "Alpkråka" },
-{ "name": "Alpseglare" },
-{ "name": "Amerikansk kopparand" },
-{ "name": "Backsvala" },
-{ "name": "Balkanhök" },
-{ "name": "Balkanmes" },
-{ "name": "Balkanspett" },
-{ "name": "Bergand" },
-{ "name": "Bergfink" },
-{ "name": "Berghöna" },
-{ "name": "Berglärka" },
-{ "name": "Bergsångare" },
-{ "name": "Berguv" },
-{ "name": "Bivråk" },
-{ "name": "Biätare" },
-{ "name": "Björktrast" },
-{ "name": "Blektornseglare" },
-{ "name": "Blå kärrhök" },
-{ "name": "Blåhake" },
-{ "name": "Blåkråka" },
-{ "name": "Blåmes" },
-{ "name": "Blåskata" },
-{ "name": "Blåtrast" },
-{ "name": "Bläsand" },
-{ "name": "Bläsgås" },
-{ "name": "Bofink" },
-{ "name": "Brandkronad kungsfågel" },
-{ "name": "Brednäbbad simsnäppa" },
-{ "name": "Bredstjärtad labb" },
-{ "name": "Bronsibis" },
-{ "name": "Brun kärrhök" },
-{ "name": "Brunand" },
-{ "name": "Brunglada" },
-{ "name": "Brushane" },
-{ "name": "Buskskvätta" },
-{ "name": "Busksångare" },
-{ "name": "Bändelkorsnäbb" },
-{ "name": "Cettisångare" },
-{ "name": "Citronsiska" },
-{ "name": "Citronärla" },
-{ "name": "Dalripa" },
-{ "name": "Dammsnäppa" },
-{ "name": "Diamantfasan" },
-{ "name": "Domherre" },
-{ "name": "Drillsnäppa" },
-{ "name": "Dubbelbeckasin" },
-{ "name": "Dubbeltrast" },
-{ "name": "Duvhök" },
-{ "name": "Dvärglira" },
-{ "name": "Dvärgbeckasin" },
-{ "name": "Dvärglärka" },
-{ "name": "Dvärgmås" },
-{ "name": "Dvärgrördrom" },
-{ "name": "Dvärgskarv" },
-{ "name": "Dvärgsparv" },
-{ "name": "Dvärgsumphöna" },
-{ "name": "Dvärguv" },
-{ "name": "Dvärgörn" },
-{ "name": "Ejder" },
-{ "name": "Eksångare" },
-{ "name": "Eleonorafalk" },
-{ "name": "Enkelbeckasin" },
-{ "name": "Entita" },
-{ "name": "Fasan" },
-{ "name": "Fiskgjuse" },
-{ "name": "Fiskmås" },
-{ "name": "Fisktärna" },
-{ "name": "Fjällabb" },
-{ "name": "Fjällgås" },
-{ "name": "Fjällpipare" },
-{ "name": "Fjällripa" },
-{ "name": "Fjälluggla" },
-{ "name": "Fjällvråk" },
-{ "name": "Flamingo" },
-{ "name": "Flodsångare" },
-{ "name": "Forsärla" },
-{ "name": "Fältpiplärka" },
-{ "name": "Glasögonsångare" },
-{ "name": "Gluttsnäppa" },
-{ "name": "Gransångare" },
-{ "name": "Gravand" },
-{ "name": "Grå flugsnappare" },
-{ "name": "Grågam" },
-{ "name": "Grågås" },
-{ "name": "Gråhakedopping" },
-{ "name": "Gråkråka" },
-{ "name": "Grålira" },
-{ "name": "Gråsiska" },
-{ "name": "Gråsparv" },
-{ "name": "Gråspett" },
-{ "name": "Gråtrut" },
-{ "name": "Gräsand" },
-{ "name": "Gräshoppsångare" },
-{ "name": "Grässångare" },
-{ "name": "Grönbena" },
-{ "name": "Grönfink" },
-{ "name": "Gröngöling" },
-{ "name": "Grönsiska" },
-{ "name": "Grönsångare" },
-{ "name": "Guldfasan" },
-{ "name": "Gulhämpling" },
-{ "name": "Gulnäbbad lira" },
-{ "name": "Gulsparv" },
-{ "name": "Gulärla" },
-{ "name": "Gyllensparv" },
-{ "name": "Gåsgam" },
-{ "name": "Gärdsmyg" },
-{ "name": "Gök" },
-{ "name": "Göktyta" },
-{ "name": "Halsbandsflugsnappare" },
-{ "name": "Halsbandsparakit" },
-{ "name": "Havslöpare" },
-{ "name": "Havssula" },
-{ "name": "Havstrut" },
-{ "name": "Havsörn" },
-{ "name": "Hornuggla" },
-{ "name": "Hussvala" },
-{ "name": "Häcksparv" },
-{ "name": "Häger" },
-{ "name": "Hämpling" },
-{ "name": "Härfågel" },
-{ "name": "Härmsångare" },
-{ "name": "Höksångare" },
-{ "name": "Hökuggla" },
-{ "name": "Hökörn" },
-{ "name": "Iltärna" },
-{ "name": "Islandsknipa" },
-{ "name": "Islom" },
-{ "name": "Jaktfalk" },
-{ "name": "Jorduggla" },
-{ "name": "Järnsparv" },
-{ "name": "Järpe" },
-{ "name": "Kaja" },
-{ "name": "Kalenderlärka" },
-{ "name": "Kamsothöna" },
-{ "name": "Kanadagås" },
-{ "name": "Kattuggla" },
-{ "name": "Kaveldunssångare" },
-{ "name": "Kejsarörn" },
-{ "name": "Kentsk tärna" },
-{ "name": "Klippduva" },
-{ "name": "Klipphöna" },
-{ "name": "Klippnötväcka" },
-{ "name": "Klippsparv" },
-{ "name": "Klippsvala" },
-{ "name": "Klykstjärtad stormsvala" },
-{ "name": "Knipa" },
-{ "name": "Knölsvan" },
-{ "name": "Kohäger" },
-{ "name": "Koltrast" },
-{ "name": "Kopparand" },
-{ "name": "Kornknarr" },
-{ "name": "Kornsparv" },
-{ "name": "Korp" },
-{ "name": "Korsikansk nötväcka" },
-{ "name": "Korttålärka" },
-{ "name": "Kricka" },
-{ "name": "Krushuvad pelikan" },
-{ "name": "Kungsfiskare" },
-{ "name": "Kungsfågel" },
-{ "name": "Kungsörn" },
-{ "name": "Kustpipare" },
-{ "name": "Kustsnäppa" },
-{ "name": "Kärrsnäppa" },
-{ "name": "Kärrsångare" },
-{ "name": "Labb" },
-{ "name": "Ladusvala" },
-{ "name": "Lagerlärka" },
-{ "name": "Lammgam" },
-{ "name": "Lappmes" },
-{ "name": "Lappsparv" },
-{ "name": "Lappuggla" },
-{ "name": "Lavskrika" },
-{ "name": "Ljungpipare" },
-{ "name": "Lundsångare" },
-{ "name": "Lunnefågel" },
-{ "name": "Långnäbbad mås" },
-{ "name": "Lärkfalk" },
-{ "name": "Lövsångare" },
-{ "name": "Madeirapetrell" },
-{ "name": "Mandarinand" },
-{ "name": "Marmorand" },
-{ "name": "Masktörnskata" },
-{ "name": "Medelhavsstenskvätta" },
-{ "name": "Mellanspett" },
-{ "name": "Mindre flugsnappare" },
-{ "name": "Mindre hackspett" },
-{ "name": "Mindre korsnäbb" },
-{ "name": "Mindre lira" },
-{ "name": "Mindre skrikörn" },
-{ "name": "Mindre strandpipare" },
-{ "name": "Mindre sumphöna" },
-{ "name": "Mindre sångsvan" },
-{ "name": "Minervauggla" },
-{ "name": "Morkulla" },
-{ "name": "Mosnäppa" },
-{ "name": "Murkrypare" },
-{ "name": "Myrsnäppa" },
-{ "name": "Myrspov" },
-{ "name": "Mästersångare" },
-{ "name": "Natthäger" },
-{ "name": "Nattskärra" },
-{ "name": "Nilgås" },
-{ "name": "Nordsångare" },
-{ "name": "Näktergal" },
-{ "name": "Nötkråka" },
-{ "name": "Nötskrika" },
-{ "name": "Nötväcka" },
-{ "name": "Olivsångare" },
-{ "name": "Ormvråk" },
-{ "name": "Ormörn" },
-{ "name": "Orre" },
-{ "name": "Ortolansparv" },
-{ "name": "Pelikan" },
-{ "name": "Pilfink" },
-{ "name": "Pilgrimsfalk" },
-{ "name": "Polygottsångare" },
-{ "name": "Provencesångare" },
-{ "name": "Prutgås" },
-{ "name": "Pungmes" },
-{ "name": "Purpurhäger" },
-{ "name": "Purpurhöna" },
-{ "name": "Pärluggla" },
-{ "name": "Rallhäger" },
-{ "name": "Rapphöna" },
-{ "name": "Ringduva" },
-{ "name": "Ringnäbbad mås" },
-{ "name": "Ringtrast" },
-{ "name": "Rosenfink" },
-{ "name": "Rosenstare" },
-{ "name": "Rosentärna" },
-{ "name": "Roskarl" },
-{ "name": "Rostand" },
-{ "name": "Rostgumpsvala" },
-{ "name": "Rostsparv" },
-{ "name": "Råka" },
-{ "name": "Röd glada" },
-{ "name": "Rödbena" },
-{ "name": "Rödfalk" },
-{ "name": "Rödhake" },
-{ "name": "Rödhalsad gås" },
-{ "name": "Rödhalsad nattskärra" },
-{ "name": "Rödhuvad dykand" },
-{ "name": "Rödhuvad törnskata" },
-{ "name": "Rödhöna" },
-{ "name": "Rödnäbbad trut" },
-{ "name": "Rödspov" },
-{ "name": "Rödstjärt" },
-{ "name": "Rödstrupig piplärka" },
-{ "name": "Rödstrupig sångare" },
-{ "name": "Rödvingetrast" },
-{ "name": "Rördrom" },
-{ "name": "Rörhöna" },
-{ "name": "Rörsångare" },
-{ "name": "Salskrake" },
-{ "name": "Sammetshätta" },
-{ "name": "Sandlöpare" },
-{ "name": "Sandtärna" },
-{ "name": "Sardinsksångare" },
-{ "name": "Sidensvans" },
-{ "name": "Silkeshäger" },
-{ "name": "Sillgrissla" },
-{ "name": "Silltrut" },
-{ "name": "Silvertärna" },
-{ "name": "Sjöorre" },
-{ "name": "Skata" },
-{ "name": "Skatgök" },
-{ "name": "Skedand" },
-{ "name": "Skedstork" },
-{ "name": "Skogsduva" },
-{ "name": "Skogssnäppa" },
-{ "name": "Skotsk korsnäbb" },
-{ "name": "Skrattmås" },
-{ "name": "Skräntärna" },
-{ "name": "Skäggdopping" },
-{ "name": "Skäggmes" },
-{ "name": "Skäggtärna" },
-{ "name": "Skärfläcka" },
-{ "name": "Skärpiplärka" },
-{ "name": "Skärsnäppa" },
-{ "name": "Slagfalk" },
-{ "name": "Slaguggla" },
-{ "name": "Smalnäbbad simsnäppa" },
-{ "name": "Smutsgam" },
-{ "name": "Smådopping" },
-{ "name": "Småfläckig sumphöna" },
-{ "name": "Smålom" },
-{ "name": "Småskrake" },
-{ "name": "Småsnäppa" },
-{ "name": "Småspov" },
-{ "name": "Småtrapp" },
-{ "name": "Småtärna" },
-{ "name": "Snatterand" },
-{ "name": "Snöfink" },
-{ "name": "Snösiska" },
-{ "name": "Snösparv" },
-{ "name": "Sommargylling" },
-{ "name": "Sothöna" },
-{ "name": "Spansk sparv" },
-{ "name": "Sparvhök" },
-{ "name": "Sparvuggla" },
-{ "name": "Spetsbergsgrissla" },
-{ "name": "Spetsbergsgås" },
-{ "name": "Spillkråka" },
-{ "name": "Sporrvipa" },
-{ "name": "Spovsnäppa" },
-{ "name": "Stare" },
-{ "name": "Steglits" },
-{ "name": "Stenfalk" },
-{ "name": "Stenhöna" },
-{ "name": "Stenknäck" },
-{ "name": "Stenskvätta" },
-{ "name": "Stensparv" },
-{ "name": "Stentrast" },
-{ "name": "Stjärtand" },
-{ "name": "Stjärtmes" },
-{ "name": "Storlabb" },
-{ "name": "Storlom" },
-{ "name": "Stormfågel" },
-{ "name": "Stormsvala" },
-{ "name": "Storskarv" },
-{ "name": "Storskrake" },
-{ "name": "Storspov" },
-{ "name": "Stortrapp" },
-{ "name": "Strandskata" },
-{ "name": "Strömand" },
-{ "name": "Strömstare" },
-{ "name": "Styltlöpare" },
-{ "name": "Stäpphök" },
-{ "name": "Större hackspett" },
-{ "name": "Större korsnäbb" },
-{ "name": "Större lira" },
-{ "name": "Större skrikörn" },
-{ "name": "Större strandpipare" },
-{ "name": "Svart stare" },
-{ "name": "Svart stenskvätta" },
-{ "name": "Svart stork" },
-{ "name": "Svartbent strandpipare" },
-{ "name": "Svartbukig flyghöna" },
-{ "name": "Svarthakad buskskvätta" },
-{ "name": "Svarthakedopping" },
-{ "name": "Svarthalsad dopping" },
-{ "name": "Svarthuvad sparv" },
-{ "name": "Svarthuvad mås" },
-{ "name": "Svarthätta" },
-{ "name": "Svartmes" },
-{ "name": "Svartpannad törnskata" },
-{ "name": "Svartrödstjärt" },
-{ "name": "Svartsnäppa" },
-{ "name": "Svarttärna" },
-{ "name": "Svartvingad glada" },
-{ "name": "Svartvit flugsnappare" },
-{ "name": "Svärta" },
-{ "name": "Sydnäcktergal" },
-{ "name": "Sånglärka" },
-{ "name": "Sångsvan" },
-{ "name": "Sädesärla" },
-{ "name": "Sädgås" },
-{ "name": "Sävsparv" },
-{ "name": "Sävsångare" },
-{ "name": "Taigasångare" },
-{ "name": "Talgoxe" },
-{ "name": "Tallbit" },
-{ "name": "Talltita" },
-{ "name": "Taltrast" },
-{ "name": "Tamduva" },
-{ "name": "Tatarfalk" },
-{ "name": "Tereksnäppa" },
-{ "name": "Tjockfot" },
-{ "name": "Tjäder" },
-{ "name": "Tobisgrissla" },
-{ "name": "Tofslärka" },
-{ "name": "Tofsmes" },
-{ "name": "Tofsvipa" },
-{ "name": "Toppskarv" },
-{ "name": "Tordmule" },
-{ "name": "Tornfalk" },
-{ "name": "Tornseglare" },
-{ "name": "Tornuggla" },
-{ "name": "Trana" },
-{ "name": "Trastsångare" },
-{ "name": "Tretåig hackspett" },
-{ "name": "Tretåig mås" },
-{ "name": "Trädgårdssångare" },
-{ "name": "Trädgårdsträdkrypare" },
-{ "name": "Trädkrypare" },
-{ "name": "Trädlärka" },
-{ "name": "Trädmås" },
-{ "name": "Trädnäcktergal" },
-{ "name": "Trädpiplärka" },
-{ "name": "Turkduva" },
-{ "name": "Turturduva" },
-{ "name": "Tuvsnäppa" },
-{ "name": "Tärnmås" },
-{ "name": "Törnskata" },
-{ "name": "Törnsångare" },
-{ "name": "Vadarsvala" },
-{ "name": "Vaktel" },
-{ "name": "Varfågel" },
-{ "name": "Vassångare" },
-{ "name": "Vattenpiplärka" },
-{ "name": "Vattenrall" },
-{ "name": "Vattensångare" },
-{ "name": "Videsparv" },
-{ "name": "Vigg" },
-{ "name": "Vinterhämpling" },
-{ "name": "Vit stork" },
-{ "name": "Vitbukig flyghöna" },
-{ "name": "Vitkindad gås" },
-{ "name": "Vitnäbbad islom" },
-{ "name": "Vitryggig hackspett" },
-{ "name": "Vittrut" },
-{ "name": "Vitvingad tärna" },
-{ "name": "Vitvingad trut" },
-{ "name": "Vitögd dykand" },
-{ "name": "Wilsonsimsnäppa" },
-{ "name": "Årta" },
-{ "name": "Ägretthäger" },
-{ "name": "Ängshök" },
-{ "name": "Ängspiplärka" },
-{ "name": "Ärtsångare" },
-{ "name": "Örnvråk" }
+  {
+    "name": "Aftonfalk",
+    "latinName": "Falco vespertinus"
+  },
+  {
+    "name": "Alfågel",
+    "latinName": "Clangula hyemalis"
+  },
+  {
+    "name": "Alförrädare",
+    "latinName": "Polysticta stelleri"
+  },
+  {
+    "name": "Alkekung",
+    "latinName": "Alle alle"
+  },
+  {
+    "name": "Alpjärnsparv",
+    "latinName": "Prunella collaris"
+  },
+  {
+    "name": "Alpkaja"
+  },
+  {
+    "name": "Alpkråka"
+  },
+  {
+    "name": "Alpseglare",
+    "latinName": "Tachymarptis melba"
+  },
+  {
+    "name": "Amerikansk kopparand",
+    "latinName": "Oxyura jamaicensis"
+  },
+  {
+    "name": "Backsvala",
+    "latinName": "Riparia riparia"
+  },
+  {
+    "name": "Balkanhök"
+  },
+  {
+    "name": "Balkanmes"
+  },
+  {
+    "name": "Balkanspett"
+  },
+  {
+    "name": "Bergand",
+    "latinName": "Aythya marila"
+  },
+  {
+    "name": "Bergfink",
+    "latinName": "Fringilla montifringilla"
+  },
+  {
+    "name": "Berghöna"
+  },
+  {
+    "name": "Berglärka",
+    "latinName": "Eremophila alpestris"
+  },
+  {
+    "name": "Bergsångare",
+    "latinName": "Phylloscopus bonelli"
+  },
+  {
+    "name": "Berguv",
+    "latinName": "Bubo bubo"
+  },
+  {
+    "name": "Bivråk",
+    "latinName": "Pernis apivorus"
+  },
+  {
+    "name": "Biätare",
+    "latinName": "Merops apiaster"
+  },
+  {
+    "name": "Björktrast",
+    "latinName": "Turdus pilaris"
+  },
+  {
+    "name": "Blektornseglare"
+  },
+  {
+    "name": "Blå kärrhök",
+    "latinName": "Circus cyaneus"
+  },
+  {
+    "name": "Blåhake",
+    "latinName": "Luscinia svecica"
+  },
+  {
+    "name": "Blåkråka",
+    "latinName": "Coracias garrulus"
+  },
+  {
+    "name": "Blåmes",
+    "latinName": "Cyanistes caeruleus"
+  },
+  {
+    "name": "Blåskata"
+  },
+  {
+    "name": "Blåtrast",
+    "latinName": "Monticola solitarius"
+  },
+  {
+    "name": "Bläsand",
+    "latinName": "Mareca penelope"
+  },
+  {
+    "name": "Bläsgås",
+    "latinName": "Anser albifrons"
+  },
+  {
+    "name": "Bofink",
+    "latinName": "Fringilla coelebs"
+  },
+  {
+    "name": "Brandkronad kungsfågel",
+    "latinName": "Regulus ignicapilla"
+  },
+  {
+    "name": "Brednäbbad simsnäppa",
+    "latinName": "Phalaropus fulicarius"
+  },
+  {
+    "name": "Bredstjärtad labb",
+    "latinName": "Stercorarius pomarinus"
+  },
+  {
+    "name": "Bronsibis",
+    "latinName": "Plegadis falcinellus"
+  },
+  {
+    "name": "Brun kärrhök",
+    "latinName": "Circus aeruginosus"
+  },
+  {
+    "name": "Brunand",
+    "latinName": "Aythya ferina"
+  },
+  {
+    "name": "Brunglada"
+  },
+  {
+    "name": "Brushane",
+    "latinName": "Calidris pugnax"
+  },
+  {
+    "name": "Buskskvätta",
+    "latinName": "Saxicola rubetra"
+  },
+  {
+    "name": "Busksångare",
+    "latinName": "Acrocephalus dumetorum"
+  },
+  {
+    "name": "Bändelkorsnäbb",
+    "latinName": "Loxia leucoptera"
+  },
+  {
+    "name": "Cettisångare"
+  },
+  {
+    "name": "Citronsiska"
+  },
+  {
+    "name": "Citronärla",
+    "latinName": "Motacilla citreola"
+  },
+  {
+    "name": "Dalripa",
+    "latinName": "Lagopus lagopus"
+  },
+  {
+    "name": "Dammsnäppa",
+    "latinName": "Tringa stagnatilis"
+  },
+  {
+    "name": "Diamantfasan"
+  },
+  {
+    "name": "Domherre",
+    "latinName": "Pyrrhula pyrrhula"
+  },
+  {
+    "name": "Drillsnäppa",
+    "latinName": "Actitis hypoleucos"
+  },
+  {
+    "name": "Dubbelbeckasin",
+    "latinName": "Gallinago media"
+  },
+  {
+    "name": "Dubbeltrast",
+    "latinName": "Turdus viscivorus"
+  },
+  {
+    "name": "Duvhök",
+    "latinName": "Astur gentilis"
+  },
+  {
+    "name": "Dvärgbeckasin",
+    "latinName": "Lymnocryptes minimus"
+  },
+  {
+    "name": "Dvärglira"
+  },
+  {
+    "name": "Dvärglärka"
+  },
+  {
+    "name": "Dvärgmås",
+    "latinName": "Hydrocoloeus minutus"
+  },
+  {
+    "name": "Dvärgrördrom",
+    "latinName": "Botaurus minutus"
+  },
+  {
+    "name": "Dvärgskarv",
+    "latinName": "Microcarbo pygmaeus"
+  },
+  {
+    "name": "Dvärgsparv",
+    "latinName": "Emberiza pusilla"
+  },
+  {
+    "name": "Dvärgsumphöna",
+    "latinName": "Zapornia pusilla"
+  },
+  {
+    "name": "Dvärguv",
+    "latinName": "Otus scops"
+  },
+  {
+    "name": "Dvärgörn",
+    "latinName": "Hieraaetus pennatus"
+  },
+  {
+    "name": "Ejder",
+    "latinName": "Somateria mollissima"
+  },
+  {
+    "name": "Eksångare",
+    "latinName": "Iduna pallida"
+  },
+  {
+    "name": "Eleonorafalk",
+    "latinName": "Falco eleonorae"
+  },
+  {
+    "name": "Enkelbeckasin",
+    "latinName": "Gallinago gallinago"
+  },
+  {
+    "name": "Entita",
+    "latinName": "Poecile palustris"
+  },
+  {
+    "name": "Fasan",
+    "latinName": "Phasianus colchicus"
+  },
+  {
+    "name": "Fiskgjuse",
+    "latinName": "Pandion haliaetus"
+  },
+  {
+    "name": "Fiskmås",
+    "latinName": "Larus canus"
+  },
+  {
+    "name": "Fisktärna",
+    "latinName": "Sterna hirundo"
+  },
+  {
+    "name": "Fjällabb",
+    "latinName": "Stercorarius longicaudus"
+  },
+  {
+    "name": "Fjällgås",
+    "latinName": "Anser erythropus"
+  },
+  {
+    "name": "Fjällpipare",
+    "latinName": "Eudromias morinellus"
+  },
+  {
+    "name": "Fjällripa",
+    "latinName": "Lagopus muta"
+  },
+  {
+    "name": "Fjälluggla",
+    "latinName": "Bubo scandiacus"
+  },
+  {
+    "name": "Fjällvråk",
+    "latinName": "Buteo lagopus"
+  },
+  {
+    "name": "Flamingo"
+  },
+  {
+    "name": "Flodsångare",
+    "latinName": "Locustella fluviatilis"
+  },
+  {
+    "name": "Forsärla",
+    "latinName": "Motacilla cinerea"
+  },
+  {
+    "name": "Fältpiplärka",
+    "latinName": "Anthus campestris"
+  },
+  {
+    "name": "Glasögonsångare"
+  },
+  {
+    "name": "Gluttsnäppa",
+    "latinName": "Tringa nebularia"
+  },
+  {
+    "name": "Gransångare",
+    "latinName": "Phylloscopus collybita"
+  },
+  {
+    "name": "Gravand",
+    "latinName": "Tadorna tadorna"
+  },
+  {
+    "name": "Grå flugsnappare",
+    "latinName": "Muscicapa striata"
+  },
+  {
+    "name": "Grågam",
+    "latinName": "Aegypius monachus"
+  },
+  {
+    "name": "Grågås",
+    "latinName": "Anser anser"
+  },
+  {
+    "name": "Gråhakedopping",
+    "latinName": "Podiceps grisegena"
+  },
+  {
+    "name": "Gråkråka",
+    "latinName": "Corvus corone"
+  },
+  {
+    "name": "Grålira",
+    "latinName": "Ardenna grisea"
+  },
+  {
+    "name": "Gråsiska",
+    "latinName": "Acanthis flammea"
+  },
+  {
+    "name": "Gråsparv",
+    "latinName": "Passer domesticus"
+  },
+  {
+    "name": "Gråspett",
+    "latinName": "Picus canus"
+  },
+  {
+    "name": "Gråtrut",
+    "latinName": "Larus argentatus"
+  },
+  {
+    "name": "Gräsand",
+    "latinName": "Anas platyrhynchos"
+  },
+  {
+    "name": "Gräshoppsångare",
+    "latinName": "Locustella naevia"
+  },
+  {
+    "name": "Grässångare",
+    "latinName": "Cisticola juncidis"
+  },
+  {
+    "name": "Grönbena",
+    "latinName": "Tringa glareola"
+  },
+  {
+    "name": "Grönfink",
+    "latinName": "Chloris chloris"
+  },
+  {
+    "name": "Gröngöling",
+    "latinName": "Picus viridis"
+  },
+  {
+    "name": "Grönsiska",
+    "latinName": "Spinus spinus"
+  },
+  {
+    "name": "Grönsångare",
+    "latinName": "Phylloscopus sibilatrix"
+  },
+  {
+    "name": "Guldfasan"
+  },
+  {
+    "name": "Gulhämpling",
+    "latinName": "Serinus serinus"
+  },
+  {
+    "name": "Gulnäbbad lira",
+    "latinName": "Calonectris borealis"
+  },
+  {
+    "name": "Gulsparv",
+    "latinName": "Emberiza citrinella"
+  },
+  {
+    "name": "Gulärla",
+    "latinName": "Motacilla flava"
+  },
+  {
+    "name": "Gyllensparv",
+    "latinName": "Emberiza aureola"
+  },
+  {
+    "name": "Gåsgam",
+    "latinName": "Gyps fulvus"
+  },
+  {
+    "name": "Gärdsmyg",
+    "latinName": "Troglodytes troglodytes"
+  },
+  {
+    "name": "Gök",
+    "latinName": "Cuculus canorus"
+  },
+  {
+    "name": "Göktyta",
+    "latinName": "Jynx torquilla"
+  },
+  {
+    "name": "Halsbandsflugsnappare",
+    "latinName": "Ficedula albicollis"
+  },
+  {
+    "name": "Halsbandsparakit"
+  },
+  {
+    "name": "Havslöpare"
+  },
+  {
+    "name": "Havssula",
+    "latinName": "Morus bassanus"
+  },
+  {
+    "name": "Havstrut",
+    "latinName": "Larus marinus"
+  },
+  {
+    "name": "Havsörn",
+    "latinName": "Haliaeetus albicilla"
+  },
+  {
+    "name": "Hornuggla",
+    "latinName": "Asio otus"
+  },
+  {
+    "name": "Hussvala",
+    "latinName": "Delichon urbicum"
+  },
+  {
+    "name": "Häcksparv",
+    "latinName": "Emberiza cirlus"
+  },
+  {
+    "name": "Häger",
+    "latinName": "Ardea cinerea"
+  },
+  {
+    "name": "Hämpling",
+    "latinName": "Linaria cannabina"
+  },
+  {
+    "name": "Härfågel",
+    "latinName": "Upupa epops"
+  },
+  {
+    "name": "Härmsångare",
+    "latinName": "Hippolais icterina"
+  },
+  {
+    "name": "Höksångare",
+    "latinName": "Curruca nisoria"
+  },
+  {
+    "name": "Hökuggla",
+    "latinName": "Surnia ulula"
+  },
+  {
+    "name": "Hökörn",
+    "latinName": "Aquila fasciata"
+  },
+  {
+    "name": "Iltärna"
+  },
+  {
+    "name": "Islandsknipa"
+  },
+  {
+    "name": "Islom"
+  },
+  {
+    "name": "Jaktfalk",
+    "latinName": "Falco rusticolus"
+  },
+  {
+    "name": "Jorduggla",
+    "latinName": "Asio flammeus"
+  },
+  {
+    "name": "Järnsparv",
+    "latinName": "Prunella modularis"
+  },
+  {
+    "name": "Järpe",
+    "latinName": "Tetrastes bonasia"
+  },
+  {
+    "name": "Kaja",
+    "latinName": "Coloeus monedula"
+  },
+  {
+    "name": "Kalenderlärka"
+  },
+  {
+    "name": "Kamsothöna"
+  },
+  {
+    "name": "Kanadagås",
+    "latinName": "Branta canadensis"
+  },
+  {
+    "name": "Kattuggla",
+    "latinName": "Strix aluco"
+  },
+  {
+    "name": "Kaveldunssångare"
+  },
+  {
+    "name": "Kejsarörn",
+    "latinName": "Aquila heliaca"
+  },
+  {
+    "name": "Kentsk tärna",
+    "latinName": "Thalasseus sandvicensis"
+  },
+  {
+    "name": "Klippduva"
+  },
+  {
+    "name": "Klipphöna"
+  },
+  {
+    "name": "Klippnötväcka"
+  },
+  {
+    "name": "Klippsparv",
+    "latinName": "Emberiza cia"
+  },
+  {
+    "name": "Klippsvala",
+    "latinName": "Ptyonoprogne rupestris"
+  },
+  {
+    "name": "Klykstjärtad stormsvala",
+    "latinName": "Hydrobates leucorhous"
+  },
+  {
+    "name": "Knipa",
+    "latinName": "Bucephala clangula"
+  },
+  {
+    "name": "Knölsvan",
+    "latinName": "Cygnus olor"
+  },
+  {
+    "name": "Kohäger",
+    "latinName": "Ardea ibis"
+  },
+  {
+    "name": "Koltrast",
+    "latinName": "Turdus merula"
+  },
+  {
+    "name": "Kopparand"
+  },
+  {
+    "name": "Kornknarr",
+    "latinName": "Crex crex"
+  },
+  {
+    "name": "Kornsparv",
+    "latinName": "Emberiza calandra"
+  },
+  {
+    "name": "Korp",
+    "latinName": "Corvus corax"
+  },
+  {
+    "name": "Korsikansk nötväcka"
+  },
+  {
+    "name": "Korttålärka",
+    "latinName": "Calandrella brachydactyla"
+  },
+  {
+    "name": "Kricka",
+    "latinName": "Anas crecca"
+  },
+  {
+    "name": "Krushuvad pelikan"
+  },
+  {
+    "name": "Kungsfiskare",
+    "latinName": "Alcedo atthis"
+  },
+  {
+    "name": "Kungsfågel",
+    "latinName": "Regulus regulus"
+  },
+  {
+    "name": "Kungsörn",
+    "latinName": "Aquila chrysaetos"
+  },
+  {
+    "name": "Kustpipare",
+    "latinName": "Pluvialis squatarola"
+  },
+  {
+    "name": "Kustsnäppa",
+    "latinName": "Calidris canutus"
+  },
+  {
+    "name": "Kärrsnäppa",
+    "latinName": "Calidris alpina"
+  },
+  {
+    "name": "Kärrsångare",
+    "latinName": "Acrocephalus palustris"
+  },
+  {
+    "name": "Labb"
+  },
+  {
+    "name": "Ladusvala",
+    "latinName": "Hirundo rustica"
+  },
+  {
+    "name": "Lagerlärka"
+  },
+  {
+    "name": "Lammgam"
+  },
+  {
+    "name": "Lappmes",
+    "latinName": "Poecile cinctus"
+  },
+  {
+    "name": "Lappsparv",
+    "latinName": "Calcarius lapponicus"
+  },
+  {
+    "name": "Lappuggla",
+    "latinName": "Strix nebulosa"
+  },
+  {
+    "name": "Lavskrika",
+    "latinName": "Perisoreus infaustus"
+  },
+  {
+    "name": "Ljungpipare",
+    "latinName": "Pluvialis apricaria"
+  },
+  {
+    "name": "Lundsångare",
+    "latinName": "Phylloscopus trochiloides"
+  },
+  {
+    "name": "Lunnefågel",
+    "latinName": "Fratercula arctica"
+  },
+  {
+    "name": "Långnäbbad mås",
+    "latinName": "Chroicocephalus genei"
+  },
+  {
+    "name": "Lärkfalk",
+    "latinName": "Falco subbuteo"
+  },
+  {
+    "name": "Lövsångare",
+    "latinName": "Phylloscopus trochilus"
+  },
+  {
+    "name": "Madeirapetrell"
+  },
+  {
+    "name": "Mandarinand",
+    "latinName": "Aix galericulata"
+  },
+  {
+    "name": "Marmorand"
+  },
+  {
+    "name": "Masktörnskata",
+    "latinName": "Lanius nubicus"
+  },
+  {
+    "name": "Medelhavsstenskvätta"
+  },
+  {
+    "name": "Mellanspett",
+    "latinName": "Dendrocoptes medius"
+  },
+  {
+    "name": "Mindre flugsnappare",
+    "latinName": "Ficedula parva"
+  },
+  {
+    "name": "Mindre hackspett",
+    "latinName": "Dryobates minor"
+  },
+  {
+    "name": "Mindre korsnäbb",
+    "latinName": "Loxia curvirostra"
+  },
+  {
+    "name": "Mindre lira",
+    "latinName": "Puffinus puffinus"
+  },
+  {
+    "name": "Mindre skrikörn",
+    "latinName": "Clanga pomarina"
+  },
+  {
+    "name": "Mindre strandpipare",
+    "latinName": "Thinornis dubius"
+  },
+  {
+    "name": "Mindre sumphöna",
+    "latinName": "Zapornia parva"
+  },
+  {
+    "name": "Mindre sångsvan",
+    "latinName": "Cygnus columbianus"
+  },
+  {
+    "name": "Minervauggla",
+    "latinName": "Athene noctua"
+  },
+  {
+    "name": "Morkulla",
+    "latinName": "Scolopax rusticola"
+  },
+  {
+    "name": "Mosnäppa",
+    "latinName": "Calidris temminckii"
+  },
+  {
+    "name": "Murkrypare"
+  },
+  {
+    "name": "Myrsnäppa",
+    "latinName": "Calidris falcinellus"
+  },
+  {
+    "name": "Myrspov",
+    "latinName": "Limosa lapponica"
+  },
+  {
+    "name": "Mästersångare"
+  },
+  {
+    "name": "Natthäger",
+    "latinName": "Nycticorax nycticorax"
+  },
+  {
+    "name": "Nattskärra",
+    "latinName": "Caprimulgus europaeus"
+  },
+  {
+    "name": "Nilgås",
+    "latinName": "Alopochen aegyptiaca"
+  },
+  {
+    "name": "Nordsångare",
+    "latinName": "Phylloscopus borealis"
+  },
+  {
+    "name": "Näktergal",
+    "latinName": "Luscinia luscinia"
+  },
+  {
+    "name": "Nötkråka",
+    "latinName": "Nucifraga caryocatactes"
+  },
+  {
+    "name": "Nötskrika",
+    "latinName": "Garrulus glandarius"
+  },
+  {
+    "name": "Nötväcka",
+    "latinName": "Sitta europaea"
+  },
+  {
+    "name": "Olivsångare"
+  },
+  {
+    "name": "Ormvråk",
+    "latinName": "Buteo buteo"
+  },
+  {
+    "name": "Ormörn",
+    "latinName": "Circaetus gallicus"
+  },
+  {
+    "name": "Orre",
+    "latinName": "Lyrurus tetrix"
+  },
+  {
+    "name": "Ortolansparv",
+    "latinName": "Emberiza hortulana"
+  },
+  {
+    "name": "Pelikan"
+  },
+  {
+    "name": "Pilfink",
+    "latinName": "Passer montanus"
+  },
+  {
+    "name": "Pilgrimsfalk",
+    "latinName": "Falco peregrinus"
+  },
+  {
+    "name": "Polygottsångare"
+  },
+  {
+    "name": "Provencesångare",
+    "latinName": "Curruca undata"
+  },
+  {
+    "name": "Prutgås",
+    "latinName": "Branta bernicla"
+  },
+  {
+    "name": "Pungmes",
+    "latinName": "Remiz pendulinus"
+  },
+  {
+    "name": "Purpurhäger",
+    "latinName": "Ardea purpurea"
+  },
+  {
+    "name": "Purpurhöna"
+  },
+  {
+    "name": "Pärluggla",
+    "latinName": "Aegolius funereus"
+  },
+  {
+    "name": "Rallhäger",
+    "latinName": "Ardeola ralloides"
+  },
+  {
+    "name": "Rapphöna",
+    "latinName": "Perdix perdix"
+  },
+  {
+    "name": "Ringduva",
+    "latinName": "Columba palumbus"
+  },
+  {
+    "name": "Ringnäbbad mås",
+    "latinName": "Larus delawarensis"
+  },
+  {
+    "name": "Ringtrast",
+    "latinName": "Turdus torquatus"
+  },
+  {
+    "name": "Rosenfink",
+    "latinName": "Carpodacus erythrinus"
+  },
+  {
+    "name": "Rosenstare",
+    "latinName": "Pastor roseus"
+  },
+  {
+    "name": "Rosentärna",
+    "latinName": "Sterna dougallii"
+  },
+  {
+    "name": "Roskarl",
+    "latinName": "Arenaria interpres"
+  },
+  {
+    "name": "Rostand",
+    "latinName": "Tadorna ferruginea"
+  },
+  {
+    "name": "Rostgumpsvala",
+    "latinName": "Cecropis rufula"
+  },
+  {
+    "name": "Rostsparv",
+    "latinName": "Emberiza caesia"
+  },
+  {
+    "name": "Råka",
+    "latinName": "Corvus frugilegus"
+  },
+  {
+    "name": "Röd glada",
+    "latinName": "Milvus milvus"
+  },
+  {
+    "name": "Rödbena",
+    "latinName": "Tringa totanus"
+  },
+  {
+    "name": "Rödfalk",
+    "latinName": "Falco naumanni"
+  },
+  {
+    "name": "Rödhake",
+    "latinName": "Erithacus rubecula"
+  },
+  {
+    "name": "Rödhalsad gås",
+    "latinName": "Branta ruficollis"
+  },
+  {
+    "name": "Rödhalsad nattskärra"
+  },
+  {
+    "name": "Rödhuvad dykand",
+    "latinName": "Netta rufina"
+  },
+  {
+    "name": "Rödhuvad törnskata",
+    "latinName": "Lanius senator"
+  },
+  {
+    "name": "Rödhöna"
+  },
+  {
+    "name": "Rödnäbbad trut"
+  },
+  {
+    "name": "Rödspov",
+    "latinName": "Limosa limosa"
+  },
+  {
+    "name": "Rödstjärt",
+    "latinName": "Phoenicurus phoenicurus"
+  },
+  {
+    "name": "Rödstrupig piplärka",
+    "latinName": "Anthus cervinus"
+  },
+  {
+    "name": "Rödstrupig sångare",
+    "latinName": "Curruca cantillans"
+  },
+  {
+    "name": "Rödvingetrast",
+    "latinName": "Turdus iliacus"
+  },
+  {
+    "name": "Rördrom",
+    "latinName": "Botaurus stellaris"
+  },
+  {
+    "name": "Rörhöna",
+    "latinName": "Gallinula chloropus"
+  },
+  {
+    "name": "Rörsångare",
+    "latinName": "Acrocephalus scirpaceus"
+  },
+  {
+    "name": "Salskrake",
+    "latinName": "Mergellus albellus"
+  },
+  {
+    "name": "Sammetshätta",
+    "latinName": "Curruca melanocephala"
+  },
+  {
+    "name": "Sandlöpare",
+    "latinName": "Calidris alba"
+  },
+  {
+    "name": "Sandtärna",
+    "latinName": "Gelochelidon nilotica"
+  },
+  {
+    "name": "Sardinsksångare"
+  },
+  {
+    "name": "Sidensvans",
+    "latinName": "Bombycilla garrulus"
+  },
+  {
+    "name": "Silkeshäger",
+    "latinName": "Egretta garzetta"
+  },
+  {
+    "name": "Sillgrissla",
+    "latinName": "Uria aalge"
+  },
+  {
+    "name": "Silltrut",
+    "latinName": "Larus fuscus"
+  },
+  {
+    "name": "Silvertärna",
+    "latinName": "Sterna paradisaea"
+  },
+  {
+    "name": "Sjöorre",
+    "latinName": "Melanitta nigra"
+  },
+  {
+    "name": "Skata",
+    "latinName": "Pica pica"
+  },
+  {
+    "name": "Skatgök",
+    "latinName": "Clamator glandarius"
+  },
+  {
+    "name": "Skedand",
+    "latinName": "Spatula clypeata"
+  },
+  {
+    "name": "Skedstork",
+    "latinName": "Platalea leucorodia"
+  },
+  {
+    "name": "Skogsduva",
+    "latinName": "Columba oenas"
+  },
+  {
+    "name": "Skogssnäppa",
+    "latinName": "Tringa ochropus"
+  },
+  {
+    "name": "Skotsk korsnäbb"
+  },
+  {
+    "name": "Skrattmås",
+    "latinName": "Chroicocephalus ridibundus"
+  },
+  {
+    "name": "Skräntärna",
+    "latinName": "Hydroprogne caspia"
+  },
+  {
+    "name": "Skäggdopping",
+    "latinName": "Podiceps cristatus"
+  },
+  {
+    "name": "Skäggmes",
+    "latinName": "Panurus biarmicus"
+  },
+  {
+    "name": "Skäggtärna",
+    "latinName": "Chlidonias hybrida"
+  },
+  {
+    "name": "Skärfläcka",
+    "latinName": "Recurvirostra avosetta"
+  },
+  {
+    "name": "Skärpiplärka",
+    "latinName": "Anthus petrosus"
+  },
+  {
+    "name": "Skärsnäppa",
+    "latinName": "Calidris maritima"
+  },
+  {
+    "name": "Slagfalk"
+  },
+  {
+    "name": "Slaguggla",
+    "latinName": "Strix uralensis"
+  },
+  {
+    "name": "Smalnäbbad simsnäppa",
+    "latinName": "Phalaropus lobatus"
+  },
+  {
+    "name": "Smutsgam",
+    "latinName": "Neophron percnopterus"
+  },
+  {
+    "name": "Smådopping",
+    "latinName": "Tachybaptus ruficollis"
+  },
+  {
+    "name": "Småfläckig sumphöna",
+    "latinName": "Porzana porzana"
+  },
+  {
+    "name": "Smålom",
+    "latinName": "Gavia stellata"
+  },
+  {
+    "name": "Småskrake",
+    "latinName": "Mergus serrator"
+  },
+  {
+    "name": "Småsnäppa",
+    "latinName": "Calidris minuta"
+  },
+  {
+    "name": "Småspov",
+    "latinName": "Numenius phaeopus"
+  },
+  {
+    "name": "Småtrapp",
+    "latinName": "Tetrax tetrax"
+  },
+  {
+    "name": "Småtärna",
+    "latinName": "Sternula albifrons"
+  },
+  {
+    "name": "Snatterand",
+    "latinName": "Mareca strepera"
+  },
+  {
+    "name": "Snöfink"
+  },
+  {
+    "name": "Snösiska"
+  },
+  {
+    "name": "Snösparv",
+    "latinName": "Plectrophenax nivalis"
+  },
+  {
+    "name": "Sommargylling",
+    "latinName": "Oriolus oriolus"
+  },
+  {
+    "name": "Sothöna",
+    "latinName": "Fulica atra"
+  },
+  {
+    "name": "Spansk sparv",
+    "latinName": "Passer hispaniolensis"
+  },
+  {
+    "name": "Sparvhök",
+    "latinName": "Accipiter nisus"
+  },
+  {
+    "name": "Sparvuggla",
+    "latinName": "Glaucidium passerinum"
+  },
+  {
+    "name": "Spetsbergsgrissla",
+    "latinName": "Uria lomvia"
+  },
+  {
+    "name": "Spetsbergsgås",
+    "latinName": "Anser brachyrhynchus"
+  },
+  {
+    "name": "Spillkråka",
+    "latinName": "Dryocopus martius"
+  },
+  {
+    "name": "Sporrvipa"
+  },
+  {
+    "name": "Spovsnäppa",
+    "latinName": "Calidris ferruginea"
+  },
+  {
+    "name": "Stare",
+    "latinName": "Sturnus vulgaris"
+  },
+  {
+    "name": "Steglits",
+    "latinName": "Carduelis carduelis"
+  },
+  {
+    "name": "Stenfalk",
+    "latinName": "Falco columbarius"
+  },
+  {
+    "name": "Stenhöna"
+  },
+  {
+    "name": "Stenknäck",
+    "latinName": "Coccothraustes coccothraustes"
+  },
+  {
+    "name": "Stenskvätta",
+    "latinName": "Oenanthe oenanthe"
+  },
+  {
+    "name": "Stensparv"
+  },
+  {
+    "name": "Stentrast",
+    "latinName": "Monticola saxatilis"
+  },
+  {
+    "name": "Stjärtand",
+    "latinName": "Anas acuta"
+  },
+  {
+    "name": "Stjärtmes",
+    "latinName": "Aegithalos caudatus"
+  },
+  {
+    "name": "Storlabb",
+    "latinName": "Stercorarius skua"
+  },
+  {
+    "name": "Storlom",
+    "latinName": "Gavia arctica"
+  },
+  {
+    "name": "Stormfågel",
+    "latinName": "Fulmarus glacialis"
+  },
+  {
+    "name": "Stormsvala",
+    "latinName": "Hydrobates pelagicus"
+  },
+  {
+    "name": "Storskarv",
+    "latinName": "Phalacrocorax carbo"
+  },
+  {
+    "name": "Storskrake",
+    "latinName": "Mergus merganser"
+  },
+  {
+    "name": "Storspov",
+    "latinName": "Numenius arquata"
+  },
+  {
+    "name": "Stortrapp",
+    "latinName": "Otis tarda"
+  },
+  {
+    "name": "Strandskata",
+    "latinName": "Haematopus ostralegus"
+  },
+  {
+    "name": "Strömand",
+    "latinName": "Histrionicus histrionicus"
+  },
+  {
+    "name": "Strömstare",
+    "latinName": "Cinclus cinclus"
+  },
+  {
+    "name": "Styltlöpare",
+    "latinName": "Himantopus himantopus"
+  },
+  {
+    "name": "Stäpphök",
+    "latinName": "Circus macrourus"
+  },
+  {
+    "name": "Större hackspett",
+    "latinName": "Dendrocopos major"
+  },
+  {
+    "name": "Större korsnäbb",
+    "latinName": "Loxia pytyopsittacus"
+  },
+  {
+    "name": "Större lira",
+    "latinName": "Ardenna gravis"
+  },
+  {
+    "name": "Större skrikörn",
+    "latinName": "Clanga clanga"
+  },
+  {
+    "name": "Större strandpipare",
+    "latinName": "Charadrius hiaticula"
+  },
+  {
+    "name": "Svart stare"
+  },
+  {
+    "name": "Svart stenskvätta"
+  },
+  {
+    "name": "Svart stork",
+    "latinName": "Ciconia nigra"
+  },
+  {
+    "name": "Svartbent strandpipare",
+    "latinName": "Anarhynchus alexandrinus"
+  },
+  {
+    "name": "Svartbukig flyghöna"
+  },
+  {
+    "name": "Svarthakad buskskvätta",
+    "latinName": "Saxicola rubicola"
+  },
+  {
+    "name": "Svarthakedopping",
+    "latinName": "Podiceps auritus"
+  },
+  {
+    "name": "Svarthalsad dopping",
+    "latinName": "Podiceps nigricollis"
+  },
+  {
+    "name": "Svarthuvad mås",
+    "latinName": "Ichthyaetus melanocephalus"
+  },
+  {
+    "name": "Svarthuvad sparv",
+    "latinName": "Emberiza melanocephala"
+  },
+  {
+    "name": "Svarthätta",
+    "latinName": "Sylvia atricapilla"
+  },
+  {
+    "name": "Svartmes",
+    "latinName": "Periparus ater"
+  },
+  {
+    "name": "Svartpannad törnskata",
+    "latinName": "Lanius minor"
+  },
+  {
+    "name": "Svartrödstjärt"
+  },
+  {
+    "name": "Svartsnäppa",
+    "latinName": "Tringa erythropus"
+  },
+  {
+    "name": "Svarttärna",
+    "latinName": "Chlidonias niger"
+  },
+  {
+    "name": "Svartvingad glada",
+    "latinName": "Elanus caeruleus"
+  },
+  {
+    "name": "Svartvit flugsnappare",
+    "latinName": "Ficedula hypoleuca"
+  },
+  {
+    "name": "Svärta",
+    "latinName": "Melanitta fusca"
+  },
+  {
+    "name": "Sydnäcktergal"
+  },
+  {
+    "name": "Sånglärka",
+    "latinName": "Alauda arvensis"
+  },
+  {
+    "name": "Sångsvan",
+    "latinName": "Cygnus cygnus"
+  },
+  {
+    "name": "Sädesärla",
+    "latinName": "Motacilla alba"
+  },
+  {
+    "name": "Sädgås"
+  },
+  {
+    "name": "Sävsparv",
+    "latinName": "Emberiza schoeniclus"
+  },
+  {
+    "name": "Sävsångare",
+    "latinName": "Acrocephalus schoenobaenus"
+  },
+  {
+    "name": "Taigasångare"
+  },
+  {
+    "name": "Talgoxe",
+    "latinName": "Parus major"
+  },
+  {
+    "name": "Tallbit",
+    "latinName": "Pinicola enucleator"
+  },
+  {
+    "name": "Talltita",
+    "latinName": "Poecile montanus"
+  },
+  {
+    "name": "Taltrast",
+    "latinName": "Turdus philomelos"
+  },
+  {
+    "name": "Tamduva",
+    "latinName": "Columba livia"
+  },
+  {
+    "name": "Tatarfalk"
+  },
+  {
+    "name": "Tereksnäppa",
+    "latinName": "Xenus cinereus"
+  },
+  {
+    "name": "Tjockfot",
+    "latinName": "Burhinus oedicnemus"
+  },
+  {
+    "name": "Tjäder",
+    "latinName": "Tetrao urogallus"
+  },
+  {
+    "name": "Tobisgrissla",
+    "latinName": "Cepphus grylle"
+  },
+  {
+    "name": "Tofslärka",
+    "latinName": "Galerida cristata"
+  },
+  {
+    "name": "Tofsmes",
+    "latinName": "Lophophanes cristatus"
+  },
+  {
+    "name": "Tofsvipa",
+    "latinName": "Vanellus vanellus"
+  },
+  {
+    "name": "Toppskarv",
+    "latinName": "Gulosus aristotelis"
+  },
+  {
+    "name": "Tordmule",
+    "latinName": "Alca torda"
+  },
+  {
+    "name": "Tornfalk",
+    "latinName": "Falco tinnunculus"
+  },
+  {
+    "name": "Tornseglare",
+    "latinName": "Apus apus"
+  },
+  {
+    "name": "Tornuggla",
+    "latinName": "Tyto alba"
+  },
+  {
+    "name": "Trana",
+    "latinName": "Grus grus"
+  },
+  {
+    "name": "Trastsångare",
+    "latinName": "Acrocephalus arundinaceus"
+  },
+  {
+    "name": "Tretåig hackspett",
+    "latinName": "Picoides tridactylus"
+  },
+  {
+    "name": "Tretåig mås",
+    "latinName": "Rissa tridactyla"
+  },
+  {
+    "name": "Trädgårdssångare",
+    "latinName": "Sylvia borin"
+  },
+  {
+    "name": "Trädgårdsträdkrypare",
+    "latinName": "Certhia brachydactyla"
+  },
+  {
+    "name": "Trädkrypare",
+    "latinName": "Certhia familiaris"
+  },
+  {
+    "name": "Trädlärka",
+    "latinName": "Lullula arborea"
+  },
+  {
+    "name": "Trädmås",
+    "latinName": "Chroicocephalus philadelphia"
+  },
+  {
+    "name": "Trädnäcktergal"
+  },
+  {
+    "name": "Trädpiplärka",
+    "latinName": "Anthus trivialis"
+  },
+  {
+    "name": "Turkduva",
+    "latinName": "Streptopelia decaocto"
+  },
+  {
+    "name": "Turturduva",
+    "latinName": "Streptopelia turtur"
+  },
+  {
+    "name": "Tuvsnäppa",
+    "latinName": "Calidris melanotos"
+  },
+  {
+    "name": "Tärnmås",
+    "latinName": "Xema sabini"
+  },
+  {
+    "name": "Törnskata",
+    "latinName": "Lanius collurio"
+  },
+  {
+    "name": "Törnsångare",
+    "latinName": "Curruca communis"
+  },
+  {
+    "name": "Vadarsvala"
+  },
+  {
+    "name": "Vaktel",
+    "latinName": "Coturnix coturnix"
+  },
+  {
+    "name": "Varfågel",
+    "latinName": "Lanius excubitor"
+  },
+  {
+    "name": "Vassångare",
+    "latinName": "Locustella luscinioides"
+  },
+  {
+    "name": "Vattenpiplärka",
+    "latinName": "Anthus spinoletta"
+  },
+  {
+    "name": "Vattenrall",
+    "latinName": "Rallus aquaticus"
+  },
+  {
+    "name": "Vattensångare",
+    "latinName": "Acrocephalus paludicola"
+  },
+  {
+    "name": "Videsparv",
+    "latinName": "Emberiza rustica"
+  },
+  {
+    "name": "Vigg",
+    "latinName": "Aythya fuligula"
+  },
+  {
+    "name": "Vinterhämpling",
+    "latinName": "Linaria flavirostris"
+  },
+  {
+    "name": "Vit stork",
+    "latinName": "Ciconia ciconia"
+  },
+  {
+    "name": "Vitbukig flyghöna"
+  },
+  {
+    "name": "Vitkindad gås",
+    "latinName": "Branta leucopsis"
+  },
+  {
+    "name": "Vitnäbbad islom",
+    "latinName": "Gavia adamsii"
+  },
+  {
+    "name": "Vitryggig hackspett",
+    "latinName": "Dendrocopos leucotos"
+  },
+  {
+    "name": "Vittrut",
+    "latinName": "Larus hyperboreus"
+  },
+  {
+    "name": "Vitvingad trut",
+    "latinName": "Larus glaucoides"
+  },
+  {
+    "name": "Vitvingad tärna",
+    "latinName": "Chlidonias leucopterus"
+  },
+  {
+    "name": "Vitögd dykand",
+    "latinName": "Aythya nyroca"
+  },
+  {
+    "name": "Wilsonsimsnäppa"
+  },
+  {
+    "name": "Årta",
+    "latinName": "Spatula querquedula"
+  },
+  {
+    "name": "Ägretthäger",
+    "latinName": "Ardea alba"
+  },
+  {
+    "name": "Ängshök",
+    "latinName": "Circus pygargus"
+  },
+  {
+    "name": "Ängspiplärka",
+    "latinName": "Anthus pratensis"
+  },
+  {
+    "name": "Ärtsångare",
+    "latinName": "Curruca curruca"
+  },
+  {
+    "name": "Örnvråk",
+    "latinName": "Buteo rufinus"
+  }
 ]

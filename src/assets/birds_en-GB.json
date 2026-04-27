@@ -1,902 +1,3391 @@
 [
-{ "name": "Abyssinian roller" },
-{ "name": "Acadian flycatcher" },
-{ "name": "African blue tit" },
-{ "name": "African collared dove" },
-{ "name": "African crake" },
-{ "name": "African desert warbler" },
-{ "name": "African sacred ibis" },
-{ "name": "African swamphen" },
-{ "name": "Alder flycatcher" },
-{ "name": "Aleutian tern" },
-{ "name": "Alexandrine parakeet" },
-{ "name": "Allen's gallinule" },
-{ "name": "Alpine accentor" },
-{ "name": "Alpine chough" },
-{ "name": "Alpine swift" },
-{ "name": "American bittern" },
-{ "name": "American black duck" },
-{ "name": "American cliff swallow" },
-{ "name": "American coot" },
-{ "name": "American golden plover" },
-{ "name": "American herring gull" },
-{ "name": "American kestrel" },
-{ "name": "American redstart" },
-{ "name": "American robin" },
-{ "name": "American tree sparrow" },
-{ "name": "American wigeon" },
-{ "name": "American woodcock" },
-{ "name": "American yellow warbler" },
-{ "name": "Amur falcon" },
-{ "name": "Amur stonechat" },
-{ "name": "Ancient murrelet" },
-{ "name": "Aquatic warbler" },
-{ "name": "Arctic redpoll" },
-{ "name": "Arctic tern" },
-{ "name": "Arctic warbler" },
-{ "name": "Armenian gull" },
-{ "name": "Ascension frigatebird" },
-{ "name": "Ashy-throated parrotbill" },
-{ "name": "Asian brown flycatcher" },
-{ "name": "Asian crimson-winged finch" },
-{ "name": "Asian desert warbler" },
-{ "name": "Asian green bee-eater" },
-{ "name": "Asian short-toed lark" },
-{ "name": "Atlantic canary" },
-{ "name": "Atlantic puffin" },
-{ "name": "Atlantic yellow-nosed albatross" },
-{ "name": "Atlas pied flycatcher" },
-{ "name": "Audouin's gull" },
-{ "name": "Audubon's shearwater" },
-{ "name": "Audubon's warbler" },
-{ "name": "Azores bullfinch" },
-{ "name": "Azores chaffinch" },
-{ "name": "Azores" },
-{ "name": "Azure tit" },
-{ "name": "Baikal teal" },
-{ "name": "Baillon's crake" },
-{ "name": "Baird's sandpiper" },
-{ "name": "Bald eagle" },
-{ "name": "Balearic shearwater" },
-{ "name": "Balearic warbler" },
-{ "name": "Baltimore oriole" },
-{ "name": "Band-rumped storm petrel" },
-{ "name": "Bar-headed goose" },
-{ "name": "Bar-tailed godwit" },
-{ "name": "Bar-tailed lark" },
-{ "name": "Barbary partridge" },
-{ "name": "Barn swallow" },
-{ "name": "Barnacle goose" },
-{ "name": "Barolo shearwater" },
-{ "name": "Barred warbler" },
-{ "name": "Barrow's goldeneye" },
-{ "name": "Bateleur" },
-{ "name": "Bay-breasted warbler" },
-{ "name": "Bearded reedling" },
-{ "name": "Bearded vulture" },
-{ "name": "Belted kingfisher" },
-{ "name": "Bermuda petrel" },
-{ "name": "Berthelot's pipit" },
-{ "name": "Bimaculated lark" },
-{ "name": "Black francolin" },
-{ "name": "Black grouse" },
-{ "name": "Black guillemot" },
-{ "name": "Black heron" },
-{ "name": "Black kite" },
-{ "name": "Black lark" },
-{ "name": "Black redstart" },
-{ "name": "Black scoter" },
-{ "name": "Black stork" },
-{ "name": "Black swan" },
-{ "name": "Black tern" },
-{ "name": "Black wheatear" },
-{ "name": "Black woodpecker" },
-{ "name": "Black-and-white warbler" },
-{ "name": "Black-bellied sandgrouse" },
-{ "name": "Black-bellied storm petrel" },
-{ "name": "Black-billed cuckoo" },
-{ "name": "Black-browed albatross" },
-{ "name": "Black-capped petrel" },
-{ "name": "Black-crowned night heron" },
-{ "name": "Black-crowned tchagra" },
-{ "name": "Black-faced bunting" },
-{ "name": "Black-headed bunting" },
-{ "name": "Black-headed gull" },
-{ "name": "Black-headed heron" },
-{ "name": "Black-headed penduline tit" },
-{ "name": "Black-headed weaver" },
-{ "name": "Black-legged kittiwake" },
-{ "name": "Black-necked grebe" },
-{ "name": "Black-rumped waxbill" },
-{ "name": "Black-tailed godwit" },
-{ "name": "Black-throated accentor" },
-{ "name": "Black-throated blue warbler" },
-{ "name": "Black-throated green warbler" },
-{ "name": "Black-throated loon" },
-{ "name": "Black-throated thrush" },
-{ "name": "Black-winged kite" },
-{ "name": "Black-winged pratincole" },
-{ "name": "Black-winged stilt" },
-{ "name": "Blackburnian warbler" },
-{ "name": "Blackpoll warbler" },
-{ "name": "Blue grosbeak" },
-{ "name": "Blue rock thrush" },
-{ "name": "Blue-cheeked bee-eater" },
-{ "name": "Blue-winged teal" },
-{ "name": "Blue-winged warbler" },
-{ "name": "Bluethroat" },
-{ "name": "Blyth's pipit" },
-{ "name": "Blyth's reed warbler" },
-{ "name": "Bobolink" },
-{ "name": "Bohemian waxwing" },
-{ "name": "Bolle's pigeon" },
-{ "name": "Bonaparte's gull" },
-{ "name": "Bonelli's eagle" },
-{ "name": "Booted eagle" },
-{ "name": "Booted warbler" },
-{ "name": "Boreal owl" },
-{ "name": "Boyd's shearwater" },
-{ "name": "Brambling" },
-{ "name": "Brant goose" },
-{ "name": "Bridled tern" },
-{ "name": "Broad-billed sandpiper" },
-{ "name": "Brown booby" },
-{ "name": "Brown noddy" },
-{ "name": "Brown shrike" },
-{ "name": "Brown thrasher" },
-{ "name": "Brown-headed cowbird" },
-{ "name": "Buff-bellied pipit" },
-{ "name": "Buff-breasted sandpiper" },
-{ "name": "Bufflehead" },
-{ "name": "Bulwer's petrel" },
-{ "name": "Cabot's tern" },
-{ "name": "Cackling goose" },
-{ "name": "Calandra lark" },
-{ "name": "Canada goose" },
-{ "name": "Canada warbler" },
-{ "name": "Canary Islands chaffinch" },
-{ "name": "Canary Islands chiffchaff" },
-{ "name": "Canary Islands oystercatcher" },
-{ "name": "Canary Islands stonechat" },
-{ "name": "Canary Islands" },
-{ "name": "Canvasback" },
-{ "name": "Cape canary" },
-{ "name": "Cape gannet" },
-{ "name": "Cape May warbler" },
-{ "name": "Cape petrel" },
-{ "name": "Cape Verde shearwater" },
-{ "name": "Carrion crow" },
-{ "name": "Caspian gull" },
-{ "name": "Caspian plover" },
-{ "name": "Caspian tern" },
-{ "name": "Caucasian grouse" },
-{ "name": "Caucasian snowcock" },
-{ "name": "Caucasus" },
-{ "name": "Cedar waxwing" },
-{ "name": "Cerulean warbler" },
-{ "name": "Cetti's warbler" },
-{ "name": "Chestnut bunting" },
-{ "name": "Chestnut-bellied sandgrouse" },
-{ "name": "Chestnut-eared bunting" },
-{ "name": "Chestnut-sided warbler" },
-{ "name": "Chimney swift" },
-{ "name": "Chinese pond heron" },
-{ "name": "Chukar partridge" },
-{ "name": "Cinereous bunting" },
-{ "name": "Cinereous vulture" },
-{ "name": "Cinnamon teal" },
-{ "name": "Cirl bunting" },
-{ "name": "Citril finch" },
-{ "name": "Citrine wagtail" },
-{ "name": "Coal tit" },
-{ "name": "Collared flycatcher" },
-{ "name": "Collared pratincole" },
-{ "name": "Common blackbird" },
-{ "name": "Common bulbul" },
-{ "name": "Common buttonquail" },
-{ "name": "Common buzzard" },
-{ "name": "Common chiffchaff" },
-{ "name": "Common crane" },
-{ "name": "Common cuckoo" },
-{ "name": "Common eider" },
-{ "name": "Common firecrest" },
-{ "name": "Common gallinule" },
-{ "name": "Common goldeneye" },
-{ "name": "Common grackle" },
-{ "name": "Common grasshopper warbler" },
-{ "name": "Common greenshank" },
-{ "name": "Common gull" },
-{ "name": "Common house martin" },
-{ "name": "Common kestrel" },
-{ "name": "Common kingfisher" },
-{ "name": "Common linnet" },
-{ "name": "Common loon" },
-{ "name": "Common merganser" },
-{ "name": "Common moorhen" },
-{ "name": "Common murre" },
-{ "name": "Common nighthawk" },
-{ "name": "Common nightingale" },
-{ "name": "Common pheasant" },
-{ "name": "Common pochard" },
-{ "name": "Common quail" },
-{ "name": "Common redpoll" },
-{ "name": "Common redshank" },
-{ "name": "Common redstart" },
-{ "name": "Common reed bunting" },
-{ "name": "Common reed warbler" },
-{ "name": "Common ringed plover" },
-{ "name": "Common rock thrush" },
-{ "name": "Common rosefinch" },
-{ "name": "Common sandpiper" },
-{ "name": "Common scoter" },
-{ "name": "Common shelduck" },
-{ "name": "Common snipe" },
-{ "name": "Common starling" },
-{ "name": "Common swift" },
-{ "name": "Common tern" },
-{ "name": "Common waxbill" },
-{ "name": "Common whitethroat" },
-{ "name": "Common wood pigeon" },
-{ "name": "Common yellowthroat" },
-{ "name": "Connecticut warbler" },
-{ "name": "Corn bunting" },
-{ "name": "Corn crake" },
-{ "name": "Corsican finch" },
-{ "name": "Corsican nuthatch" },
-{ "name": "Cory's shearwater" },
-{ "name": "Cream-colored courser" },
-{ "name": "Crested auklet" },
-{ "name": "Crested honey buzzard" },
-{ "name": "Crested lark" },
-{ "name": "Crested myna" },
-{ "name": "Crested tit" },
-{ "name": "Cretzschmar's bunting" },
-{ "name": "Curlew sandpiper" },
-{ "name": "Cyprus wheatear" },
-{ "name": "Dalmatian pelican" },
-{ "name": "Dark-eyed junco" },
-{ "name": "Dark-sided flycatcher" },
-{ "name": "Dartford warbler" },
-{ "name": "Daurian jackdaw" },
-{ "name": "Daurian starling" },
-{ "name": "Dead Sea sparrow" },
-{ "name": "Demoiselle crane" },
-{ "name": "Desert wheatear" },
-{ "name": "Desert whitethroat" },
-{ "name": "Desertas petrel" },
-{ "name": "Dickcissel" },
-{ "name": "Double-crested cormorant" },
-{ "name": "Dunlin" },
-{ "name": "Dunnock" },
-{ "name": "Dupont's lark" },
-{ "name": "Dusky thrush" },
-{ "name": "Dusky warbler" },
-{ "name": "Dwarf bittern" },
-{ "name": "Eastern black-eared wheatear" },
-{ "name": "Eastern Bonelli's warbler" },
-{ "name": "Eastern crowned warbler" },
-{ "name": "Eastern imperial eagle" },
-{ "name": "Eastern kingbird" },
-{ "name": "Eastern olivaceous warbler" },
-{ "name": "Eastern Orphean warbler" },
-{ "name": "Eastern phoebe" },
-{ "name": "Eastern rock nuthatch" },
-{ "name": "Eastern subalpine warbler" },
-{ "name": "Eastern towhee" },
-{ "name": "Eastern wood pewee" },
-{ "name": "Eastern yellow wagtail" },
-{ "name": "Egyptian goose" },
-{ "name": "Egyptian nightjar" },
-{ "name": "Egyptian plover" },
-{ "name": "Egyptian vulture" },
-{ "name": "Elegant tern" },
-{ "name": "Eleonora's falcon" },
-{ "name": "Eskimo curlew" },
-{ "name": "Eurasian bittern" },
-{ "name": "Eurasian blackcap" },
-{ "name": "Eurasian blue tit" },
-{ "name": "Eurasian bullfinch" },
-{ "name": "Eurasian chaffinch" },
-{ "name": "Eurasian collared dove" },
-{ "name": "Eurasian coot" },
-{ "name": "Eurasian crag martin" },
-{ "name": "Eurasian curlew" },
-{ "name": "Eurasian dotterel" },
-{ "name": "Eurasian eagle-owl" },
-{ "name": "Eurasian golden oriole" },
-{ "name": "Eurasian goshawk" },
-{ "name": "Eurasian hobby" },
-{ "name": "Eurasian hoopoe" },
-{ "name": "Eurasian jay" },
-{ "name": "Eurasian magpie" },
-{ "name": "Eurasian nuthatch" },
-{ "name": "Eurasian oystercatcher" },
-{ "name": "Eurasian penduline tit" },
-{ "name": "Eurasian pygmy owl" },
-{ "name": "Eurasian rock pipit" },
-{ "name": "Eurasian scops owl" },
-{ "name": "Eurasian siskin" },
-{ "name": "Eurasian skylark" },
-{ "name": "Eurasian sparrowhawk" },
-{ "name": "Eurasian spoonbill" },
-{ "name": "Eurasian stone-curlew" },
-{ "name": "Eurasian teal" },
-{ "name": "Eurasian three-toed woodpecker" },
-{ "name": "Eurasian tree sparrow" },
-{ "name": "Eurasian treecreeper" },
-{ "name": "Eurasian whimbrel" },
-{ "name": "Eurasian wigeon" },
-{ "name": "Eurasian woodcock" },
-{ "name": "Eurasian wren" },
-{ "name": "Eurasian wryneck" },
-{ "name": "European bee-eater" },
-{ "name": "European golden plover" },
-{ "name": "European goldfinch" },
-{ "name": "European green woodpecker" },
-{ "name": "European greenfinch" },
-{ "name": "European herring gull" },
-{ "name": "European honey buzzard" },
-{ "name": "European nightjar" },
-{ "name": "European pied flycatcher" },
-{ "name": "European robin" },
-{ "name": "European roller" },
-{ "name": "European serin" },
-{ "name": "European shag" },
-{ "name": "European stonechat" },
-{ "name": "European storm petrel" },
-{ "name": "European turtle dove" },
-{ "name": "Evening grosbeak" },
-{ "name": "Eyebrowed thrush" },
-{ "name": "Falcated duck" },
-{ "name": "Fea's petrel" },
-{ "name": "Ferruginous duck" },
-{ "name": "Fieldfare" },
-{ "name": "Finsch's wheatear" },
-{ "name": "Fork-tailed flycatcher" },
-{ "name": "Forster's tern" },
-{ "name": "Franklin's gull" },
-{ "name": "Gadwall" },
-{ "name": "Garden warbler" },
-{ "name": "Garganey" },
-{ "name": "Glaucous gull" },
-{ "name": "Glaucous-winged gull" },
-{ "name": "Glossy ibis" },
-{ "name": "Goldcrest" },
-{ "name": "Golden eagle" },
-{ "name": "Golden pheasant" },
-{ "name": "Golden-winged warbler" },
-{ "name": "Gran Canaria blue chaffinch" },
-{ "name": "Gray's grasshopper warbler" },
-{ "name": "Great auk" },
-{ "name": "Great black-backed gull" },
-{ "name": "Great blue heron" },
-{ "name": "Great bustard" },
-{ "name": "Great cormorant" },
-{ "name": "Great crested grebe" },
-{ "name": "Great egret" },
-{ "name": "Great grey owl" },
-{ "name": "Great grey shrike" },
-{ "name": "Great knot" },
-{ "name": "Great reed warbler" },
-{ "name": "Great rosefinch" },
-{ "name": "Great shearwater" },
-{ "name": "Great skua" },
-{ "name": "Great snipe" },
-{ "name": "Great spotted cuckoo" },
-{ "name": "Great spotted woodpecker" },
-{ "name": "Great tit" },
-{ "name": "Great white pelican" },
-{ "name": "Greater flamingo" },
-{ "name": "Greater hoopoe-lark" },
-{ "name": "Greater sand plover" },
-{ "name": "Greater scaup" },
-{ "name": "Greater short-toed lark" },
-{ "name": "Greater spotted eagle" },
-{ "name": "Greater white-fronted goose" },
-{ "name": "Greater yellowlegs" },
-{ "name": "Green heron" },
-{ "name": "Green sandpiper" },
-{ "name": "Green warbler" },
-{ "name": "Green-winged teal" },
-{ "name": "Greenish warbler" },
-{ "name": "Grey catbird" },
-{ "name": "Grey heron" },
-{ "name": "Grey partridge" },
-{ "name": "Grey plover" },
-{ "name": "Grey wagtail" },
-{ "name": "Grey-cheeked thrush" },
-{ "name": "Grey-headed chickadee" },
-{ "name": "Grey-headed gull" },
-{ "name": "Grey-headed lapwing" },
-{ "name": "Grey-headed swamphen" },
-{ "name": "Grey-headed woodpecker" },
-{ "name": "Grey-necked bunting" },
-{ "name": "Grey-tailed tattler" },
-{ "name": "Greylag goose" },
-{ "name": "Griffon vulture" },
-{ "name": "Gull-billed tern" },
-{ "name": "Güldenstädt's redstart" },
-{ "name": "Gyrfalcon" },
-{ "name": "Harlequin duck" },
-{ "name": "Hawfinch" },
-{ "name": "Hazel grouse" },
-{ "name": "Helmeted guineafowl" },
-{ "name": "Hen harrier" },
-{ "name": "Hermit thrush" },
-{ "name": "Hooded crow" },
-{ "name": "Hooded merganser" },
-{ "name": "Hooded warbler" },
-{ "name": "Horned grebe" },
-{ "name": "Horned lark" },
-{ "name": "Horned puffin" },
-{ "name": "Houbara bustard" },
-{ "name": "House bunting" },
-{ "name": "House sparrow" },
-{ "name": "Hudsonian godwit" },
-{ "name": "Hudsonian whimbrel" },
-{ "name": "Hume's leaf warbler" },
-{ "name": "Hume's whitethroat" },
-{ "name": "Iberian chiffchaff" },
-{ "name": "Iberian green woodpecker" },
-{ "name": "Iberian grey shrike" },
-{ "name": "Iberian magpie" },
-{ "name": "Iceland gull" },
-{ "name": "Icterine warbler" },
-{ "name": "Indigo bunting" },
-{ "name": "Intermediate egret" },
-{ "name": "Isabelline shrike" },
-{ "name": "Isabelline wheatear" },
-{ "name": "Italian sparrow" },
-{ "name": "Ivory gull" },
-{ "name": "Jack snipe" },
-{ "name": "Kamchatka leaf warbler" },
-{ "name": "Kelp gull" },
-{ "name": "Kentish plover" },
-{ "name": "Killdeer" },
-{ "name": "King eider" },
-{ "name": "Kittlitz's plover" },
-{ "name": "Krüper's nuthatch" },
-{ "name": "Kurdish wheatear" },
-{ "name": "Lady Amherst's pheasant" },
-{ "name": "Lanceolated warbler" },
-{ "name": "Lanner falcon" },
-{ "name": "Lapland longspur" },
-{ "name": "Lappet-faced vulture" },
-{ "name": "Lark sparrow" },
-{ "name": "Laughing dove" },
-{ "name": "Laughing gull" },
-{ "name": "Laurel pigeon" },
-{ "name": "Leach's storm petrel" },
-{ "name": "Least bittern" },
-{ "name": "Least flycatcher" },
-{ "name": "Least sandpiper" },
-{ "name": "Least tern" },
-{ "name": "Lesser black-backed gull" },
-{ "name": "Lesser crested tern" },
-{ "name": "Lesser flamingo" },
-{ "name": "Lesser grey shrike" },
-{ "name": "Lesser kestrel" },
-{ "name": "Lesser moorhen" },
-{ "name": "Lesser redpoll" },
-{ "name": "Lesser sand plover" },
-{ "name": "Lesser scaup" },
-{ "name": "Lesser spotted eagle" },
-{ "name": "Lesser spotted woodpecker" },
-{ "name": "Lesser white-fronted goose" },
-{ "name": "Lesser whitethroat" },
-{ "name": "Lesser yellowlegs" },
-{ "name": "Levant sparrowhawk" },
-{ "name": "Lincoln's sparrow" },
-{ "name": "Little auk" },
-{ "name": "Little bittern" },
-{ "name": "Little blue heron" },
-{ "name": "Little bunting" },
-{ "name": "Little bustard" },
-{ "name": "Little crake" },
-{ "name": "Little curlew" },
-{ "name": "Little egret" },
-{ "name": "Little grebe" },
-{ "name": "Little gull" },
-{ "name": "Little owl" },
-{ "name": "Little ringed plover" },
-{ "name": "Little stint" },
-{ "name": "Little swift" },
-{ "name": "Little tern" },
-{ "name": "Long-billed dowitcher" },
-{ "name": "Long-billed murrelet" },
-{ "name": "Long-billed pipit" },
-{ "name": "Long-eared owl" },
-{ "name": "Long-legged buzzard" },
-{ "name": "Long-tailed duck" },
-{ "name": "Long-tailed jaeger" },
-{ "name": "Long-tailed shrike" },
-{ "name": "Long-tailed tit" },
-{ "name": "Long-toed stint" },
-{ "name": "MacQueen's bustard" },
-{ "name": "Madeira chaffinch" },
-{ "name": "Madeira firecrest" },
-{ "name": "Madeira" },
-{ "name": "Magnificent frigatebird" },
-{ "name": "Magnolia warbler" },
-{ "name": "Mallard" },
-{ "name": "Mandarin duck" },
-{ "name": "Manx shearwater" },
-{ "name": "Marbled duck" },
-{ "name": "Marmora's warbler" },
-{ "name": "Marsh owl" },
-{ "name": "Marsh sandpiper" },
-{ "name": "Marsh tit" },
-{ "name": "Marsh warbler" },
-{ "name": "Masked booby" },
-{ "name": "Masked shrike" },
-{ "name": "Meadow pipit" },
-{ "name": "Mediterranean flycatcher" },
-{ "name": "Mediterranean gull" },
-{ "name": "Mediterranean short-toed lark" },
-{ "name": "Melodious warbler" },
-{ "name": "Menetries's warbler" },
-{ "name": "Merlin" },
-{ "name": "Middle spotted woodpecker" },
-{ "name": "Mistle thrush" },
-{ "name": "Mitred parakeet" },
-{ "name": "Moltoni's warbler" },
-{ "name": "Mongolian finch" },
-{ "name": "Monk parakeet" },
-{ "name": "Montagu's harrier" },
-{ "name": "Monteiro's storm petrel" },
-{ "name": "Mountain chiffchaff" },
-{ "name": "Mourning dove" },
-{ "name": "Moussier's redstart" },
-{ "name": "Moustached warbler" },
-{ "name": "Muscovy duck" },
-{ "name": "Mute swan" },
-{ "name": "Myrtle warbler" },
-{ "name": "Naumann's thrush" },
-{ "name": "Northern bald ibis" },
-{ "name": "Northern flicker" },
-{ "name": "Northern fulmar" },
-{ "name": "Northern gannet" },
-{ "name": "Northern harrier" },
-{ "name": "Northern hawk-owl" },
-{ "name": "Northern lapwing" },
-{ "name": "Northern mockingbird" },
-{ "name": "Northern parula" },
-{ "name": "Northern pintail" },
-{ "name": "Northern raven" },
-{ "name": "Northern shoveler" },
-{ "name": "Northern shrike" },
-{ "name": "Northern waterthrush" },
-{ "name": "Northern wheatear" },
-{ "name": "Olive-backed pipit" },
-{ "name": "Olive-tree warbler" },
-{ "name": "Orange-cheeked waxbill" },
-{ "name": "Oriental cuckoo" },
-{ "name": "Oriental plover" },
-{ "name": "Oriental pratincole" },
-{ "name": "Oriental skylark" },
-{ "name": "Oriental turtle dove" },
-{ "name": "Ortolan bunting" },
-{ "name": "Osprey" },
-{ "name": "Ovenbird" },
-{ "name": "Pacific golden plover" },
-{ "name": "Pacific loon" },
-{ "name": "Pacific swift" },
-{ "name": "Paddyfield pipit" },
-{ "name": "Paddyfield warbler" },
-{ "name": "Pale-legged leaf warbler" },
-{ "name": "Pallas's fish eagle" },
-{ "name": "Pallas's grasshopper warbler" },
-{ "name": "Pallas's gull" },
-{ "name": "Pallas's leaf warbler" },
-{ "name": "Pallas's reed bunting" },
-{ "name": "Pallas's rosefinch" },
-{ "name": "Pallas's sandgrouse" },
-{ "name": "Pallid harrier" },
-{ "name": "Pallid swift" },
-{ "name": "Palm warbler" },
-{ "name": "Parakeet auklet" },
-{ "name": "Parasitic jaeger" },
-{ "name": "Parrot crossbill" },
-{ "name": "Pechora pipit" },
-{ "name": "Pectoral sandpiper" },
-{ "name": "Peregrine falcon" },
-{ "name": "Pharaoh eagle-owl" },
-{ "name": "Philadelphia vireo" },
-{ "name": "Pied avocet" },
-{ "name": "Pied bush chat" },
-{ "name": "Pied kingfisher" },
-{ "name": "Pied wheatear" },
-{ "name": "Pied-billed grebe" },
-{ "name": "Pin-tailed sandgrouse" },
-{ "name": "Pin-tailed snipe" },
-{ "name": "Pin-tailed whydah" },
-{ "name": "Pine bunting" },
-{ "name": "Pine grosbeak" },
-{ "name": "Pink-footed goose" },
-{ "name": "Plain leaf warbler" },
-{ "name": "Plain swift" },
-{ "name": "Pomarine jaeger" },
-{ "name": "Prairie warbler" },
-{ "name": "Prothonotary warbler" },
-{ "name": "Purple gallinule" },
-{ "name": "Purple heron" },
-{ "name": "Purple martin" },
-{ "name": "Purple sandpiper" },
-{ "name": "Pygmy cormorant" },
-{ "name": "Radde's accentor" },
-{ "name": "Radde's warbler" },
-{ "name": "Razorbill" },
-{ "name": "Red avadavat" },
-{ "name": "Red crossbill" },
-{ "name": "Red fox sparrow" },
-{ "name": "Red kite" },
-{ "name": "Red knot" },
-{ "name": "Red phalarope" },
-{ "name": "Red-backed shrike" },
-{ "name": "Red-billed chough" },
-{ "name": "Red-billed leiothrix" },
-{ "name": "Red-billed tropicbird" },
-{ "name": "Red-breasted flycatcher" },
-{ "name": "Red-breasted goose" },
-{ "name": "Red-breasted merganser" },
-{ "name": "Red-breasted nuthatch" },
-{ "name": "Red-crested pochard" },
-{ "name": "Red-eyed vireo" },
-{ "name": "Red-flanked bluetail" },
-{ "name": "Red-footed booby" },
-{ "name": "Red-footed falcon" },
-{ "name": "Red-fronted serin" },
-{ "name": "Red-headed bunting" },
-{ "name": "Red-knobbed coot" },
-{ "name": "Red-legged partridge" },
-{ "name": "Red-masked parakeet" },
-{ "name": "Red-necked grebe" },
-{ "name": "Red-necked nightjar" },
-{ "name": "Red-necked phalarope" },
-{ "name": "Red-necked stint" },
-{ "name": "Red-rumped swallow" },
-{ "name": "Red-rumped wheatear" },
-{ "name": "Red-tailed shrike" },
-{ "name": "Red-throated loon" },
-{ "name": "Red-throated pipit" },
-{ "name": "Red-throated thrush" },
-{ "name": "Red-whiskered bulbul" },
-{ "name": "Red-winged blackbird" },
-{ "name": "Redhead" },
-{ "name": "Redwing" },
-{ "name": "Reeves's pheasant" },
-{ "name": "Richard's pipit" },
-{ "name": "Ring ouzel" },
-{ "name": "Ring-billed gull" },
-{ "name": "Ring-necked duck" },
-{ "name": "River warbler" },
-{ "name": "Rock bunting" },
-{ "name": "Rock dove" },
-{ "name": "Rock partridge" },
-{ "name": "Rock ptarmigan" },
-{ "name": "Rock sparrow" },
-{ "name": "Rook" },
-{ "name": "Rose-breasted grosbeak" },
-{ "name": "Rose-ringed parakeet" },
-{ "name": "Roseate tern" },
-{ "name": "Ross's goose" },
-{ "name": "Ross's gull" },
-{ "name": "Rosy starling" },
-{ "name": "Rough-legged buzzard" },
-{ "name": "Royal tern" },
-{ "name": "Ruby-crowned kinglet" },
-{ "name": "Ruddy duck" },
-{ "name": "Ruddy shelduck" },
-{ "name": "Ruddy turnstone" },
-{ "name": "Ruff" },
-{ "name": "Rufous-tailed robin" },
-{ "name": "Rufous-tailed scrub robin" },
-{ "name": "Rustic bunting" },
-{ "name": "Rüppell's vulture" },
-{ "name": "Rüppell's warbler" },
-{ "name": "Sabine's gull" },
-{ "name": "Saker falcon" },
-{ "name": "Sand martin" },
-{ "name": "Sanderling" },
-{ "name": "Sandhill crane" },
-{ "name": "Sandwich tern" },
-{ "name": "Sardinian warbler" },
-{ "name": "Savannah sparrow" },
-{ "name": "Savi's warbler" },
-{ "name": "Scaly thrush" },
-{ "name": "Scaly-breasted munia" },
-{ "name": "Scarlet tanager" },
-{ "name": "Scopoli's shearwater" },
-{ "name": "Scottish crossbill" },
-{ "name": "Sedge warbler" },
-{ "name": "Semicollared flycatcher" },
-{ "name": "Semipalmated plover" },
-{ "name": "Semipalmated sandpiper" },
-{ "name": "Sharp-tailed sandpiper" },
-{ "name": "Short-billed dowitcher" },
-{ "name": "Short-billed gull" },
-{ "name": "Short-eared owl" },
-{ "name": "Short-tailed shearwater" },
-{ "name": "Short-toed snake eagle" },
-{ "name": "Short-toed treecreeper" },
-{ "name": "Siberian accentor" },
-{ "name": "Siberian blue robin" },
-{ "name": "Siberian crane" },
-{ "name": "Siberian jay" },
-{ "name": "Siberian long-tailed rosefinch" },
-{ "name": "Siberian rubythroat" },
-{ "name": "Siberian stonechat" },
-{ "name": "Siberian thrush" },
-{ "name": "Slaty-backed gull" },
-{ "name": "Slender-billed curlew" },
-{ "name": "Slender-billed gull" },
-{ "name": "Smew" },
-{ "name": "Snow bunting" },
-{ "name": "Snow goose" },
-{ "name": "Snowy egret" },
-{ "name": "Snowy owl" },
-{ "name": "Sociable lapwing" },
-{ "name": "Soft-plumaged petrel" },
-{ "name": "Solitary sandpiper" },
-{ "name": "Sombre tit" },
-{ "name": "Song sparrow" },
-{ "name": "Song thrush" },
-{ "name": "Sooty falcon" },
-{ "name": "Sooty shearwater" },
-{ "name": "Sooty tern" },
-{ "name": "Sora" },
-{ "name": "South polar skua" },
-{ "name": "Southern giant petrel" },
-{ "name": "Spanish imperial eagle" },
-{ "name": "Spanish sparrow" },
-{ "name": "Spectacled eider" },
-{ "name": "Spectacled warbler" },
-{ "name": "Spotless starling" },
-{ "name": "Spotted crake" },
-{ "name": "Spotted flycatcher" },
-{ "name": "Spotted nutcracker" },
-{ "name": "Spotted redshank" },
-{ "name": "Spotted sandgrouse" },
-{ "name": "Spotted sandpiper" },
-{ "name": "Spur-winged lapwing" },
-{ "name": "Squacco heron" },
-{ "name": "Stejneger's scoter" },
-{ "name": "Steller's eider" },
-{ "name": "Steppe eagle" },
-{ "name": "Stilt sandpiper" },
-{ "name": "Stock dove" },
-{ "name": "Striated heron" },
-{ "name": "Striped crake" },
-{ "name": "Sulphur-bellied warbler" },
-{ "name": "Summer tanager" },
-{ "name": "Surf scoter" },
-{ "name": "Swainson's thrush" },
-{ "name": "Swallow-tailed kite" },
-{ "name": "Swinhoe's snipe" },
-{ "name": "Swinhoe's storm petrel" },
-{ "name": "Sykes's warbler" },
-{ "name": "Syrian woodpecker" },
-{ "name": "Taiga bean goose" },
-{ "name": "Taiga flycatcher" },
-{ "name": "Tawny owl" },
-{ "name": "Tawny pipit" },
-{ "name": "Temminck's stint" },
-{ "name": "Tenerife blue chaffinch" },
-{ "name": "Tennessee warbler" },
-{ "name": "Terek sandpiper" },
-{ "name": "Thekla's lark" },
-{ "name": "Thick-billed murre" },
-{ "name": "Thick-billed warbler" },
-{ "name": "Thrush nightingale" },
-{ "name": "Tickell's thrush" },
-{ "name": "Tree pipit" },
-{ "name": "Tree swallow" },
-{ "name": "Tricolored heron" },
-{ "name": "Trindade petrel" },
-{ "name": "Tristan albatross" },
-{ "name": "Tristram's warbler" },
-{ "name": "Trocaz pigeon" },
-{ "name": "Trumpeter finch" },
-{ "name": "Tufted duck" },
-{ "name": "Tufted puffin" },
-{ "name": "Tundra bean goose" },
-{ "name": "Tundra swan" },
-{ "name": "Turkestan short-toed lark" },
-{ "name": "Twite" },
-{ "name": "Two-barred crossbill" },
-{ "name": "Two-barred warbler" },
-{ "name": "Upcher's warbler" },
-{ "name": "Upland sandpiper" },
-{ "name": "Ural owl" },
-{ "name": "Varied thrush" },
-{ "name": "Veery" },
-{ "name": "Vega gull" },
-{ "name": "Velvet scoter" },
-{ "name": "Vinous-throated parrotbill" },
-{ "name": "Von Schrenck's bittern" },
-{ "name": "Wallcreeper" },
-{ "name": "Wandering albatross" },
-{ "name": "Water pipit" },
-{ "name": "Water rail" },
-{ "name": "West African crested tern" },
-{ "name": "Western barn owl" },
-{ "name": "Western black-eared wheatear" },
-{ "name": "Western Bonelli's warbler" },
-{ "name": "Western capercaillie" },
-{ "name": "Western cattle egret" },
-{ "name": "Western jackdaw" },
-{ "name": "Western kingbird" },
-{ "name": "Western marsh harrier" },
-{ "name": "Western olivaceous warbler" },
-{ "name": "Western Orphean warbler" },
-{ "name": "Western reef heron" },
-{ "name": "Western rock nuthatch" },
-{ "name": "Western sandpiper" },
-{ "name": "Western subalpine warbler" },
-{ "name": "Western swamphen" },
-{ "name": "Western yellow wagtail" },
-{ "name": "Whinchat" },
-{ "name": "Whiskered tern" },
-{ "name": "White stork" },
-{ "name": "White wagtail" },
-{ "name": "White-backed vulture" },
-{ "name": "White-backed woodpecker" },
-{ "name": "White-chinned petrel" },
-{ "name": "White-crowned sparrow" },
-{ "name": "White-crowned wheatear" },
-{ "name": "White-eared bulbul" },
-{ "name": "White-eyed gull" },
-{ "name": "White-eyed vireo" },
-{ "name": "White-faced storm petrel" },
-{ "name": "White-headed duck" },
-{ "name": "White-rumped sandpiper" },
-{ "name": "White-rumped swift" },
-{ "name": "White-tailed eagle" },
-{ "name": "White-tailed lapwing" },
-{ "name": "White-tailed tropicbird" },
-{ "name": "White-throated dipper" },
-{ "name": "White-throated kingfisher" },
-{ "name": "White-throated needletail" },
-{ "name": "White-throated robin" },
-{ "name": "White-throated sparrow" },
-{ "name": "White-winged lark" },
-{ "name": "White-winged scoter" },
-{ "name": "White-winged snowfinch" },
-{ "name": "White-winged tern" },
-{ "name": "White's thrush" },
-{ "name": "Whooper swan" },
-{ "name": "Willet" },
-{ "name": "Willow ptarmigan" },
-{ "name": "Willow tit" },
-{ "name": "Willow warbler" },
-{ "name": "Wilson's phalarope" },
-{ "name": "Wilson's snipe" },
-{ "name": "Wilson's storm petrel" },
-{ "name": "Wilson's warbler" },
-{ "name": "Wood duck" },
-{ "name": "Wood sandpiper" },
-{ "name": "Wood thrush" },
-{ "name": "Wood warbler" },
-{ "name": "Woodchat shrike" },
-{ "name": "Woodlark" },
-{ "name": "Yelkouan shearwater" },
-{ "name": "Yellow-bellied flycatcher" },
-{ "name": "Yellow-bellied sapsucker" },
-{ "name": "Yellow-billed cuckoo" },
-{ "name": "Yellow-billed kite" },
-{ "name": "Yellow-billed loon" },
-{ "name": "Yellow-billed stork" },
-{ "name": "Yellow-breasted bunting" },
-{ "name": "Yellow-breasted chat" },
-{ "name": "Yellow-browed bunting" },
-{ "name": "Yellow-browed warbler" },
-{ "name": "Yellow-crowned bishop" },
-{ "name": "Yellow-crowned night heron" },
-{ "name": "Yellow-headed blackbird" },
-{ "name": "Yellow-legged gull" },
-{ "name": "Yellow-throated vireo" },
-{ "name": "Yellow-throated warbler" },
-{ "name": "Yellowhammer" },
-{ "name": "Zino's petrel" },
-{ "name": "Zitting cisticola" }
+  {
+    "name": "Abyssinian roller"
+  },
+  {
+    "name": "Acadian flycatcher",
+    "latinName": "Empidonax virescens"
+  },
+  {
+    "name": "African blue tit"
+  },
+  {
+    "name": "African collared dove"
+  },
+  {
+    "name": "African crake"
+  },
+  {
+    "name": "African desert warbler"
+  },
+  {
+    "name": "African sacred ibis",
+    "latinName": "Threskiornis aethiopicus"
+  },
+  {
+    "name": "African swamphen"
+  },
+  {
+    "name": "Alder flycatcher",
+    "latinName": "Empidonax alnorum"
+  },
+  {
+    "name": "Aleutian tern",
+    "latinName": "Onychoprion aleuticus"
+  },
+  {
+    "name": "Alexandrine parakeet"
+  },
+  {
+    "name": "Allen's gallinule"
+  },
+  {
+    "name": "Alpine accentor",
+    "latinName": "Prunella collaris"
+  },
+  {
+    "name": "Alpine chough"
+  },
+  {
+    "name": "Alpine swift",
+    "latinName": "Tachymarptis melba"
+  },
+  {
+    "name": "American bittern",
+    "latinName": "Botaurus lentiginosus"
+  },
+  {
+    "name": "American black duck",
+    "latinName": "Anas rubripes"
+  },
+  {
+    "name": "American cliff swallow",
+    "latinName": "Petrochelidon pyrrhonota"
+  },
+  {
+    "name": "American coot",
+    "latinName": "Fulica americana"
+  },
+  {
+    "name": "American golden plover",
+    "latinName": "Pluvialis dominica"
+  },
+  {
+    "name": "American herring gull",
+    "latinName": "Larus smithsonianus"
+  },
+  {
+    "name": "American kestrel",
+    "latinName": "Falco sparverius"
+  },
+  {
+    "name": "American redstart",
+    "latinName": "Setophaga ruticilla"
+  },
+  {
+    "name": "American robin",
+    "latinName": "Turdus migratorius"
+  },
+  {
+    "name": "American tree sparrow",
+    "latinName": "Spizelloides arborea"
+  },
+  {
+    "name": "American wigeon",
+    "latinName": "Mareca americana"
+  },
+  {
+    "name": "American woodcock",
+    "latinName": "Scolopax minor"
+  },
+  {
+    "name": "American yellow warbler"
+  },
+  {
+    "name": "Amur falcon",
+    "latinName": "Falco amurensis"
+  },
+  {
+    "name": "Amur stonechat"
+  },
+  {
+    "name": "Ancient murrelet",
+    "latinName": "Synthliboramphus antiquus"
+  },
+  {
+    "name": "Aquatic warbler",
+    "latinName": "Acrocephalus paludicola"
+  },
+  {
+    "name": "Arctic redpoll"
+  },
+  {
+    "name": "Arctic tern",
+    "latinName": "Sterna paradisaea"
+  },
+  {
+    "name": "Arctic warbler",
+    "latinName": "Phylloscopus borealis"
+  },
+  {
+    "name": "Armenian gull"
+  },
+  {
+    "name": "Ascension frigatebird"
+  },
+  {
+    "name": "Ashy-throated parrotbill"
+  },
+  {
+    "name": "Asian brown flycatcher",
+    "latinName": "Muscicapa dauurica"
+  },
+  {
+    "name": "Asian crimson-winged finch"
+  },
+  {
+    "name": "Asian desert warbler",
+    "latinName": "Curruca nana"
+  },
+  {
+    "name": "Asian green bee-eater"
+  },
+  {
+    "name": "Asian short-toed lark"
+  },
+  {
+    "name": "Atlantic canary"
+  },
+  {
+    "name": "Atlantic puffin",
+    "latinName": "Fratercula arctica"
+  },
+  {
+    "name": "Atlantic yellow-nosed albatross",
+    "latinName": "Thalassarche chlororhynchos"
+  },
+  {
+    "name": "Atlas pied flycatcher"
+  },
+  {
+    "name": "Audouin's gull"
+  },
+  {
+    "name": "Audubon's shearwater"
+  },
+  {
+    "name": "Audubon's warbler"
+  },
+  {
+    "name": "Azores"
+  },
+  {
+    "name": "Azores bullfinch"
+  },
+  {
+    "name": "Azores chaffinch"
+  },
+  {
+    "name": "Azure tit",
+    "latinName": "Cyanistes cyanus"
+  },
+  {
+    "name": "Baikal teal",
+    "latinName": "Sibirionetta formosa"
+  },
+  {
+    "name": "Baillon's crake",
+    "latinName": "Zapornia pusilla"
+  },
+  {
+    "name": "Baird's sandpiper",
+    "latinName": "Calidris bairdii"
+  },
+  {
+    "name": "Bald eagle",
+    "latinName": "Haliaeetus leucocephalus"
+  },
+  {
+    "name": "Balearic shearwater"
+  },
+  {
+    "name": "Balearic warbler"
+  },
+  {
+    "name": "Baltimore oriole",
+    "latinName": "Icterus galbula"
+  },
+  {
+    "name": "Band-rumped storm petrel"
+  },
+  {
+    "name": "Bar-headed goose",
+    "latinName": "Anser indicus"
+  },
+  {
+    "name": "Bar-tailed godwit",
+    "latinName": "Limosa lapponica"
+  },
+  {
+    "name": "Bar-tailed lark"
+  },
+  {
+    "name": "Barbary partridge"
+  },
+  {
+    "name": "Barn swallow",
+    "latinName": "Hirundo rustica"
+  },
+  {
+    "name": "Barnacle goose",
+    "latinName": "Branta leucopsis"
+  },
+  {
+    "name": "Barolo shearwater",
+    "latinName": "Puffinus baroli"
+  },
+  {
+    "name": "Barred warbler",
+    "latinName": "Curruca nisoria"
+  },
+  {
+    "name": "Barrow's goldeneye",
+    "latinName": "Bucephala islandica"
+  },
+  {
+    "name": "Bateleur"
+  },
+  {
+    "name": "Bay-breasted warbler",
+    "latinName": "Setophaga castanea"
+  },
+  {
+    "name": "Bearded reedling",
+    "latinName": "Panurus biarmicus"
+  },
+  {
+    "name": "Bearded vulture"
+  },
+  {
+    "name": "Belted kingfisher",
+    "latinName": "Megaceryle alcyon"
+  },
+  {
+    "name": "Bermuda petrel",
+    "latinName": "Pterodroma cahow"
+  },
+  {
+    "name": "Berthelot's pipit"
+  },
+  {
+    "name": "Bimaculated lark",
+    "latinName": "Melanocorypha bimaculata"
+  },
+  {
+    "name": "Black francolin",
+    "latinName": "Francolinus francolinus"
+  },
+  {
+    "name": "Black grouse",
+    "latinName": "Lyrurus tetrix"
+  },
+  {
+    "name": "Black guillemot",
+    "latinName": "Cepphus grylle"
+  },
+  {
+    "name": "Black heron"
+  },
+  {
+    "name": "Black kite",
+    "latinName": "Milvus migrans"
+  },
+  {
+    "name": "Black lark",
+    "latinName": "Melanocorypha yeltoniensis"
+  },
+  {
+    "name": "Black redstart",
+    "latinName": "Phoenicurus ochruros"
+  },
+  {
+    "name": "Black scoter",
+    "latinName": "Melanitta americana"
+  },
+  {
+    "name": "Black stork",
+    "latinName": "Ciconia nigra"
+  },
+  {
+    "name": "Black swan",
+    "latinName": "Cygnus atratus"
+  },
+  {
+    "name": "Black tern",
+    "latinName": "Chlidonias niger"
+  },
+  {
+    "name": "Black wheatear"
+  },
+  {
+    "name": "Black woodpecker",
+    "latinName": "Dryocopus martius"
+  },
+  {
+    "name": "Black-and-white warbler",
+    "latinName": "Mniotilta varia"
+  },
+  {
+    "name": "Black-bellied sandgrouse"
+  },
+  {
+    "name": "Black-bellied storm petrel"
+  },
+  {
+    "name": "Black-billed cuckoo",
+    "latinName": "Coccyzus erythropthalmus"
+  },
+  {
+    "name": "Black-browed albatross",
+    "latinName": "Thalassarche melanophris"
+  },
+  {
+    "name": "Black-capped petrel",
+    "latinName": "Pterodroma hasitata"
+  },
+  {
+    "name": "Black-crowned night heron",
+    "latinName": "Nycticorax nycticorax"
+  },
+  {
+    "name": "Black-crowned tchagra"
+  },
+  {
+    "name": "Black-faced bunting",
+    "latinName": "Emberiza spodocephala"
+  },
+  {
+    "name": "Black-headed bunting",
+    "latinName": "Emberiza melanocephala"
+  },
+  {
+    "name": "Black-headed gull",
+    "latinName": "Chroicocephalus ridibundus"
+  },
+  {
+    "name": "Black-headed heron"
+  },
+  {
+    "name": "Black-headed penduline tit"
+  },
+  {
+    "name": "Black-headed weaver"
+  },
+  {
+    "name": "Black-legged kittiwake",
+    "latinName": "Rissa tridactyla"
+  },
+  {
+    "name": "Black-necked grebe",
+    "latinName": "Podiceps nigricollis"
+  },
+  {
+    "name": "Black-rumped waxbill"
+  },
+  {
+    "name": "Black-tailed godwit",
+    "latinName": "Limosa limosa"
+  },
+  {
+    "name": "Black-throated accentor",
+    "latinName": "Prunella atrogularis"
+  },
+  {
+    "name": "Black-throated blue warbler",
+    "latinName": "Setophaga caerulescens"
+  },
+  {
+    "name": "Black-throated green warbler",
+    "latinName": "Setophaga virens"
+  },
+  {
+    "name": "Black-throated loon",
+    "latinName": "Gavia arctica"
+  },
+  {
+    "name": "Black-throated thrush",
+    "latinName": "Turdus atrogularis"
+  },
+  {
+    "name": "Black-winged kite",
+    "latinName": "Elanus caeruleus"
+  },
+  {
+    "name": "Black-winged pratincole",
+    "latinName": "Glareola nordmanni"
+  },
+  {
+    "name": "Black-winged stilt",
+    "latinName": "Himantopus himantopus"
+  },
+  {
+    "name": "Blackburnian warbler",
+    "latinName": "Setophaga fusca"
+  },
+  {
+    "name": "Blackpoll warbler",
+    "latinName": "Setophaga striata"
+  },
+  {
+    "name": "Blue grosbeak",
+    "latinName": "Passerina caerulea"
+  },
+  {
+    "name": "Blue rock thrush",
+    "latinName": "Monticola solitarius"
+  },
+  {
+    "name": "Blue-cheeked bee-eater",
+    "latinName": "Merops persicus"
+  },
+  {
+    "name": "Blue-winged teal",
+    "latinName": "Spatula discors"
+  },
+  {
+    "name": "Blue-winged warbler",
+    "latinName": "Vermivora cyanoptera"
+  },
+  {
+    "name": "Bluethroat",
+    "latinName": "Cyanecula svecica"
+  },
+  {
+    "name": "Blyth's pipit",
+    "latinName": "Anthus godlewskii"
+  },
+  {
+    "name": "Blyth's reed warbler",
+    "latinName": "Acrocephalus dumetorum"
+  },
+  {
+    "name": "Bobolink",
+    "latinName": "Dolichonyx oryzivorus"
+  },
+  {
+    "name": "Bohemian waxwing",
+    "latinName": "Bombycilla garrulus"
+  },
+  {
+    "name": "Bolle's pigeon"
+  },
+  {
+    "name": "Bonaparte's gull",
+    "latinName": "Chroicocephalus philadelphia"
+  },
+  {
+    "name": "Bonelli's eagle",
+    "latinName": "Aquila fasciata"
+  },
+  {
+    "name": "Booted eagle",
+    "latinName": "Hieraaetus pennatus"
+  },
+  {
+    "name": "Booted warbler",
+    "latinName": "Iduna caligata"
+  },
+  {
+    "name": "Boreal owl",
+    "latinName": "Aegolius funereus"
+  },
+  {
+    "name": "Boyd's shearwater"
+  },
+  {
+    "name": "Brambling",
+    "latinName": "Fringilla montifringilla"
+  },
+  {
+    "name": "Brant goose",
+    "latinName": "Branta bernicla"
+  },
+  {
+    "name": "Bridled tern",
+    "latinName": "Onychoprion anaethetus"
+  },
+  {
+    "name": "Broad-billed sandpiper",
+    "latinName": "Calidris falcinellus"
+  },
+  {
+    "name": "Brown booby",
+    "latinName": "Sula leucogaster"
+  },
+  {
+    "name": "Brown noddy",
+    "latinName": "Anous stolidus"
+  },
+  {
+    "name": "Brown shrike",
+    "latinName": "Lanius cristatus"
+  },
+  {
+    "name": "Brown thrasher",
+    "latinName": "Toxostoma rufum"
+  },
+  {
+    "name": "Brown-headed cowbird",
+    "latinName": "Molothrus ater"
+  },
+  {
+    "name": "Buff-bellied pipit"
+  },
+  {
+    "name": "Buff-breasted sandpiper",
+    "latinName": "Calidris subruficollis"
+  },
+  {
+    "name": "Bufflehead",
+    "latinName": "Bucephala albeola"
+  },
+  {
+    "name": "Bulwer's petrel",
+    "latinName": "Bulweria bulwerii"
+  },
+  {
+    "name": "Cabot's tern"
+  },
+  {
+    "name": "Cackling goose",
+    "latinName": "Branta hutchinsii"
+  },
+  {
+    "name": "Calandra lark",
+    "latinName": "Melanocorypha calandra"
+  },
+  {
+    "name": "Canada goose",
+    "latinName": "Branta canadensis"
+  },
+  {
+    "name": "Canada warbler",
+    "latinName": "Cardellina canadensis"
+  },
+  {
+    "name": "Canary Islands"
+  },
+  {
+    "name": "Canary Islands chaffinch"
+  },
+  {
+    "name": "Canary Islands chiffchaff"
+  },
+  {
+    "name": "Canary Islands oystercatcher"
+  },
+  {
+    "name": "Canary Islands stonechat"
+  },
+  {
+    "name": "Canvasback",
+    "latinName": "Aythya valisineria"
+  },
+  {
+    "name": "Cape canary"
+  },
+  {
+    "name": "Cape gannet"
+  },
+  {
+    "name": "Cape May warbler",
+    "latinName": "Setophaga tigrina"
+  },
+  {
+    "name": "Cape petrel"
+  },
+  {
+    "name": "Cape Verde shearwater",
+    "latinName": "Calonectris edwardsii"
+  },
+  {
+    "name": "Carrion crow",
+    "latinName": "Corvus corone"
+  },
+  {
+    "name": "Caspian gull",
+    "latinName": "Larus cachinnans"
+  },
+  {
+    "name": "Caspian plover",
+    "latinName": "Anarhynchus asiaticus"
+  },
+  {
+    "name": "Caspian tern",
+    "latinName": "Hydroprogne caspia"
+  },
+  {
+    "name": "Caucasian grouse"
+  },
+  {
+    "name": "Caucasian snowcock"
+  },
+  {
+    "name": "Caucasus"
+  },
+  {
+    "name": "Cedar waxwing",
+    "latinName": "Bombycilla cedrorum"
+  },
+  {
+    "name": "Cerulean warbler",
+    "latinName": "Setophaga cerulea"
+  },
+  {
+    "name": "Cetti's warbler",
+    "latinName": "Cettia cetti"
+  },
+  {
+    "name": "Chestnut bunting"
+  },
+  {
+    "name": "Chestnut-bellied sandgrouse",
+    "latinName": "Pterocles exustus"
+  },
+  {
+    "name": "Chestnut-eared bunting",
+    "latinName": "Emberiza fucata"
+  },
+  {
+    "name": "Chestnut-sided warbler",
+    "latinName": "Setophaga pensylvanica"
+  },
+  {
+    "name": "Chimney swift",
+    "latinName": "Chaetura pelagica"
+  },
+  {
+    "name": "Chinese pond heron"
+  },
+  {
+    "name": "Chukar partridge"
+  },
+  {
+    "name": "Cinereous bunting",
+    "latinName": "Emberiza cineracea"
+  },
+  {
+    "name": "Cinereous vulture",
+    "latinName": "Aegypius monachus"
+  },
+  {
+    "name": "Cinnamon teal",
+    "latinName": "Spatula cyanoptera"
+  },
+  {
+    "name": "Cirl bunting",
+    "latinName": "Emberiza cirlus"
+  },
+  {
+    "name": "Citril finch"
+  },
+  {
+    "name": "Citrine wagtail",
+    "latinName": "Motacilla citreola"
+  },
+  {
+    "name": "Coal tit",
+    "latinName": "Periparus ater"
+  },
+  {
+    "name": "Collared flycatcher",
+    "latinName": "Ficedula albicollis"
+  },
+  {
+    "name": "Collared pratincole",
+    "latinName": "Glareola pratincola"
+  },
+  {
+    "name": "Common blackbird",
+    "latinName": "Turdus merula"
+  },
+  {
+    "name": "Common bulbul"
+  },
+  {
+    "name": "Common buttonquail"
+  },
+  {
+    "name": "Common buzzard",
+    "latinName": "Buteo buteo"
+  },
+  {
+    "name": "Common chiffchaff",
+    "latinName": "Phylloscopus collybita"
+  },
+  {
+    "name": "Common crane",
+    "latinName": "Grus grus"
+  },
+  {
+    "name": "Common cuckoo",
+    "latinName": "Cuculus canorus"
+  },
+  {
+    "name": "Common eider",
+    "latinName": "Somateria mollissima"
+  },
+  {
+    "name": "Common firecrest",
+    "latinName": "Regulus ignicapilla"
+  },
+  {
+    "name": "Common gallinule",
+    "latinName": "Gallinula galeata"
+  },
+  {
+    "name": "Common goldeneye",
+    "latinName": "Bucephala clangula"
+  },
+  {
+    "name": "Common grackle",
+    "latinName": "Quiscalus quiscula"
+  },
+  {
+    "name": "Common grasshopper warbler",
+    "latinName": "Locustella naevia"
+  },
+  {
+    "name": "Common greenshank",
+    "latinName": "Tringa nebularia"
+  },
+  {
+    "name": "Common gull",
+    "latinName": "Larus canus"
+  },
+  {
+    "name": "Common house martin"
+  },
+  {
+    "name": "Common kestrel",
+    "latinName": "Falco tinnunculus"
+  },
+  {
+    "name": "Common kingfisher",
+    "latinName": "Alcedo atthis"
+  },
+  {
+    "name": "Common linnet",
+    "latinName": "Linaria cannabina"
+  },
+  {
+    "name": "Common loon",
+    "latinName": "Gavia immer"
+  },
+  {
+    "name": "Common merganser",
+    "latinName": "Mergus merganser"
+  },
+  {
+    "name": "Common moorhen",
+    "latinName": "Gallinula chloropus"
+  },
+  {
+    "name": "Common murre",
+    "latinName": "Uria aalge"
+  },
+  {
+    "name": "Common nighthawk",
+    "latinName": "Chordeiles minor"
+  },
+  {
+    "name": "Common nightingale",
+    "latinName": "Luscinia megarhynchos"
+  },
+  {
+    "name": "Common pheasant",
+    "latinName": "Phasianus colchicus"
+  },
+  {
+    "name": "Common pochard",
+    "latinName": "Aythya ferina"
+  },
+  {
+    "name": "Common quail",
+    "latinName": "Coturnix coturnix"
+  },
+  {
+    "name": "Common redpoll",
+    "latinName": "Acanthis flammea"
+  },
+  {
+    "name": "Common redshank",
+    "latinName": "Tringa totanus"
+  },
+  {
+    "name": "Common redstart",
+    "latinName": "Phoenicurus phoenicurus"
+  },
+  {
+    "name": "Common reed bunting",
+    "latinName": "Emberiza schoeniclus"
+  },
+  {
+    "name": "Common reed warbler",
+    "latinName": "Acrocephalus scirpaceus"
+  },
+  {
+    "name": "Common ringed plover",
+    "latinName": "Charadrius hiaticula"
+  },
+  {
+    "name": "Common rock thrush",
+    "latinName": "Monticola saxatilis"
+  },
+  {
+    "name": "Common rosefinch",
+    "latinName": "Carpodacus erythrinus"
+  },
+  {
+    "name": "Common sandpiper",
+    "latinName": "Actitis hypoleucos"
+  },
+  {
+    "name": "Common scoter",
+    "latinName": "Melanitta nigra"
+  },
+  {
+    "name": "Common shelduck",
+    "latinName": "Tadorna tadorna"
+  },
+  {
+    "name": "Common snipe",
+    "latinName": "Gallinago gallinago"
+  },
+  {
+    "name": "Common starling",
+    "latinName": "Sturnus vulgaris"
+  },
+  {
+    "name": "Common swift",
+    "latinName": "Apus apus"
+  },
+  {
+    "name": "Common tern",
+    "latinName": "Sterna hirundo"
+  },
+  {
+    "name": "Common waxbill",
+    "latinName": "Estrilda astrild"
+  },
+  {
+    "name": "Common whitethroat",
+    "latinName": "Curruca communis"
+  },
+  {
+    "name": "Common wood pigeon",
+    "latinName": "Columba palumbus"
+  },
+  {
+    "name": "Common yellowthroat",
+    "latinName": "Geothlypis trichas"
+  },
+  {
+    "name": "Connecticut warbler",
+    "latinName": "Oporornis agilis"
+  },
+  {
+    "name": "Corn bunting",
+    "latinName": "Emberiza calandra"
+  },
+  {
+    "name": "Corn crake",
+    "latinName": "Crex crex"
+  },
+  {
+    "name": "Corsican finch"
+  },
+  {
+    "name": "Corsican nuthatch"
+  },
+  {
+    "name": "Cory's shearwater",
+    "latinName": "Calonectris borealis"
+  },
+  {
+    "name": "Cream-colored courser",
+    "latinName": "Cursorius cursor"
+  },
+  {
+    "name": "Crested auklet",
+    "latinName": "Aethia cristatella"
+  },
+  {
+    "name": "Crested honey buzzard"
+  },
+  {
+    "name": "Crested lark",
+    "latinName": "Galerida cristata"
+  },
+  {
+    "name": "Crested myna"
+  },
+  {
+    "name": "Crested tit",
+    "latinName": "Lophophanes cristatus"
+  },
+  {
+    "name": "Cretzschmar's bunting",
+    "latinName": "Emberiza caesia"
+  },
+  {
+    "name": "Curlew sandpiper",
+    "latinName": "Calidris ferruginea"
+  },
+  {
+    "name": "Cyprus wheatear"
+  },
+  {
+    "name": "Dalmatian pelican"
+  },
+  {
+    "name": "Dark-eyed junco",
+    "latinName": "Junco hyemalis"
+  },
+  {
+    "name": "Dark-sided flycatcher",
+    "latinName": "Muscicapa sibirica"
+  },
+  {
+    "name": "Dartford warbler",
+    "latinName": "Curruca undata"
+  },
+  {
+    "name": "Daurian jackdaw",
+    "latinName": "Coloeus dauuricus"
+  },
+  {
+    "name": "Daurian starling"
+  },
+  {
+    "name": "Dead Sea sparrow"
+  },
+  {
+    "name": "Demoiselle crane",
+    "latinName": "Grus virgo"
+  },
+  {
+    "name": "Desert wheatear",
+    "latinName": "Oenanthe deserti"
+  },
+  {
+    "name": "Desert whitethroat"
+  },
+  {
+    "name": "Desertas petrel"
+  },
+  {
+    "name": "Dickcissel",
+    "latinName": "Spiza americana"
+  },
+  {
+    "name": "Double-crested cormorant",
+    "latinName": "Nannopterum auritum"
+  },
+  {
+    "name": "Dunlin",
+    "latinName": "Calidris alpina"
+  },
+  {
+    "name": "Dunnock",
+    "latinName": "Prunella modularis"
+  },
+  {
+    "name": "Dupont's lark"
+  },
+  {
+    "name": "Dusky thrush",
+    "latinName": "Turdus eunomus"
+  },
+  {
+    "name": "Dusky warbler",
+    "latinName": "Phylloscopus fuscatus"
+  },
+  {
+    "name": "Dwarf bittern"
+  },
+  {
+    "name": "Eastern black-eared wheatear",
+    "latinName": "Oenanthe melanoleuca"
+  },
+  {
+    "name": "Eastern Bonelli's warbler",
+    "latinName": "Phylloscopus orientalis"
+  },
+  {
+    "name": "Eastern crowned warbler",
+    "latinName": "Phylloscopus coronatus"
+  },
+  {
+    "name": "Eastern imperial eagle",
+    "latinName": "Aquila heliaca"
+  },
+  {
+    "name": "Eastern kingbird",
+    "latinName": "Tyrannus tyrannus"
+  },
+  {
+    "name": "Eastern olivaceous warbler",
+    "latinName": "Iduna pallida"
+  },
+  {
+    "name": "Eastern Orphean warbler"
+  },
+  {
+    "name": "Eastern phoebe",
+    "latinName": "Sayornis phoebe"
+  },
+  {
+    "name": "Eastern rock nuthatch"
+  },
+  {
+    "name": "Eastern subalpine warbler",
+    "latinName": "Curruca cantillans"
+  },
+  {
+    "name": "Eastern towhee",
+    "latinName": "Pipilo erythrophthalmus"
+  },
+  {
+    "name": "Eastern wood pewee"
+  },
+  {
+    "name": "Eastern yellow wagtail",
+    "latinName": "Motacilla tschutschensis"
+  },
+  {
+    "name": "Egyptian goose",
+    "latinName": "Alopochen aegyptiaca"
+  },
+  {
+    "name": "Egyptian nightjar",
+    "latinName": "Caprimulgus aegyptius"
+  },
+  {
+    "name": "Egyptian plover"
+  },
+  {
+    "name": "Egyptian vulture",
+    "latinName": "Neophron percnopterus"
+  },
+  {
+    "name": "Elegant tern",
+    "latinName": "Thalasseus elegans"
+  },
+  {
+    "name": "Eleonora's falcon",
+    "latinName": "Falco eleonorae"
+  },
+  {
+    "name": "Eskimo curlew",
+    "latinName": "Numenius borealis"
+  },
+  {
+    "name": "Eurasian bittern",
+    "latinName": "Botaurus stellaris"
+  },
+  {
+    "name": "Eurasian blackcap",
+    "latinName": "Sylvia atricapilla"
+  },
+  {
+    "name": "Eurasian blue tit",
+    "latinName": "Cyanistes caeruleus"
+  },
+  {
+    "name": "Eurasian bullfinch",
+    "latinName": "Pyrrhula pyrrhula"
+  },
+  {
+    "name": "Eurasian chaffinch",
+    "latinName": "Fringilla coelebs"
+  },
+  {
+    "name": "Eurasian collared dove",
+    "latinName": "Streptopelia decaocto"
+  },
+  {
+    "name": "Eurasian coot",
+    "latinName": "Fulica atra"
+  },
+  {
+    "name": "Eurasian crag martin",
+    "latinName": "Ptyonoprogne rupestris"
+  },
+  {
+    "name": "Eurasian curlew",
+    "latinName": "Numenius arquata"
+  },
+  {
+    "name": "Eurasian dotterel",
+    "latinName": "Charadrius morinellus"
+  },
+  {
+    "name": "Eurasian eagle-owl",
+    "latinName": "Bubo bubo"
+  },
+  {
+    "name": "Eurasian golden oriole",
+    "latinName": "Oriolus oriolus"
+  },
+  {
+    "name": "Eurasian goshawk",
+    "latinName": "Accipiter gentilis"
+  },
+  {
+    "name": "Eurasian hobby",
+    "latinName": "Falco subbuteo"
+  },
+  {
+    "name": "Eurasian hoopoe",
+    "latinName": "Upupa epops"
+  },
+  {
+    "name": "Eurasian jay",
+    "latinName": "Garrulus glandarius"
+  },
+  {
+    "name": "Eurasian magpie",
+    "latinName": "Pica pica"
+  },
+  {
+    "name": "Eurasian nuthatch",
+    "latinName": "Sitta europaea"
+  },
+  {
+    "name": "Eurasian oystercatcher",
+    "latinName": "Haematopus ostralegus"
+  },
+  {
+    "name": "Eurasian penduline tit",
+    "latinName": "Remiz pendulinus"
+  },
+  {
+    "name": "Eurasian pygmy owl",
+    "latinName": "Glaucidium passerinum"
+  },
+  {
+    "name": "Eurasian rock pipit"
+  },
+  {
+    "name": "Eurasian scops owl",
+    "latinName": "Otus scops"
+  },
+  {
+    "name": "Eurasian siskin",
+    "latinName": "Spinus spinus"
+  },
+  {
+    "name": "Eurasian skylark",
+    "latinName": "Alauda arvensis"
+  },
+  {
+    "name": "Eurasian sparrowhawk",
+    "latinName": "Accipiter nisus"
+  },
+  {
+    "name": "Eurasian spoonbill",
+    "latinName": "Platalea leucorodia"
+  },
+  {
+    "name": "Eurasian stone-curlew",
+    "latinName": "Burhinus oedicnemus"
+  },
+  {
+    "name": "Eurasian teal"
+  },
+  {
+    "name": "Eurasian three-toed woodpecker",
+    "latinName": "Picoides tridactylus"
+  },
+  {
+    "name": "Eurasian tree sparrow",
+    "latinName": "Passer montanus"
+  },
+  {
+    "name": "Eurasian treecreeper",
+    "latinName": "Certhia familiaris"
+  },
+  {
+    "name": "Eurasian whimbrel",
+    "latinName": "Numenius phaeopus"
+  },
+  {
+    "name": "Eurasian wigeon",
+    "latinName": "Mareca penelope"
+  },
+  {
+    "name": "Eurasian woodcock",
+    "latinName": "Scolopax rusticola"
+  },
+  {
+    "name": "Eurasian wren",
+    "latinName": "Troglodytes troglodytes"
+  },
+  {
+    "name": "Eurasian wryneck",
+    "latinName": "Jynx torquilla"
+  },
+  {
+    "name": "European bee-eater",
+    "latinName": "Merops apiaster"
+  },
+  {
+    "name": "European golden plover",
+    "latinName": "Pluvialis apricaria"
+  },
+  {
+    "name": "European goldfinch",
+    "latinName": "Carduelis carduelis"
+  },
+  {
+    "name": "European green woodpecker",
+    "latinName": "Picus viridis"
+  },
+  {
+    "name": "European greenfinch",
+    "latinName": "Chloris chloris"
+  },
+  {
+    "name": "European herring gull",
+    "latinName": "Larus argentatus"
+  },
+  {
+    "name": "European honey buzzard",
+    "latinName": "Pernis apivorus"
+  },
+  {
+    "name": "European nightjar",
+    "latinName": "Caprimulgus europaeus"
+  },
+  {
+    "name": "European pied flycatcher",
+    "latinName": "Ficedula hypoleuca"
+  },
+  {
+    "name": "European robin",
+    "latinName": "Erithacus rubecula"
+  },
+  {
+    "name": "European roller",
+    "latinName": "Coracias garrulus"
+  },
+  {
+    "name": "European serin",
+    "latinName": "Serinus serinus"
+  },
+  {
+    "name": "European shag",
+    "latinName": "Gulosus aristotelis"
+  },
+  {
+    "name": "European stonechat",
+    "latinName": "Saxicola rubicola"
+  },
+  {
+    "name": "European storm petrel",
+    "latinName": "Hydrobates pelagicus"
+  },
+  {
+    "name": "European turtle dove",
+    "latinName": "Streptopelia turtur"
+  },
+  {
+    "name": "Evening grosbeak",
+    "latinName": "Coccothraustes vespertinus"
+  },
+  {
+    "name": "Eyebrowed thrush",
+    "latinName": "Turdus obscurus"
+  },
+  {
+    "name": "Falcated duck",
+    "latinName": "Mareca falcata"
+  },
+  {
+    "name": "Fea's petrel",
+    "latinName": "Pterodroma feae"
+  },
+  {
+    "name": "Ferruginous duck",
+    "latinName": "Aythya nyroca"
+  },
+  {
+    "name": "Fieldfare",
+    "latinName": "Turdus pilaris"
+  },
+  {
+    "name": "Finsch's wheatear"
+  },
+  {
+    "name": "Fork-tailed flycatcher",
+    "latinName": "Tyrannus savana"
+  },
+  {
+    "name": "Forster's tern",
+    "latinName": "Sterna forsteri"
+  },
+  {
+    "name": "Franklin's gull",
+    "latinName": "Leucophaeus pipixcan"
+  },
+  {
+    "name": "Gadwall",
+    "latinName": "Mareca strepera"
+  },
+  {
+    "name": "Garden warbler",
+    "latinName": "Sylvia borin"
+  },
+  {
+    "name": "Garganey",
+    "latinName": "Spatula querquedula"
+  },
+  {
+    "name": "Glaucous gull",
+    "latinName": "Larus hyperboreus"
+  },
+  {
+    "name": "Glaucous-winged gull",
+    "latinName": "Larus glaucescens"
+  },
+  {
+    "name": "Glossy ibis",
+    "latinName": "Plegadis falcinellus"
+  },
+  {
+    "name": "Goldcrest",
+    "latinName": "Regulus regulus"
+  },
+  {
+    "name": "Golden eagle",
+    "latinName": "Aquila chrysaetos"
+  },
+  {
+    "name": "Golden pheasant"
+  },
+  {
+    "name": "Golden-winged warbler",
+    "latinName": "Vermivora chrysoptera"
+  },
+  {
+    "name": "Gran Canaria blue chaffinch"
+  },
+  {
+    "name": "Gray's grasshopper warbler"
+  },
+  {
+    "name": "Great auk",
+    "latinName": "Pinguinus impennis"
+  },
+  {
+    "name": "Great black-backed gull",
+    "latinName": "Larus marinus"
+  },
+  {
+    "name": "Great blue heron",
+    "latinName": "Ardea herodias"
+  },
+  {
+    "name": "Great bustard",
+    "latinName": "Otis tarda"
+  },
+  {
+    "name": "Great cormorant",
+    "latinName": "Phalacrocorax carbo"
+  },
+  {
+    "name": "Great crested grebe",
+    "latinName": "Podiceps cristatus"
+  },
+  {
+    "name": "Great egret",
+    "latinName": "Ardea alba"
+  },
+  {
+    "name": "Great grey owl",
+    "latinName": "Strix nebulosa"
+  },
+  {
+    "name": "Great grey shrike",
+    "latinName": "Lanius excubitor"
+  },
+  {
+    "name": "Great knot",
+    "latinName": "Calidris tenuirostris"
+  },
+  {
+    "name": "Great reed warbler",
+    "latinName": "Acrocephalus arundinaceus"
+  },
+  {
+    "name": "Great rosefinch"
+  },
+  {
+    "name": "Great shearwater",
+    "latinName": "Ardenna gravis"
+  },
+  {
+    "name": "Great skua",
+    "latinName": "Stercorarius skua"
+  },
+  {
+    "name": "Great snipe",
+    "latinName": "Gallinago media"
+  },
+  {
+    "name": "Great spotted cuckoo",
+    "latinName": "Clamator glandarius"
+  },
+  {
+    "name": "Great spotted woodpecker",
+    "latinName": "Dendrocopos major"
+  },
+  {
+    "name": "Great tit",
+    "latinName": "Parus major"
+  },
+  {
+    "name": "Great white pelican"
+  },
+  {
+    "name": "Greater flamingo"
+  },
+  {
+    "name": "Greater hoopoe-lark"
+  },
+  {
+    "name": "Greater sand plover",
+    "latinName": "Anarhynchus leschenaultii"
+  },
+  {
+    "name": "Greater scaup",
+    "latinName": "Aythya marila"
+  },
+  {
+    "name": "Greater short-toed lark",
+    "latinName": "Calandrella brachydactyla"
+  },
+  {
+    "name": "Greater spotted eagle",
+    "latinName": "Clanga clanga"
+  },
+  {
+    "name": "Greater white-fronted goose",
+    "latinName": "Anser albifrons"
+  },
+  {
+    "name": "Greater yellowlegs",
+    "latinName": "Tringa melanoleuca"
+  },
+  {
+    "name": "Green heron",
+    "latinName": "Butorides virescens"
+  },
+  {
+    "name": "Green sandpiper",
+    "latinName": "Tringa ochropus"
+  },
+  {
+    "name": "Green warbler",
+    "latinName": "Phylloscopus nitidus"
+  },
+  {
+    "name": "Green-winged teal",
+    "latinName": "Anas crecca"
+  },
+  {
+    "name": "Greenish warbler",
+    "latinName": "Phylloscopus trochiloides"
+  },
+  {
+    "name": "Grey catbird"
+  },
+  {
+    "name": "Grey heron",
+    "latinName": "Ardea cinerea"
+  },
+  {
+    "name": "Grey partridge",
+    "latinName": "Perdix perdix"
+  },
+  {
+    "name": "Grey plover",
+    "latinName": "Pluvialis squatarola"
+  },
+  {
+    "name": "Grey wagtail",
+    "latinName": "Motacilla cinerea"
+  },
+  {
+    "name": "Grey-cheeked thrush"
+  },
+  {
+    "name": "Grey-headed chickadee",
+    "latinName": "Poecile cinctus"
+  },
+  {
+    "name": "Grey-headed gull"
+  },
+  {
+    "name": "Grey-headed lapwing",
+    "latinName": "Vanellus cinereus"
+  },
+  {
+    "name": "Grey-headed swamphen"
+  },
+  {
+    "name": "Grey-headed woodpecker",
+    "latinName": "Picus canus"
+  },
+  {
+    "name": "Grey-necked bunting",
+    "latinName": "Emberiza buchanani"
+  },
+  {
+    "name": "Grey-tailed tattler",
+    "latinName": "Tringa brevipes"
+  },
+  {
+    "name": "Greylag goose",
+    "latinName": "Anser anser"
+  },
+  {
+    "name": "Griffon vulture",
+    "latinName": "Gyps fulvus"
+  },
+  {
+    "name": "Güldenstädt's redstart"
+  },
+  {
+    "name": "Gull-billed tern",
+    "latinName": "Gelochelidon nilotica"
+  },
+  {
+    "name": "Gyrfalcon",
+    "latinName": "Falco rusticolus"
+  },
+  {
+    "name": "Harlequin duck",
+    "latinName": "Histrionicus histrionicus"
+  },
+  {
+    "name": "Hawfinch",
+    "latinName": "Coccothraustes coccothraustes"
+  },
+  {
+    "name": "Hazel grouse",
+    "latinName": "Tetrastes bonasia"
+  },
+  {
+    "name": "Helmeted guineafowl"
+  },
+  {
+    "name": "Hen harrier",
+    "latinName": "Circus cyaneus"
+  },
+  {
+    "name": "Hermit thrush",
+    "latinName": "Catharus guttatus"
+  },
+  {
+    "name": "Hooded crow",
+    "latinName": "Corvus corone"
+  },
+  {
+    "name": "Hooded merganser",
+    "latinName": "Lophodytes cucullatus"
+  },
+  {
+    "name": "Hooded warbler",
+    "latinName": "Setophaga citrina"
+  },
+  {
+    "name": "Horned grebe",
+    "latinName": "Podiceps auritus"
+  },
+  {
+    "name": "Horned lark",
+    "latinName": "Eremophila alpestris"
+  },
+  {
+    "name": "Horned puffin",
+    "latinName": "Fratercula corniculata"
+  },
+  {
+    "name": "Houbara bustard"
+  },
+  {
+    "name": "House bunting"
+  },
+  {
+    "name": "House sparrow",
+    "latinName": "Passer domesticus"
+  },
+  {
+    "name": "Hudsonian godwit",
+    "latinName": "Limosa haemastica"
+  },
+  {
+    "name": "Hudsonian whimbrel"
+  },
+  {
+    "name": "Hume's leaf warbler",
+    "latinName": "Phylloscopus humei"
+  },
+  {
+    "name": "Hume's whitethroat"
+  },
+  {
+    "name": "Iberian chiffchaff",
+    "latinName": "Phylloscopus ibericus"
+  },
+  {
+    "name": "Iberian green woodpecker"
+  },
+  {
+    "name": "Iberian grey shrike"
+  },
+  {
+    "name": "Iberian magpie"
+  },
+  {
+    "name": "Iceland gull",
+    "latinName": "Larus glaucoides"
+  },
+  {
+    "name": "Icterine warbler",
+    "latinName": "Acrocephalus icterina"
+  },
+  {
+    "name": "Indigo bunting",
+    "latinName": "Passerina cyanea"
+  },
+  {
+    "name": "Intermediate egret",
+    "latinName": "Ardea intermedia"
+  },
+  {
+    "name": "Isabelline shrike",
+    "latinName": "Lanius isabellinus"
+  },
+  {
+    "name": "Isabelline wheatear",
+    "latinName": "Oenanthe isabellina"
+  },
+  {
+    "name": "Italian sparrow"
+  },
+  {
+    "name": "Ivory gull",
+    "latinName": "Pagophila eburnea"
+  },
+  {
+    "name": "Jack snipe",
+    "latinName": "Lymnocryptes minimus"
+  },
+  {
+    "name": "Kamchatka leaf warbler",
+    "latinName": "Phylloscopus examinandus"
+  },
+  {
+    "name": "Kelp gull",
+    "latinName": "Larus dominicanus"
+  },
+  {
+    "name": "Kentish plover",
+    "latinName": "Anarhynchus alexandrinus"
+  },
+  {
+    "name": "Killdeer",
+    "latinName": "Charadrius vociferus"
+  },
+  {
+    "name": "King eider",
+    "latinName": "Somateria spectabilis"
+  },
+  {
+    "name": "Kittlitz's plover"
+  },
+  {
+    "name": "Krüper's nuthatch"
+  },
+  {
+    "name": "Kurdish wheatear"
+  },
+  {
+    "name": "Lady Amherst's pheasant"
+  },
+  {
+    "name": "Lanceolated warbler",
+    "latinName": "Locustella lanceolata"
+  },
+  {
+    "name": "Lanner falcon"
+  },
+  {
+    "name": "Lapland longspur",
+    "latinName": "Calcarius lapponicus"
+  },
+  {
+    "name": "Lappet-faced vulture"
+  },
+  {
+    "name": "Lark sparrow",
+    "latinName": "Chondestes grammacus"
+  },
+  {
+    "name": "Laughing dove"
+  },
+  {
+    "name": "Laughing gull",
+    "latinName": "Leucophaeus atricilla"
+  },
+  {
+    "name": "Laurel pigeon"
+  },
+  {
+    "name": "Leach's storm petrel",
+    "latinName": "Hydrobates leucorhous"
+  },
+  {
+    "name": "Least bittern",
+    "latinName": "Ixobrychus exilis"
+  },
+  {
+    "name": "Least flycatcher",
+    "latinName": "Empidonax minimus"
+  },
+  {
+    "name": "Least sandpiper",
+    "latinName": "Calidris minutilla"
+  },
+  {
+    "name": "Least tern",
+    "latinName": "Sternula antillarum"
+  },
+  {
+    "name": "Lesser black-backed gull",
+    "latinName": "Larus fuscus"
+  },
+  {
+    "name": "Lesser crested tern"
+  },
+  {
+    "name": "Lesser flamingo"
+  },
+  {
+    "name": "Lesser grey shrike",
+    "latinName": "Lanius minor"
+  },
+  {
+    "name": "Lesser kestrel",
+    "latinName": "Falco naumanni"
+  },
+  {
+    "name": "Lesser moorhen"
+  },
+  {
+    "name": "Lesser redpoll"
+  },
+  {
+    "name": "Lesser sand plover"
+  },
+  {
+    "name": "Lesser scaup",
+    "latinName": "Aythya affinis"
+  },
+  {
+    "name": "Lesser spotted eagle",
+    "latinName": "Clanga pomarina"
+  },
+  {
+    "name": "Lesser spotted woodpecker",
+    "latinName": "Dryobates minor"
+  },
+  {
+    "name": "Lesser white-fronted goose",
+    "latinName": "Anser erythropus"
+  },
+  {
+    "name": "Lesser whitethroat",
+    "latinName": "Curruca curruca"
+  },
+  {
+    "name": "Lesser yellowlegs",
+    "latinName": "Tringa flavipes"
+  },
+  {
+    "name": "Levant sparrowhawk"
+  },
+  {
+    "name": "Lincoln's sparrow",
+    "latinName": "Melospiza lincolnii"
+  },
+  {
+    "name": "Little auk",
+    "latinName": "Alle alle"
+  },
+  {
+    "name": "Little bittern",
+    "latinName": "Botaurus minutus"
+  },
+  {
+    "name": "Little blue heron",
+    "latinName": "Egretta caerulea"
+  },
+  {
+    "name": "Little bunting",
+    "latinName": "Emberiza pusilla"
+  },
+  {
+    "name": "Little bustard",
+    "latinName": "Tetrax tetrax"
+  },
+  {
+    "name": "Little crake",
+    "latinName": "Zapornia parva"
+  },
+  {
+    "name": "Little curlew",
+    "latinName": "Numenius minutus"
+  },
+  {
+    "name": "Little egret",
+    "latinName": "Egretta garzetta"
+  },
+  {
+    "name": "Little grebe",
+    "latinName": "Tachybaptus ruficollis"
+  },
+  {
+    "name": "Little gull",
+    "latinName": "Hydrocoloeus minutus"
+  },
+  {
+    "name": "Little owl",
+    "latinName": "Athene noctua"
+  },
+  {
+    "name": "Little ringed plover",
+    "latinName": "Charadrius dubius"
+  },
+  {
+    "name": "Little stint",
+    "latinName": "Calidris minuta"
+  },
+  {
+    "name": "Little swift",
+    "latinName": "Apus affinis"
+  },
+  {
+    "name": "Little tern",
+    "latinName": "Sternula albifrons"
+  },
+  {
+    "name": "Long-billed dowitcher",
+    "latinName": "Limnodromus scolopaceus"
+  },
+  {
+    "name": "Long-billed murrelet",
+    "latinName": "Brachyramphus perdix"
+  },
+  {
+    "name": "Long-billed pipit"
+  },
+  {
+    "name": "Long-eared owl",
+    "latinName": "Asio otus"
+  },
+  {
+    "name": "Long-legged buzzard",
+    "latinName": "Buteo rufinus"
+  },
+  {
+    "name": "Long-tailed duck",
+    "latinName": "Clangula hyemalis"
+  },
+  {
+    "name": "Long-tailed jaeger",
+    "latinName": "Stercorarius longicaudus"
+  },
+  {
+    "name": "Long-tailed shrike",
+    "latinName": "Lanius schach"
+  },
+  {
+    "name": "Long-tailed tit",
+    "latinName": "Aegithalos caudatus"
+  },
+  {
+    "name": "Long-toed stint",
+    "latinName": "Calidris subminuta"
+  },
+  {
+    "name": "MacQueen's bustard"
+  },
+  {
+    "name": "Madeira"
+  },
+  {
+    "name": "Madeira chaffinch"
+  },
+  {
+    "name": "Madeira firecrest"
+  },
+  {
+    "name": "Magnificent frigatebird",
+    "latinName": "Fregata magnificens"
+  },
+  {
+    "name": "Magnolia warbler",
+    "latinName": "Setophaga magnolia"
+  },
+  {
+    "name": "Mallard",
+    "latinName": "Anas platyrhynchos"
+  },
+  {
+    "name": "Mandarin duck",
+    "latinName": "Aix galericulata"
+  },
+  {
+    "name": "Manx shearwater",
+    "latinName": "Puffinus puffinus"
+  },
+  {
+    "name": "Marbled duck"
+  },
+  {
+    "name": "Marmora's warbler"
+  },
+  {
+    "name": "Marsh owl"
+  },
+  {
+    "name": "Marsh sandpiper",
+    "latinName": "Tringa stagnatilis"
+  },
+  {
+    "name": "Marsh tit",
+    "latinName": "Poecile palustris"
+  },
+  {
+    "name": "Marsh warbler",
+    "latinName": "Acrocephalus palustris"
+  },
+  {
+    "name": "Masked booby",
+    "latinName": "Sula dactylatra"
+  },
+  {
+    "name": "Masked shrike",
+    "latinName": "Lanius nubicus"
+  },
+  {
+    "name": "Meadow pipit",
+    "latinName": "Anthus pratensis"
+  },
+  {
+    "name": "Mediterranean flycatcher"
+  },
+  {
+    "name": "Mediterranean gull",
+    "latinName": "Ichthyaetus melanocephalus"
+  },
+  {
+    "name": "Mediterranean short-toed lark"
+  },
+  {
+    "name": "Melodious warbler",
+    "latinName": "Hippolais polyglotta"
+  },
+  {
+    "name": "Menetries's warbler"
+  },
+  {
+    "name": "Merlin",
+    "latinName": "Falco columbarius"
+  },
+  {
+    "name": "Middle spotted woodpecker",
+    "latinName": "Dendrocoptes medius"
+  },
+  {
+    "name": "Mistle thrush",
+    "latinName": "Turdus viscivorus"
+  },
+  {
+    "name": "Mitred parakeet",
+    "latinName": "Psittacara mitratus"
+  },
+  {
+    "name": "Moltoni's warbler",
+    "latinName": "Curruca subalpina"
+  },
+  {
+    "name": "Mongolian finch",
+    "latinName": "Bucanetes mongolicus"
+  },
+  {
+    "name": "Monk parakeet",
+    "latinName": "Myiopsitta monachus"
+  },
+  {
+    "name": "Montagu's harrier",
+    "latinName": "Circus pygargus"
+  },
+  {
+    "name": "Monteiro's storm petrel"
+  },
+  {
+    "name": "Mountain chiffchaff"
+  },
+  {
+    "name": "Mourning dove",
+    "latinName": "Zenaida macroura"
+  },
+  {
+    "name": "Moussier's redstart"
+  },
+  {
+    "name": "Moustached warbler",
+    "latinName": "Acrocephalus melanopogon"
+  },
+  {
+    "name": "Muscovy duck",
+    "latinName": "Cairina moschata"
+  },
+  {
+    "name": "Mute swan",
+    "latinName": "Cygnus olor"
+  },
+  {
+    "name": "Myrtle warbler"
+  },
+  {
+    "name": "Naumann's thrush",
+    "latinName": "Turdus naumanni"
+  },
+  {
+    "name": "Northern bald ibis"
+  },
+  {
+    "name": "Northern flicker",
+    "latinName": "Colaptes auratus"
+  },
+  {
+    "name": "Northern fulmar",
+    "latinName": "Fulmarus glacialis"
+  },
+  {
+    "name": "Northern gannet",
+    "latinName": "Morus bassanus"
+  },
+  {
+    "name": "Northern harrier",
+    "latinName": "Circus hudsonius"
+  },
+  {
+    "name": "Northern hawk-owl",
+    "latinName": "Surnia ulula"
+  },
+  {
+    "name": "Northern lapwing",
+    "latinName": "Vanellus vanellus"
+  },
+  {
+    "name": "Northern mockingbird",
+    "latinName": "Mimus polyglottos"
+  },
+  {
+    "name": "Northern parula",
+    "latinName": "Setophaga americana"
+  },
+  {
+    "name": "Northern pintail",
+    "latinName": "Anas acuta"
+  },
+  {
+    "name": "Northern raven",
+    "latinName": "Corvus corax"
+  },
+  {
+    "name": "Northern shoveler",
+    "latinName": "Spatula clypeata"
+  },
+  {
+    "name": "Northern shrike",
+    "latinName": "Lanius borealis"
+  },
+  {
+    "name": "Northern waterthrush",
+    "latinName": "Parkesia noveboracensis"
+  },
+  {
+    "name": "Northern wheatear",
+    "latinName": "Oenanthe oenanthe"
+  },
+  {
+    "name": "Olive-backed pipit",
+    "latinName": "Anthus hodgsoni"
+  },
+  {
+    "name": "Olive-tree warbler"
+  },
+  {
+    "name": "Orange-cheeked waxbill"
+  },
+  {
+    "name": "Oriental cuckoo",
+    "latinName": "Cuculus optatus"
+  },
+  {
+    "name": "Oriental plover",
+    "latinName": "Anarhynchus veredus"
+  },
+  {
+    "name": "Oriental pratincole",
+    "latinName": "Glareola maldivarum"
+  },
+  {
+    "name": "Oriental skylark"
+  },
+  {
+    "name": "Oriental turtle dove",
+    "latinName": "Streptopelia orientalis"
+  },
+  {
+    "name": "Ortolan bunting",
+    "latinName": "Emberiza hortulana"
+  },
+  {
+    "name": "Osprey",
+    "latinName": "Pandion haliaetus"
+  },
+  {
+    "name": "Ovenbird",
+    "latinName": "Seiurus aurocapilla"
+  },
+  {
+    "name": "Pacific golden plover",
+    "latinName": "Pluvialis fulva"
+  },
+  {
+    "name": "Pacific loon",
+    "latinName": "Gavia pacifica"
+  },
+  {
+    "name": "Pacific swift"
+  },
+  {
+    "name": "Paddyfield pipit"
+  },
+  {
+    "name": "Paddyfield warbler",
+    "latinName": "Acrocephalus agricola"
+  },
+  {
+    "name": "Pale-legged leaf warbler"
+  },
+  {
+    "name": "Pallas's fish eagle"
+  },
+  {
+    "name": "Pallas's grasshopper warbler",
+    "latinName": "Helopsaltes certhiola"
+  },
+  {
+    "name": "Pallas's gull",
+    "latinName": "Ichthyaetus ichthyaetus"
+  },
+  {
+    "name": "Pallas's leaf warbler",
+    "latinName": "Phylloscopus proregulus"
+  },
+  {
+    "name": "Pallas's reed bunting",
+    "latinName": "Emberiza pallasi"
+  },
+  {
+    "name": "Pallas's rosefinch",
+    "latinName": "Carpodacus roseus"
+  },
+  {
+    "name": "Pallas's sandgrouse",
+    "latinName": "Syrrhaptes paradoxus"
+  },
+  {
+    "name": "Pallid harrier",
+    "latinName": "Circus macrourus"
+  },
+  {
+    "name": "Pallid swift",
+    "latinName": "Apus pallidus"
+  },
+  {
+    "name": "Palm warbler",
+    "latinName": "Setophaga palmarum"
+  },
+  {
+    "name": "Parakeet auklet",
+    "latinName": "Aethia psittacula"
+  },
+  {
+    "name": "Parasitic jaeger",
+    "latinName": "Stercorarius parasiticus"
+  },
+  {
+    "name": "Parrot crossbill",
+    "latinName": "Loxia pytyopsittacus"
+  },
+  {
+    "name": "Pechora pipit",
+    "latinName": "Anthus gustavi"
+  },
+  {
+    "name": "Pectoral sandpiper",
+    "latinName": "Calidris melanotos"
+  },
+  {
+    "name": "Peregrine falcon",
+    "latinName": "Falco peregrinus"
+  },
+  {
+    "name": "Pharaoh eagle-owl"
+  },
+  {
+    "name": "Philadelphia vireo",
+    "latinName": "Vireo philadelphicus"
+  },
+  {
+    "name": "Pied avocet",
+    "latinName": "Recurvirostra avosetta"
+  },
+  {
+    "name": "Pied bush chat",
+    "latinName": "Saxicola caprata"
+  },
+  {
+    "name": "Pied kingfisher"
+  },
+  {
+    "name": "Pied wheatear",
+    "latinName": "Oenanthe pleschanka"
+  },
+  {
+    "name": "Pied-billed grebe",
+    "latinName": "Podilymbus podiceps"
+  },
+  {
+    "name": "Pin-tailed sandgrouse"
+  },
+  {
+    "name": "Pin-tailed snipe",
+    "latinName": "Gallinago stenura"
+  },
+  {
+    "name": "Pin-tailed whydah",
+    "latinName": "Vidua macroura"
+  },
+  {
+    "name": "Pine bunting",
+    "latinName": "Emberiza leucocephalos"
+  },
+  {
+    "name": "Pine grosbeak",
+    "latinName": "Pinicola enucleator"
+  },
+  {
+    "name": "Pink-footed goose",
+    "latinName": "Anser brachyrhynchus"
+  },
+  {
+    "name": "Plain leaf warbler",
+    "latinName": "Phylloscopus neglectus"
+  },
+  {
+    "name": "Plain swift"
+  },
+  {
+    "name": "Pomarine jaeger",
+    "latinName": "Stercorarius pomarinus"
+  },
+  {
+    "name": "Prairie warbler",
+    "latinName": "Setophaga discolor"
+  },
+  {
+    "name": "Prothonotary warbler",
+    "latinName": "Protonotaria citrea"
+  },
+  {
+    "name": "Purple gallinule",
+    "latinName": "Porphyrio martinicus"
+  },
+  {
+    "name": "Purple heron",
+    "latinName": "Ardea purpurea"
+  },
+  {
+    "name": "Purple martin",
+    "latinName": "Progne subis"
+  },
+  {
+    "name": "Purple sandpiper",
+    "latinName": "Calidris maritima"
+  },
+  {
+    "name": "Pygmy cormorant",
+    "latinName": "Microcarbo pygmaeus"
+  },
+  {
+    "name": "Radde's accentor"
+  },
+  {
+    "name": "Radde's warbler",
+    "latinName": "Phylloscopus schwarzi"
+  },
+  {
+    "name": "Razorbill",
+    "latinName": "Alca torda"
+  },
+  {
+    "name": "Red avadavat",
+    "latinName": "Amandava amandava"
+  },
+  {
+    "name": "Red crossbill",
+    "latinName": "Loxia curvirostra"
+  },
+  {
+    "name": "Red fox sparrow"
+  },
+  {
+    "name": "Red kite",
+    "latinName": "Milvus milvus"
+  },
+  {
+    "name": "Red knot",
+    "latinName": "Calidris canutus"
+  },
+  {
+    "name": "Red phalarope",
+    "latinName": "Phalaropus fulicarius"
+  },
+  {
+    "name": "Red-backed shrike",
+    "latinName": "Lanius collurio"
+  },
+  {
+    "name": "Red-billed chough"
+  },
+  {
+    "name": "Red-billed leiothrix",
+    "latinName": "Leiothrix lutea"
+  },
+  {
+    "name": "Red-billed tropicbird",
+    "latinName": "Phaethon aethereus"
+  },
+  {
+    "name": "Red-breasted flycatcher",
+    "latinName": "Ficedula parva"
+  },
+  {
+    "name": "Red-breasted goose",
+    "latinName": "Branta ruficollis"
+  },
+  {
+    "name": "Red-breasted merganser",
+    "latinName": "Mergus serrator"
+  },
+  {
+    "name": "Red-breasted nuthatch",
+    "latinName": "Sitta canadensis"
+  },
+  {
+    "name": "Red-crested pochard",
+    "latinName": "Netta rufina"
+  },
+  {
+    "name": "Red-eyed vireo",
+    "latinName": "Vireo olivaceus"
+  },
+  {
+    "name": "Red-flanked bluetail",
+    "latinName": "Tarsiger cyanurus"
+  },
+  {
+    "name": "Red-footed booby",
+    "latinName": "Sula sula"
+  },
+  {
+    "name": "Red-footed falcon",
+    "latinName": "Falco vespertinus"
+  },
+  {
+    "name": "Red-fronted serin"
+  },
+  {
+    "name": "Red-headed bunting"
+  },
+  {
+    "name": "Red-knobbed coot"
+  },
+  {
+    "name": "Red-legged partridge"
+  },
+  {
+    "name": "Red-masked parakeet",
+    "latinName": "Psittacara erythrogenys"
+  },
+  {
+    "name": "Red-necked grebe",
+    "latinName": "Podiceps grisegena"
+  },
+  {
+    "name": "Red-necked nightjar"
+  },
+  {
+    "name": "Red-necked phalarope",
+    "latinName": "Phalaropus lobatus"
+  },
+  {
+    "name": "Red-necked stint",
+    "latinName": "Calidris ruficollis"
+  },
+  {
+    "name": "Red-rumped swallow"
+  },
+  {
+    "name": "Red-rumped wheatear"
+  },
+  {
+    "name": "Red-tailed shrike",
+    "latinName": "Lanius phoenicuroides"
+  },
+  {
+    "name": "Red-throated loon",
+    "latinName": "Gavia stellata"
+  },
+  {
+    "name": "Red-throated pipit",
+    "latinName": "Anthus cervinus"
+  },
+  {
+    "name": "Red-throated thrush"
+  },
+  {
+    "name": "Red-whiskered bulbul"
+  },
+  {
+    "name": "Red-winged blackbird",
+    "latinName": "Agelaius phoeniceus"
+  },
+  {
+    "name": "Redhead",
+    "latinName": "Aythya americana"
+  },
+  {
+    "name": "Redwing",
+    "latinName": "Turdus iliacus"
+  },
+  {
+    "name": "Reeves's pheasant"
+  },
+  {
+    "name": "Richard's pipit",
+    "latinName": "Anthus richardi"
+  },
+  {
+    "name": "Ring ouzel",
+    "latinName": "Turdus torquatus"
+  },
+  {
+    "name": "Ring-billed gull",
+    "latinName": "Larus delawarensis"
+  },
+  {
+    "name": "Ring-necked duck",
+    "latinName": "Aythya collaris"
+  },
+  {
+    "name": "River warbler",
+    "latinName": "Locustella fluviatilis"
+  },
+  {
+    "name": "Rock bunting",
+    "latinName": "Emberiza cia"
+  },
+  {
+    "name": "Rock dove",
+    "latinName": "Columba livia"
+  },
+  {
+    "name": "Rock partridge"
+  },
+  {
+    "name": "Rock ptarmigan",
+    "latinName": "Lagopus muta"
+  },
+  {
+    "name": "Rock sparrow"
+  },
+  {
+    "name": "Rook",
+    "latinName": "Corvus frugilegus"
+  },
+  {
+    "name": "Rose-breasted grosbeak",
+    "latinName": "Pheucticus ludovicianus"
+  },
+  {
+    "name": "Rose-ringed parakeet",
+    "latinName": "Psittacula krameri"
+  },
+  {
+    "name": "Roseate tern",
+    "latinName": "Sterna dougallii"
+  },
+  {
+    "name": "Ross's goose",
+    "latinName": "Anser rossii"
+  },
+  {
+    "name": "Ross's gull",
+    "latinName": "Rhodostethia rosea"
+  },
+  {
+    "name": "Rosy starling",
+    "latinName": "Pastor roseus"
+  },
+  {
+    "name": "Rough-legged buzzard",
+    "latinName": "Buteo lagopus"
+  },
+  {
+    "name": "Royal tern",
+    "latinName": "Thalasseus maximus"
+  },
+  {
+    "name": "Ruby-crowned kinglet",
+    "latinName": "Corthylio calendula"
+  },
+  {
+    "name": "Ruddy duck",
+    "latinName": "Oxyura jamaicensis"
+  },
+  {
+    "name": "Ruddy shelduck",
+    "latinName": "Tadorna ferruginea"
+  },
+  {
+    "name": "Ruddy turnstone",
+    "latinName": "Arenaria interpres"
+  },
+  {
+    "name": "Ruff",
+    "latinName": "Calidris pugnax"
+  },
+  {
+    "name": "Rufous-tailed robin",
+    "latinName": "Larvivora sibilans"
+  },
+  {
+    "name": "Rufous-tailed scrub robin"
+  },
+  {
+    "name": "Rüppell's vulture"
+  },
+  {
+    "name": "Rüppell's warbler"
+  },
+  {
+    "name": "Rustic bunting",
+    "latinName": "Emberiza rustica"
+  },
+  {
+    "name": "Sabine's gull",
+    "latinName": "Xema sabini"
+  },
+  {
+    "name": "Saker falcon"
+  },
+  {
+    "name": "Sand martin",
+    "latinName": "Riparia riparia"
+  },
+  {
+    "name": "Sanderling",
+    "latinName": "Calidris alba"
+  },
+  {
+    "name": "Sandhill crane",
+    "latinName": "Antigone canadensis"
+  },
+  {
+    "name": "Sandwich tern",
+    "latinName": "Sterna sandvicensis"
+  },
+  {
+    "name": "Sardinian warbler",
+    "latinName": "Curruca melanocephala"
+  },
+  {
+    "name": "Savannah sparrow",
+    "latinName": "Passerculus sandwichensis"
+  },
+  {
+    "name": "Savi's warbler",
+    "latinName": "Locustella luscinioides"
+  },
+  {
+    "name": "Scaly thrush"
+  },
+  {
+    "name": "Scaly-breasted munia",
+    "latinName": "Lonchura punctulata"
+  },
+  {
+    "name": "Scarlet tanager",
+    "latinName": "Piranga olivacea"
+  },
+  {
+    "name": "Scopoli's shearwater",
+    "latinName": "Calonectris diomedea"
+  },
+  {
+    "name": "Scottish crossbill"
+  },
+  {
+    "name": "Sedge warbler",
+    "latinName": "Acrocephalus schoenobaenus"
+  },
+  {
+    "name": "Semicollared flycatcher"
+  },
+  {
+    "name": "Semipalmated plover",
+    "latinName": "Charadrius semipalmatus"
+  },
+  {
+    "name": "Semipalmated sandpiper",
+    "latinName": "Calidris pusilla"
+  },
+  {
+    "name": "Sharp-tailed sandpiper",
+    "latinName": "Calidris acuminata"
+  },
+  {
+    "name": "Short-billed dowitcher",
+    "latinName": "Limnodromus griseus"
+  },
+  {
+    "name": "Short-billed gull",
+    "latinName": "Larus brachyrhynchus"
+  },
+  {
+    "name": "Short-eared owl",
+    "latinName": "Asio flammeus"
+  },
+  {
+    "name": "Short-tailed shearwater",
+    "latinName": "Ardenna tenuirostris"
+  },
+  {
+    "name": "Short-toed snake eagle",
+    "latinName": "Circaetus gallicus"
+  },
+  {
+    "name": "Short-toed treecreeper",
+    "latinName": "Certhia brachydactyla"
+  },
+  {
+    "name": "Siberian accentor",
+    "latinName": "Prunella montanella"
+  },
+  {
+    "name": "Siberian blue robin",
+    "latinName": "Larvivora cyane"
+  },
+  {
+    "name": "Siberian crane"
+  },
+  {
+    "name": "Siberian jay",
+    "latinName": "Perisoreus infaustus"
+  },
+  {
+    "name": "Siberian long-tailed rosefinch"
+  },
+  {
+    "name": "Siberian rubythroat",
+    "latinName": "Calliope calliope"
+  },
+  {
+    "name": "Siberian stonechat",
+    "latinName": "Saxicola maurus"
+  },
+  {
+    "name": "Siberian thrush",
+    "latinName": "Geokichla sibirica"
+  },
+  {
+    "name": "Slaty-backed gull",
+    "latinName": "Larus schistisagus"
+  },
+  {
+    "name": "Slender-billed curlew",
+    "latinName": "Numenius tenuirostris"
+  },
+  {
+    "name": "Slender-billed gull",
+    "latinName": "Chroicocephalus genei"
+  },
+  {
+    "name": "Smew",
+    "latinName": "Mergellus albellus"
+  },
+  {
+    "name": "Snow bunting",
+    "latinName": "Plectrophenax nivalis"
+  },
+  {
+    "name": "Snow goose",
+    "latinName": "Anser caerulescens"
+  },
+  {
+    "name": "Snowy egret",
+    "latinName": "Egretta thula"
+  },
+  {
+    "name": "Snowy owl",
+    "latinName": "Bubo scandiacus"
+  },
+  {
+    "name": "Sociable lapwing",
+    "latinName": "Vanellus gregarius"
+  },
+  {
+    "name": "Soft-plumaged petrel"
+  },
+  {
+    "name": "Solitary sandpiper",
+    "latinName": "Tringa solitaria"
+  },
+  {
+    "name": "Sombre tit"
+  },
+  {
+    "name": "Song sparrow",
+    "latinName": "Melospiza melodia"
+  },
+  {
+    "name": "Song thrush",
+    "latinName": "Turdus philomelos"
+  },
+  {
+    "name": "Sooty falcon"
+  },
+  {
+    "name": "Sooty shearwater",
+    "latinName": "Ardenna grisea"
+  },
+  {
+    "name": "Sooty tern",
+    "latinName": "Onychoprion fuscatus"
+  },
+  {
+    "name": "Sora",
+    "latinName": "Porzana carolina"
+  },
+  {
+    "name": "South polar skua",
+    "latinName": "Stercorarius maccormicki"
+  },
+  {
+    "name": "Southern giant petrel"
+  },
+  {
+    "name": "Spanish imperial eagle"
+  },
+  {
+    "name": "Spanish sparrow",
+    "latinName": "Passer hispaniolensis"
+  },
+  {
+    "name": "Spectacled eider",
+    "latinName": "Somateria fischeri"
+  },
+  {
+    "name": "Spectacled warbler"
+  },
+  {
+    "name": "Spotless starling"
+  },
+  {
+    "name": "Spotted crake",
+    "latinName": "Porzana porzana"
+  },
+  {
+    "name": "Spotted flycatcher",
+    "latinName": "Muscicapa striata"
+  },
+  {
+    "name": "Spotted nutcracker"
+  },
+  {
+    "name": "Spotted redshank",
+    "latinName": "Tringa erythropus"
+  },
+  {
+    "name": "Spotted sandgrouse"
+  },
+  {
+    "name": "Spotted sandpiper",
+    "latinName": "Actitis macularius"
+  },
+  {
+    "name": "Spur-winged lapwing"
+  },
+  {
+    "name": "Squacco heron",
+    "latinName": "Ardeola ralloides"
+  },
+  {
+    "name": "Stejneger's scoter",
+    "latinName": "Melanitta stejnegeri"
+  },
+  {
+    "name": "Steller's eider",
+    "latinName": "Polysticta stelleri"
+  },
+  {
+    "name": "Steppe eagle",
+    "latinName": "Aquila nipalensis"
+  },
+  {
+    "name": "Stilt sandpiper",
+    "latinName": "Calidris himantopus"
+  },
+  {
+    "name": "Stock dove",
+    "latinName": "Columba oenas"
+  },
+  {
+    "name": "Striated heron",
+    "latinName": "Butorides striata"
+  },
+  {
+    "name": "Striped crake"
+  },
+  {
+    "name": "Sulphur-bellied warbler"
+  },
+  {
+    "name": "Summer tanager",
+    "latinName": "Piranga rubra"
+  },
+  {
+    "name": "Surf scoter",
+    "latinName": "Melanitta perspicillata"
+  },
+  {
+    "name": "Swainson's thrush",
+    "latinName": "Catharus ustulatus"
+  },
+  {
+    "name": "Swallow-tailed kite",
+    "latinName": "Elanoides forficatus"
+  },
+  {
+    "name": "Swinhoe's snipe",
+    "latinName": "Gallinago megala"
+  },
+  {
+    "name": "Swinhoe's storm petrel"
+  },
+  {
+    "name": "Sykes's warbler",
+    "latinName": "Iduna rama"
+  },
+  {
+    "name": "Syrian woodpecker"
+  },
+  {
+    "name": "Taiga bean goose",
+    "latinName": "Anser fabalis"
+  },
+  {
+    "name": "Taiga flycatcher",
+    "latinName": "Ficedula albicilla"
+  },
+  {
+    "name": "Tawny owl",
+    "latinName": "Strix aluco"
+  },
+  {
+    "name": "Tawny pipit",
+    "latinName": "Anthus campestris"
+  },
+  {
+    "name": "Temminck's stint",
+    "latinName": "Calidris temminckii"
+  },
+  {
+    "name": "Tenerife blue chaffinch"
+  },
+  {
+    "name": "Tennessee warbler",
+    "latinName": "Leiothlypis peregrina"
+  },
+  {
+    "name": "Terek sandpiper",
+    "latinName": "Xenus cinereus"
+  },
+  {
+    "name": "Thekla's lark"
+  },
+  {
+    "name": "Thick-billed murre",
+    "latinName": "Uria lomvia"
+  },
+  {
+    "name": "Thick-billed warbler",
+    "latinName": "Arundinax aedon"
+  },
+  {
+    "name": "Thrush nightingale",
+    "latinName": "Luscinia luscinia"
+  },
+  {
+    "name": "Tickell's thrush"
+  },
+  {
+    "name": "Tree pipit",
+    "latinName": "Anthus trivialis"
+  },
+  {
+    "name": "Tree swallow",
+    "latinName": "Tachycineta bicolor"
+  },
+  {
+    "name": "Tricolored heron",
+    "latinName": "Egretta tricolor"
+  },
+  {
+    "name": "Trindade petrel",
+    "latinName": "Pterodroma arminjoniana"
+  },
+  {
+    "name": "Tristan albatross"
+  },
+  {
+    "name": "Tristram's warbler"
+  },
+  {
+    "name": "Trocaz pigeon"
+  },
+  {
+    "name": "Trumpeter finch",
+    "latinName": "Bucanetes githagineus"
+  },
+  {
+    "name": "Tufted duck",
+    "latinName": "Aythya fuligula"
+  },
+  {
+    "name": "Tufted puffin",
+    "latinName": "Fratercula cirrhata"
+  },
+  {
+    "name": "Tundra bean goose",
+    "latinName": "Anser serrirostris"
+  },
+  {
+    "name": "Tundra swan",
+    "latinName": "Cygnus columbianus"
+  },
+  {
+    "name": "Turkestan short-toed lark",
+    "latinName": "Alaudala heinei"
+  },
+  {
+    "name": "Twite",
+    "latinName": "Linaria flavirostris"
+  },
+  {
+    "name": "Two-barred crossbill",
+    "latinName": "Loxia leucoptera"
+  },
+  {
+    "name": "Two-barred warbler",
+    "latinName": "Phylloscopus plumbeitarsus"
+  },
+  {
+    "name": "Upcher's warbler"
+  },
+  {
+    "name": "Upland sandpiper",
+    "latinName": "Bartramia longicauda"
+  },
+  {
+    "name": "Ural owl",
+    "latinName": "Strix uralensis"
+  },
+  {
+    "name": "Varied thrush",
+    "latinName": "Ixoreus naevius"
+  },
+  {
+    "name": "Veery",
+    "latinName": "Catharus fuscescens"
+  },
+  {
+    "name": "Vega gull",
+    "latinName": "Larus vegae"
+  },
+  {
+    "name": "Velvet scoter",
+    "latinName": "Melanitta fusca"
+  },
+  {
+    "name": "Vinous-throated parrotbill"
+  },
+  {
+    "name": "Von Schrenck's bittern"
+  },
+  {
+    "name": "Wallcreeper"
+  },
+  {
+    "name": "Wandering albatross",
+    "latinName": "Diomedea exulans"
+  },
+  {
+    "name": "Water pipit",
+    "latinName": "Anthus spinoletta"
+  },
+  {
+    "name": "Water rail",
+    "latinName": "Rallus aquaticus"
+  },
+  {
+    "name": "West African crested tern"
+  },
+  {
+    "name": "Western barn owl",
+    "latinName": "Tyto alba"
+  },
+  {
+    "name": "Western black-eared wheatear",
+    "latinName": "Oenanthe hispanica"
+  },
+  {
+    "name": "Western Bonelli's warbler",
+    "latinName": "Phylloscopus bonelli"
+  },
+  {
+    "name": "Western capercaillie",
+    "latinName": "Tetrao urogallus"
+  },
+  {
+    "name": "Western cattle egret",
+    "latinName": "Ardea ibis"
+  },
+  {
+    "name": "Western jackdaw",
+    "latinName": "Coloeus monedula"
+  },
+  {
+    "name": "Western kingbird",
+    "latinName": "Tyrannus verticalis"
+  },
+  {
+    "name": "Western marsh harrier",
+    "latinName": "Circus aeruginosus"
+  },
+  {
+    "name": "Western olivaceous warbler",
+    "latinName": "Iduna opaca"
+  },
+  {
+    "name": "Western Orphean warbler"
+  },
+  {
+    "name": "Western reef heron"
+  },
+  {
+    "name": "Western rock nuthatch"
+  },
+  {
+    "name": "Western sandpiper",
+    "latinName": "Calidris mauri"
+  },
+  {
+    "name": "Western subalpine warbler",
+    "latinName": "Curruca iberiae"
+  },
+  {
+    "name": "Western swamphen"
+  },
+  {
+    "name": "Western yellow wagtail",
+    "latinName": "Motacilla flava"
+  },
+  {
+    "name": "Whinchat",
+    "latinName": "Saxicola rubetra"
+  },
+  {
+    "name": "Whiskered tern",
+    "latinName": "Chlidonias hybrida"
+  },
+  {
+    "name": "White stork",
+    "latinName": "Ciconia ciconia"
+  },
+  {
+    "name": "White wagtail",
+    "latinName": "Motacilla alba"
+  },
+  {
+    "name": "White-backed vulture"
+  },
+  {
+    "name": "White-backed woodpecker",
+    "latinName": "Dendrocopos leucotos"
+  },
+  {
+    "name": "White-chinned petrel",
+    "latinName": "Procellaria aequinoctialis"
+  },
+  {
+    "name": "White-crowned sparrow",
+    "latinName": "Zonotrichia leucophrys"
+  },
+  {
+    "name": "White-crowned wheatear"
+  },
+  {
+    "name": "White-eared bulbul"
+  },
+  {
+    "name": "White-eyed gull"
+  },
+  {
+    "name": "White-eyed vireo",
+    "latinName": "Vireo griseus"
+  },
+  {
+    "name": "White-faced storm petrel"
+  },
+  {
+    "name": "White-headed duck"
+  },
+  {
+    "name": "White-rumped sandpiper",
+    "latinName": "Calidris fuscicollis"
+  },
+  {
+    "name": "White-rumped swift",
+    "latinName": "Apus caffer"
+  },
+  {
+    "name": "White-tailed eagle",
+    "latinName": "Haliaeetus albicilla"
+  },
+  {
+    "name": "White-tailed lapwing",
+    "latinName": "Vanellus leucurus"
+  },
+  {
+    "name": "White-tailed tropicbird",
+    "latinName": "Phaethon lepturus"
+  },
+  {
+    "name": "White-throated dipper",
+    "latinName": "Cinclus cinclus"
+  },
+  {
+    "name": "White-throated kingfisher"
+  },
+  {
+    "name": "White-throated needletail",
+    "latinName": "Hirundapus caudacutus"
+  },
+  {
+    "name": "White-throated robin",
+    "latinName": "Irania gutturalis"
+  },
+  {
+    "name": "White-throated sparrow",
+    "latinName": "Zonotrichia albicollis"
+  },
+  {
+    "name": "White-winged lark",
+    "latinName": "Alauda leucoptera"
+  },
+  {
+    "name": "White-winged scoter",
+    "latinName": "Melanitta deglandi"
+  },
+  {
+    "name": "White-winged snowfinch"
+  },
+  {
+    "name": "White-winged tern",
+    "latinName": "Chlidonias leucopterus"
+  },
+  {
+    "name": "White's thrush",
+    "latinName": "Zoothera aurea"
+  },
+  {
+    "name": "Whooper swan",
+    "latinName": "Cygnus cygnus"
+  },
+  {
+    "name": "Willet",
+    "latinName": "Tringa semipalmata"
+  },
+  {
+    "name": "Willow ptarmigan",
+    "latinName": "Lagopus lagopus"
+  },
+  {
+    "name": "Willow tit",
+    "latinName": "Poecile montanus"
+  },
+  {
+    "name": "Willow warbler",
+    "latinName": "Phylloscopus trochilus"
+  },
+  {
+    "name": "Wilson's phalarope",
+    "latinName": "Phalaropus tricolor"
+  },
+  {
+    "name": "Wilson's snipe",
+    "latinName": "Gallinago delicata"
+  },
+  {
+    "name": "Wilson's storm petrel"
+  },
+  {
+    "name": "Wilson's warbler",
+    "latinName": "Cardellina pusilla"
+  },
+  {
+    "name": "Wood duck",
+    "latinName": "Aix sponsa"
+  },
+  {
+    "name": "Wood sandpiper",
+    "latinName": "Tringa glareola"
+  },
+  {
+    "name": "Wood thrush",
+    "latinName": "Hylocichla mustelina"
+  },
+  {
+    "name": "Wood warbler",
+    "latinName": "Phylloscopus sibilatrix"
+  },
+  {
+    "name": "Woodchat shrike",
+    "latinName": "Lanius senator"
+  },
+  {
+    "name": "Woodlark",
+    "latinName": "Lullula arborea"
+  },
+  {
+    "name": "Yelkouan shearwater"
+  },
+  {
+    "name": "Yellow-bellied flycatcher",
+    "latinName": "Empidonax flaviventris"
+  },
+  {
+    "name": "Yellow-bellied sapsucker",
+    "latinName": "Sphyrapicus varius"
+  },
+  {
+    "name": "Yellow-billed cuckoo",
+    "latinName": "Coccyzus americanus"
+  },
+  {
+    "name": "Yellow-billed kite"
+  },
+  {
+    "name": "Yellow-billed loon",
+    "latinName": "Gavia adamsii"
+  },
+  {
+    "name": "Yellow-billed stork"
+  },
+  {
+    "name": "Yellow-breasted bunting",
+    "latinName": "Emberiza aureola"
+  },
+  {
+    "name": "Yellow-breasted chat",
+    "latinName": "Icteria virens"
+  },
+  {
+    "name": "Yellow-browed bunting",
+    "latinName": "Emberiza chrysophrys"
+  },
+  {
+    "name": "Yellow-browed warbler",
+    "latinName": "Phylloscopus inornatus"
+  },
+  {
+    "name": "Yellow-crowned bishop",
+    "latinName": "Euplectes afer"
+  },
+  {
+    "name": "Yellow-crowned night heron",
+    "latinName": "Nyctanassa violacea"
+  },
+  {
+    "name": "Yellow-headed blackbird",
+    "latinName": "Xanthocephalus xanthocephalus"
+  },
+  {
+    "name": "Yellow-legged gull",
+    "latinName": "Larus cachinnans"
+  },
+  {
+    "name": "Yellow-throated vireo",
+    "latinName": "Vireo flavifrons"
+  },
+  {
+    "name": "Yellow-throated warbler",
+    "latinName": "Setophaga dominica"
+  },
+  {
+    "name": "Yellowhammer",
+    "latinName": "Emberiza citrinella"
+  },
+  {
+    "name": "Zino's petrel",
+    "latinName": "Pterodroma madeira"
+  },
+  {
+    "name": "Zitting cisticola",
+    "latinName": "Cisticola juncidis"
+  }
 ]
