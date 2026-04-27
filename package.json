@@ -11,6 +11,9 @@
     "test:unit": "vitest --environment jsdom",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "start": "node index.js",
+    "birds:generate": "node scripts/generate-bird-species.cjs",
+    "birds:migrate:dry-run": "node scripts/migrate-bird-latin-names.cjs",
+    "birds:migrate:apply": "node scripts/migrate-bird-latin-names.cjs --apply",
     "keys:vapid": "web-push generate-vapid-keys"
   },
   "dependencies": {
