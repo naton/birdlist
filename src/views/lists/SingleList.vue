@@ -9,7 +9,6 @@ import {
   subscribeToListNotifications,
   unsubscribeFromListNotifications,
   isListNotificationsEnabled,
-  setListVisibility,
 } from "@/helpers";
 import { db } from "@/db";
 import { useSettingsStore } from '@/stores/settings.js'
@@ -42,7 +41,7 @@ const {
   canWriteToList,
   joinPublicList,
   leavePublicList,
-  updateList,
+  setListPublicVisibility,
   deleteList,
 } = listsStore;
 const { allLists, currentList, checkListEditMode } = storeToRefs(listsStore);
@@ -122,20 +121,13 @@ async function toggleCurrentListVisibility() {
   isUpdatingVisibility.value = true;
   try {
     const makePublic = !isPublicCurrentList.value;
-    const result = await setListVisibility(currentList.value.id, makePublic);
+    const result = await setListPublicVisibility(currentList.value.id, makePublic);
 
     if (!result?.success || !result?.data?.targetRealmId) {
       addMessage(result?.message || t("List_Visibility_Update_Failed"));
       return;
     }
 
-    await updateList({
-      id: currentList.value.id,
-      realmId: result.data.targetRealmId,
-      updated: new Date(),
-    });
-
-    currentList.value.realmId = result.data.targetRealmId;
     addMessage(makePublic ? t("List_Is_Now_Open") : t("List_Is_Now_Private"));
   } finally {
     isUpdatingVisibility.value = false;

@@ -4,7 +4,7 @@ import { defineStore, storeToRefs } from "pinia";
 import { db } from "../db";
 import { liveQuery } from "dexie";
 import { getTiedRealmId } from "dexie-cloud-addon";
-import { deleteListRemotely } from "../helpers";
+import { deleteListRemotely, setListVisibility } from "../helpers";
 import { useSettingsStore } from "./settings";
 import { useMessagesStore } from "./messages";
 
@@ -287,6 +287,59 @@ export const useListsStore = defineStore("list", () => {
     }
   }
 
+  async function pushPendingCloudChanges() {
+    if (typeof db.cloud?.sync !== "function") {
+      return;
+    }
+
+    await db.cloud.sync({
+      wait: true,
+      purpose: "push",
+    });
+  }
+
+  async function setListPublicVisibility(listId, makePublic) {
+    const normalizedListId = String(listId ?? "").trim();
+    if (!normalizedListId) {
+      return {
+        success: false,
+        message: t("List_Visibility_Update_Failed"),
+      };
+    }
+
+    try {
+      await pushPendingCloudChanges();
+    } catch (error) {
+      console.error("Failed to sync list before changing visibility.", error);
+      return {
+        success: false,
+        message: t("List_Visibility_Update_Failed"),
+      };
+    }
+
+    const result = await setListVisibility(normalizedListId, makePublic);
+    const targetRealmId = result?.data?.targetRealmId;
+    if (!result?.success || !targetRealmId) {
+      return result;
+    }
+
+    await db.transaction("rw", [db.lists, db.observations, db.comments], async () => {
+      await db.lists.update(normalizedListId, {
+        realmId: targetRealmId,
+        updated: new Date(),
+      });
+      await db.observations.where({ listId: normalizedListId }).modify({ realmId: targetRealmId });
+      await db.comments.where({ listId: normalizedListId }).modify({ realmId: targetRealmId });
+    });
+
+    if (currentList.value?.id === normalizedListId) {
+      currentList.value.realmId = targetRealmId;
+      currentList.value.updated = new Date();
+    }
+
+    return result;
+  }
+
   async function convertToChecklist(list) {
     let newList = { ...list };
     delete newList.id;
@@ -416,6 +469,7 @@ export const useListsStore = defineStore("list", () => {
     getListMembers,
     createList,
     updateList,
+    setListPublicVisibility,
     convertToChecklist,
     deleteList,
     shareBirdList,

@@ -8,13 +8,12 @@ import ListsIcon from "./icons/ListsIcon.vue";
 import DeleteIcon from "./icons/DeleteIcon.vue";
 import ListFormFields from "./ListFormFields.vue";
 import { createEditableListDraft, normalizeListDraftForSave, validateListDraft } from "@/composables/useListDraft";
-import { setListVisibility } from "@/helpers";
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
 
 const listsStore = useListsStore();
-const { updateList, deleteList, isOwnedByCurrentUser } = listsStore;
+const { updateList, deleteList, isOwnedByCurrentUser, setListPublicVisibility } = listsStore;
 const messagesStore = useMessagesStore();
 const { addMessage } = messagesStore;
 
@@ -69,18 +68,12 @@ async function toggleListVisibility() {
   isUpdatingVisibility.value = true;
   try {
     const makePublic = !isPublicList.value;
-    const result = await setListVisibility(listToEdit.value.id, makePublic);
+    const result = await setListPublicVisibility(listToEdit.value.id, makePublic);
 
     if (!result?.success || !result?.data?.targetRealmId) {
       addMessage(result?.message || t("List_Visibility_Update_Failed"));
       return;
     }
-
-    await updateList({
-      id: listToEdit.value.id,
-      realmId: result.data.targetRealmId,
-      updated: new Date(),
-    });
 
     listToEdit.value.realmId = result.data.targetRealmId;
     if (listDraft.value) {

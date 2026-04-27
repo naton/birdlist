@@ -38,7 +38,7 @@ function createMockContext() {
   }
 
   const db = {
-    cloud: { login: vi.fn() },
+    cloud: { login: vi.fn(), sync: vi.fn().mockResolvedValue(undefined) },
     async transaction(_mode, _tables, fn) {
       return await fn();
     },
@@ -135,6 +135,7 @@ function createMockContext() {
     route: { params: { id: "" } },
     pushSpy: vi.fn(),
     deleteListRemotelySpy: vi.fn(),
+    setListVisibilitySpy: vi.fn(),
     addMessageSpy: vi.fn(),
     currentUserRef: ref({
       userId: "user-1",
@@ -182,6 +183,7 @@ async function loadStoreWithMocks(ctx) {
   }));
   vi.doMock("../helpers", () => ({
     deleteListRemotely: (...args) => ctx.deleteListRemotelySpy(...args),
+    setListVisibility: (...args) => ctx.setListVisibilitySpy(...args),
   }));
   vi.doMock("../db", () => ({ db: ctx.db }));
   vi.doMock("./messages", async () => {
@@ -268,6 +270,55 @@ describe("lists store", () => {
     await expect(store.leavePublicList("public-1")).resolves.toBe(true);
     expect(store.joinedListIds).toEqual([]);
     expect(store.canWriteToList(ctx.state.lists[1])).toBe(false);
+  });
+
+  it("pushes a newly created list before changing visibility remotely", async () => {
+    const ctx = createMockContext();
+    ctx.state.lists = [
+      {
+        id: "new-1",
+        title: "New",
+        owner: "user-1",
+        updated: new Date("2026-01-03"),
+      },
+    ];
+    ctx.state.observations = [{ id: "obs-1", listId: "new-1", name: "Crow" }];
+    ctx.state.comments = [{ id: "com-1", listId: "new-1", comment: "x" }];
+    ctx.setListVisibilitySpy.mockResolvedValue({
+      success: true,
+      data: { targetRealmId: "rlm-public" },
+    });
+
+    const useListsStore = await loadStoreWithMocks(ctx);
+    const store = useListsStore();
+    await flushLiveQuery();
+
+    await expect(store.setListPublicVisibility("new-1", true)).resolves.toMatchObject({
+      success: true,
+    });
+
+    expect(ctx.db.cloud.sync).toHaveBeenCalledWith({ wait: true, purpose: "push" });
+    expect(ctx.setListVisibilitySpy).toHaveBeenCalledWith("new-1", true);
+    expect(ctx.state.lists[0].realmId).toBe("rlm-public");
+    expect(ctx.state.observations[0].realmId).toBe("rlm-public");
+    expect(ctx.state.comments[0].realmId).toBe("rlm-public");
+  });
+
+  it("does not call visibility API when pre-sync fails", async () => {
+    const ctx = createMockContext();
+    seedLists(ctx);
+    ctx.db.cloud.sync.mockRejectedValue(new Error("offline"));
+
+    const useListsStore = await loadStoreWithMocks(ctx);
+    const store = useListsStore();
+    await flushLiveQuery();
+
+    await expect(store.setListPublicVisibility("private-1", true)).resolves.toMatchObject({
+      success: false,
+    });
+
+    expect(ctx.setListVisibilitySpy).not.toHaveBeenCalled();
+    expect(ctx.state.lists[0].realmId).toBe("owner-1");
   });
 
   it("deletes a public list through remote + local cleanup", async () => {
