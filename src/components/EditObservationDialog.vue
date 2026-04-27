@@ -1,7 +1,7 @@
 <script setup>
 import { ref, defineAsyncComponent, computed, watch } from "vue";
 import { storeToRefs } from 'pinia'
-import { formatDateAndTime, inputDateTime, toPublicUserLabel } from "@/helpers";
+import { formatDateAndTime, inputDateTime, toSafeUserLabel } from "@/helpers";
 import { getBirdDisplayName, getBirdLatinName, getBirdStorageName } from "@/birdNames.js";
 import AppDialog from "./AppDialog.vue";
 import vue3SimpleTypeahead from "vue3-simple-typeahead";
@@ -19,6 +19,7 @@ import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from '../stores/lists.js'
 import { useObservationsStore } from '../stores/observations.js'
 import { useBirdsStore } from "@/stores/birds.js";
+import { useFriendsStore } from "@/stores/friends.js";
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
@@ -32,6 +33,8 @@ const { saveObservation } = observationsStore
 const birdsStore = useBirdsStore();
 const { loadAllBirds } = birdsStore;
 const { birds } = storeToRefs(birdsStore);
+const friendsStore = useFriendsStore();
+const { getFriendlyName } = friendsStore;
 
 const emit = defineEmits(["delete"]);
 
@@ -68,7 +71,17 @@ function canEdit(owner) {
 }
 
 function getOwnerLabel(owner) {
-  return toPublicUserLabel(owner);
+  const aliases = [
+    currentUser.value?.userId,
+    currentUser.value?.email,
+    currentUser.value?.name,
+  ].filter(Boolean);
+
+  if (aliases.includes(owner)) {
+    return t("Me");
+  }
+
+  return toSafeUserLabel(owner, getFriendlyName(owner));
 }
 
 function birdName(observation) {
