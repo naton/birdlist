@@ -75,7 +75,8 @@ function closeInternal() {
   }
 }
 
-function handleCloseRequest() {
+function handleCloseRequest(event) {
+  event?.preventDefault();
   // Update the model value when the dialog requests to be closed
   // This handles both the modern 'closerequest' event and the legacy 'cancel' event
   // (happens on Escape key or backdrop click when closedby="any")

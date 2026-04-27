@@ -31,4 +31,22 @@ describe("AppDialog class passthrough", () => {
     expect(dialog.exists()).toBe(true);
     expect(dialog.classes()).toContain("dialog--create-list-anchored");
   });
+
+  it("prevents native cancel so Vue leave transition can run", async () => {
+    const AppDialog = (await import("./AppDialog.vue")).default;
+    const wrapper = mount(AppDialog, {
+      props: {
+        modelValue: true,
+      },
+      slots: {
+        default: "<div>hello</div>",
+      },
+    });
+
+    const event = new Event("cancel", { cancelable: true });
+    wrapper.find("dialog").element.dispatchEvent(event);
+
+    expect(event.defaultPrevented).toBe(true);
+    expect(wrapper.emitted("update:modelValue")?.[0]).toEqual([false]);
+  });
 });
