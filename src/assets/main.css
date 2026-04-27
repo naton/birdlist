@@ -619,10 +619,14 @@ button:has(svg) {
 
 /* ensure leaving items are taken out of layout flow so that moving
    animations can be calculated correctly. */
-.list-leave-active {
+.list:has(.list-leave-active) {
+  position: relative;
+}
+
+.list .list-leave-active {
   position: absolute;
   width: 100%;
-  margin-right: 6px;
+  box-sizing: border-box;
 }
 
 .list .list-leave-active {

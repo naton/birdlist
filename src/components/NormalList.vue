@@ -80,7 +80,7 @@ const users = computed(() => {
 });
 
 const observationsByUser = computed(() => {
-  let obses = props.observations;
+  let obses = [...props.observations];
   if (selectedUser.value === null) {
     return obses.sort((a, b) => b.date - a.date);
   } else {
@@ -130,6 +130,15 @@ function resetForm() {
 function noOfComments() {
   return props.comments ? Object.keys(props.comments).length : "0"
 }
+
+function getObservationKey(obs) {
+  return obs.id || `${obs.owner || ""}:${obs.listId || ""}:${obs.date?.getTime?.() || obs.date}:${getBirdKey(obs)}`;
+}
+
+function getSpeciesGroupKey(obsGroup) {
+  return getBirdKey(obsGroup?.[0]);
+}
+
 </script>
 
 <template>
@@ -188,7 +197,7 @@ function noOfComments() {
         <item-component v-for="obs in observationsByUser"
           mode="observation"
           :obs="obs"
-          :key="obs.date"
+          :key="getObservationKey(obs)"
           :user="currentUser.name"
           v-model="selectedObservation"
           @edit="emitEdit"></item-component>
@@ -200,7 +209,7 @@ function noOfComments() {
         <item-component v-for="obs in speciesByUser"
           mode="species"
           :obs="obs"
-          :key="obs[0].name"
+          :key="getSpeciesGroupKey(obs)"
           :user="currentUser.name"
           v-model="selectedObservation"
           @edit="emitEdit"></item-component>
