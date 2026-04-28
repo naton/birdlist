@@ -3,9 +3,48 @@ import { defineStore } from "pinia";
 import { useObservable } from "@vueuse/rxjs";
 import { db } from "../db";
 
+export const DEFAULT_LANGUAGE = "en";
+export const SUPPORTED_LANGUAGES = ["en", "sv", "de"];
+export const DEFAULT_REGION = "en-GB";
+export const SUPPORTED_REGIONS = ["en-US", "en-GB", "sv-SE"];
+
+function getNavigatorLanguage() {
+  return globalThis.navigator?.language || DEFAULT_LANGUAGE;
+}
+
+export function normalizeLanguage(value) {
+  const language = String(value || "")
+    .split("-")[0]
+    .toLowerCase();
+
+  return SUPPORTED_LANGUAGES.includes(language) ? language : DEFAULT_LANGUAGE;
+}
+
+export function normalizeRegion(value) {
+  const regionCode = String(value || "").trim();
+
+  if (SUPPORTED_REGIONS.includes(regionCode)) {
+    return regionCode;
+  }
+
+  const language = regionCode.split("-")[0].toLowerCase();
+  const country = regionCode.split("-")[1]?.toUpperCase();
+
+  if (language === "sv") {
+    return "sv-SE";
+  }
+
+  if (language === "en" && country === "US") {
+    return "en-US";
+  }
+
+  return DEFAULT_REGION;
+}
+
 export const useSettingsStore = defineStore("settings", () => {
-    const locale = ref(navigator.language);
-    const lang = ref(navigator.language.split("-")[0]);
+    const browserLanguage = getNavigatorLanguage();
+    const locale = ref(normalizeRegion(browserLanguage));
+    const lang = ref(normalizeLanguage(browserLanguage));
     const hue = ref("45");
     const texts = ref({});
     const currentUser = useObservable(db.cloud.currentUser);
@@ -31,8 +70,26 @@ export const useSettingsStore = defineStore("settings", () => {
       }
     }
 
-    async function loadTexts(lang) {
-      texts.value = (await import(`@/assets/texts_${lang}.json`)).default[0];
+    async function loadTexts(language = lang.value) {
+      const normalizedLanguage = normalizeLanguage(language);
+
+      if (lang.value !== normalizedLanguage) {
+        lang.value = normalizedLanguage;
+      }
+
+      try {
+        texts.value = (await import(`@/assets/texts_${normalizedLanguage}.json`)).default[0];
+      } catch (error) {
+        if (normalizedLanguage !== DEFAULT_LANGUAGE) {
+          lang.value = DEFAULT_LANGUAGE;
+          texts.value = (await import("@/assets/texts_en.json")).default[0];
+          return texts.value;
+        }
+
+        throw error;
+      }
+
+      return texts.value;
     }
 
     function getThemeColor() {
@@ -71,15 +128,33 @@ export const useSettingsStore = defineStore("settings", () => {
       // Create a new Date on the 1st day of the month to avoid rollover issues
       // Always use day 1 to prevent issues with month rollovers (e.g., Feb 30 -> Mar 2)
       const date = new Date(currentYear.value, currentMonth.value, 1);
-      return new Intl.DateTimeFormat("sv", {
+      return new Intl.DateTimeFormat(normalizeLanguage(lang.value), {
         year: "numeric",
         month: "long",
       }).format(date);
     });
 
     watch(locale, (newLocale) => {
-      loadTexts(newLocale);
-    });
+      const normalizedRegion = normalizeRegion(newLocale);
+
+      if (newLocale !== normalizedRegion) {
+        locale.value = normalizedRegion;
+      }
+    }, { immediate: true });
+
+    watch(lang, (newLang) => {
+      const normalizedLanguage = normalizeLanguage(newLang);
+
+      if (newLang !== normalizedLanguage) {
+        lang.value = normalizedLanguage;
+        return;
+      }
+
+      if (globalThis.document?.documentElement) {
+        document.documentElement.lang = normalizedLanguage;
+      }
+      loadTexts(normalizedLanguage);
+    }, { immediate: true });
 
     watch(hue, (newHue) => {
       document.documentElement.style = `--hue: ${newHue}`;
@@ -109,6 +184,8 @@ export const useSettingsStore = defineStore("settings", () => {
       currentMonthFormatted,
       t,
       loadTexts,
+      normalizeLanguage,
+      normalizeRegion,
       setThemeColor,
       prevMonth,
       nextMonth,

@@ -9,7 +9,7 @@ import EuropeMap from "../components/icons/EuropeMap.vue";
 import SwedenMap from "../components/icons/SwedenMap.vue";
 
 const settingsStore = useSettingsStore()
-const { t, loadTexts } = settingsStore
+const { t, normalizeLanguage, normalizeRegion } = settingsStore
 const { locale, lang, hue } = storeToRefs(settingsStore)
 
 const birdsStore = useBirdsStore()
@@ -19,15 +19,22 @@ const messagesStore = useMessagesStore()
 const { addMessage } = messagesStore
 
 async function switchLocale(newLocale) {
-    locale.value = newLocale
-    await loadAllBirds(newLocale, lang.value)
+    const normalizedLocale = normalizeRegion(newLocale)
+    locale.value = normalizedLocale
+    await loadAllBirds(normalizedLocale, lang.value)
     setTimeout(() => addMessage(t("Birds_Loaded")), 100)
 }
 
 watch(lang, async (newLang) => {
-    document.documentElement.lang = newLang
-    await loadTexts(newLang)
-    await loadAllBirds(locale.value, newLang)
+    const normalizedLang = normalizeLanguage(newLang)
+
+    if (newLang !== normalizedLang) {
+        lang.value = normalizedLang
+        return
+    }
+
+    document.documentElement.lang = normalizedLang
+    await loadAllBirds(locale.value, normalizedLang)
 })
 </script>
 
@@ -49,6 +56,7 @@ watch(lang, async (newLang) => {
         <select id="locale" v-model="lang">
             <option value="sv">Svenska</option>
             <option value="en">English</option>
+            <option value="de">Deutsch</option>
         </select>
     </div>
     <div class="margin-bottom">
