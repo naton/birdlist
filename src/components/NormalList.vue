@@ -180,7 +180,7 @@ function getSpeciesGroupKey(obsGroup) {
       </div>
 
       <h3 class="center">{{ t("No_Observations") }}</h3>
-      <details v-if="firstVisit && !isUserLoggedIn" class="help" open>
+      <details v-if="firstVisit && !isUserLoggedIn" class="help">
         <summary>{{ t("First_Time_Here") }}</summary>
         <p class="margin-top">
           <span v-html="t('First_Time_Description')"></span>
