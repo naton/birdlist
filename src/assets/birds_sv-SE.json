@@ -82,7 +82,8 @@
     "latinName": "Turdus pilaris"
   },
   {
-    "name": "Blektornseglare"
+    "name": "Blektornseglare",
+    "latinName": "Apus pallidus"
   },
   {
     "name": "Blå kärrhök",
@@ -623,6 +624,10 @@
   },
   {
     "name": "Krushuvad pelikan"
+  },
+  {
+    "name": "Kråka",
+    "latinName": "Corvus corone"
   },
   {
     "name": "Kungsfiskare",
@@ -1345,6 +1350,10 @@
   {
     "name": "Svarthätta",
     "latinName": "Sylvia atricapilla"
+  },
+  {
+    "name": "Svartkråka",
+    "latinName": "Corvus corone"
   },
   {
     "name": "Svartmes",

@@ -55,8 +55,10 @@ function buildSpeciesLookup() {
     byLatinName.set(item.latinName, item);
     addName(item.sv, item);
     addName(item.en, item);
+    addName(item.de, item);
     for (const alias of item.aliases?.sv || []) addName(alias, item);
     for (const alias of item.aliases?.en || []) addName(alias, item);
+    for (const alias of item.aliases?.de || []) addName(alias, item);
   }
 
   return { byName, byLatinName };

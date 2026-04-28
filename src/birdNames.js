@@ -23,8 +23,10 @@ function addNameLookup(name, species) {
 for (const species of birdSpecies) {
   addNameLookup(species.sv, species);
   addNameLookup(species.en, species);
+  addNameLookup(species.de, species);
   for (const alias of species.aliases?.sv || []) addNameLookup(alias, species);
   for (const alias of species.aliases?.en || []) addNameLookup(alias, species);
+  for (const alias of species.aliases?.de || []) addNameLookup(alias, species);
 }
 
 function getLanguageCode(languageOrLocale) {
