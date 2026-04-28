@@ -70,6 +70,7 @@ const canWriteToCurrentList = computed(() => canWriteToList(currentList.value));
 const canJoinCurrentList = computed(() => isPublicCurrentList.value && !isListOwner.value && !isJoinedCurrentList.value && isUserLoggedIn.value);
 const canLeaveCurrentList = computed(() => isPublicCurrentList.value && !isListOwner.value && isJoinedCurrentList.value);
 const mustLoginToJoin = computed(() => isPublicCurrentList.value && !isListOwner.value && !isUserLoggedIn.value);
+const showDirectJoinAction = computed(() => !canWriteToCurrentList.value && (canJoinCurrentList.value || mustLoginToJoin.value));
 const canEditBirds = computed(() => isListOwner.value && (currentList.value?.type === "checklist" || currentList.value?.type === "bingo"));
 const canStartEditBirds = computed(() => canEditBirds.value && !checkListEditMode.value);
 const canMakeChecklist = computed(() => isListOwner.value && currentList.value?.type === "normal");
@@ -111,6 +112,15 @@ async function leaveCurrentList() {
 
 function loginToJoin() {
   db.cloud.login();
+}
+
+function handleDirectJoinAction() {
+  if (mustLoginToJoin.value) {
+    loginToJoin();
+    return;
+  }
+
+  joinCurrentList();
 }
 
 async function toggleCurrentListVisibility() {
@@ -203,8 +213,17 @@ watch(
   />
   <list-info>
     <template v-slot:extra>
+      <button
+        v-if="showDirectJoinAction"
+        type="button"
+        class="join-list-button"
+        data-action="direct-join"
+        @click="handleDirectJoinAction"
+      >
+        {{ mustLoginToJoin ? t("Login_To_Join") : t("Join_List") }}
+      </button>
       <list-actions-menu
-        v-if="currentList"
+        v-else-if="currentList"
         :list="currentList"
         :is-list-owner="isListOwner"
         :is-public-current-list="isPublicCurrentList"
@@ -259,3 +278,10 @@ watch(
     @edit="edit">
   </normal-list>
 </template>
+
+<style>
+.join-list-button {
+  margin-top: 0.75rem;
+  width: 100%;
+}
+</style>
