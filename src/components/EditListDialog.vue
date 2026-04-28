@@ -51,12 +51,22 @@ async function saveList() {
 
   isSaving.value = true;
   const normalizedDraft = normalizeListDraftForSave(listDraft.value);
+  let didSave = false;
+
   try {
+    const payload = { ...listToEdit.value, ...normalizedDraft };
+    await updateList(payload);
     Object.assign(listToEdit.value, normalizedDraft);
-    await updateList(listToEdit.value);
-    close();
+    didSave = true;
+  } catch (error) {
+    console.error("Failed to save list.", error);
+    addMessage(t("List_Save_Failed"));
   } finally {
     isSaving.value = false;
+  }
+
+  if (didSave) {
+    close();
   }
 }
 
