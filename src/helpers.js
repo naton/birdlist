@@ -35,6 +35,21 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 12000) {
   }
 }
 
+async function readApiResult(response, fallbackMessage) {
+  const payload = await response.json().catch(() => null);
+  if (!response.ok || !payload?.data?.success) {
+    return {
+      success: false,
+      message: payload?.error?.message || fallbackMessage,
+    };
+  }
+
+  return {
+    success: true,
+    data: payload.data,
+  };
+}
+
 async function getPushRegistration() {
   if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
     return null;
@@ -217,18 +232,7 @@ async function setListVisibility(listId, makePublic) {
       }),
     });
 
-    const payload = await response.json().catch(() => null);
-    if (!response.ok) {
-      return {
-        success: false,
-        message: payload?.error?.message || "Failed to update list visibility.",
-      };
-    }
-
-    return {
-      success: true,
-      data: payload?.data,
-    };
+    return readApiResult(response, "Failed to update list visibility.");
   } catch (error) {
     console.error("Error updating list visibility.", error);
     return {
@@ -259,18 +263,7 @@ async function deleteListRemotely(listId, deleteObservations) {
       }),
     });
 
-    const payload = await response.json().catch(() => null);
-    if (!response.ok) {
-      return {
-        success: false,
-        message: payload?.error?.message || "Failed to delete list.",
-      };
-    }
-
-    return {
-      success: true,
-      data: payload?.data,
-    };
+    return readApiResult(response, "Failed to delete list.");
   } catch (error) {
     console.error("Error deleting list.", error);
     return {
@@ -290,18 +283,7 @@ async function savePublicObservation(observation) {
       body: JSON.stringify({ observation }),
     });
 
-    const payload = await response.json().catch(() => null);
-    if (!response.ok) {
-      return {
-        success: false,
-        message: payload?.error?.message || "Failed to save observation.",
-      };
-    }
-
-    return {
-      success: true,
-      data: payload?.data,
-    };
+    return readApiResult(response, "Failed to save observation.");
   } catch (error) {
     console.error("Error saving public observation.", error);
     return {
