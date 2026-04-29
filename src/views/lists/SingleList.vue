@@ -212,18 +212,9 @@ watch(
     v-model:list="currentList" 
   />
   <list-info>
-    <template v-slot:extra>
-      <button
-        v-if="showDirectJoinAction"
-        type="button"
-        class="join-list-button"
-        data-action="direct-join"
-        @click="handleDirectJoinAction"
-      >
-        {{ mustLoginToJoin ? t("Login_To_Join") : t("Join_List") }}
-      </button>
+    <template v-slot:header>
       <list-actions-menu
-        v-else-if="currentList"
+        v-if="!showDirectJoinAction && currentList"
         :list="currentList"
         :is-list-owner="isListOwner"
         :is-public-current-list="isPublicCurrentList"
@@ -247,6 +238,17 @@ watch(
         @toggle-visibility="toggleCurrentListVisibility"
         @delete-list="deleteCurrentList"
       />
+    </template>
+    <template v-slot:extra>
+      <button
+        v-if="showDirectJoinAction"
+        type="button"
+        class="join-list-button"
+        data-action="direct-join"
+        @click="handleDirectJoinAction"
+      >
+        {{ mustLoginToJoin ? t("Login_To_Join") : t("Join_List") }}
+      </button>
     </template>
   </list-info>
   <birdstreak-list v-if="currentList && currentList.type === 'birdstreak'"

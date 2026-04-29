@@ -35,11 +35,12 @@ function getListOwnerAsFriendName() {
                 </svg>
             </router-link>
             <h1 class="heading">{{ currentList?.title }}</h1>
-            <slot name="extra" />
+            <slot name="header" />
         </div>
         <details :open="currentListExpanded" @click.prevent="currentListExpanded = !currentListExpanded">
             <p class="list-description">{{ currentList?.description }}</p>
             <p class="list-owner">{{ t("Created_By") }} {{ getListOwnerAsFriendName() }}</p>
         </details>
+        <slot name="extra" />
     </div>
 </template>

@@ -105,15 +105,10 @@ a > img {
   font-weight: normal;
 }
 
-details {
-  width: 100%;
-}
-
 details.help {
   border: 1px dashed;
   border-radius: var(--radius);
   padding: 0.5rem 0.75rem;
-  margin: 0.5rem 0;
 }
 
 details.help[open] summary {

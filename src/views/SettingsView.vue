@@ -42,6 +42,10 @@ const currentTab = ref('config')
   padding: 1rem;
 }
 
+.settings-content .nav {
+  padding-inline: 0;
+}
+
 .settings-content label {
   display: block;
 }
