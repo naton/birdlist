@@ -149,11 +149,10 @@ function openShareModal() {
     data-action="open-menu"
   >
     <settings-icon class="option-icon" />
-    <span>{{ t("Settings") }}</span>
   </button>
 
   <section :id="popoverId" popover="auto" class="list-actions-popover">
-    <h3 class="list-actions-heading">{{ t("List") }} {{ t("Settings").toLowerCase() }}</h3>
+    <h3 class="list-actions-heading center">{{ t("Settings") }}</h3>
 
     <p v-if="showReadOnlyInfo" class="list-actions-help">
       {{ props.mustLoginToJoin ? t("Open_List_Login_Required") : t("Join_To_Contribute") }}

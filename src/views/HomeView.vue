@@ -102,13 +102,13 @@ function openModal(obs) {
 .list-header {
   position: relative;
   overflow: hidden;
-  padding: 0.5rem 0 0;
+  padding: 0.5rem;
   flex-shrink: 0;
 }
 
 .list-description,
 .list-owner {
-  margin-bottom: 1rem;
+  margin: 0.5rem;
   text-indent: 0;
 }
 
@@ -190,7 +190,6 @@ function openModal(obs) {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 0 1rem;
   background: var(--color-background);
   transition: 0.1s transform ease-out;
 }

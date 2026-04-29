@@ -28,14 +28,12 @@ function getListOwnerAsFriendName() {
 <template>
     <div class="list-header">
         <div class="subtitle">
-            <details :open="currentListExpanded">
-                <summary class="heading center" @click.prevent="currentListExpanded = !currentListExpanded">{{ currentList?.title }}</summary>
-                <p class="list-description">{{ currentList?.description }}</p>
-                <p class="list-owner">{{ t("Created_By") }} {{ getListOwnerAsFriendName() }}</p>
-                <div>
-                    <slot name="extra" />
-                </div>
-            </details>
+            <h1 class="heading center">{{ currentList?.title }}</h1>
+            <slot name="extra" />
         </div>
+        <details :open="currentListExpanded" @click.prevent="currentListExpanded = !currentListExpanded">
+            <p class="list-description">{{ currentList?.description }}</p>
+            <p class="list-owner">{{ t("Created_By") }} {{ getListOwnerAsFriendName() }}</p>
+        </details>
     </div>
 </template>
