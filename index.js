@@ -50,6 +50,10 @@ function normalizeListId(listId) {
   return String(listId ?? '').trim();
 }
 
+function getSubscriptionRecordId(subscription) {
+  return subscription?.id || subscription?._id || null;
+}
+
 function sanitizeIncomingSubscription(subscription) {
   if (!subscription || typeof subscription !== 'object') {
     return null;
@@ -416,9 +420,37 @@ async function addPublicObservation(payload) {
     dexieUpsertMany('lists', [{ ...list, updated }]),
   ]);
 
+  let push = null;
+  try {
+    push = await sendPushToList(
+      observation.listId,
+      JSON.stringify({
+        title: `New observation added: ${observation.name}`,
+        options: {
+          icon: 'https://birdlist.app/192x192.png',
+          body: `List: ${list.title || list.name || ''}`,
+          tag: `list-${observation.listId}`,
+          data: {
+            listId: observation.listId,
+          },
+        },
+      })
+    );
+  } catch (err) {
+    console.log('Failed to send public observation push:', err.message || err);
+    push = {
+      listId: observation.listId,
+      total: 0,
+      sent: 0,
+      removed: 0,
+      error: err.message || 'Failed to send push.',
+    };
+  }
+
   return {
     observation,
     listId: observation.listId,
+    push,
   };
 }
 
@@ -516,8 +548,9 @@ async function cleanupLegacySubscriptions() {
     const isValid = isStoredSubscriptionRecordValid(subscription);
 
     if (!isValid) {
-      if (subscription?._id) {
-        await deleteSubscriptionFromDatabase(subscription._id);
+      const subscriptionId = getSubscriptionRecordId(subscription);
+      if (subscriptionId) {
+        await deleteSubscriptionFromDatabase(subscriptionId);
         removed += 1;
       }
       continue;
@@ -525,8 +558,9 @@ async function cleanupLegacySubscriptions() {
 
     const key = makeEndpointListKey(subscription.endpoint, subscription.listId);
     if (seen.has(key)) {
-      if (subscription?._id) {
-        await deleteSubscriptionFromDatabase(subscription._id);
+      const subscriptionId = getSubscriptionRecordId(subscription);
+      if (subscriptionId) {
+        await deleteSubscriptionFromDatabase(subscriptionId);
         removed += 1;
       }
       continue;
@@ -552,8 +586,9 @@ async function upsertListSubscription(subscription, listId) {
     return { created: false, updated: false };
   }
 
-  if (existing?._id) {
-    await deleteSubscriptionFromDatabase(existing._id);
+  const existingId = getSubscriptionRecordId(existing);
+  if (existingId) {
+    await deleteSubscriptionFromDatabase(existingId);
   }
 
   await insertSubscriptionToDatabase({
@@ -574,7 +609,12 @@ async function deleteListSubscription(endpoint, listId) {
     (item) => item.endpoint === endpoint && normalizeListId(item.listId) === normalizedListId
   );
 
-  await Promise.all(targets.filter((item) => item?._id).map((item) => deleteSubscriptionFromDatabase(item._id)));
+  await Promise.all(
+    targets
+      .map(getSubscriptionRecordId)
+      .filter(Boolean)
+      .map((subscriptionId) => deleteSubscriptionFromDatabase(subscriptionId))
+  );
 
   const refreshedSubscriptions = await getSubscriptionsFromDatabase();
   const remainingForEndpoint = refreshedSubscriptions.filter((item) => item.endpoint === endpoint).length;
@@ -594,14 +634,33 @@ async function triggerPush(subscription, dataToSend) {
     await webpush.sendNotification(subscription, dataToSend);
     return { sent: true, removed: false };
   } catch (err) {
-    if ((err.statusCode === 404 || err.statusCode === 410) && subscription?._id) {
-      await deleteSubscriptionFromDatabase(subscription._id);
+    const subscriptionId = getSubscriptionRecordId(subscription);
+    if ((err.statusCode === 404 || err.statusCode === 410) && subscriptionId) {
+      await deleteSubscriptionFromDatabase(subscriptionId);
       return { sent: false, removed: true };
     }
 
     console.log('Failed to send push to subscription:', err.message || err);
     return { sent: false, removed: false };
   }
+}
+
+async function sendPushToList(listId, dataToSend) {
+  const normalizedListId = normalizeListId(listId);
+  const subscriptions = (await getSubscriptionsFromDatabase()).filter(
+    (subscription) => normalizeListId(subscription.listId) === normalizedListId
+  );
+
+  const results = await Promise.all(
+    subscriptions.map((subscription) => triggerPush(subscription, dataToSend))
+  );
+
+  return {
+    listId: normalizedListId,
+    total: subscriptions.length,
+    sent: results.filter((result) => result.sent).length,
+    removed: results.filter((result) => result.removed).length,
+  };
 }
 
 app.post('/api/subscription', async (req, res) => {
@@ -714,24 +773,12 @@ app.post('/api/push', async (req, res) => {
   }
 
   try {
-    const subscriptions = (await getSubscriptionsFromDatabase()).filter(
-      (subscription) => normalizeListId(subscription.listId) === payload.listId
-    );
-
-    const results = await Promise.all(
-      subscriptions.map((subscription) => triggerPush(subscription, payload.dataToSend))
-    );
-
-    const sent = results.filter((result) => result.sent).length;
-    const removed = results.filter((result) => result.removed).length;
+    const push = await sendPushToList(payload.listId, payload.dataToSend);
 
     res.status(200).json({
       data: {
         success: true,
-        listId: payload.listId,
-        total: subscriptions.length,
-        sent,
-        removed,
+        ...push,
       },
     });
   } catch (err) {
