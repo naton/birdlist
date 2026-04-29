@@ -280,6 +280,37 @@ async function deleteListRemotely(listId, deleteObservations) {
   }
 }
 
+async function savePublicObservation(observation) {
+  try {
+    const response = await fetchWithTimeout(apiHost + "/api/public-observation", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ observation }),
+    });
+
+    const payload = await response.json().catch(() => null);
+    if (!response.ok) {
+      return {
+        success: false,
+        message: payload?.error?.message || "Failed to save observation.",
+      };
+    }
+
+    return {
+      success: true,
+      data: payload?.data,
+    };
+  } catch (error) {
+    console.error("Error saving public observation.", error);
+    return {
+      success: false,
+      message: "Network error while saving observation.",
+    };
+  }
+}
+
 function pushNewBirdAlert(msg) {
   return fetch(apiHost + "/api/push", {
     method: "POST",
@@ -457,6 +488,7 @@ export {
   isListNotificationsEnabled,
   setListVisibility,
   deleteListRemotely,
+  savePublicObservation,
   pushNewBirdAlert,
   getMonthName,
   getCurrentYear,

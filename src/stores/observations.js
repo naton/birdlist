@@ -5,7 +5,7 @@ import { liveQuery } from "dexie";
 import { useMessagesStore } from "./messages.js";
 import { useSettingsStore } from "./settings.js";
 import { useListsStore } from "./lists.js";
-import { pushNewBirdAlert } from "../helpers";
+import { pushNewBirdAlert, savePublicObservation } from "../helpers";
 import { getBirdDisplayName, getBirdKey, getBirdLatinName, getBirdStorageName, normalizeBirdName } from "@/birdNames.js";
 
 export const useObservationsStore = defineStore(
@@ -19,7 +19,7 @@ export const useObservationsStore = defineStore(
     const { currentUser, currentYear, currentMonth, lang } = storeToRefs(settingsStore);
 
     const listsStore = useListsStore();
-    const { canWriteToList } = listsStore;
+    const { canWriteToList, isPublicList } = listsStore;
     const { currentList } = storeToRefs(listsStore);
 
     const allObservations = ref([]);
@@ -36,6 +36,39 @@ export const useObservationsStore = defineStore(
       }
 
       return aliases;
+    }
+
+    function collectCurrentUserAliases(value, aliases = new Set(), key = "") {
+      if (value === null || value === undefined) {
+        return aliases;
+      }
+
+      if (typeof value === "string") {
+        const keyLooksLikeIdentity = ["userId", "name", "email", "sub", "preferred_username"].includes(key);
+        const valueLooksLikeIdentity = value.includes("@");
+        const normalized = value.trim();
+        if (normalized && normalized !== "unauthorized" && (keyLooksLikeIdentity || valueLooksLikeIdentity)) {
+          aliases.add(normalized);
+        }
+        return aliases;
+      }
+
+      if (Array.isArray(value)) {
+        value.forEach((item) => collectCurrentUserAliases(item, aliases));
+        return aliases;
+      }
+
+      if (typeof value === "object") {
+        for (const [childKey, childValue] of Object.entries(value)) {
+          collectCurrentUserAliases(childValue, aliases, childKey);
+        }
+      }
+
+      return aliases;
+    }
+
+    function getCurrentUserAliases() {
+      return [...collectCurrentUserAliases(currentUser.value)];
     }
 
     function isCurrentUsersObservation(obs) {
@@ -144,7 +177,25 @@ export const useObservationsStore = defineStore(
             observation.latinName = latinName;
           }
 
-          await db.observations.add(observation);
+          if (list && isPublicList(list)) {
+            const ownerAliases = getCurrentUserAliases();
+            const result = await savePublicObservation({
+              ...observation,
+              owner: ownerAliases[0] || "unauthorized",
+              ownerAliases,
+            });
+
+            if (!result?.success) {
+              addMessage(result?.message || t("Failed_To_Save_Observation"));
+              return false;
+            }
+
+            if (typeof db.cloud?.sync === "function") {
+              await db.cloud.sync({ wait: true });
+            }
+          } else {
+            await db.observations.add(observation);
+          }
 
           if (firstToday) {
             addMessage(t("First_Observation_Today") + " - <b>" + storageName + "</b>");
@@ -191,7 +242,7 @@ export const useObservationsStore = defineStore(
         hasSavedAtLeastOne = await addSingleObservation(bird);
       }
 
-      if (hasSavedAtLeastOne && currentList.value) {
+      if (hasSavedAtLeastOne && currentList.value && !isPublicList(currentList.value)) {
         await db.lists.where({ id: currentList.value.id }).modify({ updated: new Date() });
       }
 

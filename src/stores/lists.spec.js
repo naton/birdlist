@@ -241,6 +241,32 @@ describe("lists store", () => {
     expect(store.canWriteToList(ctx.state.lists[1])).toBe(true);
   });
 
+  it("allows public list writes when owner matches a nested current-user identity", async () => {
+    const ctx = createMockContext();
+    ctx.state.lists = [
+      {
+        id: "public-owned-1",
+        title: "Public owned",
+        owner: "owner@example.com",
+        realmId: "rlm-public",
+        updated: new Date("2026-01-02"),
+      },
+    ];
+    ctx.currentUserRef.value = {
+      userId: "usr-1",
+      name: "Birder 5286",
+      claims: {
+        email: "owner@example.com",
+      },
+    };
+
+    const useListsStore = await loadStoreWithMocks(ctx);
+    const store = useListsStore();
+    await flushLiveQuery();
+
+    expect(store.canWriteToList(ctx.state.lists[0])).toBe(true);
+  });
+
   it("blocks join when user is unauthorized", async () => {
     const ctx = createMockContext();
     seedLists(ctx);
@@ -302,6 +328,20 @@ describe("lists store", () => {
     expect(ctx.state.lists[0].realmId).toBe("rlm-public");
     expect(ctx.state.observations[0].realmId).toBe("rlm-public");
     expect(ctx.state.comments[0].realmId).toBe("rlm-public");
+  });
+
+  it("stores owner identity when creating a logged-in list", async () => {
+    const ctx = createMockContext();
+    const useListsStore = await loadStoreWithMocks(ctx);
+    const store = useListsStore();
+    await flushLiveQuery();
+
+    const id = await store.createList({ title: "New list", type: "normal" });
+
+    expect(ctx.state.lists.find((list) => list.id === id)).toMatchObject({
+      owner: "user@example.com",
+      realmId: "user@example.com",
+    });
   });
 
   it("does not call visibility API when pre-sync fails", async () => {

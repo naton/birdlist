@@ -15,6 +15,9 @@ function createMockContext() {
   }
 
   const db = {
+    cloud: {
+      sync: vi.fn().mockResolvedValue(undefined),
+    },
     async transaction(_mode, _tables, fn) {
       return await fn();
     },
@@ -90,11 +93,12 @@ function createMockContext() {
     currentListRef: ref({
       id: "list-1",
       title: "Bingo",
-      realmId: "rlm-public",
+      realmId: "user-1",
     }),
     canWriteRef: ref(true),
     addMessageSpy: vi.fn(),
     pushNewBirdAlertSpy: vi.fn(),
+    savePublicObservationSpy: vi.fn().mockResolvedValue({ success: true }),
   };
 }
 
@@ -111,6 +115,7 @@ async function loadStoreWithMocks(ctx) {
   vi.doMock("../db", () => ({ db: ctx.db }));
   vi.doMock("../helpers", () => ({
     pushNewBirdAlert: (...args) => ctx.pushNewBirdAlertSpy(...args),
+    savePublicObservation: (...args) => ctx.savePublicObservationSpy(...args),
   }));
   vi.doMock("./messages.js", async () => {
     const { defineStore } = await import("pinia");
@@ -134,6 +139,7 @@ async function loadStoreWithMocks(ctx) {
     const useListsStore = defineStore("list", () => ({
       currentList: ctx.currentListRef,
       canWriteToList: () => ctx.canWriteRef.value,
+      isPublicList: (list) => list?.realmId === "rlm-public",
     }));
     return { useListsStore };
   });
@@ -190,13 +196,38 @@ describe("observations store", () => {
     expect(ctx.state.observations[0]).toMatchObject({
       name: "Mallard",
       listId: "list-1",
-      realmId: "rlm-public",
+      realmId: "user-1",
     });
 
     vi.runAllTimers();
     expect(ctx.pushNewBirdAlertSpy).toHaveBeenCalledTimes(1);
     expect(ctx.pushNewBirdAlertSpy.mock.calls[0][0].options.data.listId).toBe("list-1");
     expect(ctx.state.lists[0].updated).toBeInstanceOf(Date);
+  });
+
+  it("saves public-list observations through the trusted API and pulls the result", async () => {
+    const ctx = createMockContext();
+    ctx.currentListRef.value = {
+      id: "public-list-1",
+      title: "Public",
+      realmId: "rlm-public",
+    };
+    ctx.state.lists = [{ id: "public-list-1", updated: new Date("2026-01-01") }];
+    const useObservationsStore = await loadStoreWithMocks(ctx);
+    const store = useObservationsStore();
+    await flushLiveQuery();
+
+    await expect(store.addObservation("Mallard")).resolves.toBe(true);
+
+    expect(ctx.savePublicObservationSpy).toHaveBeenCalledWith(expect.objectContaining({
+      name: "Mallard",
+      listId: "public-list-1",
+      realmId: "rlm-public",
+      owner: "user-1",
+      ownerAliases: expect.arrayContaining(["user-1", "User One", "user@example.com"]),
+    }));
+    expect(ctx.state.observations).toHaveLength(0);
+    expect(ctx.db.cloud.sync).toHaveBeenCalledWith({ wait: true });
   });
 
   it("deletes observation and emits message with species name", async () => {

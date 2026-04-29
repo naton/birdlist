@@ -23,12 +23,49 @@ export const useListsStore = defineStore("list", () => {
   const allLists = ref([]);
   const joinedListIds = ref([]);
   let joinedListsSubscription = null;
+
+  function addAlias(aliases, value) {
+    const alias = String(value || "").trim();
+    if (alias && alias !== "undefined" && alias !== "null") {
+      aliases.add(alias);
+    }
+  }
+
+  function collectUserAliases(value, aliases, key = "") {
+    if (value === null || value === undefined) {
+      return;
+    }
+
+    if (typeof value === "string") {
+      const keyLooksLikeIdentity = ["userId", "name", "email", "sub", "preferred_username"].includes(key);
+      const valueLooksLikeIdentity = value.includes("@");
+      if (keyLooksLikeIdentity || valueLooksLikeIdentity) {
+        addAlias(aliases, value);
+      }
+      return;
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach((item) => collectUserAliases(item, aliases));
+      return;
+    }
+
+    if (typeof value === "object") {
+      for (const [childKey, childValue] of Object.entries(value)) {
+        collectUserAliases(childValue, aliases, childKey);
+      }
+    }
+  }
+
   function getCurrentOwnerAliases() {
-    return [
-      currentUser.value?.userId,
-      currentUser.value?.name,
-      currentUser.value?.email,
-    ].filter(Boolean);
+    const aliases = new Set();
+    collectUserAliases(currentUser.value, aliases);
+    return [...aliases];
+  }
+
+  function getPreferredOwnerAlias() {
+    const user = currentUser.value || {};
+    return user.email || user.userId || user.name || "";
   }
 
   function isOwnedByCurrentUser(list) {
@@ -268,7 +305,15 @@ export const useListsStore = defineStore("list", () => {
 
   async function createList(payload) {
     // Insert the list in the db with title and descripton
-    const newId = await db.lists.add(payload);
+    const owner = payload.owner || (isUserLoggedIn.value ? getPreferredOwnerAlias() : "");
+    const listPayload = owner
+      ? {
+          ...payload,
+          owner,
+          realmId: payload.realmId || owner,
+        }
+      : payload;
+    const newId = await db.lists.add(listPayload);
     lastUsedList.value = currentList.value = allLists.value.find((list) => list.id == newId);
     return newId;
   }

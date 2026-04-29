@@ -151,6 +151,77 @@ async function getAccessHeader() {
   return `Bearer ${await getDexieCloudAccessToken()}`;
 }
 
+function makePublicObservationId() {
+  const random = Math.random().toString(36).slice(2, 10);
+  return `obs${Date.now().toString(36)}${random}`;
+}
+
+function toDexieCloudDate(value) {
+  const date = value ? new Date(value) : new Date();
+  const safeDate = Number.isNaN(date.getTime()) ? new Date() : date;
+  return {
+    $t: 'Date',
+    v: safeDate.toISOString(),
+  };
+}
+
+function sanitizePublicObservationPayload(payload) {
+  const observation = payload?.observation;
+  if (!observation || typeof observation !== 'object') {
+    return { error: 'Body must include { observation }.' };
+  }
+
+  const listId = normalizeListId(observation.listId);
+  const name = String(observation.name || '').trim();
+  const owner = String(observation.owner || '').trim();
+  const location = String(observation.location || '').trim();
+  const latinName = String(observation.latinName || '').trim();
+  const ownerAliases = [
+    owner,
+    ...(Array.isArray(observation.ownerAliases) ? observation.ownerAliases : []),
+  ]
+    .map((value) => String(value || '').trim())
+    .filter((value) => value && value !== 'unauthorized');
+  const uniqueOwnerAliases = [...new Set(ownerAliases)];
+
+  if (!listId) {
+    return { error: 'Observation must include listId.' };
+  }
+
+  if (!name) {
+    return { error: 'Observation must include name.' };
+  }
+
+  if (uniqueOwnerAliases.length === 0) {
+    return { error: 'You need to log in first to use this feature.' };
+  }
+
+  return {
+    ownerAliases: uniqueOwnerAliases,
+    observation: {
+      id: makePublicObservationId(),
+      name,
+      owner: uniqueOwnerAliases[0],
+      date: toDexieCloudDate(observation.date),
+      realmId: PUBLIC_REALM_ID,
+      listId,
+      ...(location ? { location } : {}),
+      ...(latinName ? { latinName } : {}),
+    },
+  };
+}
+
+function canContributeToPublicList(list, ownerAliases, joinedLinks = []) {
+  const aliases = new Set(ownerAliases.map((alias) => String(alias || '').trim()).filter(Boolean));
+  const listOwner = String(list?.owner || '').trim();
+
+  if (listOwner && aliases.has(listOwner)) {
+    return true;
+  }
+
+  return joinedLinks.some((row) => aliases.has(String(row?.userId || '').trim()));
+}
+
 async function dexieRequest(pathname, options = {}) {
   const response = await fetch(`${DEXIE_BASE_URL}${pathname}`, {
     ...options,
@@ -315,6 +386,39 @@ async function setListRealmVisibility(listId, makePublic) {
     targetRealmId,
     movedObservations: observations.length,
     movedComments: comments.length,
+  };
+}
+
+async function addPublicObservation(payload) {
+  const sanitized = sanitizePublicObservationPayload(payload);
+  if (sanitized.error) {
+    return { error: sanitized.error };
+  }
+
+  const observation = sanitized.observation;
+  const list = await dexieGetById('lists', observation.listId);
+  if (!list) {
+    return { error: 'List not found.', status: 404 };
+  }
+
+  if (String(list.realmId || '').trim() !== PUBLIC_REALM_ID) {
+    return { error: 'List is not public.', status: 403 };
+  }
+
+  const joinedLinks = await dexieGetMany('joinedLists', { listId: observation.listId }).catch(() => []);
+  if (!canContributeToPublicList(list, sanitized.ownerAliases, joinedLinks)) {
+    return { error: 'Join this list to contribute.', status: 403 };
+  }
+
+  const updated = toDexieCloudDate(new Date());
+  await Promise.all([
+    dexieUpsertMany('observations', [observation]),
+    dexieUpsertMany('lists', [{ ...list, updated }]),
+  ]);
+
+  return {
+    observation,
+    listId: observation.listId,
   };
 }
 
@@ -678,6 +782,35 @@ app.post('/api/list-visibility', async (req, res) => {
       error: {
         id: 'unable-to-update-list-visibility',
         message: `Failed to update list visibility: ${err.message}`,
+      },
+    });
+  }
+});
+
+app.post('/api/public-observation', async (req, res) => {
+  try {
+    const result = await addPublicObservation(req.body);
+    if (result?.error) {
+      res.status(result.status || 400).json({
+        error: {
+          id: 'unable-to-save-public-observation',
+          message: result.error,
+        },
+      });
+      return;
+    }
+
+    res.status(200).json({
+      data: {
+        success: true,
+        ...result,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: {
+        id: 'unable-to-save-public-observation',
+        message: `Failed to save observation: ${err.message}`,
       },
     });
   }
