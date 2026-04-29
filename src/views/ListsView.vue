@@ -13,7 +13,6 @@ import BingoIcon from "@/components/icons/BingoIcon.vue";
 import StreakIcon from "@/components/icons/StreakIcon.vue";
 import NormalIcon from "@/components/icons/NormalIcon.vue";
 import CreateList from "@/components/CreateList.vue";
-import ListsIllustration from '../components/illustrations/ListsIllustration.vue';
 import { toSafeUserLabel } from "@/helpers";
 import { useFriendsStore } from "@/stores/friends.js";
 
@@ -119,9 +118,6 @@ watch(
       <component :is="Component" :key="`${route.path}`"></component>
       <template v-if="!Component">
         <section class="lists">
-          <figure class="center">
-            <lists-illustration />
-          </figure>
           <div class="list-tools">
             <h1 class="center">{{ t("Lists") }}</h1>
             <div class="flex">
@@ -134,15 +130,17 @@ watch(
           <div v-if="!isPremiumUser && allMyLists?.length >= 5" class="center margin-bottom">
             {{ t("Upgrade_To_Premium") }}
           </div>
+
+          <div class="nav margin-top margin-bottom">
+            <button type="button" class="nav-link" :class="{ current: activeTab == 'mine' }" @click="setActiveTab('mine')">
+              {{ t("My_Lists") }}
+            </button>
+            <button type="button" class="nav-link" :class="{ current: activeTab == 'open' }" @click="setActiveTab('open')">
+              {{ t("Open_Lists") }}
+            </button>
+          </div>
+
           <div class="lists-content">
-            <div class="list-tabs">
-              <button type="button" :class="{ secondary: activeTab !== 'mine' }" @click="setActiveTab('mine')">
-                {{ t("My_Lists") }}
-              </button>
-              <button type="button" :class="{ secondary: activeTab !== 'open' }" @click="setActiveTab('open')">
-                {{ t("Open_Lists") }}
-              </button>
-            </div>
             <p v-if="activeTab === 'open'" class="center margin-bottom">
               {{ t("Open_Lists_Read_Only_Help") }}
             </p>
@@ -245,15 +243,6 @@ button:has(.pill) {
   align-content: start;
   gap: 1.5rem;
   padding: 0.5rem 1rem 1rem;
-}
-
-.list-tabs {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.list-tabs button {
-  flex: 1;
 }
 
 .featured {

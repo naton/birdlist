@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { useSettingsStore } from '../stores/settings.js'
 import SettingsIcon from '../components/icons/SettingsIcon.vue';
 import UserIcon from '../components/icons/UserIcon.vue';
-import SettingsIllustration from '../components/illustrations/SettingsIllustration.vue';
 import SettingsConfig from '../components/SettingsConfig.vue';
 import SettingsAccount from '../components/SettingsAccount.vue';
 
@@ -14,9 +13,6 @@ const currentTab = ref('config')
 
 <template>
   <article class="settings">
-    <figure class="center">
-      <settings-illustration />
-    </figure>
     <section class="settings-content">
       <header>
         <h1 class="center">{{ t("Settings") }}</h1>

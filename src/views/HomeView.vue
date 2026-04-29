@@ -48,6 +48,10 @@ function openModal(obs) {
 </template>
 
 <style>
+:root {
+  interpolate-size: allow-keywords;
+}
+
 .dxc-login-dlg input[type] {
   width: auto !important;
   max-width: 100%;
@@ -102,14 +106,8 @@ function openModal(obs) {
 .list-header {
   position: relative;
   overflow: hidden;
-  padding: 0.5rem;
+  padding: 1rem;
   flex-shrink: 0;
-}
-
-.list-description,
-.list-owner {
-  margin: 0.5rem;
-  text-indent: 0;
 }
 
 .list-owner {
@@ -188,8 +186,8 @@ function openModal(obs) {
 .list-header .subtitle {
   position: relative;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
   background: var(--color-background);
   transition: 0.1s transform ease-out;
 }
@@ -218,5 +216,15 @@ function openModal(obs) {
   background: var(--color-background-dim);
   font-size: 1.4rem;
   appearance: none;
+}
+
+details::details-content {
+  height: 0;
+  overflow: clip;
+  transition: height 0.4s ease-out, content-visibility 0.4s ease-out allow-discrete;
+}
+
+details[open]::details-content {
+  height: auto;
 }
 </style>

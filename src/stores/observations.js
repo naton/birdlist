@@ -205,8 +205,8 @@ export const useObservationsStore = defineStore(
             addMessage(t("New_Observation_Added") + ": <b>" + storageName + "</b>");
           }
 
-          // Push notification to all members of the list
-          if (list) {
+          // Public-list observations are saved by the API, which also sends web push notifications.
+          if (list && !isPublicList(list)) {
             clearTimeout(pushTimer);
             pushTimer = setTimeout(() => {
               pushNewBirdAlert({

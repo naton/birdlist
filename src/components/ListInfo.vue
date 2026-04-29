@@ -28,7 +28,13 @@ function getListOwnerAsFriendName() {
 <template>
     <div class="list-header">
         <div class="subtitle">
-            <h1 class="heading center">{{ currentList?.title }}</h1>
+            <router-link to="/lists">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" fill="var(--color-text)">
+                    <title>left-arrow</title>
+                    <path d="M22.3 31.7a1 1 0 0 0 1.4 0l1-1a1 1 0 0 0 0-1.4L11.4 16 24.7 2.7a1 1 0 0 0 0-1.4l-1-1a1 1 0 0 0-1.4 0l-15 15a1 1 0 0 0 0 1.4Z"/>
+                </svg>
+            </router-link>
+            <h1 class="heading">{{ currentList?.title }}</h1>
             <slot name="extra" />
         </div>
         <details :open="currentListExpanded" @click.prevent="currentListExpanded = !currentListExpanded">

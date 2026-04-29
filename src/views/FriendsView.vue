@@ -6,7 +6,6 @@ import { useFriendsStore } from '../stores/friends.js'
 import AddFriendIcon from '../components/icons/AddFriendIcon.vue'
 import UserIcon from '../components/icons/UserIcon.vue'
 import RemoveFriendIcon from '../components/icons/RemoveFriendIcon.vue'
-import FriendsIllustration from '../components/illustrations/FriendsIllustration.vue';
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
@@ -27,9 +26,6 @@ function addFriendAndReset(name, email) {
 
 <template>
   <div class="friends">
-    <div class="center">
-      <friends-illustration />
-    </div>
     <article class="friends-content">
       <section>
         <h1 class="center margin-bottom">{{ t("Friends")}}</h1>

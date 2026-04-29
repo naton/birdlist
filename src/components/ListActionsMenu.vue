@@ -265,10 +265,6 @@ function openShareModal() {
 </template>
 
 <style>
-.list-menu-button {
-  margin-left: auto;
-}
-
 .list-actions-popover {
   position: fixed;
   position-anchor: --list-actions-anchor;

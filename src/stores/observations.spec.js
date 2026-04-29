@@ -228,6 +228,9 @@ describe("observations store", () => {
     }));
     expect(ctx.state.observations).toHaveLength(0);
     expect(ctx.db.cloud.sync).toHaveBeenCalledWith({ wait: true });
+
+    vi.runAllTimers();
+    expect(ctx.pushNewBirdAlertSpy).not.toHaveBeenCalled();
   });
 
   it("deletes observation and emits message with species name", async () => {

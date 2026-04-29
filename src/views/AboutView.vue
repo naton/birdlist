@@ -61,24 +61,25 @@ const { t } = settingsStore
 .about {
   display: grid;
   place-items: center;
-  padding: 1rem;
+  padding: 1rem 0.5rem;
   align-content: center;
 }  
 
 .about-content {
-  width: 25rem;
-  max-width: 85vw;
+  display: grid;
+  align-self: start;
+  padding: 1rem;
 }
 
 .about .logo {
   display: flex;
-  max-width: 80%;
+  max-width: 50%;
   height: auto;
   margin: 0 auto;
 }
 
 .tagline {
-  margin: 3rem 0;
+  margin: 2rem 0;
 }
 
 .privacy-notes {
