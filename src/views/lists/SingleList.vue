@@ -6,21 +6,22 @@ import {
   setupConfetti,
   destroyConfetti,
   celebrate,
-  subscribeToListNotifications,
-  unsubscribeFromListNotifications,
-  isListNotificationsEnabled,
-  getPublicListParticipants,
+  toSafeUserLabel,
 } from "@/helpers";
 import { db } from "@/db";
-import { useSettingsStore } from '@/stores/settings.js'
+import { useSettingsStore } from '@/stores/settings.js';
 import { useListsStore } from "@/stores/lists.js";
 import { useObservationsStore } from "@/stores/observations.js";
 import { useCommentsStore } from "@/stores/comments.js";
 import { useMessagesStore } from "@/stores/messages.js";
+import { useFriendsStore } from "@/stores/friends.js";
 import ListInfo from "@/components/ListInfo.vue";
 import ListActionsMenu from "@/components/ListActionsMenu.vue";
 import EditListDialog from "@/components/EditListDialog.vue";
 import ListRenderer from "@/features/lists/components/ListRenderer.vue";
+import { useListActionItems } from "@/features/lists/composables/useListActionItems.js";
+import { useListNotifications } from "@/features/lists/composables/useListNotifications.js";
+import { useListParticipants } from "@/features/lists/composables/useListParticipants.js";
 import { useListPermissions } from "@/features/lists/composables/useListPermissions.js";
 
 const emit = defineEmits(["openDialog", "edit"]);
@@ -29,19 +30,20 @@ const route = useRoute();
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
-const { selectedUser, lang } = storeToRefs(settingsStore);
+const { selectedUser } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
 const {
   convertToChecklist,
-  isPublicList,
   joinPublicList,
   leavePublicList,
   setListPublicVisibility,
   deleteList,
-  getListMembers,
 } = listsStore;
-const { allLists, currentList, checkListEditMode } = storeToRefs(listsStore);
+const { allLists, currentList, currentListExpanded, checkListEditMode } = storeToRefs(listsStore);
+
+const friendsStore = useFriendsStore();
+const { getFriendlyName } = friendsStore;
 
 const observationsStore = useObservationsStore();
 const { allListObservations } = storeToRefs(observationsStore);
@@ -65,18 +67,50 @@ const {
   canMakeChecklist,
 } = useListPermissions(currentList);
 
+const {
+  isSubscribedToNotifications,
+  isNotificationToggleBusy,
+  refreshNotificationSubscriptionState,
+  toggleListNotificationSubscription,
+} = useListNotifications(currentList, { isPremiumUser });
+const {
+  listParticipants,
+  refreshListParticipants,
+} = useListParticipants(currentList);
+
 /* Comments */
 const listComments = computed(() => allComments.value?.filter((comment) => comment.listId == route.params.id));
+const listOwnerLabel = computed(() => {
+  if (isListOwner.value) {
+    return t("By_Me").toLowerCase();
+  }
+
+  return toSafeUserLabel(currentList.value?.owner, getFriendlyName(currentList.value?.owner));
+});
 
 // Dialog state
 const editDialog = ref(null);
 const isEditDialogOpen = ref(false);
 const isUpdatingVisibility = ref(false);
-
-const isSubscribedToNotifications = ref(false);
-const isNotificationToggleBusy = ref(false);
-const listParticipants = ref([]);
-let participantRequestId = 0;
+const { listActionItems, listActionsInfoText } = useListActionItems({
+  listRef: currentList,
+  t,
+  permissions: {
+    isListOwner,
+    isPublicCurrentList,
+    canWriteToCurrentList,
+    canJoinCurrentList,
+    canLeaveCurrentList,
+    mustLoginToJoin,
+    canStartEditBirds,
+    canMakeChecklist,
+  },
+  notifications: {
+    isSubscribedToNotifications,
+    isNotificationToggleBusy,
+  },
+  isUpdatingVisibility,
+});
 
 function openModal() {
   if (editDialog.value) {
@@ -86,7 +120,7 @@ function openModal() {
 }
 
 function edit(obs) {
-  emit("edit", obs)
+  emit("edit", obs);
 }
 
 function createChecklistFromCurrentList() {
@@ -180,65 +214,6 @@ async function deleteCurrentList() {
   await deleteList(currentList.value.id);
 }
 
-async function refreshNotificationSubscriptionState() {
-  if (!currentList.value?.id || !isPremiumUser.value) {
-    isSubscribedToNotifications.value = false;
-    return;
-  }
-
-  isSubscribedToNotifications.value = await isListNotificationsEnabled(currentList.value.id, lang.value);
-}
-
-function normalizeParticipants(values) {
-  return [...new Set((values || []).map((value) => String(value || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
-}
-
-async function refreshListParticipants() {
-  const list = currentList.value;
-  const requestId = ++participantRequestId;
-  if (!list?.id) {
-    listParticipants.value = [];
-    return;
-  }
-
-  if (isPublicList(list)) {
-    const result = await getPublicListParticipants(list.id);
-    if (requestId !== participantRequestId) {
-      return;
-    }
-    listParticipants.value = normalizeParticipants(result?.success ? result.data?.participants : [list.owner]);
-    return;
-  }
-
-  const members = await getListMembers(list.id);
-  if (requestId !== participantRequestId) {
-    return;
-  }
-  listParticipants.value = normalizeParticipants(members.map((member) => member.email || member.userId));
-}
-
-async function toggleListNotificationSubscription() {
-  if (!currentList.value?.id || isNotificationToggleBusy.value) {
-    return;
-  }
-
-  isNotificationToggleBusy.value = true;
-  try {
-    const didSucceed = isSubscribedToNotifications.value
-      ? await unsubscribeFromListNotifications(currentList.value.id)
-      : await subscribeToListNotifications(currentList.value.id, lang.value);
-
-    if (didSucceed) {
-      await refreshNotificationSubscriptionState();
-      return;
-    }
-
-    await refreshNotificationSubscriptionState();
-  } finally {
-    isNotificationToggleBusy.value = false;
-  }
-}
-
 onBeforeMount(async () => {
   currentList.value = await allLists.value?.find((list) => list.id == route.params.id);
 });
@@ -268,23 +243,17 @@ watch(
     v-model="isEditDialogOpen"
     v-model:list="currentList" 
   />
-  <list-info>
+  <list-info
+    :list="currentList"
+    :owner-label="listOwnerLabel"
+    v-model:expanded="currentListExpanded"
+  >
     <template v-slot:header>
       <list-actions-menu
         v-if="!showDirectJoinAction && currentList"
         :list="currentList"
-        :is-list-owner="isListOwner"
-        :is-public-current-list="isPublicCurrentList"
-        :can-write-to-current-list="canWriteToCurrentList"
-        :can-join-current-list="canJoinCurrentList"
-        :can-leave-current-list="canLeaveCurrentList"
-        :must-login-to-join="mustLoginToJoin"
-        :is-premium-user="isPremiumUser"
-        :is-subscribed-to-notifications="isSubscribedToNotifications"
-        :is-notification-toggle-busy="isNotificationToggleBusy"
-        :can-edit-birds="canStartEditBirds"
-        :can-make-checklist="canMakeChecklist"
-        :is-updating-visibility="isUpdatingVisibility"
+        :actions="listActionItems"
+        :info-text="listActionsInfoText"
         @toggle-notifications="toggleListNotificationSubscription"
         @join="joinCurrentList"
         @leave="leaveCurrentList"

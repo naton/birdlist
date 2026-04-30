@@ -24,19 +24,15 @@ describe("ListActionsMenu", () => {
     return mount(ListActionsMenu, {
       props: {
         list: { id: "list-1", type: "normal" },
-        isListOwner: true,
-        isPublicCurrentList: false,
-        canWriteToCurrentList: true,
-        canJoinCurrentList: false,
-        canLeaveCurrentList: false,
-        mustLoginToJoin: false,
-        isPremiumUser: true,
-        isSubscribedToNotifications: false,
-        isNotificationToggleBusy: false,
-        canEditBirds: false,
-        isEditingBirds: false,
-        canMakeChecklist: true,
-        isUpdatingVisibility: false,
+        actions: [
+          { key: "share", label: "Invite_A_Friend", icon: "friends" },
+          { key: "copy-link", label: "Copy_List_Link", icon: "friends" },
+          { key: "subscribe", event: "toggle-notifications", label: "Subscribe", icon: "bell" },
+          { key: "edit-list", label: "Edit_List", icon: "edit" },
+          { key: "make-checklist", label: "Save_As_Checklist", icon: "check" },
+          { key: "toggle-visibility", label: "Make_List_Open", icon: "view" },
+          { key: "delete", event: "delete-list", label: "Delete", icon: "delete", danger: true },
+        ],
         ...props,
       },
       global: {
@@ -94,30 +90,25 @@ describe("ListActionsMenu", () => {
 
   it("shows join/login actions for public non-member flow", async () => {
     const wrapper = await mountMenu({
-      isListOwner: false,
-      isPublicCurrentList: true,
-      canWriteToCurrentList: false,
-      canJoinCurrentList: true,
-      mustLoginToJoin: false,
-      isPremiumUser: false,
-      canMakeChecklist: false,
+      actions: [
+        { key: "join", label: "Join_List", icon: "user" },
+      ],
+      infoText: "Join_To_Contribute",
     });
 
     expect(wrapper.find("[data-action='join']").exists()).toBe(true);
+    expect(wrapper.text()).toContain("Join_To_Contribute");
     await wrapper.find("[data-action='join']").trigger("click");
     expect(wrapper.emitted("join")).toHaveLength(1);
   });
 
   it("shows subscribe, copy link, and leave for joined public non-owners", async () => {
     const wrapper = await mountMenu({
-      isListOwner: false,
-      isPublicCurrentList: true,
-      canWriteToCurrentList: true,
-      canJoinCurrentList: false,
-      canLeaveCurrentList: true,
-      mustLoginToJoin: false,
-      isPremiumUser: false,
-      canMakeChecklist: false,
+      actions: [
+        { key: "copy-link", label: "Copy_List_Link", icon: "friends" },
+        { key: "subscribe", event: "toggle-notifications", label: "Subscribe", icon: "bell" },
+        { key: "leave", label: "Leave_List", icon: "user" },
+      ],
     });
 
     expect(wrapper.find("[data-action='share']").exists()).toBe(false);
@@ -134,10 +125,11 @@ describe("ListActionsMenu", () => {
     expect(wrapper.emitted("leave")).toHaveLength(1);
   });
 
-  it("supports legacy isEditingBirds prop without changing edit action label", async () => {
+  it("renders edit-birds actions from the action model", async () => {
     const wrapper = await mountMenu({
-      canEditBirds: true,
-      isEditingBirds: true,
+      actions: [
+        { key: "toggle-edit-birds", label: "Edit_Birds", icon: "birds" },
+      ],
     });
 
     const editBirdsButton = wrapper.find("[data-action='toggle-edit-birds']");

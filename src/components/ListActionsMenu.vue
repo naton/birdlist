@@ -16,58 +16,13 @@ const props = defineProps({
     type: Object,
     default: null,
   },
-  isListOwner: {
-    type: Boolean,
-    default: false,
+  actions: {
+    type: Array,
+    default: () => [],
   },
-  isPublicCurrentList: {
-    type: Boolean,
-    default: false,
-  },
-  canWriteToCurrentList: {
-    type: Boolean,
-    default: false,
-  },
-  canJoinCurrentList: {
-    type: Boolean,
-    default: false,
-  },
-  canLeaveCurrentList: {
-    type: Boolean,
-    default: false,
-  },
-  mustLoginToJoin: {
-    type: Boolean,
-    default: false,
-  },
-  isPremiumUser: {
-    type: Boolean,
-    default: false,
-  },
-  isSubscribedToNotifications: {
-    type: Boolean,
-    default: false,
-  },
-  isNotificationToggleBusy: {
-    type: Boolean,
-    default: false,
-  },
-  canEditBirds: {
-    type: Boolean,
-    default: false,
-  },
-  // Compatibility alias for previous SingleList binding.
-  isEditingBirds: {
-    type: Boolean,
-    default: false,
-  },
-  canMakeChecklist: {
-    type: Boolean,
-    default: false,
-  },
-  isUpdatingVisibility: {
-    type: Boolean,
-    default: false,
+  infoText: {
+    type: String,
+    default: "",
   },
 });
 
@@ -82,6 +37,7 @@ const emit = defineEmits([
   "toggle-visibility",
   "delete-list",
   "copy-link",
+  "action",
 ]);
 
 const settingsStore = useSettingsStore();
@@ -94,27 +50,17 @@ const popoverId = computed(() => {
   return `list-actions-${normalizedId}`;
 });
 
-const canShare = computed(() => props.isListOwner);
-const canCopyListUrl = computed(() => Boolean(props.list?.id));
-const canSubscribe = computed(() => Boolean(props.list?.id) && (props.isListOwner || props.canWriteToCurrentList));
-const canToggleVisibility = computed(() => props.isListOwner && Boolean(props.list?.id));
-const canDeleteList = computed(() => props.isListOwner && Boolean(props.list?.id));
-const showReadOnlyInfo = computed(() => props.isPublicCurrentList && !props.canWriteToCurrentList);
-const subscriptionLabel = computed(() => (props.isSubscribedToNotifications ? "Unsubscribe" : "Subscribe"));
-const visibilityLabel = computed(() => (props.isPublicCurrentList ? t("Make_List_Private") : t("Make_List_Open")));
-const hasAnyAction = computed(() => {
-  return (
-    canShare.value ||
-    canCopyListUrl.value ||
-    canSubscribe.value ||
-    props.canJoinCurrentList ||
-    props.canLeaveCurrentList ||
-    props.mustLoginToJoin ||
-    props.isListOwner ||
-    props.canEditBirds ||
-    props.canMakeChecklist
-  );
-});
+const visibleActions = computed(() => props.actions.filter((action) => action && action.visible !== false));
+const hasAnyAction = computed(() => visibleActions.value.length > 0);
+const iconComponents = {
+  friends: FriendsIcon,
+  edit: EditIcon,
+  birds: BirdsIcon,
+  check: CheckIcon,
+  view: ViewIcon,
+  delete: DeleteIcon,
+  user: UserIcon,
+};
 
 function closePopover() {
   const popover = document.getElementById(popoverId.value);
@@ -126,6 +72,7 @@ function closePopover() {
 function runAction(eventName) {
   closePopover();
   emit(eventName);
+  emit("action", eventName);
 }
 
 function openShareModal() {
@@ -138,6 +85,19 @@ function openShareModal() {
   if (typeof dialog?.openModal === "function") {
     dialog.openModal();
   }
+}
+
+function triggerAction(action) {
+  if (action.disabled) {
+    return;
+  }
+
+  if (action.key === "share") {
+    openShareModal();
+    return;
+  }
+
+  runAction(action.event || action.key);
 }
 </script>
 
@@ -157,31 +117,23 @@ function openShareModal() {
   <section :id="popoverId" popover="auto" class="list-actions-popover">
     <h3 class="list-actions-heading center">{{ t("Settings") }}</h3>
 
-    <p v-if="showReadOnlyInfo" class="list-actions-help">
-      {{ props.mustLoginToJoin ? t("Open_List_Login_Required") : t("Join_To_Contribute") }}
+    <p v-if="props.infoText" class="list-actions-help">
+      {{ props.infoText }}
     </p>
 
-    <button v-if="canShare" type="button" class="list-action" data-action="share" @click="openShareModal">
-      <friends-icon class="option-icon" />
-      <span>{{ t("Invite_A_Friend") }}</span>
-    </button>
-
-    <button v-if="canCopyListUrl" type="button" class="list-action" data-action="copy-link" @click="runAction('copy-link')">
-      <friends-icon class="option-icon" />
-      <span>{{ t("Copy_List_Link") }}</span>
-    </button>
-
     <button
-      v-if="canSubscribe"
+      v-for="action in visibleActions"
+      :key="action.key"
       type="button"
       class="list-action"
-      data-action="subscribe"
-      :disabled="props.isNotificationToggleBusy"
-      @click="runAction('toggle-notifications')"
+      :class="{ danger: action.danger }"
+      :data-action="action.dataAction || action.key"
+      :disabled="action.disabled"
+      @click="triggerAction(action)"
     >
       <svg
         class="option-icon"
-        v-if="!props.isSubscribedToNotifications"
+        v-if="action.icon === 'bell'"
         xmlns="http://www.w3.org/2000/svg"
         stroke-width="2"
         viewBox="0 0 24 24"
@@ -193,7 +145,7 @@ function openShareModal() {
       </svg>
       <svg
         class="option-icon"
-        v-else
+        v-else-if="action.icon === 'bell-filled'"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         width="20"
@@ -202,72 +154,8 @@ function openShareModal() {
         <path fill="currentColor" d="M20 10V8A8 8 0 0 0 4 8v2a4.441 4.441 0 0 1-1.547 3.193A4.183 4.183 0 0 0 1 16c0 2.5 4.112 4 11 4s11-1.5 11-4a4.183 4.183 0 0 0-1.453-2.807A4.441 4.441 0 0 1 20 10Z" />
         <path fill="currentColor" d="M9.145 21.9a2.992 2.992 0 0 0 5.71 0c-.894.066-1.844.1-2.855.1s-1.961-.032-2.855-.1Z" />
       </svg>
-      <span>{{ subscriptionLabel }}</span>
-    </button>
-
-    <button v-if="props.canJoinCurrentList" type="button" class="list-action" data-action="join" @click="runAction('join')">
-      <user-icon class="option-icon" />
-      <span>{{ t("Join_List") }}</span>
-    </button>
-
-    <button v-if="props.canLeaveCurrentList" type="button" class="list-action" data-action="leave" @click="runAction('leave')">
-      <user-icon class="option-icon" />
-      <span>{{ t("Leave_List") }}</span>
-    </button>
-
-    <button v-if="props.mustLoginToJoin" type="button" class="list-action" data-action="login" @click="runAction('login')">
-      <user-icon class="option-icon" />
-      <span>{{ t("Login_To_Join") }}</span>
-    </button>
-
-    <button v-if="props.isListOwner" type="button" class="list-action" data-action="edit-list" @click="runAction('edit-list')">
-      <edit-icon class="option-icon" />
-      <span>{{ t("Edit_List") }}</span>
-    </button>
-
-    <button
-      v-if="props.canEditBirds"
-      type="button"
-      class="list-action"
-      data-action="toggle-edit-birds"
-      @click="runAction('toggle-edit-birds')"
-    >
-      <birds-icon class="option-icon" />
-      <span>{{ t("Edit_Birds") }}</span>
-    </button>
-
-    <button
-      v-if="props.canMakeChecklist"
-      type="button"
-      class="list-action"
-      data-action="make-checklist"
-      @click="runAction('make-checklist')"
-    >
-      <check-icon class="option-icon" />
-      <span>{{ t("Save_As_Checklist") }}</span>
-    </button>
-
-    <button
-      v-if="canToggleVisibility"
-      type="button"
-      class="list-action"
-      data-action="toggle-visibility"
-      :disabled="props.isUpdatingVisibility"
-      @click="runAction('toggle-visibility')"
-    >
-      <view-icon class="option-icon" />
-      <span>{{ visibilityLabel }}</span>
-    </button>
-
-    <button
-      v-if="canDeleteList"
-      type="button"
-      class="list-action danger"
-      data-action="delete"
-      @click="runAction('delete-list')"
-    >
-      <delete-icon class="option-icon" />
-      <span>{{ t("Delete") }}</span>
+      <component v-else :is="iconComponents[action.icon] || FriendsIcon" class="option-icon" />
+      <span>{{ action.label }}</span>
     </button>
   </section>
 </template>
