@@ -143,7 +143,6 @@ function noOfComments() {
           mode="observation"
           :obs="obs"
           :key="getObservationKey(obs)"
-          :user="currentUser.name"
           v-model="selectedObservation"
           @edit="emitEdit"></item-component>
       </transition-group>
@@ -155,7 +154,6 @@ function noOfComments() {
           mode="species"
           :obs="obs"
           :key="getSpeciesGroupKey(obs)"
-          :user="currentUser.name"
           v-model="selectedObservation"
           @edit="emitEdit"></item-component>
       </transition-group>

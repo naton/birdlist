@@ -1,73 +1,60 @@
 <script setup>
+import { computed } from "vue";
 import UserInitial from "./icons/UserInitial.vue";
 import LocationSpecifiedIcon from "./icons/LocationSpecifiedIcon.vue";
-import { formatDate, toPublicUserLabel } from "@/helpers";
-import { getBirdDisplayName } from "@/birdNames.js";
-import { useSettingsStore } from "@/stores/settings.js";
-import { storeToRefs } from "pinia";
-
-const settingsStore = useSettingsStore();
-const { lang } = storeToRefs(settingsStore);
+import { formatDate } from "@/helpers";
+import { useListItemViewModel } from "./useListItemViewModel.js";
 
 const selected = defineModel();
 
 const props = defineProps({
-  // Common props
-  
-  // Observation specific props
-  obs: Object,
-  user: String,
-  
-  // Determines the mode of the component
+  obs: {
+    type: [Object, Array],
+    required: true,
+  },
   mode: {
     type: String,
-    default: "observation", // "observation" or "species"
-    validator: (value) => ["observation", "species"].includes(value)
-  }
+    default: "observation",
+    validator: (value) => ["observation", "species"].includes(value),
+  },
 });
 
 const emit = defineEmits(["edit"]);
+const {
+  isSpeciesMode,
+  selectedObservation,
+  uniqueOwners,
+  birdLabel,
+  getOwnerLabel,
+} = useListItemViewModel(props);
+const isSelected = computed(() => selected.value === props.obs);
 
 function handleClick() {
-  if (props.mode === "observation") {
-    // Set the selected observation and emit edit
-    selected.value = props.obs;
-    emit("edit", props.obs);
-  } else if (props.mode === "species") {
-    // For species mode, get the last observation
-    const lastObservation = props.obs[props.obs.length - 1];
-    selected.value = lastObservation;
-    emit("edit", lastObservation);
+  if (!selectedObservation.value) {
+    return;
   }
-}
 
-function getOwnerLabel(owner) {
-  return toPublicUserLabel(owner);
-}
-
-function birdName(bird) {
-  return getBirdDisplayName(bird, lang?.value || "en");
+  selected.value = selectedObservation.value;
+  emit("edit", selectedObservation.value);
 }
 </script>
 
 <template>
-  <li tabindex="-1" :class="selected === props.obs && 'selected'" @click="handleClick()">
-    <!-- Observation Mode Content -->
-    <span v-if="props.mode === 'observation'" class="content-wrapper obs">
-      <span class="name">{{ birdName(props.obs) }}</span>
+  <li tabindex="-1" :class="isSelected && 'selected'" @click="handleClick()">
+    <span v-if="!isSpeciesMode" class="content-wrapper obs">
+      <span class="name">{{ birdLabel }}</span>
       <location-specified-icon v-if="props.obs.location" />
       <span class="date">{{ formatDate(props.obs.date) }}</span>
       <span v-if="props.obs.owner && props.obs.owner !== 'unauthorized'" class="seen-by">
         <user-initial :user="props.obs.owner" :initial-label="getOwnerLabel(props.obs.owner)" :color-key="props.obs.owner" />
       </span>
     </span>
-    
-    <!-- Species Mode Content -->
+
     <span v-else class="content-wrapper obs">
-      <span class="name">{{ birdName(props.obs[0]) }}</span>
-      <span class="date" v-if="props.obs.length > 0">{{ formatDate(props.obs[props.obs.length - 1].date) }}</span>
-      <span v-if="props.obs.length > 0" class="seen-by">
-        <user-initial v-for="user in [...new Set(props.obs.map((o) => o.owner))]" :key="user" :user="user" :initial-label="getOwnerLabel(user)" :color-key="user" />
+      <span class="name">{{ birdLabel }}</span>
+      <span class="date" v-if="selectedObservation">{{ formatDate(selectedObservation.date) }}</span>
+      <span v-if="uniqueOwners.length" class="seen-by">
+        <user-initial v-for="user in uniqueOwners" :key="user" :user="user" :initial-label="getOwnerLabel(user)" :color-key="user" />
       </span>
     </span>
   </li>

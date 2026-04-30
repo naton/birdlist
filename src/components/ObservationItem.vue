@@ -6,10 +6,6 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  user: {
-    type: String,
-    default: "",
-  },
   selected: {
     type: [Object, String, Number, Boolean, null],
     default: null,
@@ -26,7 +22,6 @@ function handleEdit(observation) {
   <item-component
     mode="observation"
     :obs="props.obs"
-    :user="props.user"
     :selected="props.selected"
     @edit="handleEdit"
   />
