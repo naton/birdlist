@@ -31,7 +31,7 @@ const route = useRoute();
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
-const { isPremiumUser, isUserLoggedIn, selectedUser } = storeToRefs(settingsStore);
+const { isPremiumUser, isUserLoggedIn, selectedUser, lang } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
 const {
@@ -164,7 +164,7 @@ async function refreshNotificationSubscriptionState() {
     return;
   }
 
-  isSubscribedToNotifications.value = await isListNotificationsEnabled(currentList.value.id);
+  isSubscribedToNotifications.value = await isListNotificationsEnabled(currentList.value.id, lang.value);
 }
 
 function normalizeParticipants(values) {
@@ -204,7 +204,7 @@ async function toggleListNotificationSubscription() {
   try {
     const didSucceed = isSubscribedToNotifications.value
       ? await unsubscribeFromListNotifications(currentList.value.id)
-      : await subscribeToListNotifications(currentList.value.id);
+      : await subscribeToListNotifications(currentList.value.id, lang.value);
 
     if (didSucceed) {
       await refreshNotificationSubscriptionState();

@@ -4,6 +4,7 @@ const express = require('express');
 const webpush = require('web-push');
 const cors = require('cors');
 const fetch = require('node-fetch');
+const birdSpecies = require('./src/assets/birdSpecies.json');
 
 // Load local secrets first, then fallback to .env.
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
@@ -18,6 +19,28 @@ const privateDexieCloudSecret = process.env.DEXIE_CLOUD_CLIENTSECRET;
 const DEXIE_BASE_URL = 'https://zyh2ho4s6.dexie.cloud';
 const DEXIE_URL = 'https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions';
 const PUBLIC_REALM_ID = 'rlm-public';
+const SUPPORTED_LANGUAGES = new Set(['en', 'sv', 'de']);
+const PUSH_TEXTS = {
+  en: {
+    list: 'List',
+    newObservationAdded: 'New observation added',
+    welcomeTitle: 'Hello from Birdlist!',
+    welcomeBody: 'You will now be notified when new observations get added to this list.',
+  },
+  sv: {
+    list: 'Lista',
+    newObservationAdded: 'Ny observation tillagd',
+    welcomeTitle: 'Hej från Birdlist!',
+    welcomeBody: 'Du får nu notiser när nya observationer läggs till i listan.',
+  },
+  de: {
+    list: 'Liste',
+    newObservationAdded: 'Neue Beobachtung hinzugefügt',
+    welcomeTitle: 'Hallo von Birdlist!',
+    welcomeBody: 'Du wirst jetzt benachrichtigt, wenn neue Beobachtungen zu dieser Liste hinzugefügt werden.',
+  },
+};
+const birdSpeciesByLatinName = new Map(birdSpecies.map((species) => [species.latinName, species]));
 
 const app = express();
 
@@ -48,6 +71,11 @@ if (!isPushConfigured) {
 
 function normalizeListId(listId) {
   return String(listId ?? '').trim();
+}
+
+function normalizeLanguage(language) {
+  const normalized = String(language || 'en').split('-')[0].toLowerCase();
+  return SUPPORTED_LANGUAGES.has(normalized) ? normalized : 'en';
 }
 
 function getSubscriptionRecordId(subscription) {
@@ -98,24 +126,26 @@ function sameSubscriptionData(a, b) {
     a.endpoint === b.endpoint &&
     (a.expirationTime ?? null) === (b.expirationTime ?? null) &&
     a?.keys?.p256dh === b?.keys?.p256dh &&
-    a?.keys?.auth === b?.keys?.auth
+    a?.keys?.auth === b?.keys?.auth &&
+    normalizeLanguage(a?.language) === normalizeLanguage(b?.language)
   );
 }
 
 function sanitizeNotificationPayload(payload) {
+  const notification = payload?.notification && typeof payload.notification === 'object' ? payload.notification : null;
   const title = typeof payload?.title === 'string' && payload.title.trim() ? payload.title : 'Birdlist';
   const options = payload?.options && typeof payload.options === 'object' ? payload.options : {};
 
-  const listIdRaw = options?.data?.listId;
+  const listIdRaw = notification?.listId || options?.data?.listId;
   const listId = normalizeListId(listIdRaw);
 
   if (!listId) {
-    return { error: 'Push payload must include options.data.listId' };
+    return { error: 'Push payload must include notification.listId or options.data.listId' };
   }
 
   return {
     listId,
-    dataToSend: JSON.stringify({ title, options }),
+    message: notification || { title, options },
   };
 }
 
@@ -213,6 +243,55 @@ function sanitizePublicObservationPayload(payload) {
       ...(latinName ? { latinName } : {}),
     },
   };
+}
+
+function getPushTexts(language) {
+  return PUSH_TEXTS[normalizeLanguage(language)] || PUSH_TEXTS.en;
+}
+
+function getLocalizedBirdName(bird, language) {
+  const fallback = String(bird?.name || '').trim();
+  const latinName = String(bird?.latinName || '').trim();
+  const species = latinName ? birdSpeciesByLatinName.get(latinName) : null;
+  const lang = normalizeLanguage(language);
+
+  return species?.[lang] || species?.en || species?.sv || fallback || latinName;
+}
+
+function createPushPayload(message, subscription) {
+  if (!message || typeof message !== 'object' || !message.type) {
+    return JSON.stringify(message);
+  }
+
+  const language = normalizeLanguage(subscription?.language);
+  const texts = getPushTexts(language);
+
+  if (message.type === 'new-observation') {
+    const listId = normalizeListId(message.listId);
+    const birdName = getLocalizedBirdName(message.bird, language);
+    return JSON.stringify({
+      title: `${texts.newObservationAdded}: ${birdName}`,
+      options: {
+        icon: 'https://birdlist.app/192x192.png',
+        body: `${texts.list}: ${message.listTitle || ''}`,
+        tag: `list-${listId}`,
+        data: {
+          listId,
+        },
+      },
+    });
+  }
+
+  if (message.type === 'welcome') {
+    return JSON.stringify({
+      title: texts.welcomeTitle,
+      options: {
+        body: texts.welcomeBody,
+      },
+    });
+  }
+
+  return JSON.stringify(message);
 }
 
 function canContributeToPublicList(list, ownerAliases, joinedLinks = []) {
@@ -433,20 +512,15 @@ async function addPublicObservation(payload) {
 
   let push = null;
   try {
-    push = await sendPushToList(
-      observation.listId,
-      JSON.stringify({
-        title: `New observation added: ${observation.name}`,
-        options: {
-          icon: 'https://birdlist.app/192x192.png',
-          body: `List: ${list.title || list.name || ''}`,
-          tag: `list-${observation.listId}`,
-          data: {
-            listId: observation.listId,
-          },
-        },
-      })
-    );
+    push = await sendPushToList(observation.listId, {
+      type: 'new-observation',
+      listId: observation.listId,
+      listTitle: list.title || list.name || '',
+      bird: {
+        name: observation.name,
+        latinName: observation.latinName,
+      },
+    });
   } catch (err) {
     console.log('Failed to send public observation push:', err.message || err);
     push = {
@@ -607,8 +681,9 @@ async function cleanupLegacySubscriptions() {
   }
 }
 
-async function upsertListSubscription(subscription, listId) {
+async function upsertListSubscription(subscription, listId, language = 'en') {
   const normalizedListId = normalizeListId(listId);
+  const normalizedLanguage = normalizeLanguage(language);
   const subscriptions = await getSubscriptionsFromDatabase();
 
   const existing = subscriptions.find(
@@ -627,6 +702,7 @@ async function upsertListSubscription(subscription, listId) {
   await insertSubscriptionToDatabase({
     ...subscription,
     listId: normalizedListId,
+    language: normalizedLanguage,
     updatedAt: new Date().toISOString(),
     createdAt: existing?.createdAt || new Date().toISOString(),
   });
@@ -678,14 +754,14 @@ async function triggerPush(subscription, dataToSend) {
   }
 }
 
-async function sendPushToList(listId, dataToSend) {
+async function sendPushToList(listId, message) {
   const normalizedListId = normalizeListId(listId);
   const subscriptions = (await getSubscriptionsFromDatabase()).filter(
     (subscription) => normalizeListId(subscription.listId) === normalizedListId
   );
 
   const results = await Promise.all(
-    subscriptions.map((subscription) => triggerPush(subscription, dataToSend))
+    subscriptions.map((subscription) => triggerPush(subscription, createPushPayload(message, subscription)))
   );
 
   return {
@@ -699,6 +775,7 @@ async function sendPushToList(listId, dataToSend) {
 app.post('/api/subscription', async (req, res) => {
   const listId = normalizeListId(req.body?.listId);
   const subscription = sanitizeIncomingSubscription(req.body?.subscription);
+  const language = normalizeLanguage(req.body?.language);
 
   if (!listId || !subscription) {
     res.status(400).json({
@@ -711,17 +788,10 @@ app.post('/api/subscription', async (req, res) => {
   }
 
   try {
-    const result = await upsertListSubscription(subscription, listId);
+    const result = await upsertListSubscription(subscription, listId, language);
 
     if (result.created && isPushConfigured) {
-      const welcomePayload = JSON.stringify({
-        title: 'Hello from Birdlist!',
-        options: {
-          body: 'You will now be notified when new observations get added to this list.',
-        },
-      });
-
-      webpush.sendNotification(subscription, welcomePayload).catch(console.log);
+      webpush.sendNotification(subscription, createPushPayload({ type: 'welcome' }, { language })).catch(console.log);
     }
 
     res.status(200).json({ data: { success: true, ...result } });
@@ -765,6 +835,7 @@ app.post('/api/unsubscription', async (req, res) => {
 app.post('/api/subscription-status', async (req, res) => {
   const endpoint = typeof req.body?.endpoint === 'string' ? req.body.endpoint.trim() : '';
   const listId = normalizeListId(req.body?.listId);
+  const language = normalizeLanguage(req.body?.language);
 
   if (!endpoint || !listId) {
     res.status(400).json({
@@ -778,9 +849,22 @@ app.post('/api/subscription-status', async (req, res) => {
 
   try {
     const subscriptions = await getSubscriptionsFromDatabase();
-    const subscribed = subscriptions.some(
+    const existing = subscriptions.find(
       (item) => item.endpoint === endpoint && normalizeListId(item.listId) === listId
     );
+    const subscribed = Boolean(existing);
+
+    if (existing && normalizeLanguage(existing.language) !== language) {
+      const existingId = getSubscriptionRecordId(existing);
+      if (existingId) {
+        await deleteSubscriptionFromDatabase(existingId);
+      }
+      await insertSubscriptionToDatabase({
+        ...existing,
+        language,
+        updatedAt: new Date().toISOString(),
+      });
+    }
 
     res.status(200).json({ data: { success: true, subscribed } });
   } catch (err) {
@@ -806,7 +890,7 @@ app.post('/api/push', async (req, res) => {
   }
 
   try {
-    const push = await sendPushToList(payload.listId, payload.dataToSend);
+    const push = await sendPushToList(payload.listId, payload.message);
 
     res.status(200).json({
       data: {

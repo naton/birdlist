@@ -201,7 +201,14 @@ describe("observations store", () => {
 
     vi.runAllTimers();
     expect(ctx.pushNewBirdAlertSpy).toHaveBeenCalledTimes(1);
-    expect(ctx.pushNewBirdAlertSpy.mock.calls[0][0].options.data.listId).toBe("list-1");
+    expect(ctx.pushNewBirdAlertSpy.mock.calls[0][0].notification).toMatchObject({
+      type: "new-observation",
+      listId: "list-1",
+      listTitle: "Bingo",
+      bird: {
+        name: "Mallard",
+      },
+    });
     expect(ctx.state.lists[0].updated).toBeInstanceOf(Date);
   });
 

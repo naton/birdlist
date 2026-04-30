@@ -210,13 +210,13 @@ export const useObservationsStore = defineStore(
             clearTimeout(pushTimer);
             pushTimer = setTimeout(() => {
               pushNewBirdAlert({
-                title: t("New_Observation_Added") + ": " + storageName,
-                options: {
-                  icon: "https://birdlist.app/192x192.png",
-                  body: t("List") + ": " + (list.title || list.name || ""),
-                  tag: "list-" + list.id,
-                  data: {
-                    listId: list.id,
+                notification: {
+                  type: "new-observation",
+                  listId: list.id,
+                  listTitle: list.title || list.name || "",
+                  bird: {
+                    name: storageName,
+                    latinName,
                   },
                 },
               });

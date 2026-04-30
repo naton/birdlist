@@ -107,7 +107,7 @@ async function ensurePushSubscription() {
   });
 }
 
-async function subscribeToListNotifications(listId) {
+async function subscribeToListNotifications(listId, language = "en") {
   const normalizedListId = normalizeListId(listId);
   if (!normalizedListId) {
     return false;
@@ -127,6 +127,7 @@ async function subscribeToListNotifications(listId) {
       body: JSON.stringify({
         listId: normalizedListId,
         subscription,
+        language,
       }),
     });
 
@@ -176,7 +177,7 @@ async function unsubscribeFromListNotifications(listId) {
   }
 }
 
-async function isListNotificationsEnabled(listId) {
+async function isListNotificationsEnabled(listId, language = "en") {
   const normalizedListId = normalizeListId(listId);
   if (!normalizedListId) {
     return false;
@@ -196,6 +197,7 @@ async function isListNotificationsEnabled(listId) {
       body: JSON.stringify({
         endpoint: subscription.endpoint,
         listId: normalizedListId,
+        language,
       }),
     });
 
