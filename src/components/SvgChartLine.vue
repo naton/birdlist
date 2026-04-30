@@ -1,7 +1,20 @@
 <script setup>
 import { computed } from 'vue';
 
-const props = defineProps(["d", "o", "svg"]);
+const props = defineProps({
+  d: {
+    type: Object,
+    required: true,
+  },
+  o: {
+    type: Object,
+    required: true,
+  },
+  svg: {
+    type: Object,
+    required: true,
+  },
+});
 
 const lib = {
   map(value, inMin, inMax, outMin, outMax) {

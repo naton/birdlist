@@ -5,7 +5,20 @@ import { useSettingsStore } from "@/stores/settings.js";
 import { storeToRefs } from "pinia";
 
 const emit = defineEmits(["check", "remove"]);
-const props = defineProps(["bird", "edit", "checked"]);
+const props = defineProps({
+  bird: {
+    type: [Object, String],
+    required: true,
+  },
+  edit: {
+    type: Boolean,
+    default: false,
+  },
+  checked: {
+    type: Boolean,
+    default: false,
+  },
+});
 const settingsStore = useSettingsStore();
 const { lang } = storeToRefs(settingsStore);
 const birdName = computed(() => getBirdDisplayName(props.bird, lang?.value || "en"));

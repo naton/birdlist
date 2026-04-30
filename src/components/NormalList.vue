@@ -97,7 +97,6 @@ function noOfComments() {
     <svg-chart v-if="props.observations.length && users?.length > 1"
       :observations="props.observations"
       :users="users"
-      :selectedUser="selectedUser"
       :currentLeader="currentLeader"
       @newLeader="emitNewLeader"></svg-chart>
 

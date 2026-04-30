@@ -2,7 +2,28 @@
 import { computed } from "vue";
 import { cssColor, isEmailLike } from "@/helpers";
 
-const props = defineProps(["user", "score", "leader", "colorKey", "initialLabel"]);
+const props = defineProps({
+  user: {
+    type: String,
+    default: "",
+  },
+  score: {
+    type: Number,
+    default: 0,
+  },
+  leader: {
+    type: Boolean,
+    default: false,
+  },
+  colorKey: {
+    type: String,
+    default: "",
+  },
+  initialLabel: {
+    type: String,
+    default: "",
+  },
+});
 
 const initial = computed(() => {
   const rawUser = String(props.user ?? "").trim();

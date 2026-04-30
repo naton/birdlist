@@ -2,7 +2,12 @@
 import { onMounted } from "vue";
 import { useMessagesStore } from "@/stores/messages.js";
 
-const props = defineProps(["message"]);
+const props = defineProps({
+  message: {
+    type: Object,
+    required: true,
+  },
+});
 
 const messagesStore = useMessagesStore();
 const { removeMessage } = messagesStore;

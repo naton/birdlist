@@ -4,7 +4,16 @@ import { db } from "../db";
 import UserInitial from "./icons/UserInitial.vue";
 import { formatDate, toPublicUserLabel } from "@/helpers";
 
-const props = defineProps(["comment", "user"]);
+const props = defineProps({
+  comment: {
+    type: Object,
+    required: true,
+  },
+  user: {
+    type: String,
+    default: "",
+  },
+});
 
 const isCommentAuthor = computed(() => props.comment.owner == props.user);
 

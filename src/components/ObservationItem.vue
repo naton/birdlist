@@ -1,7 +1,20 @@
 <script setup>
 import ItemComponent from "./ItemComponent.vue";
 
-const props = defineProps(["obs", "user", "selected"]);
+const props = defineProps({
+  obs: {
+    type: Object,
+    required: true,
+  },
+  user: {
+    type: String,
+    default: "",
+  },
+  selected: {
+    type: [Object, String, Number, Boolean, null],
+    default: null,
+  },
+});
 const emit = defineEmits(["edit"]);
 
 function handleEdit(observation) {
