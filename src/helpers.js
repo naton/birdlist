@@ -293,6 +293,34 @@ async function savePublicObservation(observation) {
   }
 }
 
+async function getPublicListParticipants(listId) {
+  const normalizedListId = normalizeListId(listId);
+  if (!normalizedListId) {
+    return {
+      success: false,
+      message: "Missing list id.",
+    };
+  }
+
+  try {
+    const response = await fetchWithTimeout(apiHost + "/api/public-list-participants", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ listId: normalizedListId }),
+    });
+
+    return readApiResult(response, "Failed to load list participants.");
+  } catch (error) {
+    console.error("Error loading public list participants.", error);
+    return {
+      success: false,
+      message: "Network error while loading list participants.",
+    };
+  }
+}
+
 function pushNewBirdAlert(msg) {
   return fetch(apiHost + "/api/push", {
     method: "POST",
@@ -471,6 +499,7 @@ export {
   setListVisibility,
   deleteListRemotely,
   savePublicObservation,
+  getPublicListParticipants,
   pushNewBirdAlert,
   getMonthName,
   getCurrentYear,

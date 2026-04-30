@@ -25,6 +25,10 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  participants: {
+    type: Array,
+    default: () => [],
+  },
   readOnly: {
     type: Boolean,
     default: false,
@@ -49,10 +53,14 @@ const selectedObservation = defineModel();
 
 const currentLeader = ref("");
 const users = computed(() => {
-  const names = [...new Set(props.observations?.map((obs) => obs.owner))].sort();
+  const names = [
+    ...new Set([
+      ...(props.participants || []),
+      ...(props.observations || []).map((obs) => obs.owner),
+    ].map((name) => String(name || "").trim()).filter(Boolean)),
+  ].sort();
   let users = [];
   let highestScore = 0;
-  let leader = false;
 
   names.forEach((name) => {
     const score = Object.keys(
@@ -65,12 +73,13 @@ const users = computed(() => {
     users.push({
       name,
       score,
-      leader,
+      leader: false,
     });
   });
 
+  currentLeader.value = "";
   users.forEach((user) => {
-    if (user.score === highestScore) {
+    if (highestScore > 0 && user.score === highestScore) {
       user.leader = true;
       currentLeader.value = user.name;
     }
@@ -148,7 +157,7 @@ function getSpeciesGroupKey(obsGroup) {
       :users="users"
       v-model:selectedUser="selectedUser" />
 
-    <svg-chart v-if="users?.length > 1"
+    <svg-chart v-if="props.observations.length && users?.length > 1"
       :observations="props.observations"
       :users="users"
       :selectedUser="selectedUser"

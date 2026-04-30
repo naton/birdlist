@@ -13,7 +13,7 @@ import BingoIcon from "@/components/icons/BingoIcon.vue";
 import StreakIcon from "@/components/icons/StreakIcon.vue";
 import NormalIcon from "@/components/icons/NormalIcon.vue";
 import CreateList from "@/components/CreateList.vue";
-import { toSafeUserLabel } from "@/helpers";
+import { getPublicListParticipants, toSafeUserLabel } from "@/helpers";
 import { useFriendsStore } from "@/stores/friends.js";
 
 const emit = defineEmits(["edit"]);
@@ -73,9 +73,9 @@ watch(isUserLoggedIn, (loggedIn) => {
 const listMembersLoaded = ref(false);
 
 async function getPublicListMembers(listId) {
-  const observations = await db.observations.where({ listId }).toArray();
-  const owners = [...new Set(observations.map((observation) => observation.owner).filter(Boolean))].sort();
-  return owners.map((owner) => ({ email: owner, accepted: true }));
+  const result = await getPublicListParticipants(listId);
+  const participants = result?.success ? result.data?.participants || [] : [];
+  return participants.map((participant) => ({ email: participant, accepted: true }));
 }
 
 async function loadListMembers() {
@@ -151,7 +151,7 @@ watch(
                 {{ lastUsedList.title }}
               </h2>
               <p>{{ lastUsedList.description }}</p>
-              <p class="margin-top"><template v-for="member in lastUsedList.members" :key="member.email">
+              <p v-if="lastUsedList.members?.length > 1" class="margin-top"><template v-for="member in lastUsedList.members" :key="member.email">
                 <user-initial :user="member.email" :initial-label="getMemberDisplayName(member.email)" :color-key="member.email" />
               </template></p>
             </router-link>
@@ -168,7 +168,7 @@ watch(
                 </div>
                 <div class="list-members">
                   <transition name="fade-in">
-                    <div v-if="listMembersLoaded">
+                    <div v-if="listMembersLoaded && list.members?.length > 1">
                       <template v-for="member in list.members" :key="member.email">
                         <user-initial :user="member.email" :initial-label="getMemberDisplayName(member.email)" :color-key="member.email" />
                       </template>

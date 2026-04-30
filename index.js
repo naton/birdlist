@@ -226,6 +226,17 @@ function canContributeToPublicList(list, ownerAliases, joinedLinks = []) {
   return joinedLinks.some((row) => aliases.has(String(row?.userId || '').trim()));
 }
 
+function uniquePublicListParticipants(list, joinedLinks = []) {
+  return [
+    list?.owner,
+    ...joinedLinks.map((row) => row?.userId),
+  ]
+    .map((value) => String(value || '').trim())
+    .filter(Boolean)
+    .filter((value, index, self) => self.indexOf(value) === index)
+    .sort((a, b) => a.localeCompare(b));
+}
+
 async function dexieRequest(pathname, options = {}) {
   const response = await fetch(`${DEXIE_BASE_URL}${pathname}`, {
     ...options,
@@ -451,6 +462,28 @@ async function addPublicObservation(payload) {
     observation,
     listId: observation.listId,
     push,
+  };
+}
+
+async function getPublicListParticipants(listId) {
+  const normalizedListId = normalizeListId(listId);
+  if (!normalizedListId) {
+    return { error: 'List id is required.' };
+  }
+
+  const list = await dexieGetById('lists', normalizedListId);
+  if (!list) {
+    return { error: 'List not found.', status: 404 };
+  }
+
+  if (String(list.realmId || '').trim() !== PUBLIC_REALM_ID) {
+    return { error: 'List is not public.', status: 403 };
+  }
+
+  const joinedLinks = await dexieGetMany('joinedLists', { listId: normalizedListId }).catch(() => []);
+  return {
+    listId: normalizedListId,
+    participants: uniquePublicListParticipants(list, joinedLinks),
   };
 }
 
@@ -858,6 +891,35 @@ app.post('/api/public-observation', async (req, res) => {
       error: {
         id: 'unable-to-save-public-observation',
         message: `Failed to save observation: ${err.message}`,
+      },
+    });
+  }
+});
+
+app.post('/api/public-list-participants', async (req, res) => {
+  try {
+    const result = await getPublicListParticipants(req.body?.listId);
+    if (result?.error) {
+      res.status(result.status || 400).json({
+        error: {
+          id: 'unable-to-load-public-list-participants',
+          message: result.error,
+        },
+      });
+      return;
+    }
+
+    res.status(200).json({
+      data: {
+        success: true,
+        ...result,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: {
+        id: 'unable-to-load-public-list-participants',
+        message: `Failed to load participants: ${err.message}`,
       },
     });
   }

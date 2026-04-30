@@ -46,7 +46,7 @@ const pointsPositions = computed(() => {
     const x = lib.map(
       e[0],
       props.o.xMin,
-      props.o.xMax + 8,
+      props.o.xMax,
       0,
       props.svg.w
     );

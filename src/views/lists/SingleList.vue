@@ -9,6 +9,7 @@ import {
   subscribeToListNotifications,
   unsubscribeFromListNotifications,
   isListNotificationsEnabled,
+  getPublicListParticipants,
 } from "@/helpers";
 import { db } from "@/db";
 import { useSettingsStore } from '@/stores/settings.js'
@@ -43,6 +44,7 @@ const {
   leavePublicList,
   setListPublicVisibility,
   deleteList,
+  getListMembers,
 } = listsStore;
 const { allLists, currentList, checkListEditMode } = storeToRefs(listsStore);
 
@@ -76,6 +78,8 @@ const canStartEditBirds = computed(() => canEditBirds.value && !checkListEditMod
 const canMakeChecklist = computed(() => isListOwner.value && currentList.value?.type === "normal");
 const isSubscribedToNotifications = ref(false);
 const isNotificationToggleBusy = ref(false);
+const listParticipants = ref([]);
+let participantRequestId = 0;
 
 function openModal() {
   if (editDialog.value) {
@@ -101,6 +105,7 @@ async function joinCurrentList() {
     return;
   }
   await joinPublicList(currentList.value.id);
+  await refreshListParticipants();
 }
 
 async function leaveCurrentList() {
@@ -108,6 +113,7 @@ async function leaveCurrentList() {
     return;
   }
   await leavePublicList(currentList.value.id);
+  await refreshListParticipants();
 }
 
 function loginToJoin() {
@@ -161,6 +167,34 @@ async function refreshNotificationSubscriptionState() {
   isSubscribedToNotifications.value = await isListNotificationsEnabled(currentList.value.id);
 }
 
+function normalizeParticipants(values) {
+  return [...new Set((values || []).map((value) => String(value || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+}
+
+async function refreshListParticipants() {
+  const list = currentList.value;
+  const requestId = ++participantRequestId;
+  if (!list?.id) {
+    listParticipants.value = [];
+    return;
+  }
+
+  if (isPublicList(list)) {
+    const result = await getPublicListParticipants(list.id);
+    if (requestId !== participantRequestId) {
+      return;
+    }
+    listParticipants.value = normalizeParticipants(result?.success ? result.data?.participants : [list.owner]);
+    return;
+  }
+
+  const members = await getListMembers(list.id);
+  if (requestId !== participantRequestId) {
+    return;
+  }
+  listParticipants.value = normalizeParticipants(members.map((member) => member.email || member.userId));
+}
+
 async function toggleListNotificationSubscription() {
   if (!currentList.value?.id || isNotificationToggleBusy.value) {
     return;
@@ -200,6 +234,7 @@ watch(
   async () => {
     selectedUser.value = null;
     await refreshNotificationSubscriptionState();
+    await refreshListParticipants();
   },
   { immediate: true }
 );
@@ -276,6 +311,7 @@ watch(
     :list="currentList"
     :read-only="!canWriteToCurrentList"
     :comments="listComments"
+    :participants="listParticipants"
     @newLeader="celebrate"
     @edit="edit">
   </normal-list>
