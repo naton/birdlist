@@ -245,9 +245,4 @@ button:has(.pill) {
   text-underline-offset: 0.2em;
 }
 
-.buttons {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
 </style>
