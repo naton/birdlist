@@ -20,10 +20,8 @@ import { useMessagesStore } from "@/stores/messages.js";
 import ListInfo from "@/components/ListInfo.vue";
 import ListActionsMenu from "@/components/ListActionsMenu.vue";
 import EditListDialog from "@/components/EditListDialog.vue";
-import BirdstreakList from "@/components/BirdstreakList.vue";
-import CheckList from "@/components/CheckList.vue";
-import BingoList from "@/components/BingoList.vue";
-import NormalList from "@/components/NormalList.vue";
+import ListRenderer from "@/features/lists/components/ListRenderer.vue";
+import { useListPermissions } from "@/features/lists/composables/useListPermissions.js";
 
 const emit = defineEmits(["openDialog", "edit"]);
 
@@ -31,15 +29,12 @@ const route = useRoute();
 
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
-const { isPremiumUser, isUserLoggedIn, selectedUser, lang } = storeToRefs(settingsStore);
+const { selectedUser, lang } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
 const {
   convertToChecklist,
-  isOwnedByCurrentUser,
   isPublicList,
-  isJoinedList,
-  canWriteToList,
   joinPublicList,
   leavePublicList,
   setListPublicVisibility,
@@ -57,6 +52,19 @@ const { allComments } = storeToRefs(commentsStore)
 const messagesStore = useMessagesStore();
 const { addMessage } = messagesStore;
 
+const {
+  isPremiumUser,
+  isListOwner,
+  isPublicCurrentList,
+  canWriteToCurrentList,
+  canJoinCurrentList,
+  canLeaveCurrentList,
+  mustLoginToJoin,
+  showDirectJoinAction,
+  canStartEditBirds,
+  canMakeChecklist,
+} = useListPermissions(currentList);
+
 /* Comments */
 const listComments = computed(() => allComments.value?.filter((comment) => comment.listId == route.params.id));
 
@@ -65,17 +73,6 @@ const editDialog = ref(null);
 const isEditDialogOpen = ref(false);
 const isUpdatingVisibility = ref(false);
 
-const isListOwner = computed(() => isOwnedByCurrentUser(currentList.value));
-const isPublicCurrentList = computed(() => isPublicList(currentList.value));
-const isJoinedCurrentList = computed(() => isJoinedList(currentList.value?.id));
-const canWriteToCurrentList = computed(() => canWriteToList(currentList.value));
-const canJoinCurrentList = computed(() => isPublicCurrentList.value && !isListOwner.value && !isJoinedCurrentList.value && isUserLoggedIn.value);
-const canLeaveCurrentList = computed(() => isPublicCurrentList.value && !isListOwner.value && isJoinedCurrentList.value);
-const mustLoginToJoin = computed(() => isPublicCurrentList.value && !isListOwner.value && !isUserLoggedIn.value);
-const showDirectJoinAction = computed(() => !canWriteToCurrentList.value && (canJoinCurrentList.value || mustLoginToJoin.value));
-const canEditBirds = computed(() => isListOwner.value && (currentList.value?.type === "checklist" || currentList.value?.type === "bingo"));
-const canStartEditBirds = computed(() => canEditBirds.value && !checkListEditMode.value);
-const canMakeChecklist = computed(() => isListOwner.value && currentList.value?.type === "normal");
 const isSubscribedToNotifications = ref(false);
 const isNotificationToggleBusy = ref(false);
 const listParticipants = ref([]);
@@ -312,35 +309,16 @@ watch(
       </button>
     </template>
   </list-info>
-  <birdstreak-list v-if="currentList && currentList.type === 'birdstreak'"
-    :key="`${currentList.id}-birdstreak`"
-    :observations="allListObservations"
-    :list="currentList"
-    :read-only="!canWriteToCurrentList"
-    :comments="listComments"></birdstreak-list>
-  <check-list v-else-if="currentList && currentList.type === 'checklist'"
-    :key="`${currentList.id}-checklist`"
-    :observations="allListObservations"
-    :list="currentList"
-    :read-only="!canWriteToCurrentList"
-    :comments="listComments"></check-list>
-  <bingo-list v-else-if="currentList && currentList.type === 'bingo'"
-    :key="`${currentList.id}-${currentList.bingoSize}-bingo`"
-    :observations="allListObservations"
-    :list="currentList"
-    :read-only="!canWriteToCurrentList"
-    :comments="listComments"
-    @newLeader="celebrate"></bingo-list>
-  <normal-list v-else-if="currentList"
-    :key="`${currentList.id}-normal`"
+  <list-renderer
+    v-if="currentList"
     :observations="allListObservations"
     :list="currentList"
     :read-only="!canWriteToCurrentList"
     :comments="listComments"
     :participants="listParticipants"
     @newLeader="celebrate"
-    @edit="edit">
-  </normal-list>
+    @edit="edit"
+  />
 </template>
 
 <style>
