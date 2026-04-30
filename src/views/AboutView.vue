@@ -15,7 +15,7 @@ const { t } = settingsStore
     <figure class="center">
       <about-illustration />
     </figure>
-    <section class="about-content">
+    <section class="about-content page-content page-content--compact">
       <h1 class="hidden-visually">{{ t("About")}} Birdlist</h1>
       <picture>
         <source srcset="/logo.webp" type="image/webp" />
@@ -64,13 +64,6 @@ const { t } = settingsStore
   padding: 1rem 0.5rem;
   align-content: center;
 }  
-
-.about-content {
-  display: grid;
-  gap: 0.5rem;
-  align-self: start;
-  padding: 1rem;
-}
 
 .about .logo {
   display: flex;

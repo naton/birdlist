@@ -339,6 +339,28 @@ select {
   align-items: center;
 }
 
+.page-content {
+  display: grid;
+  align-self: start;
+  align-content: start;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.page-content--compact {
+  gap: 0.5rem;
+}
+
+.page-toolbar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 1rem 0.5rem;
+  background-color: var(--color-background);
+  z-index: 1;
+}
+
 /* Buttons */
 button {
   flex-shrink: 0;

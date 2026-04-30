@@ -26,7 +26,7 @@ function addFriendAndReset(name, email) {
 
 <template>
   <div class="friends">
-    <article class="friends-content">
+    <article class="friends-content page-content">
       <section>
         <h1 class="center margin-bottom">{{ t("Friends")}}</h1>
         <details class="help margin-top margin-bottom">
@@ -65,13 +65,6 @@ function addFriendAndReset(name, email) {
 </template>
 
 <style>
-.friends-content {
-  display: grid;
-  align-self: start;
-  gap: 1.5rem;
-  padding: 1rem;
-}
-
 .friends-content form {
   display: flex;
   gap: 0.25rem;

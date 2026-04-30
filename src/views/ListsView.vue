@@ -118,7 +118,7 @@ watch(
       <component :is="Component" :key="`${route.path}`"></component>
       <template v-if="!Component">
         <section class="lists">
-          <div class="list-tools">
+          <div class="list-tools page-toolbar">
             <h1 class="center">{{ t("Lists") }}</h1>
             <div class="flex">
               <button class="add" @click="newList($event)" :disabled="!isPremiumUser && allMyLists?.length >= 5">
@@ -140,7 +140,7 @@ watch(
             </button>
           </div>
 
-          <div class="lists-content">
+          <div class="lists-content page-content">
             <p v-if="activeTab === 'open'" class="center margin-bottom">
               {{ t("Open_Lists_Read_Only_Help") }}
             </p>
@@ -200,16 +200,6 @@ watch(
 </template>
 
 <style>
-.list-tools {
-  position: sticky;
-  top: 0;
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem 1rem 0.5rem;
-  background-color: var(--color-background);
-  z-index: 1;
-}
-
 .list .list-item {
   display: grid;
   grid-template-columns: 20px 1fr 24px;
@@ -239,10 +229,7 @@ button:has(.pill) {
 }
 
 .lists-content {
-  display: grid;
-  align-content: start;
-  gap: 1.5rem;
-  padding: 0.5rem 1rem 1rem;
+  padding-top: 0.5rem;
 }
 
 .featured {

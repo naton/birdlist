@@ -13,7 +13,7 @@ const currentTab = ref('config')
 
 <template>
   <article class="settings">
-    <section class="settings-content">
+    <section class="settings-content page-content page-content--compact">
       <header>
         <h1 class="center">{{ t("Settings") }}</h1>
         <nav class="nav margin-top margin-bottom">
@@ -35,13 +35,6 @@ const currentTab = ref('config')
 </template>
 
 <style>
-.settings-content {
-  display: grid;
-  align-self: start;
-  gap: 0.5rem;
-  padding: 1rem;
-}
-
 .settings-content .nav {
   padding-inline: 0;
 }
