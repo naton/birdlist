@@ -44,7 +44,6 @@ const PUSH_TEXTS = {
 function loadBirdSpecies() {
   const candidatePaths = [
     process.env.BIRD_SPECIES_PATH,
-    path.join(__dirname, 'src', 'assets', 'birdSpecies.json'),
     path.join(__dirname, 'public', 'birdSpecies.json'),
     path.join(__dirname, 'dist', 'birdSpecies.json'),
   ].filter(Boolean);
