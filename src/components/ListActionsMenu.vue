@@ -163,7 +163,7 @@ function openShareModal() {
 
     <button v-if="canShare" type="button" class="list-action" data-action="share" @click="openShareModal">
       <friends-icon class="option-icon" />
-      <span>{{ t("Share") }}</span>
+      <span>{{ t("Invite_A_Friend") }}</span>
     </button>
 
     <button v-if="canCopyListUrl" type="button" class="list-action" data-action="copy-link" @click="runAction('copy-link')">
