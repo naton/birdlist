@@ -13,6 +13,12 @@ if (typeof window !== "undefined" && !("anchorName" in document.documentElement.
   });
 }
 
+if (typeof window !== "undefined" && typeof HTMLElement.prototype.showPopover !== "function") {
+  import("@oddbird/popover-polyfill").catch((error) => {
+    console.error("Failed to load popover polyfill.", error);
+  });
+}
+
 const app = createApp(App);
 const pinia = createPinia();
 
