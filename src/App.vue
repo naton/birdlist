@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import { RouterLink, RouterView } from "vue-router";
 import { useSettingsStore } from './stores/settings.js'
 import { useMessagesStore } from './stores/messages.js'
+import { loadListsView } from "./router";
 import AppMessages from './app/components/AppMessages.vue'
 import InvitesList from './app/components/InvitesList.vue'
 import HomeIcon from '@/shared/icons/HomeIcon.vue'
@@ -52,6 +53,10 @@ function onUpdateFound(registration) {
     }
   });
 }
+
+function prefetchListsRoute() {
+  Promise.resolve(loadListsView()).catch(() => null);
+}
 </script>
 
 <template>
@@ -65,7 +70,13 @@ function onUpdateFound(registration) {
       <home-icon />
       {{ t("Start") }}
     </router-link>
-    <router-link class="nav-link" to="/lists">
+    <router-link
+      class="nav-link"
+      to="/lists"
+      @pointerenter="prefetchListsRoute"
+      @focus="prefetchListsRoute"
+      @touchstart.passive="prefetchListsRoute"
+    >
       <lists-icon />
       {{ t("Lists") }}
     </router-link>

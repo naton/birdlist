@@ -8,6 +8,7 @@ import { scheduleRoutePrefetch } from "./router/prefetch";
 import "./assets/main.css";
 import "./shared/styles/list-surfaces.css";
 import "./shared/styles/data-display.css";
+import "./features/lists/styles/lists-index.css";
 
 if (typeof window !== "undefined" && !("anchorName" in document.documentElement.style)) {
   import("@oddbird/css-anchor-positioning").catch((error) => {

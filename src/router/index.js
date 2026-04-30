@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import ListsRouteShell from "../features/lists/components/ListsRouteShell.vue";
 import MonthlyList from "../views/lists/MonthlyList.vue";
 
 const loadListsView = () => import("../views/ListsView.vue");
@@ -20,7 +21,7 @@ const router = createRouter({
         {
           path: "/lists",
           name: "lists",
-          component: loadListsView,
+          component: ListsRouteShell,
           children: [
             {
               path: "/lists/:id",
@@ -70,4 +71,5 @@ const routePrefetchLoaders = [
 ];
 
 export { routePrefetchLoaders };
+export { loadListsView };
 export default router;
