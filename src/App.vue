@@ -4,14 +4,14 @@ import { storeToRefs } from 'pinia'
 import { RouterLink, RouterView } from "vue-router";
 import { useSettingsStore } from './stores/settings.js'
 import { useMessagesStore } from './stores/messages.js'
-import AppMessages from './components/AppMessages.vue'
-import InvitesList from './components/InvitesList.vue'
-import HomeIcon from './components/icons/HomeIcon.vue'
-import ListsIcon from './components/icons/ListsIcon.vue'
-import FriendsIcon from './components/icons/FriendsIcon.vue'
-import SettingsIcon from './components/icons/SettingsIcon.vue'
-import HelpIcon from './components/icons/HelpIcon.vue'
-const InstallPrompt = defineAsyncComponent(() => import('./components/InstallPrompt.vue'))
+import AppMessages from './app/components/AppMessages.vue'
+import InvitesList from './app/components/InvitesList.vue'
+import HomeIcon from '@/shared/icons/HomeIcon.vue'
+import ListsIcon from '@/shared/icons/ListsIcon.vue'
+import FriendsIcon from '@/shared/icons/FriendsIcon.vue'
+import SettingsIcon from '@/shared/icons/SettingsIcon.vue'
+import HelpIcon from '@/shared/icons/HelpIcon.vue'
+const InstallPrompt = defineAsyncComponent(() => import('./app/components/InstallPrompt.vue'))
 
 const settingsStore = useSettingsStore()
 const { t, loadTexts, setThemeColor, resetMonthToCurrentMonth } = settingsStore

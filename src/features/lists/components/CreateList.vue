@@ -1,10 +1,10 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-import AppDialog from "./AppDialog.vue";
-import { useSettingsStore } from "../stores/settings.js";
-import { useListsStore } from "../stores/lists.js";
-import ListsIcon from "./icons/ListsIcon.vue";
+import AppDialog from "@/shared/ui/AppDialog.vue";
+import ListsIcon from "@/shared/icons/ListsIcon.vue";
+import { useSettingsStore } from "@/stores/settings.js";
+import { useListsStore } from "@/stores/lists.js";
 import ListFormFields from "./ListFormFields.vue";
 import { createDefaultListDraft, buildCreateListPayload, validateListDraft } from "@/composables/useListDraft";
 

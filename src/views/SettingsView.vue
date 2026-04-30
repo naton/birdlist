@@ -1,10 +1,10 @@
 <script setup>
 import { ref } from 'vue'
 import { useSettingsStore } from '../stores/settings.js'
-import SettingsIcon from '../components/icons/SettingsIcon.vue';
-import UserIcon from '../components/icons/UserIcon.vue';
-import SettingsConfig from '../components/SettingsConfig.vue';
-import SettingsAccount from '../components/SettingsAccount.vue';
+import SettingsIcon from '@/shared/icons/SettingsIcon.vue';
+import UserIcon from '@/shared/icons/UserIcon.vue';
+import SettingsConfig from '@/features/settings/components/SettingsConfig.vue';
+import SettingsAccount from '@/features/settings/components/SettingsAccount.vue';
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore

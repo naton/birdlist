@@ -2,11 +2,11 @@
 import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
-import AddLocationIcon from "./icons/AddLocationIcon.vue";
-import FetchingLocationIcon from "./icons/FetchingLocationIcon.vue";
-import LocationFoundIcon from "./icons/LocationFoundIcon.vue";
+import AddLocationIcon from "@/shared/icons/AddLocationIcon.vue";
+import FetchingLocationIcon from "@/shared/icons/FetchingLocationIcon.vue";
+import LocationFoundIcon from "@/shared/icons/LocationFoundIcon.vue";
 import vue3SimpleTypeahead from "vue3-simple-typeahead";
-import { useSettingsStore } from "../stores/settings.js";
+import { useSettingsStore } from "@/stores/settings.js";
 import { useBirdsStore } from "@/stores/birds.js";
 import "vue3-simple-typeahead/dist/vue3-simple-typeahead.css"; // Optional default CSS
 

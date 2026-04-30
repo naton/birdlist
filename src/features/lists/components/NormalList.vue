@@ -1,20 +1,20 @@
 <script setup>
 import { ref, computed } from "vue";
 import { storeToRefs } from "pinia";
-import { db } from "../db";
+import { db } from "@/db";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
 import { useCommentsStore } from "@/stores/comments.js";
 import { useMessagesStore } from "@/stores/messages.js";
 import { useListUserStats } from "@/composables/useListUserStats.js";
 import ItemComponent from "./ItemComponent.vue";
-import ObservationsIcon from "./icons/ObservationsIcon.vue";
-import BirdsIcon from "./icons/BirdsIcon.vue";
-import CommentsIcon from "./icons/CommentsIcon.vue";
+import BirdsIcon from "@/shared/icons/BirdsIcon.vue";
+import CommentsIcon from "@/shared/icons/CommentsIcon.vue";
+import ObservationsIcon from "@/shared/icons/ObservationsIcon.vue";
 import UserNav from "./UserNav.vue";
 import CommentItem from "./CommentItem.vue";
 import SvgChart from "./SvgChart.vue";
-import HomeIllustration from '../components/illustrations/HomeIllustration.vue';
+import HomeIllustration from "@/shared/illustrations/HomeIllustration.vue";
 
 const emit = defineEmits(["delete", "edit", "newLeader"]);
 const props = defineProps({

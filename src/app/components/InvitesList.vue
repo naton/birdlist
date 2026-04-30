@@ -1,8 +1,8 @@
 <script setup>
-import { db } from "../db";
+import { db } from "@/db";
 import { useObservable } from "@vueuse/rxjs";
 import { useRouter } from "vue-router";
-import { useSettingsStore } from '../stores/settings.js'
+import { useSettingsStore } from '@/stores/settings.js'
 import { useListsStore } from "@/stores/lists.js";
 import { toPublicUserLabel } from "@/helpers";
 

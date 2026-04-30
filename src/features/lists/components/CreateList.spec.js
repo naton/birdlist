@@ -11,7 +11,7 @@ vi.mock("vue-router", () => ({
   }),
 }));
 
-vi.mock("../stores/settings.js", async () => {
+vi.mock("@/stores/settings.js", async () => {
   const { defineStore } = await import("pinia");
   const useSettingsStore = defineStore("settings", () => ({
     t: (key) => key,
@@ -19,7 +19,7 @@ vi.mock("../stores/settings.js", async () => {
   return { useSettingsStore };
 });
 
-vi.mock("../stores/lists.js", async () => {
+vi.mock("@/stores/lists.js", async () => {
   const { defineStore } = await import("pinia");
   const useListsStore = defineStore("list", () => ({
     createList: vi.fn().mockResolvedValue("list-1"),

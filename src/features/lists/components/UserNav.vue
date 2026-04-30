@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
-import UserInitial from "./icons/UserInitial.vue";
+import UserInitial from "@/shared/icons/UserInitial.vue";
 import { useFriendsStore } from "@/stores/friends.js";
 import { useSettingsStore } from "@/stores/settings.js";
 import { toSafeUserLabel } from "@/helpers";

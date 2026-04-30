@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 
-vi.mock("@/components/BirdstreakList.vue", () => ({
+vi.mock("@/features/lists/components/BirdstreakList.vue", () => ({
   default: {
     name: "BirdstreakList",
     props: ["list", "observations", "comments", "participants", "readOnly"],
@@ -9,7 +9,7 @@ vi.mock("@/components/BirdstreakList.vue", () => ({
   },
 }));
 
-vi.mock("@/components/CheckList.vue", () => ({
+vi.mock("@/features/lists/components/CheckList.vue", () => ({
   default: {
     name: "CheckList",
     props: ["list", "observations", "comments", "participants", "readOnly"],
@@ -17,7 +17,7 @@ vi.mock("@/components/CheckList.vue", () => ({
   },
 }));
 
-vi.mock("@/components/BingoList.vue", () => ({
+vi.mock("@/features/lists/components/BingoList.vue", () => ({
   default: {
     name: "BingoList",
     props: ["list", "observations", "comments", "participants", "readOnly"],
@@ -31,7 +31,7 @@ vi.mock("@/components/BingoList.vue", () => ({
   },
 }));
 
-vi.mock("@/components/NormalList.vue", () => ({
+vi.mock("@/features/lists/components/NormalList.vue", () => ({
   default: {
     name: "NormalList",
     props: ["list", "observations", "comments", "participants", "readOnly"],

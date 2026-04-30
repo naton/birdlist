@@ -1,11 +1,11 @@
 <script setup>
 import { computed } from "vue";
 import { inputDate } from "@/helpers";
-import { useSettingsStore } from "../stores/settings.js";
-import NormalIcon from "@/components/icons/NormalIcon.vue";
-import CheckIcon from "@/components/icons/CheckIcon.vue";
-import BingoIcon from "@/components/icons/BingoIcon.vue";
-import StreakIcon from "@/components/icons/StreakIcon.vue";
+import { useSettingsStore } from "@/stores/settings.js";
+import NormalIcon from "@/shared/icons/NormalIcon.vue";
+import CheckIcon from "@/shared/icons/CheckIcon.vue";
+import BingoIcon from "@/shared/icons/BingoIcon.vue";
+import StreakIcon from "@/shared/icons/StreakIcon.vue";
 
 const emit = defineEmits(["esc"]);
 

@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from "vue";
-import UserInitial from "./icons/UserInitial.vue";
-import LocationSpecifiedIcon from "./icons/LocationSpecifiedIcon.vue";
+import LocationSpecifiedIcon from "@/shared/icons/LocationSpecifiedIcon.vue";
+import UserInitial from "@/shared/icons/UserInitial.vue";
 import { formatDate } from "@/helpers";
 import { useListItemViewModel } from "./useListItemViewModel.js";
 

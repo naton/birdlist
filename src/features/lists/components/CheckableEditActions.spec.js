@@ -45,7 +45,7 @@ describe("Inline edit actions", () => {
   });
 
   it("shows cancel beside save in checklist and closes edit mode", async () => {
-    const CheckList = (await import("./CheckList.vue")).default;
+    const CheckList = (await import("@/features/lists/components/CheckList.vue")).default;
     const wrapper = mount(CheckList, {
       props: {
         list: { id: "list-1", type: "checklist", birds: ["Crow"] },
@@ -65,7 +65,7 @@ describe("Inline edit actions", () => {
   });
 
   it("does not render SvgChart in checklist", async () => {
-    const CheckList = (await import("./CheckList.vue")).default;
+    const CheckList = (await import("@/features/lists/components/CheckList.vue")).default;
     const wrapper = mount(CheckList, {
       props: {
         list: { id: "list-1", type: "checklist", birds: ["Crow"] },
@@ -81,7 +81,7 @@ describe("Inline edit actions", () => {
 
   it("does not warn for onNewLeader listener on checklist", async () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-    const CheckList = (await import("./CheckList.vue")).default;
+    const CheckList = (await import("@/features/lists/components/CheckList.vue")).default;
     mount(CheckList, {
       props: {
         list: { id: "list-1", type: "checklist", birds: ["Crow"] },
@@ -102,7 +102,7 @@ describe("Inline edit actions", () => {
   });
 
   it("shows cancel beside save in bingo and closes edit mode", async () => {
-    const BingoList = (await import("./BingoList.vue")).default;
+    const BingoList = (await import("@/features/lists/components/BingoList.vue")).default;
     const wrapper = mount(BingoList, {
       props: {
         list: { id: "list-2", type: "bingo", birds: ["Crow", "Mallard", "Robin"], bingoSize: 3 },

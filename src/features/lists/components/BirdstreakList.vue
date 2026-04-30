@@ -6,9 +6,9 @@ import { getBirdDisplayName } from "@/birdNames.js";
 import { useSettingsStore } from '@/stores/settings.js'
 import { useObservationsStore } from "@/stores/observations.js";
 import { useListUserStats } from "@/composables/useListUserStats.js";
+import LockIcon from "@/shared/icons/LockIcon.vue";
+import StreakIcon from "@/shared/icons/StreakIcon.vue";
 import UserNav from "./UserNav.vue";
-import StreakIcon from "./icons/StreakIcon.vue";
-import LockIcon from "./icons/LockIcon.vue";
 
 const props = defineProps({
   list: Object,

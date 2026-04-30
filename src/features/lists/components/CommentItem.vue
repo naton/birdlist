@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from "vue";
-import { db } from "../db";
-import UserInitial from "./icons/UserInitial.vue";
+import { db } from "@/db";
+import UserInitial from "@/shared/icons/UserInitial.vue";
 import { formatDate, toPublicUserLabel } from "@/helpers";
 
 const props = defineProps({

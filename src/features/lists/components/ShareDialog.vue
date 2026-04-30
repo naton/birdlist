@@ -2,12 +2,12 @@
 import { ref } from "vue";
 import { RouterLink } from "vue-router";
 import { storeToRefs } from "pinia";
-import { db } from "../db";
-import AppDialog from "./AppDialog.vue";
-import { useSettingsStore } from '../stores/settings.js'
-import { useFriendsStore } from '../stores/friends.js'
-import { useListsStore } from '../stores/lists.js'
-import FriendsIcon from '@/components/icons/FriendsIcon.vue'
+import { db } from "@/db";
+import AppDialog from "@/shared/ui/AppDialog.vue";
+import { useFriendsStore } from '@/stores/friends.js'
+import { useListsStore } from '@/stores/lists.js'
+import { useSettingsStore } from '@/stores/settings.js'
+import FriendsIcon from '@/shared/icons/FriendsIcon.vue'
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore

@@ -1,12 +1,12 @@
 <script setup>
 import { watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useSettingsStore } from '../stores/settings.js'
-import { useBirdsStore } from '../stores/birds.js'
-import { useMessagesStore } from '../stores/messages.js'
-import NorthAmericaMap from "../components/icons/NorthAmericaMap.vue";
-import EuropeMap from "../components/icons/EuropeMap.vue";
-import SwedenMap from "../components/icons/SwedenMap.vue";
+import { useBirdsStore } from '@/stores/birds.js'
+import { useMessagesStore } from '@/stores/messages.js'
+import { useSettingsStore } from '@/stores/settings.js'
+import EuropeMap from "@/shared/icons/EuropeMap.vue";
+import NorthAmericaMap from "@/shared/icons/NorthAmericaMap.vue";
+import SwedenMap from "@/shared/icons/SwedenMap.vue";
 
 const settingsStore = useSettingsStore()
 const { t, normalizeLanguage, normalizeRegion } = settingsStore

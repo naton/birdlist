@@ -6,8 +6,8 @@ import { useSettingsStore } from "@/stores/settings.js";
 import { useObservationsStore } from "@/stores/observations.js";
 import { useListsStore } from "@/stores/lists.js";
 import MonthlyList from "@/views/lists/MonthlyList.vue";
-import EditObservationDialog from "@/components/EditObservationDialog.vue";
-import ObservationInput from "@/components/ObservationInput.vue";
+import EditObservationDialog from "@/features/observations/components/EditObservationDialog.vue";
+import ObservationInput from "@/features/observations/components/ObservationInput.vue";
 
 const route = useRoute();
 

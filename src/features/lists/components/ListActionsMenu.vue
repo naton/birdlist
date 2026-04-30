@@ -1,15 +1,15 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useSettingsStore } from "@/stores/settings.js";
-import ShareDialog from "./ShareDialog.vue";
-import FriendsIcon from "@/components/icons/FriendsIcon.vue";
-import EditIcon from "@/components/icons/EditIcon.vue";
-import BirdsIcon from "@/components/icons/BirdsIcon.vue";
-import CheckIcon from "@/components/icons/CheckIcon.vue";
-import ViewIcon from "@/components/icons/ViewIcon.vue";
-import DeleteIcon from "@/components/icons/DeleteIcon.vue";
-import UserIcon from "@/components/icons/UserIcon.vue";
-import SettingsIcon from "@/components/icons/SettingsIcon.vue";
+import ShareDialog from "@/features/lists/components/ShareDialog.vue";
+import FriendsIcon from "@/shared/icons/FriendsIcon.vue";
+import EditIcon from "@/shared/icons/EditIcon.vue";
+import BirdsIcon from "@/shared/icons/BirdsIcon.vue";
+import CheckIcon from "@/shared/icons/CheckIcon.vue";
+import ViewIcon from "@/shared/icons/ViewIcon.vue";
+import DeleteIcon from "@/shared/icons/DeleteIcon.vue";
+import UserIcon from "@/shared/icons/UserIcon.vue";
+import SettingsIcon from "@/shared/icons/SettingsIcon.vue";
 
 const props = defineProps({
   list: {

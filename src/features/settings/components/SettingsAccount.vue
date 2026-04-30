@@ -1,15 +1,15 @@
 <script setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import UserIcon from "../components/icons/UserIcon.vue";
-import VerifiedIcon from "../components/icons/VerifiedIcon.vue";
-import { formatDate } from "../helpers";
-import { db } from "../db";
-import { useSettingsStore } from '../stores/settings.js'
-import { useFriendsStore } from '../stores/friends.js'
-import { useListsStore } from '../stores/lists.js'
-import { useObservationsStore } from '../stores/observations.js'
-import { useCommentsStore } from '../stores/comments.js'
+import UserIcon from "@/shared/icons/UserIcon.vue";
+import VerifiedIcon from "@/shared/icons/VerifiedIcon.vue";
+import { db } from "@/db";
+import { formatDate } from "@/helpers";
+import { useCommentsStore } from '@/stores/comments.js'
+import { useFriendsStore } from '@/stores/friends.js'
+import { useListsStore } from '@/stores/lists.js'
+import { useObservationsStore } from '@/stores/observations.js'
+import { useSettingsStore } from '@/stores/settings.js'
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore

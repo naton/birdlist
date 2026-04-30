@@ -3,21 +3,21 @@ import { ref, defineAsyncComponent, computed, watch } from "vue";
 import { storeToRefs } from 'pinia'
 import { formatDateAndTime, inputDateTime, toSafeUserLabel } from "@/helpers";
 import { getBirdDisplayName, getBirdLatinName, getBirdStorageName } from "@/birdNames.js";
-import AppDialog from "./AppDialog.vue";
+import AppDialog from "@/shared/ui/AppDialog.vue";
 import vue3SimpleTypeahead from "vue3-simple-typeahead";
 import "vue3-simple-typeahead/dist/vue3-simple-typeahead.css";
-import ObservationsIcon from "./icons/ObservationsIcon.vue";
-import LocationFoundIcon from "./icons/LocationFoundIcon.vue";
-import BirdsIcon from "./icons/BirdsIcon.vue";
-import ListsIcon from "./icons/ListsIcon.vue";
-import UserIcon from "./icons/UserIcon.vue";
-import EditIcon from "./icons/EditIcon.vue";
-import DeleteIcon from "./icons/DeleteIcon.vue";
+import BirdsIcon from "@/shared/icons/BirdsIcon.vue";
+import DeleteIcon from "@/shared/icons/DeleteIcon.vue";
+import EditIcon from "@/shared/icons/EditIcon.vue";
+import ListsIcon from "@/shared/icons/ListsIcon.vue";
+import LocationFoundIcon from "@/shared/icons/LocationFoundIcon.vue";
+import ObservationsIcon from "@/shared/icons/ObservationsIcon.vue";
+import UserIcon from "@/shared/icons/UserIcon.vue";
 // Lazy load the map component
 const ObservationMap = defineAsyncComponent(() => import("./ObservationMap.vue"));
-import { useSettingsStore } from '../stores/settings.js'
-import { useListsStore } from '../stores/lists.js'
-import { useObservationsStore } from '../stores/observations.js'
+import { useSettingsStore } from "@/stores/settings.js";
+import { useListsStore } from "@/stores/lists.js";
+import { useObservationsStore } from "@/stores/observations.js";
 import { useBirdsStore } from "@/stores/birds.js";
 import { useFriendsStore } from "@/stores/friends.js";
 

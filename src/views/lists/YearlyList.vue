@@ -5,8 +5,8 @@ import { useSettingsStore } from "@/stores/settings.js";
 import { useObservationsStore } from "@/stores/observations.js";
 import { useListsStore } from "@/stores/lists.js";
 import { getMonthName } from "@/helpers";
-import NavTabs from "@/components/NavTabs.vue";
-import NormalList from "@/components/NormalList.vue";
+import NavTabs from "@/features/lists/components/NavTabs.vue";
+import NormalList from "@/features/lists/components/NormalList.vue";
 import { onMounted } from "vue";
 
 const emit = defineEmits(["edit"]);

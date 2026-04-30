@@ -1,6 +1,6 @@
 <script setup>
 import { useSettingsStore } from '../stores/settings.js'
-import AboutIllustration from '../components/illustrations/AboutIllustration.vue';
+import AboutIllustration from '@/shared/illustrations/AboutIllustration.vue';
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore

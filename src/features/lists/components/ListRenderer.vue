@@ -1,9 +1,9 @@
 <script setup>
 import { computed } from "vue";
-import BirdstreakList from "@/components/BirdstreakList.vue";
-import CheckList from "@/components/CheckList.vue";
-import BingoList from "@/components/BingoList.vue";
-import NormalList from "@/components/NormalList.vue";
+import BirdstreakList from "@/features/lists/components/BirdstreakList.vue";
+import CheckList from "@/features/lists/components/CheckList.vue";
+import BingoList from "@/features/lists/components/BingoList.vue";
+import NormalList from "@/features/lists/components/NormalList.vue";
 
 const props = defineProps({
   list: {

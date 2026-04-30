@@ -6,7 +6,7 @@ import { defineComponent, h, nextTick } from "vue";
 const updateListMock = vi.fn();
 const addMessageMock = vi.fn();
 
-vi.mock("../stores/settings.js", async () => {
+vi.mock("@/stores/settings.js", async () => {
   const { defineStore } = await import("pinia");
   const useSettingsStore = defineStore("settings", () => ({
     t: (key) => key,
@@ -14,7 +14,7 @@ vi.mock("../stores/settings.js", async () => {
   return { useSettingsStore };
 });
 
-vi.mock("../stores/lists.js", async () => {
+vi.mock("@/stores/lists.js", async () => {
   const { defineStore } = await import("pinia");
   const useListsStore = defineStore("list", () => ({
     updateList: updateListMock,
@@ -25,7 +25,7 @@ vi.mock("../stores/lists.js", async () => {
   return { useListsStore };
 });
 
-vi.mock("../stores/messages.js", async () => {
+vi.mock("@/stores/messages.js", async () => {
   const { defineStore } = await import("pinia");
   const useMessagesStore = defineStore("messages", () => ({
     addMessage: addMessageMock,

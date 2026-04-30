@@ -3,9 +3,9 @@ import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '../stores/settings.js'
 import { useFriendsStore } from '../stores/friends.js'
-import AddFriendIcon from '../components/icons/AddFriendIcon.vue'
-import UserIcon from '../components/icons/UserIcon.vue'
-import RemoveFriendIcon from '../components/icons/RemoveFriendIcon.vue'
+import AddFriendIcon from '@/shared/icons/AddFriendIcon.vue'
+import UserIcon from '@/shared/icons/UserIcon.vue'
+import RemoveFriendIcon from '@/shared/icons/RemoveFriendIcon.vue'
 
 const settingsStore = useSettingsStore()
 const { t } = settingsStore

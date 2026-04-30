@@ -6,13 +6,13 @@ import { RouterLink, RouterView } from 'vue-router';
 import { useObservable } from "@vueuse/rxjs";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from "@/stores/lists.js";
-import UserInitial from "@/components/icons/UserInitial.vue";
-import ListsIcon from "@/components/icons/ListsIcon.vue";
-import CheckIcon from "@/components/icons/CheckIcon.vue";
-import BingoIcon from "@/components/icons/BingoIcon.vue";
-import StreakIcon from "@/components/icons/StreakIcon.vue";
-import NormalIcon from "@/components/icons/NormalIcon.vue";
-import CreateList from "@/components/CreateList.vue";
+import UserInitial from "@/shared/icons/UserInitial.vue";
+import ListsIcon from "@/shared/icons/ListsIcon.vue";
+import CheckIcon from "@/shared/icons/CheckIcon.vue";
+import BingoIcon from "@/shared/icons/BingoIcon.vue";
+import StreakIcon from "@/shared/icons/StreakIcon.vue";
+import NormalIcon from "@/shared/icons/NormalIcon.vue";
+import CreateList from "@/features/lists/components/CreateList.vue";
 import { getPublicListParticipants, toSafeUserLabel } from "@/helpers";
 import { useFriendsStore } from "@/stores/friends.js";
 

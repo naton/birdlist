@@ -1,11 +1,11 @@
 <script setup>
 import { ref, computed, watch } from "vue";
-import AppDialog from "./AppDialog.vue";
-import { useSettingsStore } from "../stores/settings.js";
-import { useListsStore } from "../stores/lists.js";
-import { useMessagesStore } from "../stores/messages.js";
-import ListsIcon from "./icons/ListsIcon.vue";
-import DeleteIcon from "./icons/DeleteIcon.vue";
+import AppDialog from "@/shared/ui/AppDialog.vue";
+import DeleteIcon from "@/shared/icons/DeleteIcon.vue";
+import ListsIcon from "@/shared/icons/ListsIcon.vue";
+import { useSettingsStore } from "@/stores/settings.js";
+import { useListsStore } from "@/stores/lists.js";
+import { useMessagesStore } from "@/stores/messages.js";
 import ListFormFields from "./ListFormFields.vue";
 import { createEditableListDraft, normalizeListDraftForSave, validateListDraft } from "@/composables/useListDraft";
 

@@ -9,7 +9,7 @@ const currentUserRef = ref({
   license: {},
 });
 
-vi.mock("../db", () => ({
+vi.mock("@/db", () => ({
   db: {
     table: () => ({
       clear: vi.fn(),
@@ -17,7 +17,7 @@ vi.mock("../db", () => ({
   },
 }));
 
-vi.mock("../stores/settings.js", async () => {
+vi.mock("@/stores/settings.js", async () => {
   const { defineStore } = await import("pinia");
   const useSettingsStore = defineStore("settings", () => ({
     t: (key) => key,
@@ -28,7 +28,7 @@ vi.mock("../stores/settings.js", async () => {
   return { useSettingsStore };
 });
 
-vi.mock("../stores/friends.js", async () => {
+vi.mock("@/stores/friends.js", async () => {
   const { defineStore } = await import("pinia");
   const useFriendsStore = defineStore("friends", () => ({
     allFriends: ref([]),
@@ -36,7 +36,7 @@ vi.mock("../stores/friends.js", async () => {
   return { useFriendsStore };
 });
 
-vi.mock("../stores/lists.js", async () => {
+vi.mock("@/stores/lists.js", async () => {
   const { defineStore } = await import("pinia");
   const useListsStore = defineStore("lists", () => ({
     getListMembers: vi.fn(),
@@ -45,7 +45,7 @@ vi.mock("../stores/lists.js", async () => {
   return { useListsStore };
 });
 
-vi.mock("../stores/observations.js", async () => {
+vi.mock("@/stores/observations.js", async () => {
   const { defineStore } = await import("pinia");
   const useObservationsStore = defineStore("observations", () => ({
     allMyObservations: ref([]),
@@ -53,7 +53,7 @@ vi.mock("../stores/observations.js", async () => {
   return { useObservationsStore };
 });
 
-vi.mock("../stores/comments.js", async () => {
+vi.mock("@/stores/comments.js", async () => {
   const { defineStore } = await import("pinia");
   const useCommentsStore = defineStore("comments", () => ({
     allMyComments: ref([]),
