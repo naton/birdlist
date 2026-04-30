@@ -62,6 +62,7 @@ describe("ListActionsMenu", () => {
 
     const ownerActionSelectors = [
       "[data-action='share']",
+      "[data-action='copy-link']",
       "[data-action='subscribe']",
       "[data-action='edit-list']",
       "[data-action='make-checklist']",
@@ -76,12 +77,14 @@ describe("ListActionsMenu", () => {
     await wrapper.find("[data-action='share']").trigger("click");
     expect(shareModalSpy).toHaveBeenCalledTimes(1);
 
+    await wrapper.find("[data-action='copy-link']").trigger("click");
     await wrapper.find("[data-action='subscribe']").trigger("click");
     await wrapper.find("[data-action='edit-list']").trigger("click");
     await wrapper.find("[data-action='make-checklist']").trigger("click");
     await wrapper.find("[data-action='toggle-visibility']").trigger("click");
     await wrapper.find("[data-action='delete']").trigger("click");
 
+    expect(wrapper.emitted("copy-link")).toHaveLength(1);
     expect(wrapper.emitted("toggle-notifications")).toHaveLength(1);
     expect(wrapper.emitted("edit-list")).toHaveLength(1);
     expect(wrapper.emitted("make-checklist")).toHaveLength(1);
@@ -103,6 +106,32 @@ describe("ListActionsMenu", () => {
     expect(wrapper.find("[data-action='join']").exists()).toBe(true);
     await wrapper.find("[data-action='join']").trigger("click");
     expect(wrapper.emitted("join")).toHaveLength(1);
+  });
+
+  it("shows subscribe, copy link, and leave for joined public non-owners", async () => {
+    const wrapper = await mountMenu({
+      isListOwner: false,
+      isPublicCurrentList: true,
+      canWriteToCurrentList: true,
+      canJoinCurrentList: false,
+      canLeaveCurrentList: true,
+      mustLoginToJoin: false,
+      isPremiumUser: false,
+      canMakeChecklist: false,
+    });
+
+    expect(wrapper.find("[data-action='share']").exists()).toBe(false);
+    expect(wrapper.find("[data-action='copy-link']").exists()).toBe(true);
+    expect(wrapper.find("[data-action='subscribe']").exists()).toBe(true);
+    expect(wrapper.find("[data-action='leave']").exists()).toBe(true);
+
+    await wrapper.find("[data-action='copy-link']").trigger("click");
+    await wrapper.find("[data-action='subscribe']").trigger("click");
+    await wrapper.find("[data-action='leave']").trigger("click");
+
+    expect(wrapper.emitted("copy-link")).toHaveLength(1);
+    expect(wrapper.emitted("toggle-notifications")).toHaveLength(1);
+    expect(wrapper.emitted("leave")).toHaveLength(1);
   });
 
   it("supports legacy isEditingBirds prop without changing edit action label", async () => {

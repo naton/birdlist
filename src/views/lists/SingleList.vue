@@ -129,6 +129,31 @@ function handleDirectJoinAction() {
   joinCurrentList();
 }
 
+async function copyCurrentListUrl() {
+  const listId = currentList.value?.id || route.params.id;
+  const url = new URL(`/lists/${encodeURIComponent(listId)}`, window.location.origin).toString();
+
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(url);
+    } else {
+      const input = document.createElement("textarea");
+      input.value = url;
+      input.setAttribute("readonly", "");
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+    }
+    addMessage(t("List_Link_Copied"));
+  } catch (error) {
+    console.error("Failed to copy list URL.", error);
+    addMessage(t("List_Link_Copy_Failed"));
+  }
+}
+
 async function toggleCurrentListVisibility() {
   if (isUpdatingVisibility.value || !isListOwner.value || !currentList.value?.id) {
     return;
@@ -272,6 +297,7 @@ watch(
         @make-checklist="createChecklistFromCurrentList"
         @toggle-visibility="toggleCurrentListVisibility"
         @delete-list="deleteCurrentList"
+        @copy-link="copyCurrentListUrl"
       />
     </template>
     <template v-slot:extra>

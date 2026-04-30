@@ -81,6 +81,7 @@ const emit = defineEmits([
   "make-checklist",
   "toggle-visibility",
   "delete-list",
+  "copy-link",
 ]);
 
 const settingsStore = useSettingsStore();
@@ -94,7 +95,8 @@ const popoverId = computed(() => {
 });
 
 const canShare = computed(() => props.isListOwner);
-const canSubscribe = computed(() => props.isPremiumUser && Boolean(props.list?.id));
+const canCopyListUrl = computed(() => Boolean(props.list?.id));
+const canSubscribe = computed(() => Boolean(props.list?.id) && (props.isListOwner || props.canWriteToCurrentList));
 const canToggleVisibility = computed(() => props.isListOwner && Boolean(props.list?.id));
 const canDeleteList = computed(() => props.isListOwner && Boolean(props.list?.id));
 const showReadOnlyInfo = computed(() => props.isPublicCurrentList && !props.canWriteToCurrentList);
@@ -103,6 +105,7 @@ const visibilityLabel = computed(() => (props.isPublicCurrentList ? t("Make_List
 const hasAnyAction = computed(() => {
   return (
     canShare.value ||
+    canCopyListUrl.value ||
     canSubscribe.value ||
     props.canJoinCurrentList ||
     props.canLeaveCurrentList ||
@@ -161,6 +164,11 @@ function openShareModal() {
     <button v-if="canShare" type="button" class="list-action" data-action="share" @click="openShareModal">
       <friends-icon class="option-icon" />
       <span>{{ t("Share") }}</span>
+    </button>
+
+    <button v-if="canCopyListUrl" type="button" class="list-action" data-action="copy-link" @click="runAction('copy-link')">
+      <friends-icon class="option-icon" />
+      <span>{{ t("Copy_List_Link") }}</span>
     </button>
 
     <button
