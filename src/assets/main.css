@@ -194,7 +194,6 @@ textarea::placeholder {
     "body-content";
   grid-area: body;
   overflow: hidden;
-  background: var(--color-background-dim);
 }
 
 .body-nav {
@@ -204,6 +203,7 @@ textarea::placeholder {
   max-width: 100vw;
   min-height: 3rem;
   overflow: hidden;
+  background: var(--color-background-dim);
 }
 
 .body-nav .logo {
