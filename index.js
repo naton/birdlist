@@ -1,10 +1,10 @@
 const path = require('path');
+const fs = require('fs');
 const dotenv = require('dotenv');
 const express = require('express');
 const webpush = require('web-push');
 const cors = require('cors');
 const fetch = require('node-fetch');
-const birdSpecies = require('./src/assets/birdSpecies.json');
 
 // Load local secrets first, then fallback to .env.
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
@@ -40,6 +40,32 @@ const PUSH_TEXTS = {
     welcomeBody: 'Du wirst jetzt benachrichtigt, wenn neue Beobachtungen zu dieser Liste hinzugefügt werden.',
   },
 };
+
+function loadBirdSpecies() {
+  const candidatePaths = [
+    process.env.BIRD_SPECIES_PATH,
+    path.join(__dirname, 'src', 'assets', 'birdSpecies.json'),
+    path.join(__dirname, 'public', 'birdSpecies.json'),
+    path.join(__dirname, 'dist', 'birdSpecies.json'),
+  ].filter(Boolean);
+
+  for (const candidatePath of candidatePaths) {
+    try {
+      if (!fs.existsSync(candidatePath)) {
+        continue;
+      }
+
+      return JSON.parse(fs.readFileSync(candidatePath, 'utf8'));
+    } catch (error) {
+      console.warn(`Failed to load bird species data from ${candidatePath}.`, error);
+    }
+  }
+
+  console.warn('Bird species data was not found. Push notifications will use observation names without localization.');
+  return [];
+}
+
+const birdSpecies = loadBirdSpecies();
 const birdSpeciesByLatinName = new Map(birdSpecies.map((species) => [species.latinName, species]));
 
 const app = express();
