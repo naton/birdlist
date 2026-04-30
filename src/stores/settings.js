@@ -7,9 +7,29 @@ export const DEFAULT_LANGUAGE = "en";
 export const SUPPORTED_LANGUAGES = ["en", "sv", "de"];
 export const DEFAULT_REGION = "en-GB";
 export const SUPPORTED_REGIONS = ["en-US", "en-GB", "sv-SE"];
+export const MIN_FONT_SIZE = 12;
+export const MAX_FONT_SIZE = 24;
 
 function getNavigatorLanguage() {
   return globalThis.navigator?.language || DEFAULT_LANGUAGE;
+}
+
+function clampFontSize(value) {
+  const numericValue = Number.parseFloat(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return null;
+  }
+
+  return Math.min(MAX_FONT_SIZE, Math.max(MIN_FONT_SIZE, Math.round(numericValue)));
+}
+
+function getDefaultFontSize() {
+  if (!globalThis.document?.documentElement) {
+    return 16;
+  }
+
+  return clampFontSize(getComputedStyle(document.documentElement).fontSize) || 16;
 }
 
 export function normalizeLanguage(value) {
@@ -46,6 +66,7 @@ export const useSettingsStore = defineStore("settings", () => {
     const locale = ref(normalizeRegion(browserLanguage));
     const lang = ref(normalizeLanguage(browserLanguage));
     const hue = ref("45");
+    const fontSize = ref(getDefaultFontSize());
     const texts = ref({});
     const currentUser = useObservable(db.cloud.currentUser);
     const selectedUser = ref(null);
@@ -157,11 +178,22 @@ export const useSettingsStore = defineStore("settings", () => {
     }, { immediate: true });
 
     watch(hue, (newHue) => {
-      document.documentElement.style = `--hue: ${newHue}`;
+      document.documentElement.style.setProperty("--hue", newHue);
       if (document.querySelector(".router-link-active")) {
         setThemeColor();
       }
-    });
+    }, { immediate: true });
+
+    watch(fontSize, (newFontSize) => {
+      const normalizedFontSize = clampFontSize(newFontSize) || getDefaultFontSize();
+
+      if (newFontSize !== normalizedFontSize) {
+        fontSize.value = normalizedFontSize;
+        return;
+      }
+
+      document.documentElement.style.setProperty("font-size", `${normalizedFontSize}px`);
+    }, { immediate: true });
 
     var matchMediaDark = window.matchMedia("(prefers-color-scheme: dark)");
     var matchMediaLight = window.matchMedia("(prefers-color-scheme: light)");
@@ -173,6 +205,7 @@ export const useSettingsStore = defineStore("settings", () => {
       locale,
       lang,
       hue,
+      fontSize,
       texts,
       firstVisit,
       currentUser,
@@ -186,6 +219,7 @@ export const useSettingsStore = defineStore("settings", () => {
       loadTexts,
       normalizeLanguage,
       normalizeRegion,
+      clampFontSize,
       setThemeColor,
       prevMonth,
       nextMonth,
@@ -195,7 +229,7 @@ export const useSettingsStore = defineStore("settings", () => {
   {
     persist: {
       key: "birdlist-settings",
-      paths: ["locale", "lang", "hue"],
+      paths: ["locale", "lang", "hue", "fontSize"],
     },
   }
 );

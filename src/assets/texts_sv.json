@@ -54,6 +54,8 @@
     "Every_Week": "Varje vecka",
     "Failed_To_Save_Observation": "Kunde inte spara observationen.",
     "Fetching_Location": "Hämtar plats",
+    "Font_Size_Help": "Justera den grundläggande textstorleken som används i hela appen.",
+    "Font_Size": "Textstorlek",
     "First_Observation_Today": "🎉 Firsta observationen idag!",
     "First_Time_Description": "Du behöver inte skapa konto om du inte vill – allt lagras då enbart på denna enhet. Men vill du <b>synka</b> med andra enheter, <b>dela egna</b> eller <b>delta i andras</b> listor behöver du ett konto, det vill säga du behöver ",
     "First_Time_Here": "Första gången här?",

@@ -10,7 +10,7 @@ import SwedenMap from "@/shared/icons/SwedenMap.vue";
 
 const settingsStore = useSettingsStore()
 const { t, normalizeLanguage, normalizeRegion } = settingsStore
-const { locale, lang, hue } = storeToRefs(settingsStore)
+const { locale, lang, hue, fontSize } = storeToRefs(settingsStore)
 
 const birdsStore = useBirdsStore()
 const { loadAllBirds } = birdsStore
@@ -62,5 +62,10 @@ watch(lang, async (newLang) => {
     <div class="margin-bottom">
         <label for="hue">{{ t("Theme_Color") }}</label>
         <input id="hue" type="range" v-model="hue" min="0" max="360">
+    </div>
+    <div class="margin-bottom">
+        <label for="font-size">{{ t("Font_Size") }}: {{ fontSize }}px</label>
+        <input id="font-size" type="range" v-model.number="fontSize" min="12" max="24">
+        <small>{{ t("Font_Size_Help") }}</small>
     </div>
 </template>

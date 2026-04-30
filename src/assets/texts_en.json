@@ -54,6 +54,8 @@
     "Every_Week": "Every week",
     "Failed_To_Save_Observation": "Failed to save observation.",
     "Fetching_Location": "Fetching location",
+    "Font_Size_Help": "Adjust the base text size used throughout the app.",
+    "Font_Size": "Font size",
     "First_Observation_Today": "🎉 First observation today!",
     "First_Time_Description": "You don’t have to create an account if you don't want to – everything is then stored only on this device. But if you want to <b>sync</b> with other devices, <b>share your own</b> or <b>participate in other people’s</b> lists, you need an account, that is, you need to ",
     "First_Time_Here": "First time here?",
