@@ -1,12 +1,12 @@
 import { ref, computed, toRaw } from "vue";
 import { storeToRefs } from "pinia";
-import { groupBy } from "@/helpers";
 import { getBirdDisplayName, getBirdKey, getBirdLatinName, getBirdStorageName } from "@/birdNames.js";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useBirdsStore } from "@/stores/birds.js";
 import { useListsStore } from "@/stores/lists.js";
 import { useObservationsStore } from "@/stores/observations.js";
 import { useMessagesStore } from "@/stores/messages.js";
+import { useListUserStats } from "@/composables/useListUserStats.js";
 
 export function useCheckableList(props) {
   const settingsStore = useSettingsStore();
@@ -26,7 +26,6 @@ export function useCheckableList(props) {
   const messageStore = useMessagesStore();
   const { addMessage } = messageStore;
 
-  const currentLeader = ref("");
   const birdsToCheck = ref([]);
   const addListBirdInput = ref();
 
@@ -121,29 +120,7 @@ export function useCheckableList(props) {
     birdsToCheck.value = birdsToCheck.value.filter((item) => getBirdKey(item) !== birdKey);
   }
 
-  const users = computed(() => {
-    const names = [...new Set(props.observations.map((obs) => obs.owner).filter(Boolean))].sort();
-    let highestScore = 0;
-
-    const listUsers = names.map((name) => {
-      const score = Object.keys(groupBy(props.observations.filter((obs) => obs.owner === name), (obs) => getBirdKey(obs))).length;
-      highestScore = Math.max(score, highestScore);
-      return {
-        name,
-        score,
-        leader: false,
-      };
-    });
-
-    listUsers.forEach((user) => {
-      if (user.score === highestScore) {
-        user.leader = true;
-        currentLeader.value = user.name;
-      }
-    });
-
-    return listUsers.sort((a, b) => b.score - a.score);
-  });
+  const { users, currentLeader: listCurrentLeader } = useListUserStats(computed(() => props.observations), selectedUser);
 
   async function saveCheckList() {
     const listId = currentList.value?.id || props.list?.id;
@@ -177,7 +154,7 @@ export function useCheckableList(props) {
     birds,
     selectedUser,
     checkListEditMode,
-    currentLeader,
+    currentLeader: listCurrentLeader,
     birdsToCheck,
     addListBirdInput,
     checkListBirds,

@@ -5,6 +5,7 @@ import { formatDate } from "@/helpers";
 import { getBirdDisplayName } from "@/birdNames.js";
 import { useSettingsStore } from '@/stores/settings.js'
 import { useObservationsStore } from "@/stores/observations.js";
+import { useListUserStats } from "@/composables/useListUserStats.js";
 import UserNav from "./UserNav.vue";
 import StreakIcon from "./icons/StreakIcon.vue";
 import LockIcon from "./icons/LockIcon.vue";
@@ -51,42 +52,12 @@ const dateRange = computed(() => {
   return dates;
 });
 
-const currentLeader = ref("");
-const users = computed(() => {
-  const names = [...new Set(props.observations.map((obs) => obs.owner))].sort();
-  let users = [];
-  let highestScore = 0;
-  let score = 0;
-  let leader = false;
-
-  names.forEach((name) => {
-    score = getLongestStreak(name);
-    highestScore = score > highestScore ? score : highestScore;
-    users.push({
-      name,
-      score,
-      leader
-    });
-  });
-
-  users.forEach((user) => {
-    if (user.score === highestScore) {
-      user.leader = true;
-      currentLeader.value = user.name;
-    }
-  });
-
-  return users.sort((a, b) => b.score - a.score);
-});
-
-const observationsByUser = computed(() => {
-  let obses = props.observations;
-  if (selectedUser.value === null) {
-    return obses.sort((a, b) => b.date - a.date);
-  } else {
-    return obses.filter((obs) => obs.owner === selectedUser.value).sort((a, b) => b.date - a.date);
-  }
-});
+const { users, observationsByUser } = useListUserStats(
+  computed(() => props.observations),
+  selectedUser,
+  null,
+  { scoreForUser: (name) => getLongestStreak(name) }
+);
 
 // create a function that returns the longest unbroken period of observations from start date to current date
 function getLongestStreak(name) {

@@ -6,8 +6,7 @@ import { useSettingsStore } from "@/stores/settings.js";
 import { useListsStore } from "@/stores/lists.js";
 import { useCommentsStore } from "@/stores/comments.js";
 import { useMessagesStore } from "@/stores/messages.js";
-import { groupBy } from "@/helpers";
-import { getBirdKey } from "@/birdNames.js";
+import { useListUserStats } from "@/composables/useListUserStats.js";
 import ItemComponent from "./ItemComponent.vue";
 import ObservationsIcon from "./icons/ObservationsIcon.vue";
 import BirdsIcon from "./icons/BirdsIcon.vue";
@@ -48,63 +47,9 @@ const { addComment } = commentsStore;
 const messagesStore = useMessagesStore();
 const { addMessage } = messagesStore;
 
-const species = computed(() => [...new Set(props.observations?.map((item) => getBirdKey(item)))].sort());
 const selectedObservation = defineModel();
-
-const currentLeader = ref("");
-const users = computed(() => {
-  const names = [
-    ...new Set([
-      ...(props.participants || []),
-      ...(props.observations || []).map((obs) => obs.owner),
-    ].map((name) => String(name || "").trim()).filter(Boolean)),
-  ].sort();
-  let users = [];
-  let highestScore = 0;
-
-  names.forEach((name) => {
-    const score = Object.keys(
-      groupBy(
-        props.observations.filter((obs) => obs.owner === name),
-        (obs) => getBirdKey(obs)
-      )
-    ).length;
-    highestScore = score > highestScore ? score : highestScore;
-    users.push({
-      name,
-      score,
-      leader: false,
-    });
-  });
-
-  currentLeader.value = "";
-  users.forEach((user) => {
-    if (highestScore > 0 && user.score === highestScore) {
-      user.leader = true;
-      currentLeader.value = user.name;
-    }
-  });
-
-  return users.sort((a, b) => b.score - a.score);
-});
-
-const observationsByUser = computed(() => {
-  let obses = [...props.observations];
-  if (selectedUser.value === null) {
-    return obses.sort((a, b) => b.date - a.date);
-  } else {
-    return obses.filter((obs) => obs.owner === selectedUser.value).sort((a, b) => b.date - a.date);
-  }
-});
-
-const speciesByUser = computed(() => {
-  return selectedUser.value === null
-    ? groupBy(props.observations, (obs) => getBirdKey(obs))
-    : groupBy(
-      props.observations.filter((obs) => obs.owner === selectedUser.value),
-      (obs) => getBirdKey(obs)
-    );
-});
+const { currentLeader, users, observationsByUser, speciesByUser, species, getObservationKey, getSpeciesGroupKey } =
+  useListUserStats(computed(() => props.observations), selectedUser, computed(() => props.participants));
 
 function emitEdit(obs) {
   emit("edit", obs);
@@ -138,14 +83,6 @@ function resetForm() {
 
 function noOfComments() {
   return props.comments ? Object.keys(props.comments).length : "0"
-}
-
-function getObservationKey(obs) {
-  return obs.id || `${obs.owner || ""}:${obs.listId || ""}:${obs.date?.getTime?.() || obs.date}:${getBirdKey(obs)}`;
-}
-
-function getSpeciesGroupKey(obsGroup) {
-  return getBirdKey(obsGroup?.[0]);
 }
 
 </script>
