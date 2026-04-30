@@ -64,7 +64,7 @@ function logout() {
 
     <div class="margin-top">
         <h2 class="center">{{ t("Profile_Status") }}</h2>
-        <ul class="profile-steps margin-bottom">
+        <ul class="status-list profile-steps margin-bottom">
             <li>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
                     <polyline v-if="hasAddedAnObservation" fill="none" stroke="var(--color-text)" stroke-width="2" points=" 9,17 13,21 23,11 "></polyline>
@@ -128,19 +128,6 @@ function logout() {
     margin: 0.5rem 1rem;
     padding: 0.2rem 0.8rem 0.2rem 2.4rem;
     background: url('https://ko-fi.com/favicon.png') no-repeat 0.5rem 0.25rem / 1.5rem auto;
-}
-
-.profile-steps {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-.profile-steps li {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0.2rem 0;
 }
 
 .login,

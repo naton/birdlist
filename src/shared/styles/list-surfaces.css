@@ -1,0 +1,148 @@
+.c-tabs {
+  display: flex;
+  list-style: none;
+  overflow-y: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 0;
+  overscroll-behavior: none;
+}
+
+.c-tabs__tab > a {
+  min-width: 5rem;
+  display: block;
+  border-top: 2px solid transparent;
+  padding: 1rem;
+  color: inherit;
+  font-size: 1.2rem;
+  text-transform: capitalize;
+  text-decoration: none;
+  text-align: center;
+}
+
+.c-tabs__tab > .router-link-active {
+  margin-top: 2px;
+  border-top-color: var(--color-border);
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+  background: var(--color-background);
+}
+
+.c-tabs__tab svg {
+  margin: 0 0.2rem 0.2rem 0;
+}
+
+.list-header {
+  position: relative;
+  overflow: hidden;
+  padding: 1rem;
+  flex-shrink: 0;
+}
+
+.list-header .subtitle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--color-background);
+  transition: 0.1s transform ease-out;
+}
+
+.list-header details[open] {
+  margin-bottom: 1rem;
+}
+
+.list-header button {
+  min-height: 2.3rem;
+}
+
+.list-owner {
+  font-size: 0.9rem;
+}
+
+.sidescroll {
+  overflow-x: auto;
+  padding: 0 0.8rem;
+}
+
+.date-nav {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-background);
+  z-index: 1;
+}
+
+.prev-date {
+  margin-left: 1rem;
+}
+
+.next-date {
+  margin-right: 1rem;
+}
+
+.year-summary {
+  margin: 0 auto 0.5rem;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.month-button {
+  min-width: 2rem;
+  min-height: 2rem;
+  margin: 2px;
+  padding: 0;
+}
+
+.list li {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-top: 1px solid var(--color-background-dim);
+  background: var(--color-background);
+}
+
+.list a,
+.list b {
+  width: 100%;
+  padding: 0.6rem 1rem;
+}
+
+.list a {
+  color: inherit;
+}
+
+.list button {
+  flex-shrink: 0;
+  min-height: 2.2rem;
+}
+
+.list .obs {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.6rem 1em;
+  transition: 0.1s transform ease-out;
+}
+
+.add-bird {
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.6rem 1rem 0.4rem;
+}
+
+.add-bird input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-sizing: border-box;
+  color: var(--color-text);
+  background: var(--color-background-dim);
+  font-size: 1.4rem;
+  appearance: none;
+}

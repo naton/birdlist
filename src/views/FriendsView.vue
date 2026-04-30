@@ -35,7 +35,7 @@ function addFriendAndReset(name, email) {
         </details>
       </section>
       <section>
-        <h2 class="flex">
+        <h2 class="icon-label">
           <user-icon />
           {{ t("Add_Friend") }}...
         </h2>
@@ -47,11 +47,11 @@ function addFriendAndReset(name, email) {
       </section>
       <section v-if="allFriends?.length">
         <h2 class="center">{{ t("Current_Friends") }}:</h2>
-        <table>
+        <table class="data-table">
           <tbody>
             <tr v-for="{ id, name, email } in allFriends" :key="email">
               <th scope="row"><user-icon />{{ name }}</th>
-              <td class="crop">{{ email }}</td>
+              <td class="cell-crop">{{ email }}</td>
               <td>
                 <button type="button" class="secondary" @click="deleteFriend(name, id)">
                   <remove-friend-icon />
@@ -70,8 +70,6 @@ function addFriendAndReset(name, email) {
 
 <style>
 .friends-content table {
-  width: 100%;
-  border-collapse: collapse;
   line-height: 3;
 }
 
@@ -92,10 +90,7 @@ function addFriendAndReset(name, email) {
 }
 
 .friends-content th:first-child,
-td.crop {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.cell-crop {
   max-width: 40vw;
 }
 </style>
