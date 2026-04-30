@@ -51,15 +51,18 @@ function logout() {
         <p v-html="t('Account_Help')"></p>
         <a v-if="!isPremiumUser" href="https://ko-fi.com/birdlist" target="_blank" class="donate">{{ t("Donate_For_Premium") }}</a>
     </details>
-    <div v-if="isUserLoggedIn" class="flex margin-top margin-bottom">
-        {{ t("Account_Type") }}:
-        <span v-if="isPremiumUser" class="pill account-type">{{ t('Premium') }} <verified-icon /></span>
-        <span v-else class="pill account-type">{{ t('Trial') }}</span>
-        <span v-if="isPremiumUser && currentUser.license.validUntil" class="pill pill--extra">…{{ formatDate(currentUser.license.validUntil) }}</span>
-        <span v-if="!isPremiumUser && currentUser.license.evalDaysLeft" class="pill pill--extra">{{ currentUser.license.evalDaysLeft }} {{ t("Days_Left").toLowerCase() }}</span>
+
+    <div v-if="isUserLoggedIn" class="margin-top">
+        <h2 class="center">{{ t("Account_Type") }}</h2>
+        <div class="margin-top center">
+            <span v-if="isPremiumUser" class="pill account-type">{{ t('Premium') }} <verified-icon /></span>
+            <span v-else class="pill account-type">{{ t('Trial') }}</span>
+            <span v-if="isPremiumUser && currentUser.license.validUntil" class="pill pill--extra">…{{ formatDate(currentUser.license.validUntil) }}</span>
+            <span v-if="!isPremiumUser && currentUser.license.evalDaysLeft" class="pill pill--extra">{{ currentUser.license.evalDaysLeft }} {{ t("Days_Left").toLowerCase() }}</span>
+        </div>
     </div>
 
-    <div>
+    <div class="margin-top">
         <h2 class="center">{{ t("Profile_Status") }}</h2>
         <ul class="profile-steps margin-bottom">
             <li>
@@ -99,7 +102,7 @@ function logout() {
             </li>
         </ul>
     </div>
-    <div>
+    <div class="margin-top">
         <h2 class="center">{{ t("Logged_In_As") }}:</h2>
         <button v-if="isUserLoggedIn" type="button" class="secondary logout" @click="logout()">{{ t("Logout") }}</button>
         <button v-else type="button" class="secondary login" @click="db.cloud.login()">{{ t("Login") }}</button>
