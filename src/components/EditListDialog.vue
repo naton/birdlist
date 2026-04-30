@@ -113,14 +113,14 @@ defineExpose({
 
 <template>
   <app-dialog v-model="isDialogOpen">
-    <div v-if="listDraft" class="grid">
-      <lists-icon />
-      <h2>{{ t("Edit_List") }}</h2>
-    </div>
-    <template v-if="listDraft">
-      <list-form-fields v-model="listDraft" disable-type-selection :errors="validation.errors" @esc="close" />
-      <p class="pill">{{ isPublicList ? t("List_Is_Open") : t("List_Is_Private") }}</p>
-      <div class="buttons">
+    <template #header>
+      <div v-if="listDraft" class="grid">
+        <lists-icon />
+        <h2>{{ t("Edit_List") }}</h2>
+      </div>
+    </template>
+    <template #footer>
+      <div v-if="listDraft" class="buttons">
         <button v-if="isListOwner" class="secondary" @click="toggleListVisibility" :disabled="isBusy">
           {{ isUpdatingVisibility ? t("Saving") : visibilityButtonLabel }}
         </button>
@@ -133,6 +133,10 @@ defineExpose({
         </button>
         <button @click="close" class="secondary" :disabled="isBusy">{{ t("Cancel") }}</button>
       </div>
+    </template>
+    <template v-if="listDraft">
+      <list-form-fields v-model="listDraft" disable-type-selection :errors="validation.errors" @esc="close" />
+      <p class="pill">{{ isPublicList ? t("List_Is_Open") : t("List_Is_Private") }}</p>
     </template>
     <div v-if="!listDraft" class="loading">
       {{ t("Loading") }}...

@@ -63,7 +63,14 @@ describe("EditListDialog", () => {
             props: ["modelValue"],
             emits: ["update:modelValue"],
             setup(props, { slots }) {
-              return () => props.modelValue ? h("div", { "data-testid": "dialog" }, slots.default?.()) : null;
+              return () =>
+                props.modelValue
+                  ? h("div", { "data-testid": "dialog" }, [
+                      slots.header?.(),
+                      slots.default?.(),
+                      slots.footer?.(),
+                    ])
+                  : null;
             },
           }),
           ListsIcon: true,

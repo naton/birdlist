@@ -91,22 +91,26 @@ defineExpose({
     :dialog-class="isAnchored ? 'dialog--create-list-anchored' : ''"
     close-on-backdrop
   >
-    <div>
+    <template #header>
       <div class="grid">
         <lists-icon />
         <h2>{{ t("Create_List") }}</h2>
       </div>
-      <list-form-fields v-model="listDraft" :require-dates="true" :errors="validation.errors" @esc="close" />
-      <details class="help">
-        <summary>{{ t("What_Is_This") }}</summary>
-        <p v-html="t('Create_List_Help')"></p>
-      </details>
+    </template>
+    <template #footer>
       <div class="buttons">
         <button type="button" @click="createListAndClose" :disabled="isSaving || !isFormValid">
           {{ isSaving ? t("Saving") : t("Create_List") }}
         </button>
         <button type="button" @click="close" class="secondary" :disabled="isSaving">{{ t("Cancel") }}</button>
       </div>
+    </template>
+    <div>
+      <list-form-fields v-model="listDraft" :require-dates="true" :errors="validation.errors" @esc="close" />
+      <details class="help">
+        <summary>{{ t("What_Is_This") }}</summary>
+        <p v-html="t('Create_List_Help')"></p>
+      </details>
     </div>
   </app-dialog>
 </template>
