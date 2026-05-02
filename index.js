@@ -454,7 +454,8 @@ async function setListRealmVisibility(listId, makePublic) {
 
   const sourceRealmId = String(list.realmId || '').trim();
   const ownerRealmId = String(list.owner || '').trim();
-  const targetRealmId = makePublic ? PUBLIC_REALM_ID : ownerRealmId;
+  const privateRealmId = String(list.privateRealmId || '').trim();
+  const targetRealmId = makePublic ? PUBLIC_REALM_ID : privateRealmId || ownerRealmId;
 
   if (!targetRealmId) {
     throw new Error('List has no owner realm to move back to private visibility.');
@@ -476,7 +477,13 @@ async function setListRealmVisibility(listId, makePublic) {
   ]);
 
   await Promise.all([
-    dexieUpsertMany('lists', [{ ...list, realmId: targetRealmId }]),
+    dexieUpsertMany('lists', [{
+      ...list,
+      realmId: targetRealmId,
+      ...(makePublic && sourceRealmId && sourceRealmId !== PUBLIC_REALM_ID
+        ? { privateRealmId: sourceRealmId }
+        : {}),
+    }]),
     dexieUpsertMany(
       'observations',
       observations.map((observation) => ({ ...observation, realmId: targetRealmId }))
@@ -486,18 +493,6 @@ async function setListRealmVisibility(listId, makePublic) {
       comments.map((comment) => ({ ...comment, realmId: targetRealmId }))
     ),
   ]);
-
-  const shouldCleanupSourceRealm =
-    sourceRealmId &&
-    sourceRealmId !== targetRealmId &&
-    sourceRealmId !== PUBLIC_REALM_ID &&
-    sourceRealmId !== ownerRealmId;
-
-  if (shouldCleanupSourceRealm) {
-    const members = await dexieGetMany('members', { realmId: sourceRealmId });
-    await Promise.all(members.filter((member) => member?.id).map((member) => dexieDeleteById('members', member.id)));
-    await dexieDeleteById('realms', sourceRealmId).catch(() => {});
-  }
 
   return {
     listId,

@@ -197,9 +197,11 @@ export const useListsStore = defineStore("list", () => {
       return;
     }
 
-    const listsInRealm = (allLists.value || []).filter(
-      (list) => String(list?.realmId || "") === realmId
-    );
+    const listsInRealm = (allLists.value || []).filter((list) => {
+      const listRealmId = String(list?.realmId || "");
+      const tiedRealmId = String(getTiedRealmId(list?.id || ""));
+      return listRealmId === realmId || tiedRealmId === realmId;
+    });
 
     for (const list of listsInRealm) {
       const listId = String(list?.id || "").trim();
@@ -219,6 +221,16 @@ export const useListsStore = defineStore("list", () => {
           await db.joinedLists.bulkDelete(existingRows.map((row) => row.id).filter(Boolean));
         }
         joinedListIds.value = joinedListIds.value.filter((id) => id !== listId);
+      } else if (existingRows.length === 0) {
+        await db.joinedLists.add({
+          userId,
+          listId,
+          joinedAt: new Date(),
+          updated: new Date(),
+        });
+        if (!joinedListIds.value.includes(listId)) {
+          joinedListIds.value.push(listId);
+        }
       }
     }
   }
@@ -370,8 +382,13 @@ export const useListsStore = defineStore("list", () => {
     }
 
     await db.transaction("rw", [db.lists, db.observations, db.comments], async () => {
+      const currentLocalList = allLists.value?.find((item) => String(item.id) === normalizedListId);
+      const previousRealmId = String(currentLocalList?.realmId || "");
       await db.lists.update(normalizedListId, {
         realmId: targetRealmId,
+        ...(makePublic && previousRealmId && previousRealmId !== "rlm-public"
+          ? { privateRealmId: previousRealmId }
+          : {}),
         updated: new Date(),
       });
       await db.observations.where({ listId: normalizedListId }).modify({ realmId: targetRealmId });
@@ -379,6 +396,9 @@ export const useListsStore = defineStore("list", () => {
     });
 
     if (currentList.value?.id === normalizedListId) {
+      if (makePublic && currentList.value.realmId && currentList.value.realmId !== "rlm-public") {
+        currentList.value.privateRealmId = currentList.value.realmId;
+      }
       currentList.value.realmId = targetRealmId;
       currentList.value.updated = new Date();
     }
@@ -462,24 +482,31 @@ export const useListsStore = defineStore("list", () => {
 
   async function shareBirdList(listId, listName, friends) {
     if (!listId) return;
+    const list = allLists.value?.find((item) => String(item.id) === String(listId));
+    const realmId = getTiedRealmId(listId);
+    const tables = isPublicList(list)
+      ? [db.lists, db.realms, db.members]
+      : [db.lists, db.observations, db.comments, db.realms, db.members];
   
-    await db.transaction("rw", [db.lists, db.observations, db.comments, db.realms, db.members], async () => {
+    await db.transaction("rw", tables, async () => {
       // Add or update a realm, tied to the list using getTiedRealmId():
-      const realmId = getTiedRealmId(listId);
-  
       await db.realms.put({
         realmId,
         name: listName,
         represents: "a bird list",
       });
-  
-      // Move list into the realm (if not already there):
-      await db.lists.update(listId, { realmId });
-      // Move all items into the new realm consistently (modify() is consistent across sync peers)
-      await db.observations.where({ listId: listId }).modify({ realmId: realmId });
-      await db.comments.where({ listId: listId }).modify({ realmId: realmId });
+
+      if (!isPublicList(list)) {
+        // Private lists use the tied realm for membership and sync access.
+        await db.lists.update(listId, { realmId, privateRealmId: realmId });
+        await db.observations.where({ listId: listId }).modify({ realmId: realmId });
+        await db.comments.where({ listId: listId }).modify({ realmId: realmId });
+      } else {
+        await db.lists.update(listId, { privateRealmId: realmId });
+      }
+
       // Add the members to share it to:
-      db.members.bulkAdd(
+      await db.members.bulkAdd(
         [...friends].map((friend) => ({
           realmId,
           email: friend.email,

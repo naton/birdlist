@@ -305,6 +305,7 @@ describe("lists store", () => {
         id: "new-1",
         title: "New",
         owner: "user-1",
+        realmId: "user-1",
         updated: new Date("2026-01-03"),
       },
     ];
@@ -326,6 +327,7 @@ describe("lists store", () => {
     expect(ctx.db.cloud.sync).toHaveBeenCalledWith({ wait: true, purpose: "push" });
     expect(ctx.setListVisibilitySpy).toHaveBeenCalledWith("new-1", true);
     expect(ctx.state.lists[0].realmId).toBe("rlm-public");
+    expect(ctx.state.lists[0].privateRealmId).toBe("user-1");
     expect(ctx.state.observations[0].realmId).toBe("rlm-public");
     expect(ctx.state.comments[0].realmId).toBe("rlm-public");
   });
@@ -384,6 +386,70 @@ describe("lists store", () => {
     expect(ctx.pushSpy).toHaveBeenCalledWith({ name: "lists" });
   });
 
+  it("does not make a public list private when inviting friends", async () => {
+    const ctx = createMockContext();
+    ctx.state.lists = [
+      {
+        id: "public-1",
+        title: "Public",
+        owner: "user@example.com",
+        realmId: "rlm-public",
+        updated: new Date("2026-01-02"),
+      },
+    ];
+    ctx.state.observations = [{ id: "obs-1", listId: "public-1", realmId: "rlm-public" }];
+    ctx.state.comments = [{ id: "com-1", listId: "public-1", realmId: "rlm-public" }];
+
+    const useListsStore = await loadStoreWithMocks(ctx);
+    const store = useListsStore();
+    await flushLiveQuery();
+
+    await store.shareBirdList("public-1", "Public", [{ email: "friend@example.com" }]);
+
+    expect(ctx.state.lists[0].realmId).toBe("rlm-public");
+    expect(ctx.state.lists[0].privateRealmId).toBe("realm-public-1");
+    expect(ctx.state.observations[0].realmId).toBe("rlm-public");
+    expect(ctx.state.comments[0].realmId).toBe("rlm-public");
+    expect(ctx.state.realms).toContainEqual({
+      realmId: "realm-public-1",
+      name: "Public",
+      represents: "a bird list",
+    });
+    expect(ctx.state.members).toEqual([
+      expect.objectContaining({
+        realmId: "realm-public-1",
+        email: "friend@example.com",
+        invite: true,
+      }),
+    ]);
+  });
+
+  it("keeps private list invite behavior by moving the list into its tied realm", async () => {
+    const ctx = createMockContext();
+    ctx.state.lists = [
+      {
+        id: "private-1",
+        title: "Private",
+        owner: "user@example.com",
+        realmId: "user@example.com",
+        updated: new Date("2026-01-02"),
+      },
+    ];
+    ctx.state.observations = [{ id: "obs-1", listId: "private-1", realmId: "user@example.com" }];
+    ctx.state.comments = [{ id: "com-1", listId: "private-1", realmId: "user@example.com" }];
+
+    const useListsStore = await loadStoreWithMocks(ctx);
+    const store = useListsStore();
+    await flushLiveQuery();
+
+    await store.shareBirdList("private-1", "Private", [{ email: "friend@example.com" }]);
+
+    expect(ctx.state.lists[0].realmId).toBe("realm-private-1");
+    expect(ctx.state.lists[0].privateRealmId).toBe("realm-private-1");
+    expect(ctx.state.observations[0].realmId).toBe("realm-private-1");
+    expect(ctx.state.comments[0].realmId).toBe("realm-private-1");
+  });
+
   it("aborts local delete when remote delete fails for public list", async () => {
     const ctx = createMockContext();
     seedLists(ctx);
@@ -429,5 +495,39 @@ describe("lists store", () => {
     expect(invite.accept).toHaveBeenCalledTimes(1);
     expect(store.joinedListIds).not.toContain("list-1");
     expect(ctx.state.joinedLists.find((row) => row.listId === "list-1")).toBeUndefined();
+  });
+
+  it("accept invite to a public list tied realm marks the user as joined", async () => {
+    const ctx = createMockContext();
+    ctx.state.lists = [
+      {
+        id: "public-1",
+        title: "Public",
+        owner: "owner-1",
+        realmId: "rlm-public",
+        updated: new Date("2026-01-03"),
+      },
+    ];
+
+    const invite = {
+      realmId: "realm-public-1",
+      accept: vi.fn().mockResolvedValue(undefined),
+    };
+
+    const useListsStore = await loadStoreWithMocks(ctx);
+    const store = useListsStore();
+    await flushLiveQuery();
+
+    await expect(store.acceptInvite(invite)).resolves.toBe(true);
+
+    expect(invite.accept).toHaveBeenCalledTimes(1);
+    expect(store.joinedListIds).toContain("public-1");
+    expect(ctx.state.joinedLists).toEqual([
+      expect.objectContaining({
+        userId: "user-1",
+        listId: "public-1",
+      }),
+    ]);
+    expect(store.canWriteToList(ctx.state.lists[0])).toBe(true);
   });
 });
