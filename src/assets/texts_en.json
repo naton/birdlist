@@ -24,6 +24,7 @@
     "Checklist": "Checklist",
     "Close": "Close",
     "Comments": "Comments",
+    "Confirm_Delete_Friend": "Do you want to remove \"{name}\" from Friends?",
     "Contact_The_List_Creator": "Contact the list creator to invite friends.",
     "Create_A_Friend": "Create a friend",
     "Create_List_Help": "<ul><li><strong>Normal</strong> creates a regular list where you add species as you see them.</li><li><strong>Checklist</strong> is a list where you first specify which birds the list should contain and then you check each row when you see the species.</li><li><strong>Bingo</strong> is like a checklist but you tick the birds off in a ‘bingo board’ of 9, 16 or 25 birds. Whoever gets <em>BINGO!</em> first wins.</li><li><strong>Birdstreak</strong> is a type of list where you choose a start and end date and 'lock' a species every other day (or another interval of choice) and try to keep the streak as long as possible. The ultimate challenge!</li></ul>",

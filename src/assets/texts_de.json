@@ -25,6 +25,7 @@
         "Checklist": "Checkliste",
         "Close": "Schließen",
         "Comments": "Kommentare",
+        "Confirm_Delete_Friend": "Möchtest du \"{name}\" aus Freunde entfernen?",
         "Contact_The_List_Creator": "Kontaktiere den Ersteller der Liste, um Freunde einzuladen.",
         "Create_A_Friend": "Freund erstellen",
         "Create_List_Help": "<ul><li><strong>Normal</strong> erstellt eine normale Liste, in der du Arten einträgst, wenn du sie siehst.</li><li><strong>Checkliste</strong> ist eine Liste, in der du zuerst festlegst, welche Vögel enthalten sein sollen, und sie dann beim Beobachten abhaken kannst.</li><li><strong>Bingo</strong> ist wie eine Checkliste, aber du hakst Vögel auf einem Bingo-Feld mit 9, 16 oder 25 Feldern ab. Wer zuerst <em>BINGO!</em> hat, gewinnt.</li><li><strong>Birdstreak</strong> ist eine Liste, bei der du Start- und Enddatum wählst und regelmäßig eine Art festhältst, um die Serie möglichst lange zu halten.</li></ul>",

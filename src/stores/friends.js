@@ -45,8 +45,10 @@ export const useFriendsStore = defineStore("friend", () => {
   }
   
   async function deleteFriend(name, id) {
-    await db.friends.delete(id);
-    addMessage(name + " " + t("Was_Removed"));
+    if (confirm(t("Confirm_Delete_Friend").replace("{name}", name))) {
+      await db.friends.delete(id);
+      addMessage(name + " " + t("Was_Removed"));
+    }
   }
 
   return {
