@@ -95,6 +95,7 @@ function createMockContext() {
       title: "Bingo",
       realmId: "user-1",
     }),
+    allListsRef: ref(state.lists),
     canWriteRef: ref(true),
     addMessageSpy: vi.fn(),
     pushNewBirdAlertSpy: vi.fn(),
@@ -137,6 +138,7 @@ async function loadStoreWithMocks(ctx) {
   vi.doMock("./lists.js", async () => {
     const { defineStore } = await import("pinia");
     const useListsStore = defineStore("list", () => ({
+      allLists: ctx.allListsRef,
       currentList: ctx.currentListRef,
       canWriteToList: () => ctx.canWriteRef.value,
       isPublicList: (list) => list?.realmId === "rlm-public",
@@ -212,6 +214,20 @@ describe("observations store", () => {
     expect(ctx.state.lists[0].updated).toBeInstanceOf(Date);
   });
 
+  it("treats comma-separated input as one observation", async () => {
+    const ctx = createMockContext();
+    ctx.state.lists = [{ id: "list-1", updated: new Date("2026-01-01") }];
+    ctx.allListsRef.value = ctx.state.lists;
+    const useObservationsStore = await loadStoreWithMocks(ctx);
+    const store = useObservationsStore();
+    await flushLiveQuery();
+
+    await expect(store.addObservation("Mallard, Robin")).resolves.toBe(true);
+
+    expect(ctx.state.observations).toHaveLength(1);
+    expect(ctx.state.observations[0].name).toBe("Mallard, Robin");
+  });
+
   it("saves public-list observations through the trusted API and pulls the result", async () => {
     const ctx = createMockContext();
     ctx.currentListRef.value = {
@@ -259,5 +275,73 @@ describe("observations store", () => {
     await store.deleteObservation("obs-1");
     expect(ctx.state.observations).toHaveLength(0);
     expect(ctx.addMessageSpy).toHaveBeenCalledWith("Observation_Removed: <b>Robin</b>");
+  });
+
+  it("moves an observation to another list", async () => {
+    const ctx = createMockContext();
+    ctx.state.lists = [
+      { id: "list-1", realmId: "realm-1", updated: new Date("2026-01-01") },
+      { id: "list-2", realmId: "realm-2", updated: new Date("2026-01-01") },
+    ];
+    ctx.allListsRef.value = ctx.state.lists;
+    ctx.state.observations = [
+      {
+        id: "obs-1",
+        name: "Mallard",
+        latinName: "Anas platyrhynchos",
+        date: new Date("2026-04-05"),
+        listId: "list-1",
+        realmId: "realm-1",
+        owner: "user-1",
+      },
+    ];
+    const useObservationsStore = await loadStoreWithMocks(ctx);
+    const store = useObservationsStore();
+    await flushLiveQuery();
+
+    await store.saveObservation({
+      ...ctx.state.observations[0],
+      listId: "list-2",
+      previousListId: "list-1",
+    });
+
+    expect(ctx.state.observations[0]).toMatchObject({
+      listId: "list-2",
+      realmId: "realm-2",
+    });
+    expect(ctx.state.lists[0].updated).toBeInstanceOf(Date);
+    expect(ctx.state.lists[1].updated).toBeInstanceOf(Date);
+  });
+
+  it("removes an observation from lists when no special list is selected", async () => {
+    const ctx = createMockContext();
+    ctx.state.lists = [{ id: "list-1", realmId: "realm-1", updated: new Date("2026-01-01") }];
+    ctx.allListsRef.value = ctx.state.lists;
+    ctx.state.observations = [
+      {
+        id: "obs-1",
+        name: "Mallard",
+        latinName: "Anas platyrhynchos",
+        date: new Date("2026-04-05"),
+        listId: "list-1",
+        realmId: "realm-1",
+        owner: "user-1",
+      },
+    ];
+    const useObservationsStore = await loadStoreWithMocks(ctx);
+    const store = useObservationsStore();
+    await flushLiveQuery();
+
+    await store.saveObservation({
+      ...ctx.state.observations[0],
+      listId: null,
+      previousListId: "list-1",
+    });
+
+    expect(ctx.state.observations[0]).toMatchObject({
+      listId: null,
+      realmId: "user-1",
+    });
+    expect(ctx.state.lists[0].updated).toBeInstanceOf(Date);
   });
 });

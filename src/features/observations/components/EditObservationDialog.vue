@@ -208,7 +208,7 @@ function selectBird(bird) {
   editDraft.value.name = getBirdStorageName(bird, lang?.value || "en");
 }
 
-function saveAndClose() {
+async function saveAndClose() {
   // Only apply changes when explicitly saving
   if (editDraft.value && canSave.value) {
     // Update the current observation with all changes from editDraft
@@ -217,9 +217,14 @@ function saveAndClose() {
       editDraft.value.latinName = latinName;
       editDraft.value.name = getBirdStorageName(editDraft.value, lang?.value || "en");
     }
+    const observationToSave = {
+      ...editDraft.value,
+      id: currentObservation.value?.id,
+      previousListId: currentObservation.value?.listId,
+    };
     Object.assign(currentObservation.value, editDraft.value);
     // Save to the store
-    saveObservation(currentObservation.value);
+    await saveObservation(observationToSave);
   }
   editDraft.value = null;
   selectedBird.value = null;
@@ -333,7 +338,7 @@ defineExpose({
       <div v-else class="margin-bottom">
         <label for="obs-list">{{ t("Change_List") }}</label>
         <select id="obs-list" v-model="editDraft.listId">
-          <option value="undefined">{{ t("No_Special_List") }}</option>
+          <option :value="null">{{ t("No_Special_List") }}</option>
           <option 
             v-for="{ id, title } in allLists" 
             :value="id" 

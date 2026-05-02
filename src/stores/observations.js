@@ -20,7 +20,7 @@ export const useObservationsStore = defineStore(
 
     const listsStore = useListsStore();
     const { canWriteToList, isPublicList } = listsStore;
-    const { currentList } = storeToRefs(listsStore);
+    const { allLists, currentList } = storeToRefs(listsStore);
 
     const allObservations = ref([]);
 
@@ -139,7 +139,6 @@ export const useObservationsStore = defineStore(
 
       let date = new Date();
       const rawBirdName = typeof bird === "string" ? bird : bird.name;
-      const isBatchImport = typeof bird === "string" && bird.includes(","); // Probably multiple birds
       const hasCustomDate = typeof bird === "string" && bird.startsWith("20") && bird.includes(":"); // Probably a date
 
       if (hasCustomDate) {
@@ -231,16 +230,7 @@ export const useObservationsStore = defineStore(
         }
       }
 
-      let hasSavedAtLeastOne = false;
-      if (isBatchImport) {
-        const birds = rawBirdName.split(",");
-        for (const birdName of birds) {
-          const didSave = await addSingleObservation(birdName);
-          hasSavedAtLeastOne = hasSavedAtLeastOne || didSave;
-        }
-      } else {
-        hasSavedAtLeastOne = await addSingleObservation(bird);
-      }
+      const hasSavedAtLeastOne = await addSingleObservation(bird);
 
       if (hasSavedAtLeastOne && currentList.value && !isPublicList(currentList.value)) {
         await db.lists.where({ id: currentList.value.id }).modify({ updated: new Date() });
@@ -250,11 +240,20 @@ export const useObservationsStore = defineStore(
     }
 
     async function saveObservation(obs) {
+      const selectedListId = String(obs.listId || "").trim();
+      const previousListId = String(obs.previousListId || "").trim();
+      const targetList = selectedListId && selectedListId !== "undefined" && selectedListId !== "null"
+        ? allLists.value?.find((list) => String(list.id) === selectedListId) ||
+          (String(currentList.value?.id) === selectedListId ? currentList.value : null)
+        : null;
+      const ownerRealmId = obs.owner || currentUser.value?.userId || currentUser.value?.email || currentUser.value?.name;
       let payload = {
         name: getBirdDisplayName(obs, lang?.value || "en").trim(),
         date: obs.date,
         location: obs.location,
         locked: obs.locked,
+        listId: targetList ? targetList.id : null,
+        realmId: targetList ? targetList.realmId : ownerRealmId || undefined,
       };
       const latinName = obs.latinName || getBirdLatinName(obs.name);
       if (latinName) {
@@ -262,14 +261,13 @@ export const useObservationsStore = defineStore(
       } else if (obs.name) {
         payload.name = normalizeBirdName(obs.name) ? obs.name.trim() : payload.name;
       }
-      if (obs.listId) {
-        payload.listId = obs.listId;
-      }
       await db.transaction("rw", [db.lists, db.observations], async () => {
         await db.observations.update(obs, payload);
-        await db.observations.where({ listId: payload.listId }).modify({ realmId: payload.realmId });
-        // Move list into the realm (if not already there):
-        await db.lists.update(payload.listId, { realmId: payload.realmId });
+        const updated = new Date();
+        const listIdsToTouch = new Set([previousListId, targetList?.id].filter(Boolean));
+        for (const listId of listIdsToTouch) {
+          await db.lists.update(listId, { updated });
+        }
       });
     }
 
