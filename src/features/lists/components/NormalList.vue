@@ -36,7 +36,7 @@ const props = defineProps({
 
 const settingsStore = useSettingsStore();
 const { t, firstVisit } = settingsStore;
-const { currentUser, isUserLoggedIn, selectedUser } = storeToRefs(settingsStore);
+const { currentUser, isUserLoggedIn, selectedUser, lang } = storeToRefs(settingsStore);
 
 const listsStore = useListsStore();
 const { sortBy } = listsStore;
@@ -49,7 +49,7 @@ const { addMessage } = messagesStore;
 
 const selectedObservation = defineModel();
 const { currentLeader, users, observationsByUser, speciesByUser, species, getObservationKey, getSpeciesGroupKey } =
-  useListUserStats(computed(() => props.observations), selectedUser, computed(() => props.participants));
+  useListUserStats(computed(() => props.observations), selectedUser, computed(() => props.participants), { languageRef: lang });
 
 function emitEdit(obs) {
   emit("edit", obs);

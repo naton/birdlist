@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
 import { groupBy } from "@/helpers";
-import { getBirdKey } from "@/birdNames.js";
+import { compareBirdsByDisplayName, getBirdKey } from "@/birdNames.js";
 
 function normalizeNames(values = []) {
   return [...new Set(values.map((name) => String(name || "").trim()).filter(Boolean))].sort();
@@ -8,6 +8,12 @@ function normalizeNames(values = []) {
 
 function getUniqueBirdCount(observations = []) {
   return Object.keys(groupBy(observations, (obs) => getBirdKey(obs))).length;
+}
+
+function getSpeciesGroups(observations = [], language = "en") {
+  return Object.values(groupBy(observations, (obs) => getBirdKey(obs))).sort((a, b) =>
+    compareBirdsByDisplayName(a[0], b[0], language)
+  );
 }
 
 export function useListUserStats(
@@ -21,6 +27,7 @@ export function useListUserStats(
     typeof options.scoreForUser === "function"
       ? options.scoreForUser
       : (name, observations) => getUniqueBirdCount(observations.filter((obs) => obs.owner === name));
+  const languageRef = options.languageRef || ref("en");
 
   const users = computed(() => {
     const observationOwners = (observationsRef.value || []).map((obs) => obs.owner);
@@ -61,17 +68,19 @@ export function useListUserStats(
   });
 
   const speciesByUser = computed(() => {
+    const language = languageRef.value || "en";
+
     if (!selectedUserRef || selectedUserRef.value === null) {
-      return groupBy(observationsRef.value || [], (obs) => getBirdKey(obs));
+      return getSpeciesGroups(observationsRef.value || [], language);
     }
 
-    return groupBy(
+    return getSpeciesGroups(
       (observationsRef.value || []).filter((obs) => obs.owner === selectedUserRef.value),
-      (obs) => getBirdKey(obs)
+      language
     );
   });
 
-  const species = computed(() => Object.keys(speciesByUser.value));
+  const species = computed(() => speciesByUser.value.map((group) => getSpeciesGroupKey(group)));
 
   function getObservationKey(obs) {
     return obs.id || `${obs.owner || ""}:${obs.listId || ""}:${obs.date?.getTime?.() || obs.date}:${getBirdKey(obs)}`;

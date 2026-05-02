@@ -72,6 +72,21 @@ function getBirdStorageName(bird, languageOrLocale = "en") {
   return getBirdDisplayName(bird, languageOrLocale).trim();
 }
 
+function compareBirdsByDisplayName(a, b, languageOrLocale = "en") {
+  const nameA = getBirdDisplayName(a, languageOrLocale);
+  const nameB = getBirdDisplayName(b, languageOrLocale);
+  const nameComparison = nameA.localeCompare(nameB, languageOrLocale, {
+    sensitivity: "base",
+    numeric: true,
+  });
+
+  if (nameComparison) {
+    return nameComparison;
+  }
+
+  return getBirdKey(a).localeCompare(getBirdKey(b), "en", { sensitivity: "base" });
+}
+
 function getBirdKey(bird) {
   const latinName = typeof bird === "string" ? getBirdLatinName(bird) : bird?.latinName || getBirdLatinName(bird);
   return latinName || normalizeBirdName(typeof bird === "string" ? bird : bird?.name);
@@ -79,6 +94,7 @@ function getBirdKey(bird) {
 
 export {
   birdSpecies,
+  compareBirdsByDisplayName,
   findBirdSpeciesByName,
   getBirdDisplayName,
   getBirdKey,

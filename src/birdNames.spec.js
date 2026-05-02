@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  compareBirdsByDisplayName,
   findBirdSpeciesByName,
   getBirdDisplayName,
   getBirdLatinName,
@@ -20,5 +21,17 @@ describe("bird name lookup", () => {
   it("keeps both pigeon species available in lookup data", () => {
     expect(findBirdSpeciesByName("duva")?.latinName).toBe("Columba livia domestica");
     expect(findBirdSpeciesByName("klippduva")?.latinName).toBe("Columba livia");
+  });
+
+  it("sorts by display name instead of latin name", () => {
+    const birds = [
+      { name: "Zebra Finch", latinName: "Aaa aaa" },
+      { name: "Albatross", latinName: "Zzz zzz" },
+    ];
+
+    expect([...birds].sort((a, b) => compareBirdsByDisplayName(a, b, "en")).map((bird) => bird.name)).toEqual([
+      "Albatross",
+      "Zebra Finch",
+    ]);
   });
 });

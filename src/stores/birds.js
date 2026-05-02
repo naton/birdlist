@@ -3,6 +3,19 @@ import { defineStore } from 'pinia'
 import { getBirdDisplayName, normalizeBirdName } from "@/birdNames.js";
 import { normalizeLanguage, normalizeRegion } from "@/stores/settings.js";
 
+function compareBirdNames(a, b, language) {
+    const nameComparison = a.name.localeCompare(b.name, language, {
+        sensitivity: "base",
+        numeric: true,
+    });
+
+    if (nameComparison) {
+        return nameComparison;
+    }
+
+    return String(a.latinName || "").localeCompare(String(b.latinName || ""), "en", { sensitivity: "base" });
+}
+
 export const useBirdsStore = defineStore('bird', () => {
     const birds = ref([])
 
@@ -29,7 +42,7 @@ export const useBirdsStore = defineStore('bird', () => {
                 name,
             });
             return items;
-        }, []);
+        }, []).sort((a, b) => compareBirdNames(a, b, normalizedLanguage));
     }
 
     return {
