@@ -15,11 +15,14 @@ const privateVapidKey = process.env.VAPID_PRIVATE;
 const vapidSubject = process.env.VAPID_SUBJECT;
 const privateDexieCloudKey = process.env.DEXIE_CLOUD_CLIENTID;
 const privateDexieCloudSecret = process.env.DEXIE_CLOUD_CLIENTSECRET;
+const nuthatchApiKey = process.env.NUTHATCH_API_KEY;
 
 const DEXIE_BASE_URL = 'https://zyh2ho4s6.dexie.cloud';
 const DEXIE_URL = 'https://zyh2ho4s6.dexie.cloud/my/webPushSubscriptions';
+const NUTHATCH_BASE_URL = 'https://nuthatch.lastelm.software';
 const PUBLIC_REALM_ID = 'rlm-public';
 const SUPPORTED_LANGUAGES = new Set(['en', 'sv', 'de']);
+const birdDetailsCache = new Map();
 const PUSH_TEXTS = {
   en: {
     list: 'List',
@@ -281,6 +284,118 @@ function getLocalizedBirdName(bird, language) {
   const lang = normalizeLanguage(language);
 
   return species?.[lang] || species?.en || species?.sv || fallback || latinName;
+}
+
+function normalizeExternalUrl(url) {
+  const value = String(url || '').trim();
+  if (!value) {
+    return '';
+  }
+
+  if (value.startsWith('//')) {
+    return `https:${value}`;
+  }
+
+  return value;
+}
+
+function toNumberOrNull(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+function sanitizeNuthatchRecording(recording) {
+  return {
+    id: String(recording?.id || '').trim(),
+    type: String(recording?.type || '').trim(),
+    length: String(recording?.length || '').trim(),
+    recordist: String(recording?.rec || '').trim(),
+    location: String(recording?.loc || '').trim(),
+    file: normalizeExternalUrl(recording?.file),
+    url: normalizeExternalUrl(recording?.url),
+  };
+}
+
+function sanitizeNuthatchBird(bird) {
+  if (!bird || typeof bird !== 'object') {
+    return null;
+  }
+
+  return {
+    id: bird.id,
+    name: String(bird.name || '').trim(),
+    sciName: String(bird.sciName || '').trim(),
+    order: String(bird.order || '').trim(),
+    family: String(bird.family || '').trim(),
+    status: String(bird.status || '').trim(),
+    region: Array.isArray(bird.region) ? bird.region.map((item) => String(item || '').trim()).filter(Boolean) : [],
+    lengthMin: toNumberOrNull(bird.lengthMin),
+    lengthMax: toNumberOrNull(bird.lengthMax),
+    wingspanMin: toNumberOrNull(bird.wingspanMin),
+    wingspanMax: toNumberOrNull(bird.wingspanMax),
+    images: Array.isArray(bird.images) ? bird.images.map(normalizeExternalUrl).filter(Boolean).slice(0, 3) : [],
+    recordings: Array.isArray(bird.recordings)
+      ? bird.recordings.map(sanitizeNuthatchRecording).filter((recording) => recording.file || recording.url).slice(0, 3)
+      : [],
+  };
+}
+
+async function fetchNuthatchJson(pathname) {
+  const response = await fetch(`${NUTHATCH_BASE_URL}${pathname}`, {
+    headers: {
+      'API-Key': nuthatchApiKey,
+    },
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Nuthatch request failed (${response.status}): ${body}`);
+  }
+
+  return response.json();
+}
+
+async function getBirdDetails(latinName) {
+  const normalizedLatinName = String(latinName || '').trim();
+  if (!normalizedLatinName) {
+    return { error: 'Latin name is required.', status: 400 };
+  }
+
+  if (!nuthatchApiKey) {
+    return { error: 'Bird details are not configured.', status: 503 };
+  }
+
+  if (birdDetailsCache.has(normalizedLatinName)) {
+    return birdDetailsCache.get(normalizedLatinName);
+  }
+
+  const query = toQueryString({
+    sciName: normalizedLatinName,
+    pageSize: 1,
+    page: 1,
+    operator: 'AND',
+  });
+  const listPayload = await fetchNuthatchJson(`/v2/birds${query}`);
+  const bird = listPayload?.entities?.[0];
+
+  if (!bird) {
+    const emptyResult = { latinName: normalizedLatinName, found: false };
+    birdDetailsCache.set(normalizedLatinName, emptyResult);
+    return emptyResult;
+  }
+
+  let details = bird;
+  if (bird.id) {
+    details = await fetchNuthatchJson(`/birds/${encodeURIComponent(bird.id)}`);
+  }
+
+  const result = {
+    latinName: normalizedLatinName,
+    found: true,
+    ...sanitizeNuthatchBird(details),
+  };
+  birdDetailsCache.set(normalizedLatinName, result);
+  return result;
 }
 
 function createPushPayload(message, subscription) {
@@ -1126,6 +1241,35 @@ app.post('/api/public-list-participants', async (req, res) => {
       error: {
         id: 'unable-to-load-public-list-participants',
         message: `Failed to load participants: ${err.message}`,
+      },
+    });
+  }
+});
+
+app.get('/api/bird-details', async (req, res) => {
+  try {
+    const result = await getBirdDetails(req.query?.latinName);
+    if (result?.error) {
+      res.status(result.status || 400).json({
+        error: {
+          id: 'unable-to-load-bird-details',
+          message: result.error,
+        },
+      });
+      return;
+    }
+
+    res.status(200).json({
+      data: {
+        success: true,
+        bird: result,
+      },
+    });
+  } catch (err) {
+    res.status(502).json({
+      error: {
+        id: 'unable-to-load-bird-details',
+        message: `Failed to load bird details: ${err.message}`,
       },
     });
   }

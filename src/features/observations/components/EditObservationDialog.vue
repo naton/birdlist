@@ -1,7 +1,7 @@
 <script setup>
 import { ref, defineAsyncComponent, computed, watch } from "vue";
 import { storeToRefs } from 'pinia'
-import { formatDateAndTime, inputDateTime, toSafeUserLabel } from "@/helpers";
+import { formatDateAndTime, getBirdDetails, inputDateTime, toSafeUserLabel } from "@/helpers";
 import { getBirdDisplayName, getBirdLatinName, getBirdStorageName } from "@/birdNames.js";
 import AppDialog from "@/shared/ui/AppDialog.vue";
 import vue3SimpleTypeahead from "vue3-simple-typeahead";
@@ -41,6 +41,9 @@ const emit = defineEmits(["delete"]);
 const currentObservation = defineModel();
 const isDialogOpen = ref(false);
 const isEditing = ref(false);
+const birdDetails = ref(null);
+const birdDetailsLoading = ref(false);
+const birdDetailsLoadId = ref(0);
 
 // Create a working copy for edits
 const editDraft = ref(null);
@@ -86,6 +89,51 @@ function getOwnerLabel(owner) {
 
 function birdName(observation) {
   return getBirdDisplayName(observation, lang?.value || "en");
+}
+
+const latinName = computed(() => getBirdLatinName(activeObservation.value));
+const firstBirdImage = computed(() => birdDetails.value?.images?.[0] || "");
+const firstRecording = computed(() => birdDetails.value?.recordings?.[0] || null);
+
+function formatMeasurement(min, max, unit) {
+  if (min && max) {
+    return `${min}-${max} ${unit}`;
+  }
+
+  if (min || max) {
+    return `${min || max} ${unit}`;
+  }
+
+  return "";
+}
+
+const birdLength = computed(() =>
+  formatMeasurement(birdDetails.value?.lengthMin, birdDetails.value?.lengthMax, "cm")
+);
+const birdWingspan = computed(() =>
+  formatMeasurement(birdDetails.value?.wingspanMin, birdDetails.value?.wingspanMax, "cm")
+);
+
+async function loadBirdDetails() {
+  const currentLatinName = latinName.value;
+  const loadId = birdDetailsLoadId.value + 1;
+  birdDetailsLoadId.value = loadId;
+  birdDetails.value = null;
+
+  if (!isDialogOpen.value || isEditing.value || !currentLatinName) {
+    birdDetailsLoading.value = false;
+    return;
+  }
+
+  birdDetailsLoading.value = true;
+  const result = await getBirdDetails(currentLatinName);
+
+  if (loadId !== birdDetailsLoadId.value) {
+    return;
+  }
+
+  birdDetailsLoading.value = false;
+  birdDetails.value = result.success && result.bird?.found ? result.bird : null;
 }
 
 const canSave = computed(() => {
@@ -188,6 +236,13 @@ watch(
   }
 );
 
+watch(
+  [isDialogOpen, isEditing, latinName],
+  () => {
+    loadBirdDetails();
+  }
+);
+
 defineExpose({
   showModal: openModal,
   close,
@@ -196,22 +251,69 @@ defineExpose({
 
 <template>
   <app-dialog v-model="isDialogOpen">
-    <div class="grid margin-bottom">
+    <h2 v-if="!isEditing">
       <birds-icon />
-      <h2 v-if="!isEditing">{{ birdName(activeObservation) }}</h2>
-      <div v-else>
-        <label for="obs-name">{{ t("Change_Name") }}</label>
-        <p class="current-species">{{ birdName(editDraft) }}</p>
-        <vue3-simple-typeahead
-          id="obs-name"
-          :placeholder="t('Select_Bird')"
-          :items="birds.filter((bird) => bird.latinName)"
-          :minInputLength="1"
-          :itemProjection="(bird) => bird.name"
-          @selectItem="selectBird"
-        />
-      </div>
-  
+      {{ birdName(activeObservation) }}
+    </h2>
+    <div v-else>
+      <label for="obs-name">{{ t("Change_Name") }}</label>
+      <p class="current-species">{{ birdName(editDraft) }}</p>
+      <p v-if="latinName" class="latin-name">{{ t("Latin_Name") }}: {{ latinName }}</p>
+      <vue3-simple-typeahead
+        id="obs-name"
+        :placeholder="t('Select_Bird')"
+        :items="birds.filter((bird) => bird.latinName)"
+        :minInputLength="1"
+        :itemProjection="(bird) => bird.name"
+        @selectItem="selectBird"
+      />
+    </div>
+    <template v-if="!isEditing && latinName">
+      <span></span>
+      <p class="latin-name" :title="t('Latin_Name')">{{ latinName }}</p>
+    </template>
+    
+    <details v-if="!isEditing && (birdDetailsLoading || birdDetails)" class="full-width bird-details margin-bottom">
+      <p v-if="birdDetailsLoading">...</p>
+      <template v-else>
+        <img v-if="firstBirdImage" :src="firstBirdImage" :alt="birdName(activeObservation)" loading="lazy" />
+        <dl>
+          <template v-if="birdDetails.status">
+            <dt>{{ t("Conservation_Status") }}</dt>
+            <dd>{{ birdDetails.status }}</dd>
+          </template>
+          <template v-if="birdDetails.family">
+            <dt>{{ t("Family") }}</dt>
+            <dd>{{ birdDetails.family }}</dd>
+          </template>
+          <template v-if="birdDetails.order">
+            <dt>{{ t("Order") }}</dt>
+            <dd>{{ birdDetails.order }}</dd>
+          </template>
+          <template v-if="birdLength">
+            <dt>{{ t("Size") }}</dt>
+            <dd>{{ birdLength }}</dd>
+          </template>
+          <template v-if="birdWingspan">
+            <dt>{{ t("Wingspan") }}</dt>
+            <dd>{{ birdWingspan }}</dd>
+          </template>
+          <template v-if="birdDetails.region?.length">
+            <dt>{{ t("Regions") }}</dt>
+            <dd>{{ birdDetails.region.join(", ") }}</dd>
+          </template>
+        </dl>
+        <div v-if="firstRecording?.file" class="bird-recording">
+          <p>{{ t("Bird_Sound") }}</p>
+          <audio controls preload="none" :src="firstRecording.file"></audio>
+          <a v-if="firstRecording.url" :href="firstRecording.url" target="_blank">
+            {{ firstRecording.type || firstRecording.recordist || firstRecording.length || t("Bird_Sound") }}
+          </a>
+        </div>
+      </template>
+    </details>
+
+    <div class="grid margin-bottom">
       <observations-icon />
       <h3 v-if="!isEditing">{{ formatDateAndTime(activeObservation?.date) }}</h3>
       <div v-else class="margin-bottom">
@@ -221,8 +323,10 @@ defineExpose({
           :value="inputDateTime(editDraft.date)" />
       </div>
   
-      <user-icon />
-      <p>{{ getOwnerLabel(activeObservation?.owner) }}</p>
+      <template v-if="!isEditing">
+        <user-icon />
+        <p>{{ getOwnerLabel(activeObservation?.owner) }}</p>
+      </template>
 
       <lists-icon />
       <p v-if="!isEditing">{{ currentListName() }}</p>
@@ -320,5 +424,60 @@ button[disabled] {
 .current-species {
   margin: 0 0 0.5rem;
   color: var(--color-text-dim);
+}
+
+.latin-name {
+  margin: -0.5rem 0 0;
+  color: var(--color-text-dim);
+  font-style: italic;
+}
+
+.bird-details {
+  display: grid;
+  grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.bird-details img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius);
+  background: var(--color-background-dim);
+}
+
+.bird-details dl {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.25rem 0.75rem;
+  margin: 0;
+}
+
+.bird-details dt {
+  color: var(--color-text-dim);
+}
+
+.bird-details dd {
+  margin: 0;
+}
+
+.bird-recording {
+  grid-column: 1 / -1;
+}
+
+.bird-recording p {
+  margin: 0 0 0.5rem;
+  color: var(--color-text-dim);
+}
+
+.bird-recording audio {
+  width: 100%;
+}
+
+@media (max-width: 520px) {
+  .bird-details {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

@@ -327,6 +327,41 @@ async function savePublicObservation(observation) {
   }
 }
 
+async function getBirdDetails(latinName) {
+  const normalizedLatinName = String(latinName || "").trim();
+  if (!normalizedLatinName) {
+    return {
+      success: false,
+      message: "Missing Latin name.",
+    };
+  }
+
+  try {
+    const response = await fetchWithTimeout(
+      `${apiHost}/api/bird-details?latinName=${encodeURIComponent(normalizedLatinName)}`
+    );
+    const payload = await response.json().catch(() => null);
+
+    if (!response.ok || !payload?.data?.success) {
+      return {
+        success: false,
+        message: payload?.error?.message || "Failed to load bird details.",
+      };
+    }
+
+    return {
+      success: true,
+      bird: payload.data.bird || null,
+    };
+  } catch (error) {
+    console.error("Error loading bird details.", error);
+    return {
+      success: false,
+      message: "Network error while loading bird details.",
+    };
+  }
+}
+
 async function getPublicListParticipants(listId) {
   const normalizedListId = normalizeListId(listId);
   if (!normalizedListId) {
@@ -534,6 +569,7 @@ export {
   leavePublicListRemotely,
   deleteListRemotely,
   savePublicObservation,
+  getBirdDetails,
   getPublicListParticipants,
   pushNewBirdAlert,
   getMonthName,
