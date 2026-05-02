@@ -490,11 +490,23 @@ function toSafeUserLabel(user, preferredLabel = user) {
 }
 
 function formatDate(date) {
+  const value = new Date(date);
+  const now = new Date();
+  const options = value.getFullYear() === now.getFullYear()
+    ? {
+        weekday: "long",
+        day: "numeric",
+        month: "short",
+      }
+    : {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      };
+
   return new Intl.DateTimeFormat(false, {
-    weekday: "long",
-    day: "numeric",
-    month: "short",
-  }).format(date);
+    ...options,
+  }).format(value);
 }
 
 function formatDateAndTime(date) {
