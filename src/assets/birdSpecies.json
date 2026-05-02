@@ -4660,22 +4660,28 @@
   },
   {
     "latinName": "Columba livia",
-    "sv": "Tamduva / Klippduva",
-    "en": "Feral Pigeon / Rock Dove",
-    "de": "Straßentaube / Felsentaube",
+    "sv": "Klippduva",
+    "en": "Rock Dove",
+    "de": "Felsentaube",
     "aliases": {
-      "sv": [
-        "Duva",
-        "Tamduva"
-      ],
+      "sv": [],
       "en": [
-        "Feral Pigeon",
-        "Rock Dove",
-        "Rock pigeon",
         "Rock Pigeon"
       ],
+      "de": []
+    }
+  },
+  {
+    "latinName": "Columba livia domestica",
+    "sv": "Tamduva",
+    "en": "Feral Pigeon",
+    "de": "Straßentaube",
+    "aliases": {
+      "sv": [
+        "Duva"
+      ],
+      "en": [],
       "de": [
-        "Felsentaube",
         "Haustaube"
       ]
     }

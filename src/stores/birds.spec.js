@@ -33,4 +33,18 @@ describe("birds store", () => {
 
     expect(duplicateNames).toEqual([]);
   });
+
+  it("keeps Swedish tamduva and klippduva distinct", async () => {
+    const { useBirdsStore } = await import("./birds.js");
+    const store = useBirdsStore();
+
+    await store.loadAllBirds("sv-SE", "sv");
+
+    expect(store.birds.find((bird) => bird.name === "Tamduva")).toMatchObject({
+      latinName: "Columba livia domestica",
+    });
+    expect(store.birds.find((bird) => bird.name === "Klippduva")).toMatchObject({
+      latinName: "Columba livia",
+    });
+  });
 });

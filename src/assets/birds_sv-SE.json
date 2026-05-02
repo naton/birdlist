@@ -560,7 +560,8 @@
     "latinName": "Thalasseus sandvicensis"
   },
   {
-    "name": "Klippduva"
+    "name": "Klippduva",
+    "latinName": "Columba livia"
   },
   {
     "name": "Klipphöna"
@@ -1433,7 +1434,7 @@
   },
   {
     "name": "Tamduva",
-    "latinName": "Columba livia"
+    "latinName": "Columba livia domestica"
   },
   {
     "name": "Tatarfalk"

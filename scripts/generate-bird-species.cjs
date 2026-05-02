@@ -23,6 +23,11 @@ const manualRegionBirds = [
   },
 ];
 
+const manualSpeciesOverrides = new Set([
+  "Columba livia",
+  "Columba livia domestica",
+]);
+
 const germanScientificNameAliases = new Map([
   ["Accipiter gentilis", ["Astur gentilis"]],
   ["Ixobrychus minutus", ["Botaurus minutus"]],
@@ -58,14 +63,26 @@ const manualSpecies = [
     regions: ["en-GB", "sv-SE"],
   },
   {
-    latinName: "Columba livia",
+    latinName: "Columba livia domestica",
     sv: "Tamduva",
-    en: "Rock Dove",
+    en: "Feral Pigeon",
     de: "Straßentaube",
     aliases: {
       sv: ["Duva"],
-      en: ["Rock Pigeon", "Feral Pigeon"],
-      de: ["Haustaube", "Felsentaube"],
+      en: [],
+      de: ["Haustaube"],
+    },
+    regions: ["en-GB", "en-US", "sv-SE"],
+  },
+  {
+    latinName: "Columba livia",
+    sv: "Klippduva",
+    en: "Rock Dove",
+    de: "Felsentaube",
+    aliases: {
+      sv: [],
+      en: ["Rock Pigeon"],
+      de: [],
     },
     regions: ["en-GB", "en-US", "sv-SE"],
   },
@@ -396,7 +413,12 @@ async function main() {
 
   for (const row of manualSpecies) {
     const incoming = toSpecies(row, "manual");
-    speciesByLatin.set(row.latinName, mergeSpecies(speciesByLatin.get(row.latinName), incoming));
+    speciesByLatin.set(
+      row.latinName,
+      manualSpeciesOverrides.has(row.latinName)
+        ? incoming
+        : mergeSpecies(speciesByLatin.get(row.latinName), incoming)
+    );
   }
 
   const species = [...speciesByLatin.values()].sort((a, b) => a.latinName.localeCompare(b.latinName, "en"));

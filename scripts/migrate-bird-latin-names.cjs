@@ -13,6 +13,10 @@ const backupArg = process.argv.find((arg) => arg.startsWith("--backup="));
 const backupPath = backupArg
   ? path.resolve(rootDir, backupArg.slice("--backup=".length))
   : latestBackupPath();
+const ROCK_DOVE_LATIN_NAME = "Columba livia";
+const DOMESTIC_DOVE_LATIN_NAME = "Columba livia domestica";
+const domesticDoveNames = new Set(["duva", "tamduva", "tamduva / klippduva", "tamduva/klippduva"]);
+const rockDoveNames = new Set(["klippduva"]);
 
 function latestBackupPath() {
   const backupDir = path.join(rootDir, "out", "db-backups");
@@ -134,7 +138,44 @@ function getBirdName(value) {
   return typeof value === "string" ? value : value?.name;
 }
 
+function getLatinName(value) {
+  return typeof value === "object" && value ? String(value.latinName || "").trim() : "";
+}
+
+function classifyDoveSplit(value) {
+  const key = normalizeBirdName(getBirdName(value));
+
+  if (rockDoveNames.has(key)) {
+    return { name: "Klippduva", latinName: ROCK_DOVE_LATIN_NAME };
+  }
+
+  if (domesticDoveNames.has(key)) {
+    return { name: "Tamduva", latinName: DOMESTIC_DOVE_LATIN_NAME };
+  }
+
+  return null;
+}
+
 function convertBirdValue(value, lookup) {
+  const doveReplacement = classifyDoveSplit(value);
+  if (doveReplacement) {
+    const currentName = getBirdName(value);
+    const currentLatinName = getLatinName(value);
+    const nextValue =
+      typeof value === "string"
+        ? doveReplacement
+        : {
+            ...value,
+            ...doveReplacement,
+          };
+
+    return {
+      value: nextValue,
+      changed: currentName !== doveReplacement.name || currentLatinName !== doveReplacement.latinName,
+      matched: lookup.byLatinName.get(doveReplacement.latinName) || doveReplacement,
+    };
+  }
+
   if (value?.latinName) {
     return {
       value,
@@ -166,18 +207,23 @@ function analyzeObservations(observations, lookup) {
   const skippedExisting = [];
 
   for (const observation of observations) {
-    if (observation.latinName) {
+    const converted = convertBirdValue(observation, lookup);
+
+    if (observation.latinName && !converted.changed) {
       skippedExisting.push({ id: observation.id, name: observation.name, latinName: observation.latinName });
       continue;
     }
 
-    const converted = convertBirdValue(observation.name, lookup);
     if (!converted.matched) {
       unmatched.push({ id: observation.id, name: observation.name, listId: observation.listId });
       continue;
     }
 
-    updates.push({ ...observation, latinName: converted.matched.latinName });
+    updates.push({
+      ...observation,
+      name: getBirdName(converted.value),
+      latinName: converted.matched.latinName,
+    });
     matched.push({
       id: observation.id,
       name: observation.name,
