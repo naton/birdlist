@@ -218,6 +218,11 @@ function makePublicObservationId() {
   return `obs${Date.now().toString(36)}${random}`;
 }
 
+function makePublicCommentId() {
+  const random = Math.random().toString(36).slice(2, 10);
+  return `com${Date.now().toString(36)}${random}`;
+}
+
 function toDexieCloudDate(value) {
   const date = value ? new Date(value) : new Date();
   const safeDate = Number.isNaN(date.getTime()) ? new Date() : date;
@@ -269,6 +274,49 @@ function sanitizePublicObservationPayload(payload) {
       listId,
       ...(location ? { location } : {}),
       ...(latinName ? { latinName } : {}),
+    },
+  };
+}
+
+function sanitizePublicCommentPayload(payload) {
+  const comment = payload?.comment;
+  if (!comment || typeof comment !== 'object') {
+    return { error: 'Body must include { comment }.' };
+  }
+
+  const listId = normalizeListId(comment.listId);
+  const text = String(comment.comment || '').trim();
+  const owner = String(comment.owner || comment.userId || '').trim();
+  const ownerAliases = [
+    owner,
+    ...(Array.isArray(comment.ownerAliases) ? comment.ownerAliases : []),
+  ]
+    .map((value) => String(value || '').trim())
+    .filter((value) => value && value !== 'unauthorized');
+  const uniqueOwnerAliases = [...new Set(ownerAliases)];
+
+  if (!listId) {
+    return { error: 'Comment must include listId.' };
+  }
+
+  if (!text) {
+    return { error: 'Comment must include text.' };
+  }
+
+  if (uniqueOwnerAliases.length === 0) {
+    return { error: 'You need to log in first to use this feature.' };
+  }
+
+  return {
+    ownerAliases: uniqueOwnerAliases,
+    comment: {
+      id: makePublicCommentId(),
+      comment: text,
+      owner: uniqueOwnerAliases[0],
+      userId: uniqueOwnerAliases[0],
+      date: toDexieCloudDate(comment.date),
+      realmId: PUBLIC_REALM_ID,
+      listId,
     },
   };
 }
@@ -671,6 +719,38 @@ async function addPublicObservation(payload) {
     observation,
     listId: observation.listId,
     push,
+  };
+}
+
+async function addPublicComment(payload) {
+  const sanitized = sanitizePublicCommentPayload(payload);
+  if (sanitized.error) {
+    return { error: sanitized.error };
+  }
+
+  const comment = sanitized.comment;
+  const list = await dexieGetById('lists', comment.listId);
+  if (!list) {
+    return { error: 'List not found.', status: 404 };
+  }
+
+  if (String(list.realmId || '').trim() !== PUBLIC_REALM_ID) {
+    return { error: 'List is not public.', status: 403 };
+  }
+
+  const joinedLinks = await dexieGetMany('joinedLists', { listId: comment.listId }).catch(() => []);
+  if (!canContributeToPublicList(list, sanitized.ownerAliases, joinedLinks)) {
+    return { error: 'Join this list to contribute.', status: 403 };
+  }
+
+  await Promise.all([
+    dexieUpsertMany('comments', [comment]),
+    dexieUpsertMany('lists', [{ ...list, updated: toDexieCloudDate(new Date()) }]),
+  ]);
+
+  return {
+    comment,
+    listId: comment.listId,
   };
 }
 
@@ -1212,6 +1292,35 @@ app.post('/api/public-observation', async (req, res) => {
       error: {
         id: 'unable-to-save-public-observation',
         message: `Failed to save observation: ${err.message}`,
+      },
+    });
+  }
+});
+
+app.post('/api/public-comment', async (req, res) => {
+  try {
+    const result = await addPublicComment(req.body);
+    if (result?.error) {
+      res.status(result.status || 400).json({
+        error: {
+          id: 'unable-to-save-public-comment',
+          message: result.error,
+        },
+      });
+      return;
+    }
+
+    res.status(200).json({
+      data: {
+        success: true,
+        ...result,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: {
+        id: 'unable-to-save-public-comment',
+        message: `Failed to save comment: ${err.message}`,
       },
     });
   }

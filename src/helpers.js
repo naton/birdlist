@@ -327,6 +327,26 @@ async function savePublicObservation(observation) {
   }
 }
 
+async function savePublicComment(comment) {
+  try {
+    const response = await fetchWithTimeout(apiHost + "/api/public-comment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ comment }),
+    });
+
+    return readApiResult(response, "Failed to save comment.");
+  } catch (error) {
+    console.error("Error saving public comment.", error);
+    return {
+      success: false,
+      message: "Network error while saving comment.",
+    };
+  }
+}
+
 async function getBirdDetails(latinName) {
   const normalizedLatinName = String(latinName || "").trim();
   if (!normalizedLatinName) {
@@ -569,6 +589,7 @@ export {
   leavePublicListRemotely,
   deleteListRemotely,
   savePublicObservation,
+  savePublicComment,
   getBirdDetails,
   getPublicListParticipants,
   pushNewBirdAlert,

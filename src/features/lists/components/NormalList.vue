@@ -61,19 +61,21 @@ function emitNewLeader() {
 
 const comment = ref("");
 
-function addNewComment() {
+async function addNewComment() {
   if (props.readOnly) {
     addMessage(t("List_Is_Read_Only_For_You"));
     return;
   }
 
   if (comment.value) {
-    addComment({
+    const didSave = await addComment({
       listId: currentList.value.id,
       comment: comment.value.trim(),
       user: currentUser.value.name,
     });
-    resetForm();
+    if (didSave) {
+      resetForm();
+    }
   }
 }
 
