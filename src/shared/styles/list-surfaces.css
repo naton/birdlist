@@ -76,14 +76,6 @@
   z-index: 1;
 }
 
-.prev-date {
-  margin-left: 1rem;
-}
-
-.next-date {
-  margin-right: 1rem;
-}
-
 .year-summary {
   margin: 0 auto 0.5rem;
   border-collapse: collapse;

@@ -110,9 +110,10 @@ a > img {
 }
 
 details.help {
+  margin: 0 1rem;
+  padding: 0.5rem 0.75rem;
   border: 1px dashed;
   border-radius: var(--radius);
-  padding: 0.5rem 0.75rem;
 }
 
 details.help[open] summary {
