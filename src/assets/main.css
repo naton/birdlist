@@ -116,6 +116,10 @@ details.help {
   border-radius: var(--radius);
 }
 
+.dialog__body .help {
+  margin: 1rem 0;
+}
+
 details.help[open] summary {
   margin-bottom: 0.25rem;
 }
@@ -377,6 +381,8 @@ select {
 }
 
 .buttons {
+  position: sticky;
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;

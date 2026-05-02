@@ -448,6 +448,7 @@ button[disabled] {
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
+  object-position: 50% 0%;
   border-radius: var(--radius);
   background: var(--color-background-dim);
 }
