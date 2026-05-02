@@ -78,7 +78,9 @@ export const useSettingsStore = defineStore("settings", () => {
 
     // Reset month to current month on app initialization
     function resetMonthToCurrentMonth() {
-      currentMonth.value = new Date().getMonth();
+      const now = new Date();
+      currentYear.value = now.getFullYear();
+      currentMonth.value = now.getMonth();
     }
 
     function t(l10n_key, ...args) {

@@ -214,6 +214,27 @@ describe("observations store", () => {
     expect(ctx.state.lists[0].updated).toBeInstanceOf(Date);
   });
 
+  it("includes synced Dexie Cloud date objects in month and year lists", async () => {
+    const ctx = createMockContext();
+    ctx.currentYearRef.value = 2026;
+    ctx.currentMonthRef.value = 3;
+    ctx.state.observations = [
+      {
+        id: "obs-1",
+        name: "Mallard",
+        owner: "user-1",
+        date: { $t: "Date", v: "2026-04-05T12:00:00.000Z" },
+      },
+    ];
+    const useObservationsStore = await loadStoreWithMocks(ctx);
+    const store = useObservationsStore();
+    await flushLiveQuery();
+
+    expect(store.allMyObservations).toHaveLength(1);
+    expect(store.allThisMonth).toHaveLength(1);
+    expect(store.getTotalPerMonth(3)).toBe(1);
+  });
+
   it("treats comma-separated input as one observation", async () => {
     const ctx = createMockContext();
     ctx.state.lists = [{ id: "list-1", updated: new Date("2026-01-01") }];

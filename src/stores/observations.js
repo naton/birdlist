@@ -24,6 +24,33 @@ export const useObservationsStore = defineStore(
 
     const allObservations = ref([]);
 
+    function toObservationDate(value) {
+      if (value instanceof Date) {
+        return Number.isNaN(value.getTime()) ? null : value;
+      }
+
+      if (value?.$t === "Date" && value?.v) {
+        const date = new Date(value.v);
+        return Number.isNaN(date.getTime()) ? null : date;
+      }
+
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? null : date;
+    }
+
+    function observationDateMatches(obs, year, month = null) {
+      const date = toObservationDate(obs?.date);
+      if (!date || date.getFullYear() !== year) {
+        return false;
+      }
+
+      return month === null || date.getMonth() === month;
+    }
+
+    function getObservationTime(obs) {
+      return toObservationDate(obs?.date)?.getTime() || 0;
+    }
+
     function getCurrentOwnerAliases() {
       const aliases = [
         currentUser.value?.userId,
@@ -87,8 +114,8 @@ export const useObservationsStore = defineStore(
     const allMyObservations = computed(() => {
       return allObservations.value
         .filter((obs) => isCurrentUsersObservation(obs))
-        .filter((obs) => obs.date.getFullYear() == currentYear.value)
-        .sort((a, b) => a.date - b.date);
+        .filter((obs) => observationDateMatches(obs, currentYear.value))
+        .sort((a, b) => getObservationTime(a) - getObservationTime(b));
     });
 
     const allThisMonth = computed(() => {
@@ -96,10 +123,9 @@ export const useObservationsStore = defineStore(
         .filter(
           (obs) =>
             isCurrentUsersObservation(obs) &&
-            obs.date.getFullYear() == currentYear.value &&
-            obs.date.getMonth() == currentMonth.value
+            observationDateMatches(obs, currentYear.value, currentMonth.value)
         )
-        .sort((a, b) => a.date - b.date);
+        .sort((a, b) => getObservationTime(a) - getObservationTime(b));
     });
 
     const allListObservations = computed(() => {
@@ -111,8 +137,7 @@ export const useObservationsStore = defineStore(
       return allObservations.value.filter(
         (obs) =>
           isCurrentUsersObservation(obs) &&
-          obs.date.getFullYear() == currentYear.value &&
-          obs.date.getMonth() == month
+          observationDateMatches(obs, currentYear.value, month)
       ).length;
     }
 
@@ -120,7 +145,7 @@ export const useObservationsStore = defineStore(
       const today = new Date();
       return (
         allMyObservations.value.filter(
-          (obs) => obs.date.toISOString().substring(0, 10) === today.toISOString().substring(0, 10)
+          (obs) => toObservationDate(obs.date)?.toISOString().substring(0, 10) === today.toISOString().substring(0, 10)
         ).length === 0
       );
     }

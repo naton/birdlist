@@ -1,13 +1,14 @@
 <script setup>
 import { storeToRefs } from "pinia";
+import { useRoute } from "vue-router";
 import { useSettingsStore } from "@/stores/settings.js";
 import { useObservationsStore } from "@/stores/observations.js";
 import { useListsStore } from "@/stores/lists.js";
 import NavTabs from "@/features/lists/components/NavTabs.vue";
 import NormalList from "@/features/lists/components/NormalList.vue";
-import { onMounted } from "vue";
 
 const emit = defineEmits(["edit"]);
+const route = useRoute();
 
 const settingsStore = useSettingsStore();
 const { prevMonth, nextMonth, resetMonthToCurrentMonth } = settingsStore;
@@ -18,15 +19,16 @@ const { allThisMonth } = storeToRefs(observationsStore);
 
 const listsStore = useListsStore();
 const { currentSort } = storeToRefs(listsStore);
+currentSort.value = "bydate";
+
+if (route.path === "/") {
+  resetMonthToCurrentMonth();
+}
 
 function edit(obs) {
   emit("edit", obs)
 }
 
-onMounted(() => {
-  resetMonthToCurrentMonth();
-  currentSort.value = "bydate";
-});
 </script>
 
 <template>

@@ -7,7 +7,6 @@ import { useListsStore } from "@/stores/lists.js";
 import { getMonthName } from "@/helpers";
 import NavTabs from "@/features/lists/components/NavTabs.vue";
 import NormalList from "@/features/lists/components/NormalList.vue";
-import { onMounted } from "vue";
 
 const emit = defineEmits(["edit"]);
 
@@ -22,6 +21,7 @@ const { getTotalPerMonth } = observationsStore;
 
 const listsStore = useListsStore();
 const { currentSort } = storeToRefs(listsStore);
+currentSort.value = "bydate";
 
 function edit(obs) {
   emit("edit", obs)
@@ -32,9 +32,6 @@ function goToMonth(month) {
   router.push({ name: "monthly" });
 }
 
-onMounted(() => {
-  currentSort.value = "bydate";
-});
 </script>
 
 <template>
