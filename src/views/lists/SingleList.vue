@@ -16,6 +16,7 @@ import { useCommentsStore } from "@/stores/comments.js";
 import { useMessagesStore } from "@/stores/messages.js";
 import { useFriendsStore } from "@/stores/friends.js";
 import EditListDialog from "@/features/lists/components/EditListDialog.vue";
+import LeaveListDialog from "@/features/lists/components/LeaveListDialog.vue";
 import ListActionsMenu from "@/features/lists/components/ListActionsMenu.vue";
 import ListInfo from "@/features/lists/components/ListInfo.vue";
 import ListRenderer from "@/features/lists/components/ListRenderer.vue";
@@ -36,7 +37,6 @@ const listsStore = useListsStore();
 const {
   convertToChecklist,
   joinPublicList,
-  leavePublicList,
   setListPublicVisibility,
   deleteList,
 } = listsStore;
@@ -91,6 +91,7 @@ const listOwnerLabel = computed(() => {
 // Dialog state
 const editDialog = ref(null);
 const isEditDialogOpen = ref(false);
+const isLeaveDialogOpen = ref(false);
 const isUpdatingVisibility = ref(false);
 const { listActionItems, listActionsInfoText } = useListActionItems({
   listRef: currentList,
@@ -143,8 +144,8 @@ async function leaveCurrentList() {
   if (!currentList.value?.id) {
     return;
   }
-  await leavePublicList(currentList.value.id);
   await refreshListParticipants();
+  isLeaveDialogOpen.value = true;
 }
 
 function loginToJoin() {
@@ -242,6 +243,12 @@ watch(
     ref="editDialog" 
     v-model="isEditDialogOpen"
     v-model:list="currentList" 
+  />
+  <leave-list-dialog
+    v-model="isLeaveDialogOpen"
+    :list="currentList"
+    :participants="listParticipants"
+    @left="refreshListParticipants"
   />
   <list-info
     :list="currentList"

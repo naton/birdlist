@@ -19,7 +19,13 @@ export function useListPermissions(listRef) {
     () => isPublicCurrentList.value && !isListOwner.value && !isJoinedCurrentList.value && isUserLoggedIn.value
   );
   const canLeaveCurrentList = computed(
-    () => isPublicCurrentList.value && !isListOwner.value && isJoinedCurrentList.value
+    () =>
+      Boolean(listRef.value?.id) &&
+      (
+        isListOwner.value ||
+        (!isPublicCurrentList.value && isUserLoggedIn.value) ||
+        (isPublicCurrentList.value && !isListOwner.value && isJoinedCurrentList.value)
+      )
   );
   const mustLoginToJoin = computed(
     () => isPublicCurrentList.value && !isListOwner.value && !isUserLoggedIn.value

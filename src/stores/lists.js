@@ -4,7 +4,12 @@ import { defineStore, storeToRefs } from "pinia";
 import { db } from "../db";
 import { liveQuery } from "dexie";
 import { getTiedRealmId } from "dexie-cloud-addon";
-import { deleteListRemotely, setListVisibility } from "../helpers";
+import {
+  deleteListRemotely,
+  leavePublicListRemotely,
+  setListVisibility,
+  unsubscribeFromListNotifications,
+} from "../helpers";
 import { getBirdLatinName, getBirdStorageName } from "@/birdNames.js";
 import { useSettingsStore } from "./settings";
 import { useMessagesStore } from "./messages";
@@ -22,6 +27,7 @@ export const useListsStore = defineStore("list", () => {
 
   const allLists = ref([]);
   const joinedListIds = ref([]);
+  const hiddenListIds = ref([]);
   let joinedListsSubscription = null;
 
   function addAlias(aliases, value) {
@@ -68,6 +74,10 @@ export const useListsStore = defineStore("list", () => {
     return user.email || user.userId || user.name || "";
   }
 
+  function getPrivateListRealmId(list) {
+    return String(list?.privateRealmId || getTiedRealmId(list?.id || "") || list?.realmId || "").trim();
+  }
+
   function isOwnedByCurrentUser(list) {
     if (!list?.owner) {
       return false;
@@ -85,6 +95,10 @@ export const useListsStore = defineStore("list", () => {
 
   function canWriteToList(list) {
     if (!list) {
+      return false;
+    }
+
+    if (hiddenListIds.value.includes(String(list.id))) {
       return false;
     }
 
@@ -137,6 +151,7 @@ export const useListsStore = defineStore("list", () => {
       if (!joinedListIds.value.includes(normalizedListId)) {
         joinedListIds.value.push(normalizedListId);
       }
+      hiddenListIds.value = hiddenListIds.value.filter((id) => id !== normalizedListId);
 
       addMessage(t("List_Joined"));
       return true;
@@ -208,6 +223,7 @@ export const useListsStore = defineStore("list", () => {
       if (!listId) {
         continue;
       }
+      hiddenListIds.value = hiddenListIds.value.filter((id) => id !== listId);
 
       const existingRows = await db.joinedLists
         .where("[userId+listId]")
@@ -254,7 +270,9 @@ export const useListsStore = defineStore("list", () => {
   const allMineLists = computed(
     () =>
       allLists.value?.filter(
-        (list) => !isPublicList(list) || isOwnedByCurrentUser(list) || isJoinedList(list.id)
+        (list) =>
+          !hiddenListIds.value.includes(String(list.id)) &&
+          (!isPublicList(list) || isOwnedByCurrentUser(list) || isJoinedList(list.id))
       ) || []
   );
   const allPublicLists = computed(
@@ -420,13 +438,16 @@ export const useListsStore = defineStore("list", () => {
     addMessage(t("Checklist_Created") + ": <b>" + list.title + "</b>");
   }
 
-  async function deleteList(listId) {
+  async function deleteList(listId, options = {}) {
     let deleteRelatedObservations = false;
     const listToDelete = allLists.value?.find((list) => String(list.id) === String(listId));
     const isPublicTargetList = isPublicList(listToDelete);
-  
-    if (confirm(t("Are_You_Sure_You_Want_To_Delete_This_List"))) {
-      deleteRelatedObservations = confirm(t("Delete_The_Lists_Observations_As_Well"));
+    const shouldConfirm = options.confirm !== false;
+
+    if (!shouldConfirm || confirm(t("Are_You_Sure_You_Want_To_Delete_This_List"))) {
+      deleteRelatedObservations = options.deleteRelatedObservations ?? (
+        shouldConfirm ? confirm(t("Delete_The_Lists_Observations_As_Well")) : false
+      );
 
       if (isPublicTargetList) {
         const result = await deleteListRemotely(listId, deleteRelatedObservations);
@@ -441,6 +462,11 @@ export const useListsStore = defineStore("list", () => {
           if (deleteRelatedObservations) {
             // Delete possible observations:
             db.observations.where({ listId: listId }).delete();
+          } else {
+            db.observations.where({ listId: listId }).modify((observation) => {
+              observation.listId = null;
+              observation.realmId = observation.owner || getPreferredOwnerAlias() || null;
+            });
           }
           // Delete comments tied to list:
           db.comments.where({ listId: listId }).delete();
@@ -465,18 +491,164 @@ export const useListsStore = defineStore("list", () => {
     }
   }
 
+  async function detachCurrentUserObservationsFromList(list) {
+    const listId = String(list?.id || "").trim();
+    if (!listId) {
+      return 0;
+    }
+
+    const aliases = new Set(getCurrentOwnerAliases());
+    const fallbackRealmId = getPreferredOwnerAlias() || null;
+    let detachedCount = 0;
+
+    await db.observations.where({ listId }).modify((observation) => {
+      if (!aliases.has(String(observation?.owner || "").trim())) {
+        return;
+      }
+
+      observation.listId = null;
+      observation.realmId = observation.owner || fallbackRealmId;
+      detachedCount += 1;
+    });
+
+    return detachedCount;
+  }
+
+  async function removeCurrentUserPrivateMembership(list) {
+    const realmId = getPrivateListRealmId(list);
+    if (!realmId) {
+      return 0;
+    }
+
+    const aliases = new Set(getCurrentOwnerAliases());
+    const memberRows = await db.members.where({ realmId }).toArray();
+    const memberIds = memberRows
+      .filter((member) =>
+        aliases.has(String(member?.email || "").trim()) ||
+        aliases.has(String(member?.userId || "").trim())
+      )
+      .map((member) => member.id)
+      .filter(Boolean);
+
+    if (memberIds.length > 0) {
+      await db.members.bulkDelete(memberIds);
+    }
+
+    return memberIds.length;
+  }
+
+  async function removeCurrentUserPublicJoin(listId) {
+    const userId = currentUser.value?.userId;
+    if (!userId || userId === "unauthorized") {
+      return 0;
+    }
+
+    const existing = await db.joinedLists.where("[userId+listId]").equals([userId, String(listId)]).toArray();
+    if (existing.length > 0) {
+      await db.joinedLists.bulkDelete(existing.map((item) => item.id).filter(Boolean));
+    }
+    joinedListIds.value = joinedListIds.value.filter((id) => id !== String(listId));
+    return existing.length;
+  }
+
+  async function leaveList(listId, options = {}) {
+    const normalizedListId = String(listId || "").trim();
+    const list = allLists.value?.find((item) => String(item.id) === normalizedListId);
+    if (!list) {
+      return {
+        success: false,
+        message: t("List_Leave_Failed"),
+      };
+    }
+
+    const isOwner = isOwnedByCurrentUser(list);
+    const isPublicTargetList = isPublicList(list);
+    const newOwner = String(options.newOwner || "").trim();
+
+    try {
+      await unsubscribeFromListNotifications(normalizedListId);
+
+      if (isPublicTargetList) {
+        const result = await leavePublicListRemotely(normalizedListId, getCurrentOwnerAliases(), newOwner);
+        if (!result?.success) {
+          return result;
+        }
+
+        await detachCurrentUserObservationsFromList(list);
+        await removeCurrentUserPublicJoin(normalizedListId);
+        if (isOwner && newOwner) {
+          await db.lists.update(normalizedListId, { owner: newOwner });
+          if (currentList.value?.id === normalizedListId) {
+            currentList.value.owner = newOwner;
+          }
+        }
+      } else {
+        await detachCurrentUserObservationsFromList(list);
+        if (isOwner && newOwner) {
+          await db.lists.update(normalizedListId, { owner: newOwner });
+          if (currentList.value?.id === normalizedListId) {
+            currentList.value.owner = newOwner;
+          }
+        } else if (!isOwner) {
+          await removeCurrentUserPrivateMembership(list);
+        }
+      }
+
+      hiddenListIds.value = [...new Set([...hiddenListIds.value, normalizedListId])];
+      if (lastUsedList.value?.id === normalizedListId) {
+        lastUsedList.value = null;
+      }
+      if (currentList.value?.id === normalizedListId) {
+        currentList.value = null;
+      }
+      router.push({ name: "lists" });
+      addMessage(t("List_Left"));
+      return { success: true };
+    } catch (error) {
+      console.error("Failed to leave list.", error);
+      return {
+        success: false,
+        message: t("List_Leave_Failed"),
+      };
+    }
+  }
+
+  function getMemberIdentity(member) {
+    return String(member?.email || member?.userId || "").trim();
+  }
+
+  function isActiveMember(member) {
+    return getMemberIdentity(member) && member?.accepted !== false && member?.rejected !== true;
+  }
+
   async function getMembersByListId(listId) {
-    const realmId = getTiedRealmId(listId);
+    const list = allLists.value?.find((item) => String(item.id) === String(listId));
+    const realmId = getPrivateListRealmId(list || { id: listId });
     return await db.members.where({ realmId }).toArray();
   }
 
   async function getListMembers(listId) {
     const members = await getMembersByListId(listId);
-    // add myself
-    members.push({ email: currentUser.value.email, accepted: true });
-    // filter accepted members and remove duplicates
-    return members.filter((member, index, self) => 
-      self.findIndex(m => m.email === member.email && m.email) === index && member.accepted)
+    members.push({
+      email: currentUser.value.email || currentUser.value.userId,
+      userId: currentUser.value.userId,
+      accepted: true,
+    });
+
+    const seen = new Set();
+    return members
+      .filter(isActiveMember)
+      .map((member) => ({
+        ...member,
+        email: getMemberIdentity(member),
+      }))
+      .filter((member) => {
+        if (seen.has(member.email)) {
+          return false;
+        }
+        seen.add(member.email);
+        return true;
+      })
       .sort((a, b) => a.email.localeCompare(b.email));
   }  
 
@@ -540,6 +712,7 @@ export const useListsStore = defineStore("list", () => {
     canWriteToList,
     joinPublicList,
     leavePublicList,
+    leaveList,
     acceptInvite,
     sortBy,
     getListMembers,
@@ -554,6 +727,6 @@ export const useListsStore = defineStore("list", () => {
 {
   persist: {
     key: "birdlist-lists",
-    paths: ["currentList", "lastUsedList", "currentSort", "currentListExpanded"],
+    paths: ["currentList", "lastUsedList", "currentSort", "currentListExpanded", "hiddenListIds"],
   },
 });

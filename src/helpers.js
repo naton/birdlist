@@ -244,6 +244,38 @@ async function setListVisibility(listId, makePublic) {
   }
 }
 
+async function leavePublicListRemotely(listId, ownerAliases = [], newOwner = "") {
+  const normalizedListId = normalizeListId(listId);
+  if (!normalizedListId) {
+    return {
+      success: false,
+      message: "Missing list id.",
+    };
+  }
+
+  try {
+    const response = await fetchWithTimeout(apiHost + "/api/leave-public-list", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        listId: normalizedListId,
+        ownerAliases,
+        newOwner,
+      }),
+    });
+
+    return readApiResult(response, "Failed to leave list.");
+  } catch (error) {
+    console.error("Error leaving public list.", error);
+    return {
+      success: false,
+      message: "Network error while leaving list.",
+    };
+  }
+}
+
 async function deleteListRemotely(listId, deleteObservations) {
   const normalizedListId = normalizeListId(listId);
   if (!normalizedListId) {
@@ -499,6 +531,7 @@ export {
   unsubscribeFromListNotifications,
   isListNotificationsEnabled,
   setListVisibility,
+  leavePublicListRemotely,
   deleteListRemotely,
   savePublicObservation,
   getPublicListParticipants,

@@ -588,16 +588,26 @@ async function deleteListEverywhere(listId, deleteObservations = false) {
   }
 
   const [observations, comments, joinedLinks] = await Promise.all([
-    deleteObservations ? dexieGetMany('observations', { listId }) : Promise.resolve([]),
+    dexieGetMany('observations', { listId }),
     dexieGetMany('comments', { listId }),
     dexieGetMany('joinedLists', { listId }).catch(() => []),
   ]);
 
   await Promise.all([
     dexieDeleteById('lists', listId),
-    ...observations.filter((observation) => observation?.id).map((observation) => dexieDeleteById('observations', observation.id)),
+    ...(deleteObservations
+      ? observations.filter((observation) => observation?.id).map((observation) => dexieDeleteById('observations', observation.id))
+      : [dexieUpsertMany(
+          'observations',
+          observations.map((observation) => ({
+            ...observation,
+            listId: null,
+            realmId: observation.owner || null,
+          }))
+        )]),
     ...comments.filter((comment) => comment?.id).map((comment) => dexieDeleteById('comments', comment.id)),
     ...joinedLinks.filter((row) => row?.id).map((row) => dexieDeleteById('joinedLists', row.id)),
+    deleteSubscriptionsForList(listId),
   ]);
 
   const sourceRealmId = String(list.realmId || '').trim();
@@ -615,9 +625,82 @@ async function deleteListEverywhere(listId, deleteObservations = false) {
 
   return {
     listId,
-    deletedObservations: observations.length,
+    deletedObservations: deleteObservations ? observations.length : 0,
+    detachedObservations: deleteObservations ? 0 : observations.length,
     deletedComments: comments.length,
     deletedJoinedLinks: joinedLinks.length,
+  };
+}
+
+async function leavePublicList(payload) {
+  const listId = normalizeListId(payload?.listId);
+  const ownerAliases = Array.isArray(payload?.ownerAliases)
+    ? payload.ownerAliases.map((value) => String(value || '').trim()).filter(Boolean)
+    : [];
+  const newOwner = String(payload?.newOwner || '').trim();
+
+  if (!listId) {
+    return { error: 'List id is required.' };
+  }
+
+  if (ownerAliases.length === 0) {
+    return { error: 'User identity is required.' };
+  }
+
+  const list = await dexieGetById('lists', listId);
+  if (!list) {
+    return { error: 'List not found.', status: 404 };
+  }
+
+  if (String(list.realmId || '').trim() !== PUBLIC_REALM_ID) {
+    return { error: 'List is not open.', status: 400 };
+  }
+
+  const aliasSet = new Set(ownerAliases);
+  const isOwner = aliasSet.has(String(list.owner || '').trim());
+  const [observations, joinedLinks] = await Promise.all([
+    dexieGetMany('observations', { listId }),
+    dexieGetMany('joinedLists', { listId }).catch(() => []),
+  ]);
+
+  if (isOwner && !newOwner) {
+    return { error: 'A new owner is required.', status: 400 };
+  }
+
+  if (isOwner && newOwner) {
+    const participants = uniquePublicListParticipants(list, joinedLinks);
+    if (!participants.includes(newOwner)) {
+      return { error: 'The new owner must be on the list.', status: 400 };
+    }
+  }
+
+  const ownerObservations = observations.filter((observation) =>
+    aliasSet.has(String(observation?.owner || '').trim())
+  );
+  const joinedRowsToDelete = joinedLinks.filter((row) =>
+    aliasSet.has(String(row?.userId || '').trim())
+  );
+
+  await Promise.all([
+    ...(isOwner && newOwner ? [dexieUpsertMany('lists', [{ ...list, owner: newOwner }])] : []),
+    ...(ownerObservations.length
+      ? [dexieUpsertMany(
+          'observations',
+          ownerObservations.map((observation) => ({
+            ...observation,
+            listId: null,
+            realmId: observation.owner || null,
+          }))
+        )]
+      : []),
+    ...joinedRowsToDelete.filter((row) => row?.id).map((row) => dexieDeleteById('joinedLists', row.id)),
+  ]);
+
+  return {
+    listId,
+    detachedObservations: ownerObservations.length,
+    removedJoinedLinks: joinedRowsToDelete.length,
+    newOwner: isOwner ? newOwner : '',
   };
 }
 
@@ -772,6 +855,25 @@ async function triggerPush(subscription, dataToSend) {
     console.log('Failed to send push to subscription:', err.message || err);
     return { sent: false, removed: false };
   }
+}
+
+async function deleteSubscriptionsForList(listId) {
+  const normalizedListId = normalizeListId(listId);
+  if (!normalizedListId) {
+    return 0;
+  }
+
+  const subscriptions = await getSubscriptionsFromDatabase();
+  const targets = subscriptions.filter((item) => normalizeListId(item.listId) === normalizedListId);
+
+  await Promise.all(
+    targets
+      .map(getSubscriptionRecordId)
+      .filter(Boolean)
+      .map((subscriptionId) => deleteSubscriptionFromDatabase(subscriptionId))
+  );
+
+  return targets.length;
 }
 
 async function sendPushToList(listId, message) {
@@ -1066,6 +1168,35 @@ app.post('/api/delete-list', async (req, res) => {
       error: {
         id: 'unable-to-delete-list',
         message: `Failed to delete list: ${err.message}`,
+      },
+    });
+  }
+});
+
+app.post('/api/leave-public-list', async (req, res) => {
+  try {
+    const result = await leavePublicList(req.body);
+    if (result?.error) {
+      res.status(result.status || 400).json({
+        error: {
+          id: 'unable-to-leave-public-list',
+          message: result.error,
+        },
+      });
+      return;
+    }
+
+    res.status(200).json({
+      data: {
+        success: true,
+        ...result,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: {
+        id: 'unable-to-leave-public-list',
+        message: `Failed to leave list: ${err.message}`,
       },
     });
   }

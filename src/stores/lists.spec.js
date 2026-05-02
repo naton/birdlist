@@ -30,9 +30,19 @@ function createMockContext() {
         state[tableName] = state[tableName].filter((row) => !matchesQuery(row, query));
       },
       async modify(changes) {
-        state[tableName] = state[tableName].map((row) =>
-          matchesQuery(row, query) ? { ...row, ...changes } : row
-        );
+        state[tableName] = state[tableName].map((row) => {
+          if (!matchesQuery(row, query)) {
+            return row;
+          }
+
+          if (typeof changes === "function") {
+            const nextRow = { ...row };
+            changes(nextRow);
+            return nextRow;
+          }
+
+          return { ...row, ...changes };
+        });
       },
     };
   }
@@ -118,6 +128,10 @@ function createMockContext() {
       async bulkAdd(rows) {
         state.members.push(...rows);
       },
+      async bulkDelete(ids) {
+        const idSet = new Set(ids);
+        state.members = state.members.filter((row) => !idSet.has(row.id));
+      },
     },
     realms: {
       async put(row) {
@@ -135,7 +149,9 @@ function createMockContext() {
     route: { params: { id: "" } },
     pushSpy: vi.fn(),
     deleteListRemotelySpy: vi.fn(),
+    leavePublicListRemotelySpy: vi.fn(),
     setListVisibilitySpy: vi.fn(),
+    unsubscribeFromListNotificationsSpy: vi.fn().mockResolvedValue(true),
     addMessageSpy: vi.fn(),
     currentUserRef: ref({
       userId: "user-1",
@@ -183,7 +199,9 @@ async function loadStoreWithMocks(ctx) {
   }));
   vi.doMock("../helpers", () => ({
     deleteListRemotely: (...args) => ctx.deleteListRemotelySpy(...args),
+    leavePublicListRemotely: (...args) => ctx.leavePublicListRemotelySpy(...args),
     setListVisibility: (...args) => ctx.setListVisibilitySpy(...args),
+    unsubscribeFromListNotifications: (...args) => ctx.unsubscribeFromListNotificationsSpy(...args),
   }));
   vi.doMock("../db", () => ({ db: ctx.db }));
   vi.doMock("./messages", async () => {
@@ -529,5 +547,144 @@ describe("lists store", () => {
       }),
     ]);
     expect(store.canWriteToList(ctx.state.lists[0])).toBe(true);
+  });
+
+  it("leaves a public joined list by detaching own observations and removing the join", async () => {
+    const ctx = createMockContext();
+    ctx.state.lists = [
+      {
+        id: "public-1",
+        title: "Public",
+        owner: "owner-1",
+        realmId: "rlm-public",
+        updated: new Date("2026-01-03"),
+      },
+    ];
+    ctx.state.observations = [
+      { id: "obs-1", listId: "public-1", owner: "user@example.com", realmId: "rlm-public" },
+      { id: "obs-2", listId: "public-1", owner: "someone@example.com", realmId: "rlm-public" },
+    ];
+    ctx.state.joinedLists = [{ id: "jn-1", userId: "user-1", listId: "public-1" }];
+    ctx.leavePublicListRemotelySpy.mockResolvedValue({ success: true, data: {} });
+
+    const useListsStore = await loadStoreWithMocks(ctx);
+    const store = useListsStore();
+    await flushLiveQuery();
+
+    await expect(store.leaveList("public-1")).resolves.toMatchObject({ success: true });
+
+    expect(ctx.unsubscribeFromListNotificationsSpy).toHaveBeenCalledWith("public-1");
+    expect(ctx.leavePublicListRemotelySpy).toHaveBeenCalledWith(
+      "public-1",
+      expect.arrayContaining(["user@example.com"]),
+      ""
+    );
+    expect(ctx.state.observations.find((row) => row.id === "obs-1")).toMatchObject({
+      listId: null,
+      realmId: "user@example.com",
+    });
+    expect(ctx.state.observations.find((row) => row.id === "obs-2")).toMatchObject({
+      listId: "public-1",
+    });
+    expect(ctx.state.joinedLists.find((row) => row.listId === "public-1")).toBeUndefined();
+    expect(ctx.pushSpy).toHaveBeenCalledWith({ name: "lists" });
+  });
+
+  it("leaves a private shared list by detaching own observations and removing membership", async () => {
+    const ctx = createMockContext();
+    ctx.state.lists = [
+      {
+        id: "private-1",
+        title: "Private",
+        owner: "owner-1",
+        realmId: "realm-private-1",
+        privateRealmId: "realm-private-1",
+        updated: new Date("2026-01-03"),
+      },
+    ];
+    ctx.state.observations = [
+      { id: "obs-1", listId: "private-1", owner: "user@example.com", realmId: "realm-private-1" },
+      { id: "obs-2", listId: "private-1", owner: "owner-1", realmId: "realm-private-1" },
+    ];
+    ctx.state.members = [
+      { id: "mem-1", realmId: "realm-private-1", email: "user@example.com", accepted: true },
+      { id: "mem-2", realmId: "realm-private-1", email: "other@example.com", accepted: true },
+    ];
+
+    const useListsStore = await loadStoreWithMocks(ctx);
+    const store = useListsStore();
+    await flushLiveQuery();
+
+    await expect(store.leaveList("private-1")).resolves.toMatchObject({ success: true });
+
+    expect(ctx.state.observations.find((row) => row.id === "obs-1")).toMatchObject({
+      listId: null,
+      realmId: "user@example.com",
+    });
+    expect(ctx.state.observations.find((row) => row.id === "obs-2")).toMatchObject({
+      listId: "private-1",
+    });
+    expect(ctx.state.members.find((row) => row.id === "mem-1")).toBeUndefined();
+    expect(ctx.state.members.find((row) => row.id === "mem-2")).toBeTruthy();
+    expect(store.canWriteToList(ctx.state.lists[0])).toBe(false);
+  });
+
+  it("transfers list ownership when the owner leaves", async () => {
+    const ctx = createMockContext();
+    ctx.state.lists = [
+      {
+        id: "private-1",
+        title: "Private",
+        owner: "user@example.com",
+        realmId: "realm-private-1",
+        privateRealmId: "realm-private-1",
+        updated: new Date("2026-01-03"),
+      },
+    ];
+    ctx.state.observations = [
+      { id: "obs-1", listId: "private-1", owner: "user@example.com", realmId: "realm-private-1" },
+    ];
+
+    const useListsStore = await loadStoreWithMocks(ctx);
+    const store = useListsStore();
+    await flushLiveQuery();
+
+    await expect(store.leaveList("private-1", { newOwner: "friend@example.com" })).resolves.toMatchObject({
+      success: true,
+    });
+
+    expect(ctx.state.lists[0].owner).toBe("friend@example.com");
+    expect(ctx.state.observations[0]).toMatchObject({
+      listId: null,
+      realmId: "user@example.com",
+    });
+    expect(store.canWriteToList(ctx.state.lists[0])).toBe(false);
+  });
+
+  it("includes active private members even when accepted is missing", async () => {
+    const ctx = createMockContext();
+    ctx.state.lists = [
+      {
+        id: "private-1",
+        title: "Private",
+        owner: "user@example.com",
+        realmId: "realm-private-1",
+        privateRealmId: "realm-private-1",
+        updated: new Date("2026-01-03"),
+      },
+    ];
+    ctx.state.members = [
+      { id: "mem-1", realmId: "realm-private-1", userId: "friend@example.com" },
+      { id: "mem-2", realmId: "realm-private-1", email: "pending@example.com", accepted: false },
+    ];
+
+    const useListsStore = await loadStoreWithMocks(ctx);
+    const store = useListsStore();
+    await flushLiveQuery();
+
+    await expect(store.getListMembers("private-1")).resolves.toEqual([
+      expect.objectContaining({ email: "friend@example.com" }),
+      expect.objectContaining({ email: "user@example.com" }),
+    ]);
   });
 });
