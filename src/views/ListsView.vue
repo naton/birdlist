@@ -158,14 +158,11 @@ watch(
 
             <ul v-if="visibleLists?.length" class="list">
               <li v-for="list in visibleLists" :key="list.id" class="list-item">
-                <lists-icon />
+                <check-icon v-if="list.type === 'checklist'" />
+                <bingo-icon v-else-if="list.type === 'bingo'" />
+                <streak-icon v-else-if="list.type === 'birdstreak'" />
+                <normal-icon v-else />
                 <router-link :to="{ name: 'list', params: { id: list.id } }" @click="selectList(list)" class="list-name">{{ list.title }}</router-link>
-                <div>
-                  <check-icon v-if="list.type === 'checklist'" />
-                  <bingo-icon v-else-if="list.type === 'bingo'" />
-                  <streak-icon v-else-if="list.type === 'birdstreak'" />
-                  <normal-icon v-else />
-                </div>
                 <div class="list-members">
                   <transition name="fade-in">
                     <div v-if="listMembersLoaded && list.members?.length > 1">

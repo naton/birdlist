@@ -39,6 +39,7 @@ const { getFriendlyName } = friendsStore;
 const emit = defineEmits(["delete"]);
 
 const currentObservation = defineModel();
+const expanded = defineModel("expanded", { default: true });
 const isDialogOpen = ref(false);
 const isEditing = ref(false);
 const birdDetails = ref(null);
@@ -263,7 +264,6 @@ defineExpose({
     <div v-else>
       <label for="obs-name">{{ t("Change_Name") }}</label>
       <p class="current-species">{{ birdName(editDraft) }}</p>
-      <p v-if="latinName" class="latin-name">{{ t("Latin_Name") }}: {{ latinName }}</p>
       <vue3-simple-typeahead
         id="obs-name"
         :placeholder="t('Select_Bird')"
@@ -278,7 +278,7 @@ defineExpose({
       <p class="latin-name" :title="t('Latin_Name')">{{ latinName }}</p>
     </template>
     
-    <details v-if="!isEditing && (birdDetailsLoading || birdDetails)" class="full-width bird-details margin-bottom">
+    <details v-if="!isEditing && (birdDetailsLoading || birdDetails)" class="full-width bird-details" :open="expanded" @click.prevent="expanded = !expanded">
       <p v-if="birdDetailsLoading">...</p>
       <template v-else>
         <img v-if="firstBirdImage" :src="firstBirdImage" :alt="birdName(activeObservation)" loading="lazy" />
@@ -440,7 +440,8 @@ button[disabled] {
 .bird-details {
   display: grid;
   grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
-  gap: 1rem;
+  gap: 0.5rem;
+  margin-block: 0.25rem 1rem;
   align-items: start;
 }
 

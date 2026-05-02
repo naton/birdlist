@@ -353,7 +353,7 @@ select {
 .grid {
   display: grid;
   gap: 0.5rem 1rem;
-  grid-template-columns: 1rem 1fr;
+  grid-template-columns: auto 1fr;
   grid-auto-rows: auto;
   align-items: center;
 }
@@ -388,10 +388,12 @@ select {
   justify-content: space-between;
   gap: 0.5rem;
   flex-wrap: wrap;
+  z-index: 1000;
 }
 
 .buttons > * {
   flex: 1 1 auto;
+  outline: 3px solid;
 }
 
 .inline-form {
