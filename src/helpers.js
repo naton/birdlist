@@ -410,15 +410,22 @@ async function getPublicListParticipants(listId) {
   }
 }
 
-function pushNewBirdAlert(msg) {
-  return fetch(apiHost + "/api/push", {
+async function pushNewBirdAlert(msg) {
+  const response = await fetch(apiHost + "/api/push", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(msg),
-  }).then((data) => console.log(data));
+  });
+
+  if (!response.ok) {
+    throw new Error(`Push request failed with status ${response.status}`);
+  }
+
+  return response;
 }
+
 function getMonthName(month, length) {
   const date = new Date();
   date.setDate(1);
