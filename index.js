@@ -238,6 +238,7 @@ function sanitizePublicObservationPayload(payload) {
     return { error: 'Body must include { observation }.' };
   }
 
+  const id = String(observation.id || '').trim();
   const listId = normalizeListId(observation.listId);
   const name = String(observation.name || '').trim();
   const owner = String(observation.owner || '').trim();
@@ -266,7 +267,7 @@ function sanitizePublicObservationPayload(payload) {
   return {
     ownerAliases: uniqueOwnerAliases,
     observation: {
-      id: makePublicObservationId(),
+      id: id || makePublicObservationId(),
       name,
       owner: uniqueOwnerAliases[0],
       date: toDexieCloudDate(observation.date),
@@ -274,6 +275,7 @@ function sanitizePublicObservationPayload(payload) {
       listId,
       ...(location ? { location } : {}),
       ...(latinName ? { latinName } : {}),
+      ...(typeof observation.locked === 'boolean' ? { locked: observation.locked } : {}),
     },
   };
 }

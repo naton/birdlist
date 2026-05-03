@@ -334,6 +334,79 @@ describe("observations store", () => {
     expect(ctx.state.lists[1].updated).toBeInstanceOf(Date);
   });
 
+  it("moves an observation into a shared list even when list metadata is read-only", async () => {
+    const ctx = createMockContext();
+    ctx.state.lists = [
+      { id: "list-1", realmId: "realm-1", updated: new Date("2026-01-01") },
+      { id: "list-2", realmId: "realm-2", updated: new Date("2026-01-01") },
+    ];
+    ctx.allListsRef.value = ctx.state.lists;
+    ctx.state.observations = [
+      {
+        id: "obs-1",
+        name: "Mallard",
+        latinName: "Anas platyrhynchos",
+        date: new Date("2026-04-05"),
+        listId: null,
+        realmId: "user-1",
+        owner: "user-1",
+      },
+    ];
+    ctx.db.lists.update = vi.fn().mockRejectedValue(new Error("Permission denied"));
+    const useObservationsStore = await loadStoreWithMocks(ctx);
+    const store = useObservationsStore();
+    await flushLiveQuery();
+
+    await expect(store.saveObservation({
+      ...ctx.state.observations[0],
+      listId: "list-2",
+      previousListId: null,
+    })).resolves.toBe(true);
+
+    expect(ctx.state.observations[0]).toMatchObject({
+      listId: "list-2",
+      realmId: "realm-2",
+    });
+  });
+
+  it("saves observation edits to public lists through the trusted API", async () => {
+    const ctx = createMockContext();
+    ctx.state.lists = [
+      { id: "list-1", realmId: "realm-1", updated: new Date("2026-01-01") },
+      { id: "public-list-1", realmId: "rlm-public", updated: new Date("2026-01-01") },
+    ];
+    ctx.allListsRef.value = ctx.state.lists;
+    ctx.state.observations = [
+      {
+        id: "obs-1",
+        name: "Mallard",
+        latinName: "Anas platyrhynchos",
+        date: new Date("2026-04-05"),
+        listId: "list-1",
+        realmId: "realm-1",
+        owner: "user-1",
+      },
+    ];
+    const useObservationsStore = await loadStoreWithMocks(ctx);
+    const store = useObservationsStore();
+    await flushLiveQuery();
+
+    await expect(store.saveObservation({
+      ...ctx.state.observations[0],
+      listId: "public-list-1",
+      previousListId: "list-1",
+    })).resolves.toBe(true);
+
+    expect(ctx.savePublicObservationSpy).toHaveBeenCalledWith(expect.objectContaining({
+      id: "obs-1",
+      listId: "public-list-1",
+      realmId: "rlm-public",
+      owner: "user-1",
+      ownerAliases: expect.arrayContaining(["user-1", "User One", "user@example.com"]),
+    }));
+    expect(ctx.db.cloud.sync).toHaveBeenCalledWith({ wait: true });
+  });
+
   it("removes an observation from lists when no special list is selected", async () => {
     const ctx = createMockContext();
     ctx.state.lists = [{ id: "list-1", realmId: "realm-1", updated: new Date("2026-01-01") }];

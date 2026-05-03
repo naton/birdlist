@@ -155,6 +155,17 @@ export const useObservationsStore = defineStore(
       return allListObservations.value.filter((obs) => getBirdKey(obs) === birdKey).length === 0;
     }
 
+    async function touchListsUpdated(listIds = []) {
+      const updated = new Date();
+      for (const listId of new Set(listIds.filter(Boolean))) {
+        try {
+          await db.lists.update(listId, { updated });
+        } catch (error) {
+          console.warn(`Skipping list timestamp update for ${listId}.`, error);
+        }
+      }
+    }
+
     let pushTimer = null;
 
     async function addObservation(bird, location) {
@@ -258,7 +269,7 @@ export const useObservationsStore = defineStore(
       const hasSavedAtLeastOne = await addSingleObservation(bird);
 
       if (hasSavedAtLeastOne && currentList.value && !isPublicList(currentList.value)) {
-        await db.lists.where({ id: currentList.value.id }).modify({ updated: new Date() });
+        await touchListsUpdated([currentList.value.id]);
       }
 
       return hasSavedAtLeastOne;
@@ -286,14 +297,33 @@ export const useObservationsStore = defineStore(
       } else if (obs.name) {
         payload.name = normalizeBirdName(obs.name) ? obs.name.trim() : payload.name;
       }
-      await db.transaction("rw", [db.lists, db.observations], async () => {
-        await db.observations.update(obs, payload);
-        const updated = new Date();
-        const listIdsToTouch = new Set([previousListId, targetList?.id].filter(Boolean));
-        for (const listId of listIdsToTouch) {
-          await db.lists.update(listId, { updated });
+      if (targetList && isPublicList(targetList)) {
+        const ownerAliases = getCurrentUserAliases();
+        const result = await savePublicObservation({
+          ...payload,
+          id: obs.id,
+          owner: ownerAliases[0] || ownerRealmId || "unauthorized",
+          ownerAliases,
+        });
+
+        if (!result?.success) {
+          addMessage(result?.message || t("Failed_To_Save_Observation"));
+          return false;
         }
+
+        if (typeof db.cloud?.sync === "function") {
+          await db.cloud.sync({ wait: true });
+        }
+
+        return true;
+      }
+
+      await db.transaction("rw", [db.observations], async () => {
+        await db.observations.update(obs, payload);
       });
+
+      await touchListsUpdated([previousListId, targetList?.id]);
+      return true;
     }
 
     async function lockObservation(obsId, allObservationsInGroup) {
