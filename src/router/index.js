@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
+import ObservationLayout from "../views/ObservationLayout.vue";
 import ListsRouteShell from "../features/lists/components/ListsRouteShell.vue";
 import MonthlyList from "../views/lists/MonthlyList.vue";
 
@@ -16,7 +16,7 @@ const router = createRouter({
     {
       path: "/home",
       name: "home",
-      component: HomeView,
+      component: ObservationLayout,
       children: [
         {
           path: "/lists",
