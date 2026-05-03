@@ -20,12 +20,10 @@ const { addObservation, deleteObservation } = observationsStore;
 
 const listsStore = useListsStore();
 const { canWriteToList } = listsStore;
-const { currentList } = storeToRefs(listsStore);
+const { currentList, currentListExpanded } = storeToRefs(listsStore);
 
 const canAddObservation = computed(() => route.name !== "list" || canWriteToList(currentList.value));
-
 const modal = ref();
-
 const currentObservation = ref(null);
 
 function openModal(obs) {

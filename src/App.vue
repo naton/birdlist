@@ -62,9 +62,11 @@ function prefetchListsRoute() {
   <app-messages />
   <main class="main">
     <invites-list />
-    <router-view v-slot="{ Component }">
+    <router-view v-slot="{ Component, route }">
       <transition name="slide-fade">
-        <component :is="Component" />
+        <div :key="route.path" class="route-frame">
+          <component :is="Component" />
+        </div>
       </transition>
     </router-view>
   </main>
@@ -96,6 +98,14 @@ function prefetchListsRoute() {
 </template>
 
 <style>
+.main {
+  position: relative;
+}
+
+.route-frame {
+  min-width: 100%;
+}
+
 .slide-fade-enter-active,
 .slide-fade-leave-active {
   position: absolute;
@@ -104,9 +114,8 @@ function prefetchListsRoute() {
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  transform: scale(1.02);
+  transform: scale(1.01);
   opacity: 0.1;
-  z-index: 2;
 }
 
 .nav.main-nav {
