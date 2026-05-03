@@ -70,6 +70,7 @@ const {
 const {
   isSubscribedToNotifications,
   isNotificationToggleBusy,
+  hasLoadedNotificationStatus,
   refreshNotificationSubscriptionState,
   toggleListNotificationSubscription,
 } = useListNotifications(currentList, { isPremiumUser });
@@ -109,6 +110,7 @@ const { listActionItems, listActionsInfoText } = useListActionItems({
   notifications: {
     isSubscribedToNotifications,
     isNotificationToggleBusy,
+    hasLoadedNotificationStatus,
   },
   isUpdatingVisibility,
 });

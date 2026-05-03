@@ -31,12 +31,14 @@ export function useListActionItems({
     {
       key: "subscribe",
       event: "toggle-notifications",
-      label: notifications.isSubscribedToNotifications.value ? "Unsubscribe" : "Subscribe",
+      label: notifications.isSubscribedToNotifications.value
+        ? t("Disable_Notifications")
+        : t("Enable_Notifications"),
       icon: notifications.isSubscribedToNotifications.value ? "bell-filled" : "bell",
       visible: Boolean(listRef.value?.id) && (
         permissions.isListOwner.value ||
         permissions.canWriteToCurrentList.value
-      ),
+      ) && notifications.hasLoadedNotificationStatus.value,
       disabled: notifications.isNotificationToggleBusy.value,
     },
     {

@@ -13,14 +13,26 @@ export function useListNotifications(listRef, { isPremiumUser }) {
 
   const isSubscribedToNotifications = ref(false);
   const isNotificationToggleBusy = ref(false);
+  const hasLoadedNotificationStatus = ref(false);
+  let refreshRequestId = 0;
 
   async function refreshNotificationSubscriptionState() {
+    const requestId = ++refreshRequestId;
+    hasLoadedNotificationStatus.value = false;
+
     if (!listRef.value?.id || !isPremiumUser.value) {
       isSubscribedToNotifications.value = false;
+      hasLoadedNotificationStatus.value = true;
       return;
     }
 
-    isSubscribedToNotifications.value = await isListNotificationsEnabled(listRef.value.id, lang.value);
+    const isEnabled = await isListNotificationsEnabled(listRef.value.id, lang.value);
+    if (requestId !== refreshRequestId) {
+      return;
+    }
+
+    isSubscribedToNotifications.value = isEnabled;
+    hasLoadedNotificationStatus.value = true;
   }
 
   async function toggleListNotificationSubscription() {
@@ -48,6 +60,7 @@ export function useListNotifications(listRef, { isPremiumUser }) {
   return {
     isSubscribedToNotifications,
     isNotificationToggleBusy,
+    hasLoadedNotificationStatus,
     refreshNotificationSubscriptionState,
     toggleListNotificationSubscription,
   };
