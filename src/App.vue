@@ -11,7 +11,6 @@ import HomeIcon from '@/shared/icons/HomeIcon.vue'
 import ListsIcon from '@/shared/icons/ListsIcon.vue'
 import FriendsIcon from '@/shared/icons/FriendsIcon.vue'
 import SettingsIcon from '@/shared/icons/SettingsIcon.vue'
-import HelpIcon from '@/shared/icons/HelpIcon.vue'
 const InstallPrompt = defineAsyncComponent(() => import('./app/components/InstallPrompt.vue'))
 
 const settingsStore = useSettingsStore()
@@ -63,7 +62,11 @@ function prefetchListsRoute() {
   <app-messages />
   <main class="main">
     <invites-list />
-    <router-view />
+    <router-view v-slot="{ Component }">
+      <transition name="slide-fade">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </main>
   <nav class="nav main-nav">
     <router-link class="nav-link" to="/">
@@ -93,6 +96,19 @@ function prefetchListsRoute() {
 </template>
 
 <style>
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  position: absolute;
+  transition: all 0.2s ease-out;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: scale(1.02);
+  opacity: 0.1;
+  z-index: 2;
+}
+
 .nav.main-nav {
   padding: 0.25rem 0.25rem 0.5rem;
   box-shadow: 0 -4px 14px rgb(0 0 0 / 10%);

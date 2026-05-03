@@ -37,7 +37,9 @@ function openModal(obs) {
 <template>
   <div class="body">
     <router-view v-slot="{ Component, route }" @edit="openModal">
-      <component :is="Component || MonthlyList" :key="`${route.path}`" />
+      <transition name="slide-fade">
+        <component :is="Component || MonthlyList" :key="`${route.path}`" />
+      </transition>
     </router-view>
   </div>
   <div class="footer">
