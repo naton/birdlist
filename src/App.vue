@@ -1,9 +1,10 @@
 <script setup>
-import { onBeforeMount, onMounted, defineAsyncComponent } from 'vue'
+import { computed, onBeforeMount, onMounted, defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia'
-import { RouterLink, RouterView } from "vue-router";
+import { RouterLink, RouterView, useRoute } from "vue-router";
 import { useSettingsStore } from './stores/settings.js'
 import { useMessagesStore } from './stores/messages.js'
+import { useListsStore } from './stores/lists.js'
 import { loadListsView } from "./router";
 import AppMessages from './app/components/AppMessages.vue'
 import InvitesList from './app/components/InvitesList.vue'
@@ -19,6 +20,24 @@ const { lang, isUserLoggedIn } = storeToRefs(settingsStore)
 
 const messagesStore = useMessagesStore()
 const { addMessage } = messagesStore
+
+const listsStore = useListsStore();
+const { currentList } = storeToRefs(listsStore);
+
+const route = useRoute();
+
+const listsNavTarget = computed(() => {
+  if (route.name === "list" || !currentList.value?.id) {
+    return { name: "lists" };
+  }
+
+  return {
+    name: "list",
+    params: {
+      id: currentList.value.id,
+    },
+  };
+});
 
 onBeforeMount(() => {
   loadTexts(lang.value)
@@ -77,7 +96,8 @@ function prefetchListsRoute() {
     </router-link>
     <router-link
       class="nav-link"
-      to="/lists"
+      :to="listsNavTarget"
+      :class="{ current: route.name === 'lists' || route.name === 'list' }"
       @pointerenter="prefetchListsRoute"
       @focus="prefetchListsRoute"
       @touchstart.passive="prefetchListsRoute"

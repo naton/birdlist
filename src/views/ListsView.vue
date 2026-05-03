@@ -2,7 +2,7 @@
 import { db } from "../db";
 import { computed, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { RouterLink, RouterView } from 'vue-router';
+import { RouterLink, RouterView, useRoute } from 'vue-router';
 import { useObservable } from "@vueuse/rxjs";
 import { useSettingsStore } from '../stores/settings.js'
 import { useListsStore } from "@/stores/lists.js";
@@ -20,6 +20,7 @@ const emit = defineEmits(["edit"]);
 const settingsStore = useSettingsStore()
 const { t } = settingsStore
 const { isPremiumUser, isUserLoggedIn } = storeToRefs(settingsStore)
+const route = useRoute();
 
 const listsStore = useListsStore();
 const { getListMembers, acceptInvite } = listsStore;
@@ -108,6 +109,16 @@ watch(
     setTimeout(loadListMembers, 100);
   },
   { immediate: false }
+);
+
+watch(
+  () => route.name,
+  (routeName) => {
+    if (routeName === "lists") {
+      currentList.value = null;
+    }
+  },
+  { immediate: true }
 );
 </script>
 
