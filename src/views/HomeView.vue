@@ -41,7 +41,7 @@ function openModal(obs) {
     </router-view>
   </div>
   <div class="footer">
-    <edit-observation-dialog ref="modal" v-model="currentObservation" @delete="deleteObservation" />
+    <edit-observation-dialog ref="modal" v-model:observation="currentObservation" v-model:expanded="currentListExpanded" @delete="deleteObservation" />
     <observation-input @add="addObservation" :locale="locale" :disabled="!canAddObservation" :title="!canAddObservation ? t('Join_To_Contribute') : ''" />
   </div>
   <canvas id="canvas"></canvas>

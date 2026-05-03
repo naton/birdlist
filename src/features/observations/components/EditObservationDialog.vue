@@ -38,7 +38,7 @@ const { getFriendlyName } = friendsStore;
 
 const emit = defineEmits(["delete"]);
 
-const currentObservation = defineModel();
+const currentObservation = defineModel("observation");
 const expanded = defineModel("expanded", { default: true });
 const isDialogOpen = ref(false);
 const isEditing = ref(false);
@@ -278,7 +278,8 @@ defineExpose({
       <p class="latin-name" :title="t('Latin_Name')">{{ latinName }}</p>
     </template>
     
-    <details v-if="!isEditing && (birdDetailsLoading || birdDetails)" class="full-width bird-details" :open="expanded" @click.prevent="expanded = !expanded">
+    <details v-if="!isEditing && (birdDetailsLoading || birdDetails)" class="full-width bird-details" :open="expanded">
+      <summary @click="expanded = !expanded">{{ t("Details") }}</summary>
       <p v-if="birdDetailsLoading">...</p>
       <template v-else>
         <img v-if="firstBirdImage" :src="firstBirdImage" :alt="birdName(activeObservation)" loading="lazy" />
