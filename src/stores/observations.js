@@ -244,7 +244,7 @@ export const useObservationsStore = defineStore(
           if (list && !isPublicList(list)) {
             clearTimeout(pushTimer);
             pushTimer = setTimeout(() => {
-              pushNewBirdAlert({
+              void pushNewBirdAlert({
                 notification: {
                   type: "new-observation",
                   listId: list.id,
@@ -254,6 +254,8 @@ export const useObservationsStore = defineStore(
                     latinName,
                   },
                 },
+              }).catch((error) => {
+                console.error("Failed to send push alert.", error);
               });
             }, 2000);
           }
