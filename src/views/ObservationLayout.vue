@@ -37,8 +37,10 @@ function openModal(obs) {
 <template>
   <div class="body">
     <router-view v-slot="{ Component, route }" @edit="openModal">
-      <transition name="slide-fade">
-        <component :is="Component || MonthlyList" :key="`${route.path}`" />
+      <transition name="slide-fade" mode="out-in">
+        <div :key="`${route.path}`" class="body-route">
+          <component :is="Component || MonthlyList" />
+        </div>
       </transition>
     </router-view>
   </div>
@@ -50,6 +52,26 @@ function openModal(obs) {
 </template>
 
 <style>
+.body {
+  position: relative;
+}
+
+.body-route {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "body-nav"
+    "body-content";
+  min-height: 100%;
+}
+
+.body > .slide-fade-enter-active,
+.body > .slide-fade-leave-active {
+  inset: 0;
+  width: 100%;
+}
+
 .dxc-login-dlg input[type] {
   width: auto !important;
   max-width: 100%;
