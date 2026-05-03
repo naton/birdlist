@@ -243,20 +243,22 @@ export const useObservationsStore = defineStore(
           // Public-list observations are saved by the API, which also sends web push notifications.
           if (list && !isPublicList(list)) {
             clearTimeout(pushTimer);
-            pushTimer = setTimeout(() => {
-              void pushNewBirdAlert({
-                notification: {
-                  type: "new-observation",
-                  listId: list.id,
-                  listTitle: list.title || list.name || "",
-                  bird: {
-                    name: storageName,
-                    latinName,
+            pushTimer = setTimeout(async () => {
+              try {
+                await pushNewBirdAlert({
+                  notification: {
+                    type: "new-observation",
+                    listId: list.id,
+                    listTitle: list.title || list.name || "",
+                    bird: {
+                      name: storageName,
+                      latinName,
+                    },
                   },
-                },
-              }).catch((error) => {
+                });
+              } catch (error) {
                 console.error("Failed to send push alert.", error);
-              });
+              }
             }, 2000);
           }
 
