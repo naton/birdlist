@@ -110,6 +110,7 @@ function prefetchListsRoute() {
 .slide-fade-leave-active {
   position: absolute;
   transition: all 0.2s ease-out;
+  transform-origin: top center;
 }
 
 .slide-fade-enter-from,
