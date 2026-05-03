@@ -12,8 +12,6 @@ const props = defineProps({
   },
 });
 
-const expanded = defineModel("expanded", { default: true });
-
 const settingsStore = useSettingsStore();
 const { t } = settingsStore;
 </script>
@@ -30,8 +28,8 @@ const { t } = settingsStore;
             <h1 class="heading">{{ props.list?.title }}</h1>
             <slot name="header" />
         </div>
-        <details :open="expanded">
-            <summary @click="expanded = !expanded">{{ t("Details") }}</summary>
+        <details>
+            <summary>{{ t("Details") }}</summary>
             <p class="list-description">{{ props.list?.description }}</p>
             <p class="list-owner">{{ t("Created_By") }} {{ props.ownerLabel }}</p>
         </details>

@@ -27,10 +27,16 @@ describe("ListInfo", () => {
           owner: "friend@example.com",
         },
         ownerLabel: "Friend",
-        expanded: true,
       },
       slots: {
         extra: "<button class='fake-menu'>menu</button>",
+      },
+      global: {
+        stubs: {
+          RouterLink: {
+            template: "<a><slot /></a>",
+          },
+        },
       },
     });
 
@@ -39,20 +45,6 @@ describe("ListInfo", () => {
     expect(wrapper.text()).toContain("Friend");
     expect(wrapper.text()).not.toContain("friend@example.com");
     expect(wrapper.find(".fake-menu").exists()).toBe(true);
-  });
-
-  it("emits expanded model updates when toggled", async () => {
-    const ListInfo = (await import("./ListInfo.vue")).default;
-    const wrapper = mount(ListInfo, {
-      props: {
-        list: { id: "list-1", title: "My List" },
-        ownerLabel: "Me",
-        expanded: true,
-      },
-    });
-
-    await wrapper.find("details").trigger("click");
-
-    expect(wrapper.emitted("update:expanded")).toEqual([[false]]);
+    expect(wrapper.find("details").element.open).toBe(false);
   });
 });

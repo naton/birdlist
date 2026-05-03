@@ -115,6 +115,10 @@ const birdWingspan = computed(() =>
   formatMeasurement(birdDetails.value?.wingspanMin, birdDetails.value?.wingspanMax, "cm")
 );
 
+function syncExpanded(event) {
+  expanded.value = event.currentTarget.open;
+}
+
 async function loadBirdDetails() {
   const currentLatinName = latinName.value;
   const loadId = birdDetailsLoadId.value + 1;
@@ -278,8 +282,13 @@ defineExpose({
       <p class="latin-name" :title="t('Latin_Name')">{{ latinName }}</p>
     </template>
     
-    <details v-if="!isEditing && (birdDetailsLoading || birdDetails)" class="full-width bird-details" :open="expanded">
-      <summary @click="expanded = !expanded">{{ t("Details") }}</summary>
+    <details
+      v-if="!isEditing && (birdDetailsLoading || birdDetails)"
+      class="full-width bird-details"
+      :open="expanded"
+      @toggle.self="syncExpanded"
+    >
+      <summary>{{ t("Details") }}</summary>
       <p v-if="birdDetailsLoading">...</p>
       <template v-else>
         <img v-if="firstBirdImage" :src="firstBirdImage" :alt="birdName(activeObservation)" loading="lazy" />

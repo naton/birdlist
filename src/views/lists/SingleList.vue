@@ -40,7 +40,7 @@ const {
   setListPublicVisibility,
   deleteList,
 } = listsStore;
-const { allLists, currentList, currentListExpanded, checkListEditMode } = storeToRefs(listsStore);
+const { allLists, currentList, checkListEditMode } = storeToRefs(listsStore);
 
 const friendsStore = useFriendsStore();
 const { getFriendlyName } = friendsStore;
@@ -255,7 +255,6 @@ watch(
   <list-info
     :list="currentList"
     :owner-label="listOwnerLabel"
-    v-model:expanded="currentListExpanded"
   >
     <template v-slot:header>
       <list-actions-menu
