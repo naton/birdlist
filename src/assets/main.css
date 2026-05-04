@@ -654,18 +654,15 @@ button:has(svg) {
 }
 
 .fade-in-enter-from {
-  transform: translateY(-20px);
   opacity: 0;
 }
 
 .fade-in-enter-to,
 .fade-in-leave-from {
-  transform: translateY(0px);
   opacity: 1;
 }
 
 .fade-in-leave-to {
-  transform: translateY(-20px);
   opacity: 0;
   z-index: -1;
 }
