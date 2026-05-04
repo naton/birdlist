@@ -239,7 +239,8 @@ textarea::placeholder {
 }
 
 .footer {
-  position: relative;
+  position: sticky;
+  bottom: 0;
   grid-area: footer;
   background: var(--color-background);
   box-shadow: 0 -4px 14px rgb(0 0 0 / 10%);
