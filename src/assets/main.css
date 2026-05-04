@@ -670,7 +670,7 @@ button:has(svg) {
 .list-move, /* apply transition to moving elements */
 .list-enter-active,
 .list-leave-active {
-  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
 }
 
 .user-nav .list-enter-from,
