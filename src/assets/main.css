@@ -190,6 +190,7 @@ textarea::placeholder {
 
 .body {
   display: grid;
+  min-height: 100%;
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
   gap: 0px 0px;

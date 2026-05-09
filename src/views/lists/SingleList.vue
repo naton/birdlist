@@ -233,6 +233,12 @@ watch(
   () => currentList.value?.id,
   async () => {
     selectedUser.value = null;
+    const list = currentList.value;
+    if (!list || !["checklist", "bingo"].includes(list.type)) {
+      checkListEditMode.value = false;
+    } else if (!(Array.isArray(list.birds) && list.birds.length > 0)) {
+      checkListEditMode.value = isListOwner.value;
+    }
     await refreshNotificationSubscriptionState();
     await refreshListParticipants();
   },

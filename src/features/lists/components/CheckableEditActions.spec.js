@@ -9,6 +9,8 @@ const checkListBirds = ref([
   { name: "Mallard", checked: false },
   { name: "Robin", checked: false },
 ]);
+const addAllBirdsFromRegion = vi.fn();
+const saveCheckList = vi.fn();
 
 vi.mock("@/composables/useCheckableList", () => ({
   useCheckableList: () => ({
@@ -23,9 +25,10 @@ vi.mock("@/composables/useCheckableList", () => ({
     checkListBirds,
     users: ref([]),
     addListBird: vi.fn(),
+    addAllBirdsFromRegion,
     checkBird: vi.fn(),
     removeBird: vi.fn(),
-    saveCheckList: vi.fn(),
+    saveCheckList,
     initializeBirdsFromList: vi.fn(),
   }),
 }));
@@ -42,6 +45,8 @@ const globalStubs = {
 describe("Inline edit actions", () => {
   beforeEach(() => {
     checkListEditMode.value = true;
+    addAllBirdsFromRegion.mockReset();
+    saveCheckList.mockReset();
   });
 
   it("shows cancel beside save in checklist and closes edit mode", async () => {
@@ -57,11 +62,49 @@ describe("Inline edit actions", () => {
     });
 
     expect(wrapper.find("[data-action='save-birds']").exists()).toBe(true);
+    expect(wrapper.find("[data-action='add-region-birds']").exists()).toBe(true);
     expect(wrapper.find("[data-action='cancel-edit-birds']").exists()).toBe(true);
 
     await wrapper.find("[data-action='cancel-edit-birds']").trigger("click");
     await nextTick();
     expect(checkListEditMode.value).toBe(false);
+  });
+
+  it("renders an inline edit button when checklist is in checking mode", async () => {
+    checkListEditMode.value = false;
+    const CheckList = (await import("@/features/lists/components/CheckList.vue")).default;
+    const wrapper = mount(CheckList, {
+      props: {
+        list: { id: "list-1", type: "checklist", birds: ["Crow"] },
+        comments: [],
+        observations: [],
+        readOnly: false,
+      },
+      global: { stubs: globalStubs },
+    });
+
+    expect(wrapper.find("[data-action='edit-birds-inline']").exists()).toBe(true);
+
+    await wrapper.find("[data-action='edit-birds-inline']").trigger("click");
+    await nextTick();
+    expect(checkListEditMode.value).toBe(true);
+  });
+
+  it("bulk-adds birds from the current region", async () => {
+    const CheckList = (await import("@/features/lists/components/CheckList.vue")).default;
+    const wrapper = mount(CheckList, {
+      props: {
+        list: { id: "list-1", type: "checklist", birds: ["Crow"] },
+        comments: [],
+        observations: [],
+        readOnly: false,
+      },
+      global: { stubs: globalStubs },
+    });
+
+    await wrapper.find("[data-action='add-region-birds']").trigger("click");
+
+    expect(addAllBirdsFromRegion).toHaveBeenCalledTimes(1);
   });
 
   it("does not render SvgChart in checklist", async () => {

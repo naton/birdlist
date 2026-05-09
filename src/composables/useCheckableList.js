@@ -1,4 +1,4 @@
-import { ref, computed, toRaw } from "vue";
+import { ref, computed, toRaw, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { getBirdDisplayName, getBirdKey, getBirdLatinName, getBirdStorageName } from "@/birdNames.js";
 import { useSettingsStore } from "@/stores/settings.js";
@@ -11,9 +11,10 @@ import { useListUserStats } from "@/composables/useListUserStats.js";
 export function useCheckableList(props) {
   const settingsStore = useSettingsStore();
   const { t } = settingsStore;
-  const { currentUser, selectedUser, lang } = storeToRefs(settingsStore);
+  const { currentUser, selectedUser, lang, locale } = storeToRefs(settingsStore);
 
   const birdStore = useBirdsStore();
+  const { loadAllBirds } = birdStore;
   const { birds } = storeToRefs(birdStore);
 
   const listsStore = useListsStore();
@@ -28,6 +29,17 @@ export function useCheckableList(props) {
 
   const birdsToCheck = ref([]);
   const addListBirdInput = ref();
+
+  function normalizeBirdForChecklist(bird) {
+    const latinName = getBirdLatinName(bird);
+    return latinName
+      ? { latinName, name: getBirdStorageName(bird, lang?.value || "en") }
+      : bird.name;
+  }
+
+  function hasBirdInChecklist(birdKey) {
+    return birdsToCheck.value.some((item) => getBirdKey(item) === birdKey);
+  }
 
   function getCurrentOwnerAliases() {
     const aliases = [
@@ -80,17 +92,37 @@ export function useCheckableList(props) {
     }
 
     const birdKey = getBirdKey(bird);
-    if (!birdsToCheck.value.some((item) => getBirdKey(item) === birdKey)) {
-      const latinName = getBirdLatinName(bird);
-      birdsToCheck.value.push(latinName ? { latinName, name: getBirdStorageName(bird, lang?.value || "en") } : bird.name);
-    } else {
+    if (hasBirdInChecklist(birdKey)) {
       addMessage(t("Bird_Already_In_List"));
+    } else {
+      birdsToCheck.value.push(normalizeBirdForChecklist(bird));
     }
 
     if (addListBirdInput.value) {
       addListBirdInput.value.clearInput();
       addListBirdInput.value.focusInput();
     }
+  }
+
+  function addAllBirdsFromRegion() {
+    if (props.readOnly) {
+      return;
+    }
+
+    const nextBirds = [...birdsToCheck.value];
+    const seenBirdKeys = new Set(nextBirds.map((bird) => getBirdKey(bird)));
+
+    for (const bird of birds.value) {
+      const birdKey = getBirdKey(bird);
+      if (seenBirdKeys.has(birdKey)) {
+        continue;
+      }
+
+      nextBirds.push(normalizeBirdForChecklist(bird));
+      seenBirdKeys.add(birdKey);
+    }
+
+    birdsToCheck.value = nextBirds;
   }
 
   async function checkBird(bird) {
@@ -145,8 +177,24 @@ export function useCheckableList(props) {
   }
 
   function initializeBirdsFromList() {
-    birdsToCheck.value = props.list?.birds || [];
+    birdsToCheck.value = Array.isArray(props.list?.birds) ? [...props.list.birds] : [];
   }
+
+  watch(
+    () => [locale.value, lang.value],
+    ([nextLocale, nextLang]) => {
+      loadAllBirds(nextLocale || "en-GB", nextLang || "en");
+    },
+    { immediate: true }
+  );
+
+  watch(
+    () => props.list?.birds,
+    () => {
+      initializeBirdsFromList();
+    },
+    { immediate: true }
+  );
 
   return {
     t,
@@ -160,6 +208,7 @@ export function useCheckableList(props) {
     checkListBirds,
     users,
     addListBird,
+    addAllBirdsFromRegion,
     checkBird,
     removeBird,
     saveCheckList,

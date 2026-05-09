@@ -31,6 +31,7 @@ const {
   checkListBirds,
   users,
   addListBird,
+  addAllBirdsFromRegion,
   checkBird,
   removeBird,
   saveCheckList,
@@ -49,6 +50,15 @@ onBeforeMount(() => {
 
   <section class="check-list">
     <p v-if="props.readOnly" class="center margin-bottom">{{ t("List_Is_Read_Only_For_You") }}</p>
+    <div v-else-if="checkListEditMode" class="checklist-mode-banner">
+      <h2 class="heading">{{ t("Checklist_Setup_Mode") }}</h2>
+      <p class="subtitle center">{{ t("Checklist_Setup_Help") }}</p>
+    </div>
+    <div v-else class="checklist-toolbar">
+      <button type="button" class="secondary" data-action="edit-birds-inline" @click="checkListEditMode = true">
+        {{ t("Edit_Birds") }}
+      </button>
+    </div>
     <div v-if="checkListBirds.length">
       <div v-if="props.observations.length" class="center margin-bottom">
         <progress :value="props.observations.length" :max="birdsToCheck.length"></progress>
@@ -72,7 +82,10 @@ onBeforeMount(() => {
   <form v-if="checkListEditMode && !props.readOnly" class="add-bird fixed">
     <vue3-simple-typeahead ref="addListBirdInput" :placeholder="`${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => addListBird(bird)"></vue3-simple-typeahead>
     <div class="buttons">
-      <button type="button" data-action="save-birds" @click="saveCheckList">{{ t("Save") }}</button>
+      <button type="button" data-action="save-birds" @click="saveCheckList">{{ t("Save_And_Start_Checking") }}</button>
+      <button type="button" class="secondary" data-action="add-region-birds" @click="addAllBirdsFromRegion">
+        {{ t("Add_All_Birds_In_This_Region") }}
+      </button>
       <button type="button" class="secondary" data-action="cancel-edit-birds" @click="checkListEditMode = false">
         {{ t("Cancel") }}
       </button>
@@ -91,5 +104,23 @@ progress {
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding-bottom: 9rem;
+}
+
+.checklist-mode-banner {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: center;
+  margin-bottom: 1rem;
+}
+
+.checklist-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.checklist-toolbar button {
+  min-width: 12rem;
 }
 </style>

@@ -345,6 +345,7 @@ export const useListsStore = defineStore("list", () => {
       : payload;
     const newId = await db.lists.add(listPayload);
     lastUsedList.value = currentList.value = allLists.value.find((list) => list.id == newId);
+    checkListEditMode.value = payload?.type === "checklist" || payload?.type === "bingo";
     return newId;
   }
 

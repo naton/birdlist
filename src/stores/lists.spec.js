@@ -364,6 +364,17 @@ describe("lists store", () => {
     });
   });
 
+  it("opens checklist edit mode immediately for new checklists", async () => {
+    const ctx = createMockContext();
+    const useListsStore = await loadStoreWithMocks(ctx);
+    const store = useListsStore();
+    await flushLiveQuery();
+
+    await store.createList({ title: "Checklist", type: "checklist" });
+
+    expect(store.checkListEditMode).toBe(true);
+  });
+
   it("does not call visibility API when pre-sync fails", async () => {
     const ctx = createMockContext();
     seedLists(ctx);
