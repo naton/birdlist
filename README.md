@@ -39,6 +39,16 @@ npm run dev
 This starts both the API server on `http://localhost:5001` and the Vite client on `http://localhost:5173`.
 Use `npm run dev:client` or `npm run dev:api` if you need to run them separately.
 
+### API Health Check
+
+The API exposes `GET /api/health` for uptime checks:
+
+```sh
+curl https://birdlist.app/api/health
+```
+
+Use this endpoint from an external monitor or hosting control panel. It confirms that the Node process is reachable and reports whether required API integrations are configured, without reading or writing app data.
+
 ### Compile and Minify for Production
 
 ```sh

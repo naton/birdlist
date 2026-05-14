@@ -97,6 +97,19 @@ if (!isPushConfigured) {
   webpush.setVapidDetails(vapidSubject, publicVapidKey, privateVapidKey);
 }
 
+app.get('/api/health', (_req, res) => {
+  res.status(200).json({
+    data: {
+      success: true,
+      uptimeSeconds: Math.round(process.uptime()),
+      dexieCloudConfigured: Boolean(privateDexieCloudKey && privateDexieCloudSecret),
+      pushConfigured: isPushConfigured,
+      birdDetailsConfigured: Boolean(nuthatchApiKey),
+      timestamp: new Date().toISOString(),
+    },
+  });
+});
+
 function normalizeListId(listId) {
   return String(listId ?? '').trim();
 }
