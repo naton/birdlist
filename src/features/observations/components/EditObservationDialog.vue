@@ -13,6 +13,7 @@ import ListsIcon from "@/shared/icons/ListsIcon.vue";
 import LocationFoundIcon from "@/shared/icons/LocationFoundIcon.vue";
 import ObservationsIcon from "@/shared/icons/ObservationsIcon.vue";
 import UserIcon from "@/shared/icons/UserIcon.vue";
+import { useRoute } from "vue-router";
 // Lazy load the map component
 const ObservationMap = defineAsyncComponent(() => import("./ObservationMap.vue"));
 import { useSettingsStore } from "@/stores/settings.js";
@@ -35,6 +36,7 @@ const { loadAllBirds } = birdsStore;
 const { birds } = storeToRefs(birdsStore);
 const friendsStore = useFriendsStore();
 const { getFriendlyName } = friendsStore;
+const route = useRoute();
 
 const emit = defineEmits(["delete"]);
 
@@ -65,10 +67,14 @@ const locationModel = computed({
   }
 });
 
-function currentListName() {
-  const list = allLists.value?.find(list => list.id == activeObservation.value?.listId);
-  return list ? list.title : t("No_Special_List");
-}
+const activeList = computed(() =>
+  allLists.value?.find((list) => String(list.id) === String(activeObservation.value?.listId)) || null
+);
+
+const currentListName = computed(() => activeList.value?.title || t("No_Special_List"));
+const isViewingActiveList = computed(
+  () => route.name === "list" && String(route.params.id || "") === String(activeList.value?.id || "")
+);
 
 function canEdit(owner) {
   return owner === "unauthorized" || currentUser?.value.name === owner;
@@ -344,7 +350,15 @@ defineExpose({
       </template>
 
       <lists-icon />
-      <p v-if="!isEditing">{{ currentListName() }}</p>
+      <p v-if="!isEditing">
+        <router-link
+          v-if="activeList && !isViewingActiveList"
+          :to="{ name: 'list', params: { id: activeList.id } }"
+        >
+          {{ currentListName }}
+        </router-link>
+        <template v-else>{{ currentListName }}</template>
+      </p>
       <div v-else class="margin-bottom">
         <label for="obs-list">{{ t("Change_List") }}</label>
         <select id="obs-list" v-model="editDraft.listId">
