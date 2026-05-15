@@ -82,9 +82,9 @@ onBeforeMount(() => {
   <form v-if="checkListEditMode && !props.readOnly" class="add-bird fixed">
     <vue3-simple-typeahead ref="addListBirdInput" :placeholder="`${t('Add_Bird_To')} ${t('This_List').toLowerCase()}…`" :items="birds" :minInputLength="1" :itemProjection="(bird) => bird.name" @selectItem="(bird) => addListBird(bird)"></vue3-simple-typeahead>
     <div class="buttons">
-      <button type="button" data-action="save-birds" @click="saveCheckList">{{ t("Save_And_Start_Checking") }}</button>
+      <button type="button" data-action="save-birds" @click="saveCheckList">{{ t("Save") }}</button>
       <button type="button" class="secondary" data-action="add-region-birds" @click="addAllBirdsFromRegion">
-        {{ t("Add_All_Birds_In_This_Region") }}
+        {{ t("Add_All") }}
       </button>
       <button type="button" class="secondary" data-action="cancel-edit-birds" @click="checkListEditMode = false">
         {{ t("Cancel") }}
